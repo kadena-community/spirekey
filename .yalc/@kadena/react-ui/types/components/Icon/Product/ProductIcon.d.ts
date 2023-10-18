@@ -1,0 +1,20 @@
+export declare const BlogChain: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const Chainweb: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const Concepts: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const Contribute: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const KadenaOverview: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const ManageKda: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const Marmalade: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const Overview: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const PactDeveloper: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const PactLanguage: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const QuickStart: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const RestApi: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const SmartContract: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const Syntax: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const UsefulTools: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const Whitepapers: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const Gas: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const Receiver: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const ReceiverInactive: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+//# sourceMappingURL=ProductIcon.d.ts.map

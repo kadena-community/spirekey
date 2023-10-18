@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../src/components/Icon/index.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;AACA,qEAAqD;AACrD,kEAAkD","sourcesContent":["export { type IIconProps } from './IconWrapper';\nexport * as ProductIcon from './Product/ProductIcon';\nexport * as SystemIcon from './System/SystemIcon';\n"]}

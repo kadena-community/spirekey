@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../src/components/Tag/index.ts"],"names":[],"mappings":";;;AAAA,6BAA4C;AAAnC,0FAAA,GAAG,OAAA","sourcesContent":["export { Tag, type ITagProps } from './Tag';\n"]}

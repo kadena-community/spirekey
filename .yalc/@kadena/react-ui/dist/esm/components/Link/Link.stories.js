@@ -1,0 +1,73 @@
+import { Link } from '../Link';
+import React from 'react';
+import { Stack } from '..';
+import { SystemIcon } from '../Icon';
+const meta = {
+    title: 'Components/Link',
+    component: Link,
+    parameters: {
+        docs: {
+            description: {
+                component: 'This component provides a styled anchor element that takes an optional icon prop that can be aligned to the left or right of the text.<br><br><i>Note: In times when you need to use a different `Link` component (like next/link in Next.js), you can wrap it in this component and set the `asChild` prop to pass on styles, icons, and additional props.</i>',
+            },
+        },
+    },
+    argTypes: {
+        href: {
+            description: "The href prop that is passed to the anchor or child element. If you're using the 'asChild' prop, you can pass the href to the child element and leave it undefined on the Link element. In times when both are defined, the child element href will be used.",
+            control: {
+                type: 'text',
+            },
+        },
+        target: {
+            control: {
+                type: 'select',
+                options: ['_blank', '_self', '_parent', '_top'],
+            },
+        },
+        icon: {
+            options: [
+                ...['-'],
+                ...Object.keys(SystemIcon),
+            ],
+            control: {
+                type: 'select',
+            },
+        },
+        iconAlign: {
+            description: 'Align icon to left or right',
+            options: ['left', 'right'],
+            control: {
+                type: 'radio',
+            },
+            if: { arg: 'selectIcon', neq: '-' },
+        },
+        asChild: {
+            description: "Use this prop when you're using a different Link component and want to pass on styles, icons, and additional props. For example when using next/link in Next.js.",
+        },
+        block: {
+            description: 'Set to true to make the link a block element.',
+        },
+    },
+};
+export default meta;
+export const Primary = {
+    name: 'Link',
+    args: {
+        href: 'https://kadena.io',
+        target: '_blank',
+        icon: 'Link',
+        iconAlign: 'left',
+    },
+    render: ({ href, target, icon, iconAlign }) => {
+        return (React.createElement(React.Fragment, null,
+            React.createElement(Stack, { direction: "row", gap: "$2" },
+                React.createElement(Link, { href: href, target: target, asChild: true }, "Link without icon"),
+                React.createElement(Link, { href: `${href}?${Date.now()}`, target: target, iconAlign: iconAlign, icon: icon }, "Non-visited"),
+                React.createElement(Link, { href: href, target: target, icon: icon }, "Kadena.io"),
+                React.createElement(Link, { asChild: true },
+                    React.createElement("a", { href: href, target: target }, "Link asChild"))),
+            React.createElement(Link, { href: href, target: target, icon: icon, block: true }, "Block Link")));
+    },
+};
+//# sourceMappingURL=Link.stories.js.map

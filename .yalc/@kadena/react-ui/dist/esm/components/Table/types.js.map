@@ -1,0 +1,1 @@
+{"version":3,"file":"types.js","sourceRoot":"","sources":["../../../../src/components/Table/types.ts"],"names":[],"mappings":"","sourcesContent":["import type { FunctionComponentElement } from 'react';\n\nexport type CompoundType<T> = Tree<FunctionComponentElement<T>>;\n\ntype Tree<T> = T | Array<Tree<T>>;\n"]}
