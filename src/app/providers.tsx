@@ -1,16 +1,15 @@
-'use client';
+"use client";
 
-import { darkThemeClass } from '@kadena/react-ui/theme';
-import { ThemeProvider } from 'next-themes';
+import { darkThemeClass } from "@kadena/react-ui/theme";
+import { ThemeProvider } from "next-themes";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider
-      attribute='class'
+      attribute="class"
       enableSystem={true}
-      defaultTheme='light'
       value={{
-        light: 'light',
+        light: "light",
         dark: darkThemeClass,
       }}
     >

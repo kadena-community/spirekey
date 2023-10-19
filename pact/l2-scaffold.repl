@@ -1,0 +1,48 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Scaffold for L2 pact tests ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(load "util/guards.repl")
+
+(env-data
+  { 'upgrade   : false
+  , 'l2-keyset :
+    { 'pred    : "keys-all"
+    , 'keys    :
+      [ "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+      ]
+    }
+  })
+(env-sigs
+  [{ 'key  : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , 'caps : []
+   }])
+(begin-tx "Create l2 namespace")
+(define-namespace
+  (ns.create-principal-namespace (read-keyset 'l2-keyset))
+  (read-keyset 'l2-keyset )
+  (read-keyset 'l2-keyset ))
+(commit-tx)
+
+(env-data
+  { 'upgrade   : false
+  , 'l1        : "14"
+  , 'l2-keyset :
+    { 'pred    : "keys-all"
+    , 'keys    :
+      [ "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca" ]
+    }
+  }
+)
+(env-sigs
+  [{ 'key  : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , 'caps : []
+   }
+  ]
+)
+(begin-tx "Load l2 contract")
+(load "l2-coin.pact")
+(load "headers.pact")
+(commit-tx)
+(env-sigs [])
+(env-data {})

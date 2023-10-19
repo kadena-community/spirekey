@@ -1,0 +1,230 @@
+(load "l2-scaffold.repl")
+
+(env-data
+  { "upgrade"   : false
+  , "l2-keyset" :
+    { "pred"    : "keys-all"
+    , "keys"    :
+      [ "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+      ]
+    }
+  })
+
+;;;;;;;;;;;;;;;;;;;;;;;
+; Prepare L1 accounts ;
+;;;;;;;;;;;;;;;;;;;;;;;
+(env-data
+  { "bob-keyset"   : { "keys" : [ "bob-public-key"   ] , "pred" : "keys-all" }
+  , "alice-keyset" : { "keys" : [ "alice-public-key" ] , "pred" : "keys-all" }
+  , "greg-keyset"  : { "keys" : [ "greg-public-key"  ] , "pred" : "keys-all" }
+  , "andy-keyset"  : { "keys" : [ "andy-public-key"  ] , "pred" : "keys-all" }
+  , "randy-keyset" : { "keys" : [ "randy-public-key" ] , "pred" : "keys-all" }
+  , "m-ks"         : {"keys":["c40ad633a623bea1bda657ba7a3ff54898ff9bb894cd31a5bbfa5253a6bbfa85","6586c097060587fdb4b3c287e20d71ba355589b64df2b6061543715a73ee2c6b"],"pred":"keys-all"}}
+  })
+(begin-tx)
+(test-capability (coin.COINBASE))
+(coin.coinbase "bob" (read-keyset "bob-keyset") 1000.0)
+(coin.coinbase "alice" (read-keyset "alice-keyset") 1000.0)
+(coin.coinbase "greg" (read-keyset "greg-keyset") 1000.0)
+(coin.coinbase "andy" (read-keyset "andy-keyset") 1000.0)
+(coin.coinbase "randy" (read-keyset "randy-keyset") 1000.0)
+(commit-tx)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Register L2 account tests ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(env-data
+  { "bob-keyset"   : { "keys" : [ "bob-public-key"   ] , "pred" : "keys-all" }
+  })
+(env-sigs
+  [{ "key"  : "bob-public-key"
+   , "caps" :
+     [ (coin.TRANSFER "bob" (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.get-escrow-id) 100.0)
+     ]
+   }])
+(env-chain-data
+  { "block-height" : 1
+  , "block-time"   : (time "2020-01-01T00:00:00Z")
+  , "gas-limit"    : 10000000
+  , "gas-price"    : 0.0000000001
+  , "chain-id"     : "14"
+  })
+(begin-tx)
+(expect
+  "Bob to have 1000.0 KDA before the transfer"
+  1000.0
+  (coin.get-balance "bob"))
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.deposit "bob" "bob" (read-keyset 'bob-keyset) 100.0)
+(expect
+  "Bob to have 900.0 KDA before the transfer"
+  900.0
+  (coin.get-balance "bob"))
+(expect
+  "Escrow to have 100.0 KDA"
+  100.0
+  (coin.get-balance (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.get-escrow-id)))
+(env-chain-data
+  { "block-height" : 1
+  , "block-time"   : (time "2020-01-01T00:00:00Z")
+  , "gas-limit"    : 10000000
+  , "gas-price"    : 0.0000000001
+  , "chain-id"     : "crossnet:L2"
+  })
+(continue-pact 1)
+(expect
+  "Bob to have 100.0 KDA on L2"
+  100.0
+  (at 'balance (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.details "bob")))
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(env-data
+  { "alice-keyset" : { "keys" : [ "alice-public-key" ] , "pred" : "keys-all" }
+  , "andy-keyset"  : { "keys" : [ "andy-public-key"  ] , "pred" : "keys-all" }
+  , "randy-keyset" : { "keys" : [ "randy-public-key" ] , "pred" : "keys-all" }
+  })
+(env-sigs
+  [{ "key"  : "alice-public-key"
+   , "caps" :
+     [ (coin.TRANSFER "alice" (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.get-escrow-id) 100.0)
+     ]
+   }
+  ,{ "key"  : "andy-public-key"
+   , "caps" :
+     [ (coin.TRANSFER "andy" (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.get-escrow-id) 100.0)
+     ]
+   }
+  ,{ "key"  : "randy-public-key"
+   , "caps" :
+     [ (coin.TRANSFER "randy" (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.get-escrow-id) 100.0)
+     ]
+   }
+  ])
+(env-chain-data
+  { "block-height" : 1
+  , "chain-id"     : "14"
+  })
+(begin-tx)
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.deposit "alice" "alice" (read-keyset 'alice-keyset) 100.0)
+(env-chain-data
+  { "block-height" : 2
+  , "chain-id"     : "crossnet:L2"
+  })
+(continue-pact 1)
+(env-chain-data
+  { "block-height" : 3
+  , "chain-id"     : "14"
+  })
+(commit-tx)
+(begin-tx)
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.deposit "andy" "andy" (read-keyset 'andy-keyset) 100.0)
+(env-chain-data
+  { "block-height" : 4
+  , "chain-id"     : "crossnet:L2"
+  })
+(continue-pact 1)
+(commit-tx)
+(begin-tx)
+(env-chain-data
+  { "block-height" : 5
+  , "chain-id"     : "14"
+  })
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.deposit "randy" "randy" (read-keyset 'randy-keyset) 100.0)
+(env-chain-data
+  { "block-height" : 6
+  , "chain-id"     : "crossnet:L2"
+  })
+(continue-pact 1)
+
+(expect
+  "Escrow to have 400.0 KDA"
+  400.0
+  (coin.get-balance (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.get-escrow-id)))
+(expect
+  "Alice to have 100.0 KDA on L2"
+  100.0
+  (at 'balance (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.details "alice")))
+(expect
+  "Andy to have 100.0 KDA on L2"
+  100.0
+  (at 'balance (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.details "andy")))
+(expect
+  "Randy to have 100.0 KDA on L2"
+  100.0
+  (at 'balance (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.details "randy")))
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Transfer from L2 to L2 ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+(env-sigs
+  [{ "key"  : "alice-public-key"
+   , "caps" : [(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.TRANSFER "alice" "bob" 10.0)]
+   }
+   { "key"  : "randy-public-key"
+   , "caps" : [(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.TRANSFER "randy" "alice" 10.0)]
+   }])
+(env-chain-data
+  { "block-height" : 9
+  , "chain-id"     : "crossnet:L2"
+  })
+(begin-tx)
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.transfer "alice" "bob" 10.0)
+
+(env-chain-data
+  { "block-height" : 11
+  , "chain-id"     : "crossnet:L2"
+  })
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.transfer "randy" "alice" 10.0)
+(expect
+  "Bob to have received 10.0 KDA"
+  110.0
+  (at 'balance (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.details "bob")))
+(expect
+  "Alice to have send 10.0 KDA and received 10.0 KDA"
+  100.0
+  (at 'balance (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.details "alice")))
+(expect
+  "Randy to have send 10.0 KDA"
+  90.0
+  (at 'balance (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.details "randy")))
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+;;;;;;;;;;;;;;;;;;
+; Withdraw KDA   ;
+;;;;;;;;;;;;;;;;;;
+(env-sigs
+  [{ "key": "alice-public-key"
+   , "caps": [(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.WITHDRAW "alice" "alice" 10.0)]
+   }
+   { "key": "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , "caps": [] }])
+(env-chain-data
+  { "chain-id" : "crossnet:L2" })
+(begin-tx)
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.withdraw "alice" "alice" 10.0)
+(expect
+  "Alice to have 90.0 KDA on L2"
+  90.0
+  (at 'balance (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.details "alice")))
+(env-chain-data
+  { "chain-id" : "14" })
+(expect
+  "Alice to have 900.0 KDA on L1"
+  900.0
+  (coin.get-balance "alice"))
+(continue-pact 1)
+(expect
+  "Alice to have 910.0 KDA on L1"
+  910.0
+  (coin.get-balance "alice"))
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(verify "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2")

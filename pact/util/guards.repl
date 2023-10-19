@@ -1,0 +1,24 @@
+;; guards.repl
+
+(load "../root/root.repl")
+
+(begin-tx "register guards")
+(env-data
+ { 'util-ns-users: ["util-ns-user"]
+ , 'util-ns-admin: ["util-ns-admin"]
+})
+
+(env-sigs [ { "key": "util-ns-admin"
+            , "caps": []}
+          , { "key": "util-ns-user"
+            , "caps": []}
+          , { "key": "operate"
+            , "caps": []}])
+
+(env-exec-config ['DisablePact44 ] )
+
+(load "util-ns.pact")
+(load "guards.pact")
+(load "guards1.pact")
+
+(commit-tx)
