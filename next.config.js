@@ -8,7 +8,7 @@ const nextConfig = {
     appDir: true,
   },
   env: {
-    WEBAUTHN_MOCK: process.env.WEBAUTHN_MOCK,
+    WEBAUTHN_MOCK: false,
   },
 };
 

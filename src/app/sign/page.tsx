@@ -2,10 +2,7 @@
 
 import { useCallback } from "react";
 import { Button, Stack, Text } from "@kadena/react-ui";
-import {
-  startAuthentication,
-  bufferToBase64URLString,
-} from "@simplewebauthn/browser";
+import { startAuthentication } from "@simplewebauthn/browser";
 import { useRouter } from "next/navigation";
 
 type WalletProps = {
@@ -24,7 +21,7 @@ export default function Wallet(req: WalletProps) {
   const txPretty = JSON.stringify(txData.signers, null, 2);
   const sign = useCallback(async () => {
     const res = await startAuthentication({
-      challenge: bufferToBase64URLString(Buffer.from(tx.hash)),
+      challenge: tx.hash,
       rpId: "localhost",
     });
     router.push(

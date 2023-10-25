@@ -209,7 +209,8 @@ export default function Account(req: AccountProps) {
     if (!res.response.publicKey)
       throw new Error("No public key returned from webauthn");
 
-    const pubKey = await getPublicKey(res, publicKeyType);
+    // currently only hex-from-cbor works
+    const pubKey = await getPublicKey(res, "hex-from-cbor");
     const tx = await registerAccount({
       account: "andy",
       credentialId: res.id,
