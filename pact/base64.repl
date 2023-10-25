@@ -1,0 +1,35 @@
+(begin-tx)
+(module base64 G
+  (defcap G() true)
+
+  (defun lt(a:string b:string)
+    (if (= (length a) (length b))
+      (< a b)
+      (< (length a) (length b))
+    )
+  )
+)
+(commit-tx)
+
+(let ((values ["a" "aa" "aaa" "b" "bb" "bbb"]))
+  (map
+    (lambda (x)
+      (map
+        (lambda (y)
+          (begin-tx (format "Comparing {}({}) to {}({})" [x (base64-encode x) y (base64-encode y)]))
+          (expect (format "Comparing {} to {}" [x y])
+            (< (str-to-int 64 (base64-encode x)) (str-to-int 64 (base64-encode y)))
+            (base64.lt x y)
+          )
+          (commit-tx)
+        )
+        values
+      )
+    )
+    values
+  )
+)
+
+(begin-tx (format "Comparing {}({}) to {}({})" ["b" (base64-encode "b") "aa" (base64-encode "aa")]))
+(print (base64.lt "b" "aa"))
+(commit-tx)

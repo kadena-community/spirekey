@@ -1,0 +1,278 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Scaffold for L2 pact tests ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(load "util/guards.repl")
+
+(env-data
+  { 'upgrade   : false
+  , 'l2-keyset :
+    { 'pred    : "keys-all"
+    , 'keys    :
+      [ "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+      ]
+    }
+  })
+(env-sigs
+  [{ 'key  : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , 'caps : []
+   }])
+(begin-tx "Create l2 namespace")
+(define-namespace
+  (ns.create-principal-namespace (read-keyset 'l2-keyset))
+  (read-keyset 'l2-keyset )
+  (read-keyset 'l2-keyset ))
+(commit-tx)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+; Prepare test accounts ;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+(env-data
+  { 'alice-ks : ["a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"]
+  , 'bob-ks   : ["b0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb"]
+  , 'greg-ks  : ["9439943994399439943994399439943994399439943994399439943994399439"]
+  }
+)
+(begin-tx "Prepare test accounts")
+(test-capability (coin.COINBASE))
+(coin.coinbase "k:b0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb" (read-keyset 'bob-ks) 1000.0)
+(coin.coinbase "k:9439943994399439943994399439943994399439943994399439943994399439" (read-keyset 'greg-ks) 1000.0)
+(coin.coinbase "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c" (read-keyset 'alice-ks) 1000.0)
+(commit-tx)
+(env-sigs [])
+(env-data {})
+
+(env-data
+  { 'upgrade   : false
+  , 'l1        : "14"
+  , 'l2-keyset :
+    { 'pred    : "keys-all"
+    , 'keys    :
+      [ "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca" ]
+    }
+  }
+)
+(env-sigs
+  [{ 'key  : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , 'caps : []
+   }
+  ]
+)
+(begin-tx "Load l2 contract")
+(load "l2-coin.pact")
+(commit-tx)
+(env-sigs [])
+(env-data {})
+
+;;;;;;;;;;;;;;;;;;;
+; Test depositing ;
+;;;;;;;;;;;;;;;;;;;
+
+(env-sigs
+  [{ 'key : "a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+   , 'caps :
+    [(coin.TRANSFER
+      "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+      n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.ESCROW_ID
+      100.0
+    )]
+   }
+  ]
+)
+(env-data
+  { 'alice-ks : ["a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"] }
+)
+(env-chain-data
+  { 'chain-id : n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.L1 }
+)
+(begin-tx "Deposit to your own account")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.deposit
+  "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+  "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+  (read-keyset 'alice-ks)
+  100.0
+)
+(env-data {})
+(env-sigs
+  [{ 'key : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , 'caps : [(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.GOVERNANCE)]
+  }]
+)
+(env-chain-data
+  { 'chain-id : "any-chain-on-L2" }
+)
+(continue-pact 1)
+(expect "Alice to have 100.0 KDA available on L2"
+  100.0
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.get-balance
+    "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+  )
+)
+(expect "Alice to have 100.0 KDA less on L1"
+  900.0
+  (coin.get-balance
+    "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+  )
+)
+(expect "Escrow account to have 100.0 KDA stored on L1"
+  100.0
+  (coin.get-balance
+    n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.ESCROW_ID
+  )
+)
+(commit-tx)
+
+(env-sigs
+  [{ 'key : "a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+   , 'caps :
+    [(coin.TRANSFER
+      "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+      n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.ESCROW_ID
+      100.0
+    )]
+   }
+  ]
+)
+(env-data
+  { 'bob-ks : ["b0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb"] }
+)
+(env-chain-data
+  { 'chain-id : n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.L1 }
+)
+(begin-tx "Deposit to another account")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.deposit
+  "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+  "k:b0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb"
+  (read-keyset 'bob-ks)
+  100.0
+)
+(env-data {})
+(env-sigs
+  [{ 'key : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , 'caps : [(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.GOVERNANCE)]
+  }]
+)
+(env-chain-data
+  { 'chain-id : "any-chain-on-L2" }
+)
+(continue-pact 1)
+(expect "Bob to have 100.0 KDA available on L2"
+  100.0
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.get-balance
+    "k:b0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb"
+  )
+)
+(expect "Alice to have 100.0 KDA less on L1"
+  800.0
+  (coin.get-balance
+    "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+  )
+)
+(expect "Escrow account to have 100.0 KDA stored on L1"
+  200.0
+  (coin.get-balance
+    n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.ESCROW_ID
+  )
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+;;;;;;;;;;;;;;;;;;;;
+; L2 functionality ;
+;;;;;;;;;;;;;;;;;;;;
+(env-data
+  { 'greg-ks : ["9439943994399439943994399439943994399439943994399439943994399439"] }
+)
+(begin-tx "Create a new L2 account")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.create-account
+  "k:9439943994399439943994399439943994399439943994399439943994399439"
+  (read-keyset 'greg-ks)
+)
+(expect "Greg to have 0.0 KDA on L2"
+  0.0
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.get-balance
+    "k:9439943994399439943994399439943994399439943994399439943994399439"
+  )
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(env-sigs
+  [{ 'key  : "a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+   , 'caps :
+    [(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.TRANSFER
+      "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+      "k:9439943994399439943994399439943994399439943994399439943994399439"
+      10.0
+    )]
+  }])
+(begin-tx)
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.transfer
+  "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+  "k:9439943994399439943994399439943994399439943994399439943994399439"
+  10.0
+)
+(expect "Greg to have 10.0 KDA on L2"
+  10.0
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.get-balance
+    "k:9439943994399439943994399439943994399439943994399439943994399439"
+  )
+)
+(expect "Alice to have 90.0 KDA left on L2"
+  90.0
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.get-balance
+    "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+  )
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+;;;;;;;;;;;;;;;;;;;
+; Test Withdrawal ;
+;;;;;;;;;;;;;;;;;;;
+(env-sigs
+  [{ 'key  : "a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+   , 'caps :
+    [(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.WITHDRAW
+      "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+    )]
+  }]
+)
+(begin-tx "Withdraw from L2 to your own account")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.withdraw
+  "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+  "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+  10.0
+)
+(expect "Alice to have 80.0 KDA left on L2"
+  80.0
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.get-balance
+    "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+  )
+)
+(env-sigs
+  [{ 'key  : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , 'caps : [(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.GOVERNANCE)]
+  }]
+)
+(env-chain-data
+  { 'chain-id : n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.L1 }
+)
+(continue-pact 1)
+(expect "Alice to have 910.0 KDA on L1"
+  810.0
+  (coin.get-balance
+    "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+  )
+)
+(expect "Escrow to have provided for the KDA"
+  190.0
+  (coin.get-balance
+    n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.ESCROW_ID
+  )
+)
+(commit-tx)
+
+(verify "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2")

@@ -1,0 +1,148 @@
+(load "util/guards.repl")
+
+(env-data
+  { 'webauthn-keyset :
+    { 'pred          : "keys-all"
+    , 'keys          :
+      [ "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca" ]
+    }
+  })
+(env-sigs
+  [{ 'key  : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , 'caps : []
+   }])
+(begin-tx "Create webauthn namespace and define webauthn keyset")
+(let* ((webauthn-namespace (ns.create-principal-namespace (read-keyset 'webauthn-keyset)))
+       (webauthn-keyset (format "{}.{}" [ webauthn-namespace 'webauthn-keyset ]))
+      )
+  (define-namespace
+    webauthn-namespace
+    (read-keyset 'webauthn-keyset)
+    (read-keyset 'webauthn-keyset))
+  (namespace webauthn-namespace)
+  (define-keyset
+    webauthn-keyset
+    (read-keyset 'webauthn-keyset)
+  )
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(env-data
+  { 'webauthn-keyset-name : "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-keyset"
+  , 'webauthn-namespace   : "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9"
+  , 'upgrade              : false
+  }
+)
+(env-sigs
+  [{ 'key  : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , 'caps : []
+   }
+  ]
+)
+(begin-tx "Load webauthn contract")
+(load "webauthn.pact")
+(commit-tx)
+
+(verify "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+; Prepare test accounts ;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+(env-data
+  { 'alice-ks : ["a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"]
+  , 'bob-ks   : ["b0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb"]
+  , 'greg-ks  : ["9439943994399439943994399439943994399439943994399439943994399439"]
+  }
+)
+(begin-tx "Prepare test accounts")
+(test-capability (coin.COINBASE))
+(coin.coinbase "k:b0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb" (read-keyset 'bob-ks) 1000.0)
+(coin.coinbase "k:9439943994399439943994399439943994399439943994399439943994399439" (read-keyset 'greg-ks) 1000.0)
+(coin.coinbase "k:a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c" (read-keyset 'alice-ks) 1000.0)
+(commit-tx)
+(env-sigs [])
+(env-data {})
+
+(env-data
+  { 'alice-ks : ["a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"] }
+)
+(env-sigs
+  [{ 'key  : "a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+   , 'caps : []
+  }]
+)
+(begin-tx "Create webauthn account for alice")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.create-account
+  "alice"
+  coin
+  (read-keyset 'alice-ks)
+  "device-id"
+  "device-pubkey"
+)
+(test-capability (coin.COINBASE))
+(let ((cap-guard
+        (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.get-account-guard 'alice)
+     ))
+  (coin.coinbase
+    (create-principal cap-guard)
+    cap-guard
+    1000.0
+  )
+)
+(commit-tx)
+(env-sigs [])
+(env-data {})
+
+(env-data
+  { 'alice-www-ks :
+    { 'keys : [ "a33cea33cea33cea33cea33cea33cea33cea33cea33cea33cea33cea33cea33c" ]
+    , 'pred : 'keys-any
+    }
+  }
+)
+(env-sigs
+  [{ 'key  : "a11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11cea11c"
+   , 'caps : [
+      (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.REGISTER
+        'alice (read-keyset 'alice-www-ks)
+      )
+    ]
+  }]
+)
+(begin-tx "Add a public key for www.example.com to alice's account")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.add-authentication-guard
+  "alice"
+  (read-keyset 'alice-www-ks)
+  "device-id"
+  "device-pubkey"
+)
+(commit-tx)
+
+(env-sigs
+  [{ 'key : "a33cea33cea33cea33cea33cea33cea33cea33cea33cea33cea33cea33cea33c"
+   , 'caps : [
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.TRANSFER
+      "alice"
+      "k:b0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb"
+      100.0
+    )
+   ]
+  }]
+)
+(begin-tx)
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.transfer
+  coin
+  "alice"
+  "k:b0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb"
+  100.0
+)
+(expect
+  "expect Alice to have coins deducted"
+  900.0
+  (coin.get-balance
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.get-account-name 'alice)
+  )
+)
+(commit-tx)

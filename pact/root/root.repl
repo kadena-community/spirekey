@@ -1,0 +1,14 @@
+(begin-tx "load root contracts")
+(env-exec-config ['DisablePact44 ] )
+(env-data
+ { 'ns-admin-keyset: ["admin"]
+ , 'ns-operate-keyset: ["operate"]
+ , 'ns-genesis-keyset: { "keys": [], "pred": "="} })
+
+(load "../root/ns.pact")
+(load "../root/gas-payer-v1.pact")
+(load "../root/fungible-v2.pact")
+(load "../root/fungible-xchain-v1.pact")
+(load "../root/coin.pact")
+
+(commit-tx)

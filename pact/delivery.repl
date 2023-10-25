@@ -1,0 +1,105 @@
+(load "l2-scaffold.repl")
+
+(begin-tx "Load delivery contract")
+  (env-data {
+    'ns: "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
+    'upgrade: false
+  })
+
+  (env-keys ["368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"])
+  (load "delivery.pact")
+(commit-tx)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+; Prepare test accounts ;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+(env-data
+  { 'merchant-keyset : ["merchant-public-key"]
+  , 'buyer-keyset   : ["buyer-public-key"]
+  , 'courier-keyset  : ["courier-public-key"]
+  }
+)
+(begin-tx "Prepare test accounts")
+  (test-capability (coin.COINBASE))
+  (coin.coinbase "merchant-account" (read-keyset 'merchant-keyset) 1000.0)
+  (coin.coinbase "buyer-account" (read-keyset 'buyer-keyset) 1000.0)
+  (coin.coinbase "courier-account" (read-keyset 'courier-keyset) 1000.0)
+  
+(commit-tx)
+(env-sigs [])
+(env-data {})
+
+; (begin-tx "Create an order")
+;   (use n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.delivery)
+;
+;   (env-sigs [
+;     {
+;     'key: "buyer-public-key",
+;     'caps: []
+;     },
+;     {
+;       'key: "merchant-public-key",
+;       'caps: []
+;     }
+;   ])
+;   (env-data
+;     { 'merchant-keyset : ["merchant-public-key"]
+;     , 'buyer-keyset   : ["buyer-public-key"]
+;     }
+;   )
+;
+;   (expect "Create order succeeds"
+;     "Write succeeded"
+;     (create-order
+;       "order1-hash"
+;       "merchant-account"
+;       (read-keyset 'merchant-keyset)
+;       "buyer-account"
+;       (read-keyset 'buyer-keyset)
+;       20.50
+;       5.0
+;     ))
+; (commit-tx)
+; (env-data {})
+; (env-sigs [])
+;
+; (begin-tx "Set order as ready for delivery")
+;   (use n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.delivery)
+;
+;   (env-sigs [
+;     {
+;     'key: "merchant-public-key",
+;     'caps: []
+;   }])
+;   ; Is it correct to check this way before update and after?
+;   (expect "Initial order status is CREATED"
+;     "CREATED"
+;     (get-order-status (create-order-table-id "order1-hash" (read-keyset "merchant-keyset"))))
+;
+;   (expect "Set order as ready for delivery by merchant succeeds"
+;     "Write succeeded"
+;     (set-order-ready-for-delivery (create-order-table-id "order1-hash" (read-keyset "merchant-keyset")) (read-keyset "merchant-keyset")))
+;
+;   (expect "Order status is READY_FOR_DELIVERY after update"
+;     "READY_FOR_DELIVERY"
+;     (get-order-status (create-order-table-id "order1-hash" (read-keyset "merchant-keyset"))))
+;
+; (commit-tx)
+; ;  (env-data {})
+; (env-sigs [])
+;
+; (begin-tx "Pickup delivery by courier")
+;   (use n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.delivery)
+;
+;   (print (create-principal (create-capability-guard (ESCROW "abc"))))
+;   (print (create-principal (create-capability-guard (ESCROW "bcd"))))
+;   ; (test-capability (coin.COINBASE))
+;   ;  (coin.coinbase "something" (create-user-guard (lambda () (enforce true "woop"))))
+;   ; (coin.coinbase "courier-account" (read-keyset "courier-keyset") 500.0) ; move to create these accounts only once
+;   ;  (pickup-delivery "courier-account" (read-keyset "courier-keyset") "order-id") ; get order-id from table
+; (commit-tx)
+; (env-data {})
+
+(verify "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.delivery")
+
+;  (env-sigs [])
