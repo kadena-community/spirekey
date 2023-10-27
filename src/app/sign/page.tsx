@@ -9,11 +9,12 @@ type WalletProps = {
   searchParams: {
     payload: string;
     returnUrl: string;
+    cid: string;
   };
 };
 
 export default function Wallet(req: WalletProps) {
-  const { payload, returnUrl } = req.searchParams;
+  const { payload, returnUrl, cid } = req.searchParams;
   const router = useRouter();
   const data = payload ? Buffer.from(payload, "base64").toString() : null;
   const tx = JSON.parse(data ?? "{}");
@@ -23,6 +24,7 @@ export default function Wallet(req: WalletProps) {
     const res = await startAuthentication({
       challenge: tx.hash,
       rpId: "localhost",
+      allowCredentials: cid ? [{ id: cid, type: "public-key" }] : undefined,
     });
     router.push(
       `${returnUrl}?payload=${payload}&response=${Buffer.from(
