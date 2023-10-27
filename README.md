@@ -128,22 +128,25 @@ _the current limitations of a principaled acount length for newer algorithms_
 
 ```mermaid
 sequenceDiagram
-  User->>+WalletA.com: I'd like to create an account
-  WalletA.com-->>-User: Under what alias would you like to register an account?
-  User->>+WalletA.com: I'd like to use "Alice"
+  participant User
+  participant WebAuthn(Device)
+  participant WalletA.com
+  participant WebAuthn(SC)
+  participant Fungible(SC)
+
+  User->>+WalletA.com: I'd like to create an account named "Alice"
   WalletA.com-->>+WebAuthn(SC): What is the "c:account" for "Alice"?
   WebAuthn(SC)-->>-WalletA.com: That would be "c:capabilityguardforalice"
-  WalletA.com-->>+Phone: Please give me a public key for Alice, c:capabilityguardforalice
-  Phone-->>+User: Please approve this request
-  User-->>-Phone: I approve this request
-  Phone-->>-WalletA.com: Here is the public key: abc000
-  WalletA.com-->>+Phone: Here is the transaction to register, please sign
-  Phone-->>+User: Please approve this transaction
-  User-->>-Phone: I approve this transaction
-  Phone-->>-WalletA.com: Here is the signature for the transaction
+  WalletA.com-->>+WebAuthn(Device): Please give me a public key for Alice, c:capabilityguardforalice
+  WebAuthn(Device)-->>+User: Please approve this request
+  User-->>-WebAuthn(Device): I approve this request
+  WebAuthn(Device)-->>-WalletA.com: Here is the public key: abc000
+  WalletA.com-->>+WebAuthn(Device): Here is the transaction to register, please sign
+  WebAuthn(Device)-->>+User: Please approve this transaction
+  User-->>-WebAuthn(Device): I approve this transaction
+  WebAuthn(Device)-->>-WalletA.com: Here is the signature for the transaction
   WalletA.com-->>+WebAuthn(SC): Please register "Alice" with this public key
   WebAuthn(SC)-->>+Fungible(SC): Create an account for "c:capabilityguardforalice"
-
 ```
 
 ## Registration flow (second wallet)
