@@ -127,20 +127,11 @@ export default function Account(req: AccountProps) {
   const { payload, response } = req.searchParams;
   const router = useRouter();
   const [account, setAccount] = useState<string>("");
-  const [publicKeyType, setPublicKeyType] = useState<PublicKeyType>(
-    "hex-from-subtle-crypto"
-  );
   const onAccountChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setAccount(e.target.value);
     },
     [setAccount]
-  );
-  const onPublicKeyTypeChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setPublicKeyType(e.target.value as PublicKeyType);
-    },
-    [setPublicKeyType]
   );
   useEffect(() => {
     if (!payload || !response) return;
@@ -202,7 +193,6 @@ export default function Account(req: AccountProps) {
       },
       timeout: 60000,
     });
-    console.log(res);
     if (!res.response.publicKey)
       throw new Error("No public key returned from webauthn");
 
@@ -219,7 +209,7 @@ export default function Account(req: AccountProps) {
         "base64"
       )}&returnUrl=/register`
     );
-  }, [account, publicKeyType]);
+  }, [account]);
   return (
     <Stack direction="column" gap="$md" margin="$md">
       <ContentHeader
@@ -236,18 +226,6 @@ export default function Account(req: AccountProps) {
         }}
         helperText="Enter your account name"
       />
-      <Select
-        icon="KeyIconFilled"
-        id="pubkeyType"
-        ariaLabel="Public key type"
-        onChange={onPublicKeyTypeChange}
-      >
-        <option value="hex-from-subtle-crypto">Hex - Subtle</option>
-        <option value="hex-from-base64">Hex - base64</option>
-        <option value="hex-from-cbor">Hex - cbor</option>
-        <option value="jose">JOSE</option>
-        <option value="base64">Base64</option>
-      </Select>
       <Button onClick={register}>Register</Button>
     </Stack>
   );

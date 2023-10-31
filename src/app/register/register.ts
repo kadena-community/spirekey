@@ -8,7 +8,7 @@ import {
   setNetworkId,
 } from "@kadena/client/fp";
 import { asyncPipe } from "../utils/asyncPipe";
-import { l2Client } from "../utils/client";
+import { l1Client } from "../utils/client";
 import {
   genesisAccount,
   genesisPrivateKey,
@@ -23,7 +23,7 @@ export const getAccountName = async (name: string) =>
         `(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.get-account-name "${name}")`
       ),
       setMeta({
-        chainId: "2",
+        chainId: "14",
         gasLimit: 1000,
         gasPrice: 0.0000001,
         ttl: 60000,
@@ -33,7 +33,7 @@ export const getAccountName = async (name: string) =>
       setNetworkId("fast-development")
     ),
     // TODO: this doesn't need singing, remove signing and use local preflight false
-    signKeyPairLocal(l2Client, {
+    signKeyPairLocal(l1Client, {
       publicKey: genesisPubKey,
       secretKey: genesisPrivateKey,
     }),
