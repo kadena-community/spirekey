@@ -143,6 +143,33 @@ const mapCode = ({ codeFile, ...config }: Omit<DeploySettings, "hosts">) => {
   return config;
 };
 
+export const local = async (
+  code: string,
+  host: string,
+  networkId: string,
+  chainId: any
+) => {
+  const client = createClient(
+    ({ chainId, networkId }) =>
+      `${host}/chainweb/0.0/${networkId}/chain/${chainId}/pact`
+  );
+  return asyncPipe(
+    composePactCommand(
+      execution(code),
+      setMeta({
+        ttl: 28800,
+        gasLimit: 100000,
+        gasPrice: 0.00000001,
+        chainId,
+      }),
+      setNetworkId(networkId)
+    ),
+    createTransaction,
+    (tx: any) => client.local(tx, { preflight: false }),
+    (tx: any) => tx.result.data
+  )({});
+};
+
 export default async function deployWith(config: DeploySettings[]) {
   const deployConfig = config
     .flatMap(mapDeployConfig)
