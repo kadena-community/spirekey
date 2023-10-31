@@ -7,9 +7,6 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
-  env: {
-    WEBAUTHN_MOCK: false,
-  },
 };
 
 module.exports = withVanillaExtract(nextConfig);

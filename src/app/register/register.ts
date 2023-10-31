@@ -32,6 +32,7 @@ export const getAccountName = async (name: string) =>
       addSigner(genesisPubKey),
       setNetworkId("fast-development")
     ),
+    // TODO: this doesn't need singing, remove signing and use local preflight false
     signKeyPairLocal(l2Client, {
       publicKey: genesisPubKey,
       secretKey: genesisPrivateKey,
@@ -77,26 +78,20 @@ const registerAccountCommand = ({
         "create-account"
       ](
         account,
-        () => "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2",
+        () => "coin",
         () => `(read-keyset 'ks)`,
         credentialId,
         credentialPubkey
       )
     ),
-    process.env.WEBAUTHN_MOCK
-      ? (tx) => {
-          console.warn(
-            "WEBAUTHN_MOCK is set, not adding webauthn pubkey as signer"
-          );
-          return tx;
-        }
-      : addSigner({
-          pubKey: credentialPubkey,
-          scheme: "WebAuthn",
-        }),
+    addSigner({
+      pubKey: credentialPubkey,
+      scheme: "WebAuthn",
+    }),
+    // TODO: remove genesis account and use a gas station
     addSigner(genesisPubKey),
     addData("ks", {
-      keys: process.env.WEBAUTHN_MOCK ? [genesisPubKey] : [credentialPubkey],
+      keys: [credentialPubkey],
       pred: "keys-any",
     }),
     setMeta({

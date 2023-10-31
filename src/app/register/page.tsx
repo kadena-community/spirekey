@@ -148,24 +148,22 @@ export default function Account(req: AccountProps) {
     const r = JSON.parse(Buffer.from(response, "base64").toString());
     const tx = {
       ...p,
-      sigs: process.env.WEBAUTHN_MOCK
-        ? p.sigs
-        : [
-            {
-              sig: JSON.stringify({
-                signature: Buffer.from(
-                  base64URLStringToBuffer(r.response.signature)
-                ).toString("base64"),
-                authenticatorData: Buffer.from(
-                  base64URLStringToBuffer(r.response.authenticatorData)
-                ).toString("base64"),
-                clientDataJSON: Buffer.from(
-                  base64URLStringToBuffer(r.response.clientDataJSON)
-                ).toString("base64"),
-              }),
-            },
-            ...p.sigs,
-          ],
+      sigs: [
+        {
+          sig: JSON.stringify({
+            signature: Buffer.from(
+              base64URLStringToBuffer(r.response.signature)
+            ).toString("base64"),
+            authenticatorData: Buffer.from(
+              base64URLStringToBuffer(r.response.authenticatorData)
+            ).toString("base64"),
+            clientDataJSON: Buffer.from(
+              base64URLStringToBuffer(r.response.clientDataJSON)
+            ).toString("base64"),
+          }),
+        },
+        ...p.sigs,
+      ],
     };
     l1Client.local(tx).then(async (res) => {
       if (res.result.status !== "success") {
@@ -177,7 +175,6 @@ export default function Account(req: AccountProps) {
     });
   }, [payload, response]);
 
-  console.log(process.env.WEBAUTHN_MOCK);
   const register = useCallback(async () => {
     const accName = (await getAccountName(account)) as unknown as string;
     const res = await startRegistration({
