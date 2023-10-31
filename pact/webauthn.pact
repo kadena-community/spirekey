@@ -84,7 +84,10 @@
         }]
       }
     )
-    (fung::create-account (get-account-name account) (get-account-guard account))
+    (try 
+      (fung::create-account (get-account-name account) (get-account-guard account))
+      (fung::details (get-account-name account))
+    )
   )
 
   (defun add-authentication-guard(
