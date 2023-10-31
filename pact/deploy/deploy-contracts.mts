@@ -1,10 +1,9 @@
 import {
   getFundSettings,
-  getGasStationAndDeliverySettings,
   getL2DeploymentSettings,
   getNameSpaceAndKeysetSettings,
 } from "./deploy-settings.mjs";
-import deploy from "./deploy.mjs";
+import deploy, { local } from "./deploy.mjs";
 
 const IS_UPGRADE = false;
 
@@ -12,8 +11,17 @@ const IS_UPGRADE = false;
 await deploy(getNameSpaceAndKeysetSettings());
 // Deploy L2 contracts on L1:14 and L2:2
 await deploy(getL2DeploymentSettings(IS_UPGRADE));
-// Deploy Gas Station and Delivery contracts on L2:2
-await deploy(getGasStationAndDeliverySettings(IS_UPGRADE));
 // Fund some coins to given accounts on L1:14
-// Fund gas station on L2:2
-await deploy(getFundSettings());
+const accounts = await Promise.all(
+  ["andy", "steven", "ashwin", "jesse"].map(async (name) => ({
+    name,
+    cname: await local(
+      `(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.get-account-name "${name}")`,
+      "http://localhost:8080",
+      "fast-development",
+      "14"
+    ),
+    fund: 100,
+  }))
+);
+await deploy(getFundSettings(accounts));
