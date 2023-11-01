@@ -199,7 +199,7 @@ export default function Account(req: AccountProps) {
     // currently only hex-from-cbor works
     const pubKey = await getPublicKey(res, "hex-from-cbor");
     const tx = await registerAccount({
-      account: "andy",
+      account,
       credentialId: res.id,
       credentialPubkey: pubKey,
     });

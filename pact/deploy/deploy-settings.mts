@@ -3,7 +3,7 @@ import { DeploySettings } from "./deploy.mjs";
 
 const l1: ValueOf<DeploySettings["hosts"]> = {
   chainIds: ["14"],
-  host: "http://localhost:8080",
+  host: "http://127.0.0.1:8080",
 };
 
 const hosts: DeploySettings["hosts"] = [l1];
