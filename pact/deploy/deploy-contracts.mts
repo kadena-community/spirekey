@@ -17,7 +17,7 @@ const accounts = await Promise.all(
     name,
     cname: await local(
       `(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.get-account-name "${name}")`,
-      "http://localhost:8080",
+      "http://127.0.0.1:8080",
       "fast-development",
       "14"
     ),
