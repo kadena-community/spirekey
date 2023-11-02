@@ -1,4 +1,5 @@
 import { Box, Button, Stack, Text } from "@kadena/react-ui";
+import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
 import { l1Client } from "../utils/client";
 import { uploadModuleTransaction } from "./pact.utils";
@@ -14,9 +15,12 @@ export const SubmitForm: FC<PreviewFormProps> = ({ values, onCancel }) => {
     success: boolean;
     message: string;
   } | null>(null);
+  const router = useRouter();
 
-  const onSendLocalResult = async () => {
-    const publicKey = values.publicKey;
+  const onSign = async () => {
+    router.push(
+      `http://localhost:1337/sign?payload=${values.payload}&cid=${values.cid}&returnUrl=http://localhost:1337/submit`
+    );
   };
 
   console.log(values);
@@ -81,7 +85,7 @@ export const SubmitForm: FC<PreviewFormProps> = ({ values, onCancel }) => {
         </Text>
       </Stack>
       <Stack direction="row" margin="$md" justifyContent="flex-start">
-        <Button onClick={onSendLocalResult}>Upload</Button>
+        <Button onClick={onSign}>Sign</Button>
         <Button onClick={onCancel}>Back</Button>
       </Stack>
     </div>

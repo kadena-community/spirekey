@@ -33,6 +33,8 @@ const FORM_DEFAULT = {
   capabilities: "",
   senderAccount: "",
   result: "",
+  payload: "",
+  cid: "",
 };
 export type PreviewFormValues = typeof FORM_DEFAULT;
 
@@ -82,6 +84,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
         devices.map((d: any) => d["credential-pubkey"])
       );
       setValue("senderAccount", name);
+      setValue("cid", devices[0]["credential-id"]);
     } catch (error) {
       console.error(error);
     }
@@ -133,6 +136,10 @@ export const PreviewForm: FC<PreviewFormProps> = ({
           .filter(Boolean),
       }),
       createTransaction,
+      (tx) => {
+        data.payload = Buffer.from(JSON.stringify(tx)).toString("base64");
+        return tx;
+      },
       (tx) =>
         l1Client.local(tx, { preflight: false, signatureVerification: false })
     )({});
@@ -145,7 +152,11 @@ export const PreviewForm: FC<PreviewFormProps> = ({
     }
 
     // Store data to be able to submit the transaction without changes
-    onSubmitForm({ ...data, result: JSON.stringify(result, null, 2) });
+    onSubmitForm({
+      ...data,
+      payload: data.payload,
+      result: JSON.stringify(result, null, 2),
+    });
   };
 
   return (
