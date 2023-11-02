@@ -19,7 +19,7 @@ export const SubmitForm: FC<PreviewFormProps> = ({ values, onCancel }) => {
 
   const onSign = async () => {
     router.push(
-      `http://localhost:1337/sign?payload=${values.payload}&cid=${values.cid}&returnUrl=http://localhost:1337/submit`
+      `http://localhost:1337/sign?payload=${values.payload}&cid=${values.cid}&returnUrl=http://localhost:1337/pact/submit`
     );
   };
 
