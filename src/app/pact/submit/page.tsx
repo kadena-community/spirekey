@@ -39,15 +39,23 @@ export default function Submit({ searchParams }: SearchParams) {
             ...p.sigs,
           ].filter(Boolean),
     };
-    l1Client.local(tx).then(async (res) => {
-      if (res.result.status !== "success") {
-        console.error(res);
-        throw new Error("Transaction failed");
-      }
-      const txRes = await l1Client.submit(tx);
-      const result = await l1Client.listen(txRes);
-      setResult(JSON.stringify(result, null, 2));
-    });
+    l1Client
+      .local(tx)
+      .then(async (res) => {
+        if (res.result.status !== "success") {
+          debugger;
+          console.error(res);
+          setResult(JSON.stringify(res, null, 2));
+          throw new Error("Transaction failed");
+        }
+        const txRes = await l1Client.submit(tx);
+        const result = await l1Client.listen(txRes);
+        setResult(JSON.stringify(result, null, 2));
+      })
+      .catch((err) => {
+        console.log(err);
+        setResult(err.toString());
+      });
   }, []);
 
   return (

@@ -46,7 +46,7 @@ export const uploadModuleTransaction = ({
       senderAccount,
     }),
     setNetworkId(networkdId),
-    addSigner(publicKey, (withCap) =>
+    addSigner({ pubKey: publicKey, scheme: "WebAuthn" }, (withCap) =>
       capabilities.map((cap: string) => {
         const [name, ...args] = cap.replace(/^\(|\)$/g, "").split(" ");
         return withCap(name, ...args.map(JSON.parse as any));
