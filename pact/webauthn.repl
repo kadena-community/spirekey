@@ -146,3 +146,35 @@
   )
 )
 (commit-tx)
+
+(env-data 
+  { "tx-type": "exec"
+  , "exec-code": ["(+ 1 1)"]
+  }
+)
+(env-sigs [])
+(begin-tx "Gas payment tests")
+(use n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn)
+(test-capability (coin.GAS))
+(expect-failure
+  "GAS_PAYER Cap not granted"
+  "None of the guards passed"
+  (test-capability (GAS_PAYER "alice" 1 1.0))
+)
+
+(env-sigs 
+  [{ 'key : "a33cea33cea33cea33cea33cea33cea33cea33cea33cea33cea33cea33cea33c"
+   , 'caps : [
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.TRANSFER
+      "alice"
+      "k:b0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb0bb"
+      100.0
+    )
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.GAS_PAYER "alice" 1 1.0)
+   ]
+  }]
+)
+(test-capability (coin.GAS))
+(test-capability (GAS_PAYER "alice" 1 1.0))
+(commit-tx)
+

@@ -9,6 +9,8 @@
       (at 'registration-guard (get-account account))
     )
   ]
+  (implements gas-payer-v1)
+
   (use fungible-v2)
 
   (defconst GOVERNANCE_KEYSET (read-string 'webauthn-keyset-name))
@@ -127,6 +129,17 @@
       (install-capability (fung::TRANSFER (get-account-name sender) receiver amount))
       (fung::transfer (get-account-name sender) receiver amount)
     )
+  )
+
+  ;;;;;;;;;;;;;;;
+  ; GAS PAYMENT ;
+  ;;;;;;;;;;;;;;;
+  (defcap GAS_PAYER:bool(user:string limit:integer price:decimal)
+    (compose-capability (AUTHENTICATE user))
+  )
+
+  (defun create-gas-payer-guard:guard()
+    (create-capability-guard (GAS_PAYER))
   )
 )
 
