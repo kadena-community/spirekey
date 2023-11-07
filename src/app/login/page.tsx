@@ -21,6 +21,7 @@ type LoginProps = {
 type Account = {
   name: string;
   account: string;
+  balance: string;
   devices: Device[];
 };
 
@@ -49,6 +50,7 @@ export default function Login({ searchParams }: LoginProps) {
             name,
             account: account.name,
             devices: account.devices,
+            balance: account.balance,
           };
         });
       })
@@ -59,7 +61,7 @@ export default function Login({ searchParams }: LoginProps) {
       });
   }, []);
   return (
-    <Stack direction="column" alignItems="center" marginY="$lg">
+    <Stack direction="column" alignItems="center" paddingY="$lg">
       <Box>
         <ContentHeader
           description={`Which account do you want to use to identify on ${searchParams.returnUrl}?`}
@@ -86,7 +88,6 @@ const AccountSelector = ({
   accounts: Account[];
   account: Account | null;
   device: Device | null;
-  devices: Device[];
   returnUrl: string;
 }) => {
   if (!account || !device)
@@ -117,7 +118,7 @@ const AccountSelector = ({
           },
           {
             label: "Balance",
-            value: "0.000000",
+            value: account.balance,
           },
         ]}
         helperText="This is the account you will use to login."
