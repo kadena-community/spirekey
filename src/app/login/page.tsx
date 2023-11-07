@@ -21,6 +21,7 @@ type Account = {
   cid: string;
   name: string;
   account: string;
+  publicKey: string;
   balance: string;
 };
 
@@ -93,12 +94,19 @@ const AccountSelector = ({
         ]}
         helperText="This is the account you will use to login."
       />
-      <Button
-        as="a"
-        href={`${returnUrl}?cid=${account.cid}&name=${account.name}&account=${account.account}`}
-      >
-        Login
-      </Button>
+      <Stack direction="row" gap="$xl" justifyContent="flex-end" marginY="$md">
+        <Button as="a" href={returnUrl} variant="alternative">
+          Cancel
+        </Button>
+        <Button
+          as="a"
+          href={`${returnUrl}?response=${Buffer.from(
+            JSON.stringify(account)
+          ).toString("base64")}`}
+        >
+          Login
+        </Button>
+      </Stack>
     </>
   );
 };

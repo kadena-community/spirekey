@@ -204,6 +204,16 @@ export default function Account(req: AccountProps) {
       credentialPubkey: pubKey,
     });
 
+    const accounts = localStorage.getItem("accounts") || "[]";
+    const accs = JSON.parse(accounts);
+    localStorage.setItem(
+      "accounts",
+      JSON.stringify([
+        ...accs,
+        { name: accName, account, cid: res.id, publicKey: pubKey },
+      ])
+    );
+
     router.push(
       `/sign?payload=${Buffer.from(JSON.stringify(tx)).toString(
         "base64"
