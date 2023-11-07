@@ -10,6 +10,7 @@ import {
   TrackerCard,
 } from "@kadena/react-ui";
 import { useEffect, useState } from "react";
+import { getAccount } from "../utils/account";
 
 type LoginProps = {
   searchParams: {
@@ -18,22 +19,44 @@ type LoginProps = {
 };
 
 type Account = {
-  cid: string;
   name: string;
   account: string;
-  publicKey: string;
-  balance: string;
+  devices: Device[];
+};
+
+type Device = {
+  ["credential-id"]: string;
+  ["credential-pubkey"]: string;
 };
 
 export default function Login({ searchParams }: LoginProps) {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [account, setAccount] = useState<Account | null>(null);
+  const [device, setDevice] = useState<Device | null>(null);
   useEffect(() => {
     const accounts = localStorage.getItem("accounts");
     if (!accounts) return;
     const accs = JSON.parse(accounts);
-    setAccounts(accs);
-    setAccount(accs[0]);
+    Promise.all(
+      accs.map(async (acc: string) => ({
+        name: acc,
+        account: await getAccount(acc),
+      }))
+    )
+      .then((accs) => {
+        return accs.map(({ name, account }) => {
+          return {
+            name,
+            account: account.name,
+            devices: account.devices,
+          };
+        });
+      })
+      .then((accs) => {
+        setAccounts(accs);
+        setAccount(accs[0]);
+        if (accs[0].devices.length === 1) setDevice(accs[0].devices[0]);
+      });
   }, []);
   return (
     <Stack direction="column" alignItems="center" marginY="$lg">
@@ -47,6 +70,7 @@ export default function Login({ searchParams }: LoginProps) {
           accounts={accounts}
           account={account}
           returnUrl={searchParams.returnUrl}
+          device={device}
         />
       </Box>
     </Stack>
@@ -56,13 +80,17 @@ export default function Login({ searchParams }: LoginProps) {
 const AccountSelector = ({
   accounts,
   account,
+  device,
   returnUrl,
 }: {
   accounts: Account[];
   account: Account | null;
+  device: Device | null;
+  devices: Device[];
   returnUrl: string;
 }) => {
-  if (!account) return <Text>No account found, please register first.</Text>;
+  if (!account || !device)
+    return <Text>No account found, please register first.</Text>;
   return (
     <>
       <SelectField
@@ -70,7 +98,7 @@ const AccountSelector = ({
         selectProps={{ id: "account", ariaLabel: "Select your account" }}
       >
         {accounts.map((account) => (
-          <option value={account.account} key={account.cid}>
+          <option value={account.account} key={account.account}>
             {account.name}
           </option>
         ))}
@@ -89,11 +117,29 @@ const AccountSelector = ({
           },
           {
             label: "Balance",
-            value: account.balance,
+            value: "0.000000",
           },
         ]}
         helperText="This is the account you will use to login."
       />
+      {account.devices.length > 1 && (
+        <SelectField
+          label="device"
+          selectProps={{
+            id: "device",
+            ariaLabel: "Select which device you'd like to use",
+          }}
+        >
+          {account.devices.map((device) => (
+            <option
+              value={device["credential-id"]}
+              key={device["credential-id"]}
+            >
+              {device["credential-id"]}
+            </option>
+          ))}
+        </SelectField>
+      )}
       <Stack direction="row" gap="$xl" justifyContent="flex-end" marginY="$md">
         <Button as="a" href={returnUrl} variant="alternative">
           Cancel
@@ -101,7 +147,12 @@ const AccountSelector = ({
         <Button
           as="a"
           href={`${returnUrl}?response=${Buffer.from(
-            JSON.stringify(account)
+            JSON.stringify({
+              name: account.name,
+              account: account.account,
+              cid: device["credential-id"],
+              publicKey: device["credential-pubkey"],
+            })
           ).toString("base64")}`}
         >
           Login

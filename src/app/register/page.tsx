@@ -206,13 +206,7 @@ export default function Account(req: AccountProps) {
 
     const accounts = localStorage.getItem("accounts") || "[]";
     const accs = JSON.parse(accounts);
-    localStorage.setItem(
-      "accounts",
-      JSON.stringify([
-        ...accs,
-        { name: accName, account, cid: res.id, publicKey: pubKey },
-      ])
-    );
+    localStorage.setItem("accounts", JSON.stringify([...accs, accName]));
 
     router.push(
       `/sign?payload=${Buffer.from(JSON.stringify(tx)).toString(
