@@ -89,7 +89,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
           <Account account={account} />
         </Box>
       </Stack>
-      <Grid.Root columns={{ sm: 1, md: 2, lg: 4 }} gap="$lg" margin="$lg">
+      <Grid.Root columns={{ sm: 1, md: 2, lg: 2 }} gap="$lg" margin="$lg">
         {cookies.map(({ description, name, image, price }) => (
           <Grid.Item key={name}>
             <Card fullWidth>

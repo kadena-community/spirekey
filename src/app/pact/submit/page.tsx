@@ -1,7 +1,7 @@
 "use client";
 
 import { l1Client } from "@/app/utils/client";
-import { Text } from "@kadena/react-ui";
+import { ContentHeader, Stack, Text, TrackerCard } from "@kadena/react-ui";
 import { base64URLStringToBuffer } from "@simplewebauthn/browser";
 import { useEffect, useState } from "react";
 
@@ -13,7 +13,8 @@ type SearchParams = {
 };
 export default function Submit({ searchParams }: SearchParams) {
   const { payload, response } = searchParams;
-  const [result, setResult] = useState<string>("");
+  const [result, setResult] = useState<any>({});
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     if (!payload || !response) return;
     const p = JSON.parse(Buffer.from(payload, "base64").toString());
@@ -45,22 +46,50 @@ export default function Submit({ searchParams }: SearchParams) {
         if (res.result.status !== "success") {
           debugger;
           console.error(res);
-          setResult(JSON.stringify(res, null, 2));
+          setResult(res);
           throw new Error("Transaction failed");
         }
         const txRes = await l1Client.submit(tx);
         const result = await l1Client.listen(txRes);
-        setResult(JSON.stringify(result, null, 2));
+        setResult(result);
       })
       .catch((err) => {
         console.log(err);
-        setResult(err.toString());
+        setResult({
+          status: "Could not submit transaction",
+          data: err.toString(),
+        });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
   return (
-    <Text as="code" variant="code">
-      {result}
-    </Text>
+    <Stack direction="column" gap="$md" alignItems="center" margin="$xl">
+      <ContentHeader
+        heading="Submitting Transaction"
+        description="Your transaction is being submitted to the network."
+        icon="Earth"
+      />
+      {isLoading ? (
+        <Text variant="p">Loading...</Text>
+      ) : (
+        <TrackerCard
+          labelValues={[
+            {
+              label: "Status",
+              value: result?.result?.status || "Failed",
+            },
+            {
+              label: "Data",
+              value:
+                JSON.stringify(result?.result?.data, null, 2) ||
+                "Something went wrong...",
+            },
+          ]}
+        />
+      )}
+    </Stack>
   );
 }

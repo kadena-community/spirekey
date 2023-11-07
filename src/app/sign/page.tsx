@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { Button, Stack, Text } from "@kadena/react-ui";
+import { Button, Stack, Text, TrackerCard } from "@kadena/react-ui";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { useRouter } from "next/navigation";
 
@@ -11,6 +11,30 @@ type WalletProps = {
     returnUrl: string;
     cid: string;
   };
+};
+
+const getLabels = (signers: any[]) => {
+  return signers.flatMap((signer) => {
+    return signer.clist
+      .flatMap((c: any) => [
+        {
+          label: "Capability",
+          value: c.name,
+        },
+        {
+          label: "Values",
+          value: c.args
+            .map((x: any) => {
+              console.log(x);
+              if (x?.decimal) return x.decimal;
+              if (x?.int) return x.int;
+              return x;
+            })
+            .join(", "),
+        },
+      ])
+      .filter((x: any) => x.value);
+  });
 };
 
 export default function Wallet(req: WalletProps) {
@@ -33,11 +57,18 @@ export default function Wallet(req: WalletProps) {
     );
   }, [data, router, startAuthentication]);
   return (
-    <Stack direction="column" margin="$3">
+    <Stack direction="column" gap="$md" alignItems="center" margin="$xl">
       <h1>Wallet</h1>
-      <Text variant="code" as="code">
-        {txPretty}
-      </Text>
+      <TrackerCard
+        icon="ManageKda"
+        labelValues={[
+          {
+            label: "Website",
+            value: new URL(returnUrl).hostname,
+          },
+          ...getLabels(txData.signers),
+        ]}
+      />
       <Button onClick={sign}>Sign</Button>
     </Stack>
   );
