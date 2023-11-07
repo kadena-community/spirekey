@@ -181,7 +181,6 @@ export default function Account(req: AccountProps) {
         },
       ],
       authenticatorSelection: {
-        residentKey: "required",
         requireResidentKey: true,
         userVerification: "preferred",
       },
@@ -206,7 +205,7 @@ export default function Account(req: AccountProps) {
 
     const accounts = localStorage.getItem("accounts") || "[]";
     const accs = JSON.parse(accounts);
-    localStorage.setItem("accounts", JSON.stringify([...accs, accName]));
+    localStorage.setItem("accounts", JSON.stringify([...accs, account]));
 
     router.push(
       `/sign?payload=${Buffer.from(JSON.stringify(tx)).toString(

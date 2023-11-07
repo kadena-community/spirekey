@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Button,
@@ -9,7 +11,10 @@ import {
   Text,
 } from "@kadena/react-ui";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 import cookieImg from "./chocolate-chip-cookie.jpg";
+import { createOrder } from "./order";
 
 type WebshopProps = {
   searchParams: {
@@ -49,6 +54,27 @@ export default function Webshop({ searchParams }: WebshopProps) {
       image: cookieImg,
     },
   ];
+  const router = useRouter();
+  const onOrder = useCallback(
+    ({ price }: { price: number }) =>
+      async () => {
+        if (!account) return;
+        const order = await createOrder({
+          account: account.account,
+          name: account.name,
+          price,
+          signerPubKey: account.publicKey,
+        });
+        router.push(
+          `http://localhost:1337/sign?payload=${Buffer.from(
+            JSON.stringify(order)
+          ).toString("base64")}&cid=${
+            account.cid
+          }&returnUrl=http://webshop.local:1337/pact/submit`
+        );
+      },
+    [response]
+  );
   return (
     <Stack direction="column" alignItems="center" paddingY="$lg">
       <Stack direction="row" gap="$lg">
@@ -94,10 +120,9 @@ export default function Webshop({ searchParams }: WebshopProps) {
                     {price.toFixed(2)} KDA
                   </Text>
                   <Button
-                    as="a"
                     color="primary"
-                    href="http://localhost:1337/sign?returnUrl=http://webshop.local:1337/example/webshop"
                     title="Shop now"
+                    onClick={onOrder({ price })}
                   >
                     Buy now
                   </Button>

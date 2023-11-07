@@ -9,7 +9,7 @@ import {
   Text,
   TrackerCard,
 } from "@kadena/react-ui";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getAccount } from "../utils/account";
 
 type LoginProps = {
@@ -34,6 +34,15 @@ export default function Login({ searchParams }: LoginProps) {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [account, setAccount] = useState<Account | null>(null);
   const [device, setDevice] = useState<Device | null>(null);
+  const onAccountChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const acc = accounts.find((acc) => acc.account === event.target.value);
+      if (!acc) return;
+      setAccount(acc);
+      setDevice(acc.devices[0]);
+    },
+    [setAccount, accounts]
+  );
   useEffect(() => {
     const accounts = localStorage.getItem("accounts");
     if (!accounts) return;
@@ -73,6 +82,7 @@ export default function Login({ searchParams }: LoginProps) {
           account={account}
           returnUrl={searchParams.returnUrl}
           device={device}
+          onChange={onAccountChange}
         />
       </Box>
     </Stack>
@@ -84,11 +94,13 @@ const AccountSelector = ({
   account,
   device,
   returnUrl,
+  onChange,
 }: {
   accounts: Account[];
   account: Account | null;
   device: Device | null;
   returnUrl: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }) => {
   if (!account || !device)
     return <Text>No account found, please register first.</Text>;
@@ -96,7 +108,11 @@ const AccountSelector = ({
     <>
       <SelectField
         label="account"
-        selectProps={{ id: "account", ariaLabel: "Select your account" }}
+        selectProps={{
+          id: "account",
+          ariaLabel: "Select your account",
+          onChange,
+        }}
       >
         {accounts.map((account) => (
           <option value={account.account} key={account.account}>
