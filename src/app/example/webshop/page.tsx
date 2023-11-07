@@ -9,7 +9,6 @@ import {
   Text,
 } from "@kadena/react-ui";
 import Image from "next/image";
-import { useState } from "react";
 import cookieImg from "./chocolate-chip-cookie.jpg";
 
 type WebshopProps = {
@@ -36,6 +35,20 @@ const decodeAccount = (response: string) => {
 export default function Webshop({ searchParams }: WebshopProps) {
   const { response } = searchParams;
   const account = decodeAccount(response);
+  const cookies = [
+    {
+      price: 6.55,
+      name: "Tripple Chocolate chip",
+      description: "More chocolate!",
+      image: cookieImg,
+    },
+    {
+      price: 5.55,
+      name: "Chocolate chip",
+      description: "Cookies and chocolate!",
+      image: cookieImg,
+    },
+  ];
   return (
     <Stack direction="column" alignItems="center" paddingY="$lg">
       <Stack direction="row" gap="$lg">
@@ -51,84 +64,48 @@ export default function Webshop({ searchParams }: WebshopProps) {
         </Box>
       </Stack>
       <Grid.Root columns={{ sm: 1, md: 2, lg: 4 }} gap="$lg" margin="$lg">
-        <Grid.Item>
-          <Card fullWidth>
-            <Image
-              src={cookieImg}
-              alt="Chocolate chip cookie"
-              width={200}
-              height={200}
-              sizes="100vw"
-              style={{
-                width: "100%",
-                height: "auto",
-                borderRadius: "1rem",
-              }}
-            />
-            <Box marginY="$5">
-              <Heading as="h3">Tripple Chocolate chip</Heading>
-              <Text>More chocolate!</Text>
-              <Stack
-                direction="row"
-                gap="$md"
-                justifyContent="space-between"
-                alignItems="center"
-                marginTop="$4"
-              >
-                <Text as="span" bold font="mono" size="lg" color="emphasize">
-                  6.55 KDA
-                </Text>
-                <Button
-                  as="a"
-                  color="primary"
-                  href="http://localhost:1337/sign?returnUrl=http://webshop.local:1337/example/webshop"
-                  title="Shop now"
+        {cookies.map(({ description, name, image, price }) => (
+          <Grid.Item key={name}>
+            <Card fullWidth>
+              <Image
+                src={image}
+                priority
+                alt="Chocolate chip cookie"
+                width={200}
+                height={200}
+                sizes="100vw"
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  borderRadius: "1rem",
+                }}
+              />
+              <Box marginY="$5">
+                <Heading as="h3">{name}</Heading>
+                <Text>{description}</Text>
+                <Stack
+                  direction="row"
+                  gap="$md"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  marginTop="$4"
                 >
-                  Buy now
-                </Button>
-              </Stack>
-            </Box>
-          </Card>
-        </Grid.Item>
-        <Grid.Item>
-          <Card fullWidth>
-            <Image
-              src={cookieImg}
-              alt="Chocolate chip cookie"
-              width={200}
-              height={200}
-              sizes="100vw"
-              style={{
-                width: "100%",
-                height: "auto",
-                borderRadius: "1rem",
-              }}
-            />
-            <Box marginY="$5">
-              <Heading as="h3">Chocolate chip</Heading>
-              <Text>Cookies and chocolate!</Text>
-              <Stack
-                direction="row"
-                gap="$md"
-                justifyContent="space-between"
-                alignItems="center"
-                marginTop="$4"
-              >
-                <Text as="span" bold font="mono" size="lg" color="emphasize">
-                  5.55 KDA
-                </Text>
-                <Button
-                  as="a"
-                  color="primary"
-                  href="http://localhost:1337/sign?returnUrl=http://webshop.local:1337/example/webshop"
-                  title="Shop now"
-                >
-                  Buy now
-                </Button>
-              </Stack>
-            </Box>
-          </Card>
-        </Grid.Item>
+                  <Text as="span" bold font="mono" size="lg" color="emphasize">
+                    {price.toFixed(2)} KDA
+                  </Text>
+                  <Button
+                    as="a"
+                    color="primary"
+                    href="http://localhost:1337/sign?returnUrl=http://webshop.local:1337/example/webshop"
+                    title="Shop now"
+                  >
+                    Buy now
+                  </Button>
+                </Stack>
+              </Box>
+            </Card>
+          </Grid.Item>
+        ))}
       </Grid.Root>
     </Stack>
   );
