@@ -68,9 +68,9 @@ export default function Webshop({ searchParams }: WebshopProps) {
         router.push(
           `http://localhost:1337/sign?payload=${Buffer.from(
             JSON.stringify(order)
-          ).toString("base64")}&cid=${
-            account.cid
-          }&returnUrl=http://webshop.local:1337/example/webshop/submit`
+          ).toString("base64")}&cid=${account.cid}&returnUrl=http://${
+            window.location.hostname
+          }:1337/example/webshop/submit`
         );
       },
     [response]
@@ -141,7 +141,7 @@ const Account = ({ account }: { account: Account | null }) => {
     return (
       <Button
         as="a"
-        href="http://localhost:1337/login?returnUrl=http://webshop.local:1337/example/webshop"
+        href={`http://localhost:1337/login?returnUrl=http://${window.location.hostname}:1337/example/webshop`}
         icon="Account"
       >
         Login
