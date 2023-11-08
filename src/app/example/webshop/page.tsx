@@ -66,7 +66,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
           signerPubKey: account.publicKey,
         });
         router.push(
-          `http://localhost:1337/sign?payload=${Buffer.from(
+          `http://${process.env.VERCEL_URL}/sign?payload=${Buffer.from(
             JSON.stringify(order)
           ).toString("base64")}&cid=${account.cid}&returnUrl=http://${
             window.location.hostname
@@ -137,13 +137,15 @@ export default function Webshop({ searchParams }: WebshopProps) {
 }
 
 const Account = ({ account }: { account: Account | null }) => {
+  const router = useRouter();
+  const onLogin = useCallback(() => {
+    router.push(
+      `http://${process.env.VERCEL_URL}/login?returnUrl=http://${window.location.hostname}:1337/example/webshop`
+    );
+  }, []);
   if (!account)
     return (
-      <Button
-        as="a"
-        href={`http://localhost:1337/login?returnUrl=http://${window.location.hostname}:1337/example/webshop`}
-        icon="Account"
-      >
+      <Button icon="Account" onClick={onLogin}>
         Login
       </Button>
     );

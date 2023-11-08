@@ -1,8 +1,6 @@
 import { Box, Button, Stack, Text } from "@kadena/react-ui";
 import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
-import { l1Client } from "../utils/client";
-import { uploadModuleTransaction } from "./pact.utils";
 import { PreviewFormValues } from "./PreviewForm";
 
 type PreviewFormProps = {
@@ -11,19 +9,14 @@ type PreviewFormProps = {
 };
 
 export const SubmitForm: FC<PreviewFormProps> = ({ values, onCancel }) => {
-  const [result, setResult] = useState<{
-    success: boolean;
-    message: string;
-  } | null>(null);
   const router = useRouter();
 
   const onSign = async () => {
     router.push(
-      `http://localhost:1337/sign?payload=${values.payload}&cid=${values.cid}&returnUrl=http://localhost:1337/pact/submit`
+      `//${process.env.VERCEL_URL}/sign?payload=${values.payload}&cid=${values.cid}&returnUrl=http://localhost:1337/pact/submit`
     );
   };
 
-  console.log(values);
   return (
     <div>
       <Stack
