@@ -70,7 +70,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
             JSON.stringify(order)
           ).toString("base64")}&cid=${
             account.cid
-          }&returnUrl=http://webshop.local:1337/pact/submit`
+          }&returnUrl=http://webshop.local:1337/example/webshop/submit`
         );
       },
     [response]
