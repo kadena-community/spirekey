@@ -46,19 +46,25 @@ export const uploadModuleTransaction = ({
       senderAccount,
     }),
     setNetworkId(networkdId),
-    addSigner({ pubKey: publicKey, scheme: "WebAuthn" }, (withCap) =>
-      capabilities.map((cap: string) => {
-        const [name, ...args] = cap.replace(/^\(|\)$/g, "").split(" ");
-        return withCap(
-          name,
-          ...args.map((v) => {
-            const resValue = JSON.parse(v);
-            if (isNaN(resValue)) return resValue;
-            if (v.includes(".")) return resValue;
-            return { int: resValue };
-          })
-        );
-      })
+    addSigner(
+      {
+        pubKey: publicKey,
+        // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
+        scheme: "WebAuthn",
+      },
+      (withCap) =>
+        capabilities.map((cap: string) => {
+          const [name, ...args] = cap.replace(/^\(|\)$/g, "").split(" ");
+          return withCap(
+            name,
+            ...args.map((v) => {
+              const resValue = JSON.parse(v);
+              if (isNaN(resValue)) return resValue;
+              if (v.includes(".")) return resValue;
+              return { int: resValue };
+            })
+          );
+        })
     ),
     (cmd) => {
       cmd.payload.exec.data = data;
