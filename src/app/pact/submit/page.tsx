@@ -76,6 +76,7 @@ export default function Submit({ searchParams }: SearchParams) {
         <Text variant="p">Loading...</Text>
       ) : (
         <TrackerCard
+          icon="Chainweb"
           labelValues={[
             {
               label: "Status",
