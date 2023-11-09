@@ -1,5 +1,6 @@
 "use client";
 
+import { getReturnUrl } from "@/utils/url";
 import {
   Box,
   Button,
@@ -68,9 +69,9 @@ export default function Webshop({ searchParams }: WebshopProps) {
         router.push(
           `http://${process.env.VERCEL_URL}/sign?payload=${Buffer.from(
             JSON.stringify(order)
-          ).toString("base64")}&cid=${account.cid}&returnUrl=http://${
-            window.location.hostname
-          }:1337/example/webshop/submit`
+          ).toString("base64")}&cid=${account.cid}&returnUrl=${getReturnUrl(
+            "/example/webshop/submit"
+          )}`
         );
       },
     [response]
@@ -140,7 +141,9 @@ const Account = ({ account }: { account: Account | null }) => {
   const router = useRouter();
   const onLogin = useCallback(() => {
     router.push(
-      `http://${process.env.VERCEL_URL}/login?returnUrl=http://${window.location.hostname}:1337/example/webshop`
+      `http://${process.env.VERCEL_URL}/login?returnUrl=${getReturnUrl(
+        "/example/webshop"
+      )}`
     );
   }, []);
   if (!account)

@@ -15,6 +15,7 @@ type WalletProps = {
 
 const getLabels = (signers: any[]) => {
   return signers.flatMap((signer) => {
+    if (!Array.isArray(signer.clist)) return [];
     return signer.clist
       .flatMap((c: any) => [
         {

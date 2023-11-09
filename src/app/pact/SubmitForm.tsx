@@ -1,6 +1,7 @@
+import { getReturnUrl } from "@/utils/url";
 import { Box, Button, Stack, Text } from "@kadena/react-ui";
 import { useRouter } from "next/navigation";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { PreviewFormValues } from "./PreviewForm";
 
 type PreviewFormProps = {
@@ -13,7 +14,9 @@ export const SubmitForm: FC<PreviewFormProps> = ({ values, onCancel }) => {
 
   const onSign = async () => {
     router.push(
-      `//${process.env.VERCEL_URL}/sign?payload=${values.payload}&cid=${values.cid}&returnUrl=http://localhost:1337/pact/submit`
+      `//${process.env.VERCEL_URL}/sign?payload=${values.payload}&cid=${
+        values.cid
+      }&returnUrl=${getReturnUrl("pact/submit")}`
     );
   };
 

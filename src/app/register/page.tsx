@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import cbor from "cbor";
 import cosekey from "parse-cosekey";
 import { l1Client } from "../utils/client";
+import { getReturnUrl } from "@/utils/url";
 
 type AccountProps = {
   searchParams: {
@@ -210,7 +211,7 @@ export default function Account(req: AccountProps) {
     router.push(
       `/sign?payload=${Buffer.from(JSON.stringify(tx)).toString(
         "base64"
-      )}&returnUrl=/register`
+      )}&returnUrl=${getReturnUrl("/register")}`
     );
   }, [account]);
   return (
