@@ -44,11 +44,10 @@ export default function Wallet(req: WalletProps) {
   const data = payload ? Buffer.from(payload, "base64").toString() : null;
   const tx = JSON.parse(data ?? "{}");
   const txData = JSON.parse(tx.cmd || "{}");
-  const txPretty = JSON.stringify(txData.signers, null, 2);
   const sign = useCallback(async () => {
     const res = await startAuthentication({
       challenge: tx.hash,
-      rpId: "localhost",
+      rpId: window.location.hostname,
       allowCredentials: cid ? [{ id: cid, type: "public-key" }] : undefined,
     });
     router.push(

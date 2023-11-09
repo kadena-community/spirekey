@@ -173,7 +173,7 @@ export default function Account(req: AccountProps) {
       challenge: bufferToBase64URLString(Buffer.from("some-random-string")),
       rp: {
         name: "Kadena WebAuthN Wallet",
-        id: "localhost",
+        id: window.location.hostname,
       },
       pubKeyCredParams: [
         {
