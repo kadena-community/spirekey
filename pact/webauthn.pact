@@ -126,8 +126,8 @@
 
   (defun transfer(fung:module{fungible-v2} sender:string receiver:string amount:decimal)
     (with-capability (TRANSFER sender receiver amount)
-      (install-capability (fung::TRANSFER (get-account-name sender) receiver amount))
-      (fung::transfer (get-account-name sender) receiver amount)
+      (install-capability (fung::TRANSFER (get-account-name sender) (get-account-name receiver) amount))
+      (fung::transfer-create (get-account-name sender) (get-account-name receiver) (get-account-guard receiver) amount)
     )
   )
 

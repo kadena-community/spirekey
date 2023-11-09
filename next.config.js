@@ -4,8 +4,8 @@ const withVanillaExtract = createVanillaExtractPlugin();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ["@kadena/react-ui"],
-  experimental: {
-    appDir: true,
+  env: {
+    VERCEL_URL: process.env.VERCEL_URL,
   },
 };
 

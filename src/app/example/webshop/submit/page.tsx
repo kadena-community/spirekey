@@ -23,17 +23,15 @@ export default function Submit({ searchParams }: SearchParams) {
         <Text variant="p">Loading...</Text>
       ) : (
         <TrackerCard
-          icon="Chainweb"
+          icon="Concepts"
           labelValues={[
             {
               label: "Status",
               value: result?.result?.status || "Failed",
             },
             {
-              label: "Data",
-              value:
-                JSON.stringify(result?.result?.data, null, 2) ||
-                "Something went wrong...",
+              label: "Thank you for your purchase!",
+              value: `Your cookie is on the way!`,
             },
           ]}
         />

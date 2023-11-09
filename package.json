@@ -8,15 +8,19 @@
     "start": "next start",
     "lint": "next lint",
     "generate": "npx pactjs contract-generate --file=\"./pact/webauthn.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
-    "deploy": "tsx pact/deploy/deploy-contracts.mts"
+    "deploy": "tsx pact/deploy/deploy-contracts.mts",
+    "update": "tsx pact/deploy/update-contracts.mts",
+    "postinstall": "npx pactjs contract-generate --file=\"./pact/root/fungible-v2.pact\" --file=\"./pact/root/gas-payer-v1.pact\" --file=\"./pact/root/fungible-xchain-v1.pact\" --file=\"./pact/root/coin.pact\" --file=\"./pact/webauthn.pact\" --file=\"./pact/l2-coin.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9"
   },
   "dependencies": {
     "@kadena/client": "^1.4.0",
     "@kadena/cryptography-utils": "^0.3.8",
+    "@kadena/pactjs": "^0.4.1",
     "@kadena/react-ui": "file:.yalc/@kadena/react-ui",
     "@simplewebauthn/browser": "^8.3.1",
     "@vanilla-extract/next-plugin": "^2.3.1",
     "cbor": "^9.0.1",
+    "encoding": "^0.1.13",
     "next": "13.5.5",
     "next-themes": "^0.2.1",
     "parse-cosekey": "^1.0.2",

@@ -86,6 +86,7 @@ const registerAccountCommand = ({
     ),
     addSigner({
       pubKey: credentialPubkey,
+      // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
       scheme: "WebAuthn",
     }),
     // TODO: remove genesis account and use a gas station

@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import cbor from "cbor";
 import cosekey from "parse-cosekey";
 import { l1Client } from "../utils/client";
+import { getReturnUrl } from "@/utils/url";
 
 type AccountProps = {
   searchParams: {
@@ -172,7 +173,7 @@ export default function Account(req: AccountProps) {
       challenge: bufferToBase64URLString(Buffer.from("some-random-string")),
       rp: {
         name: "Kadena WebAuthN Wallet",
-        id: "localhost",
+        id: window.location.hostname,
       },
       pubKeyCredParams: [
         {
@@ -181,7 +182,6 @@ export default function Account(req: AccountProps) {
         },
       ],
       authenticatorSelection: {
-        residentKey: "required",
         requireResidentKey: true,
         userVerification: "preferred",
       },
@@ -204,10 +204,14 @@ export default function Account(req: AccountProps) {
       credentialPubkey: pubKey,
     });
 
+    const accounts = localStorage.getItem("accounts") || "[]";
+    const accs = JSON.parse(accounts);
+    localStorage.setItem("accounts", JSON.stringify([...accs, account]));
+
     router.push(
       `/sign?payload=${Buffer.from(JSON.stringify(tx)).toString(
         "base64"
-      )}&returnUrl=/register`
+      )}&returnUrl=${getReturnUrl("/register")}`
     );
   }, [account]);
   return (
