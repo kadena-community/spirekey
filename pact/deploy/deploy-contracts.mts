@@ -13,7 +13,7 @@ await deploy(getNameSpaceAndKeysetSettings());
 await deploy(getL2DeploymentSettings(IS_UPGRADE));
 // Fund some coins to given accounts on L1:14
 const accounts = await Promise.all(
-  ["andy", "steven", "ashwin", "jesse"].map(async (name) => ({
+  ["andy", "steven", "ashwin", "jesse", "isa"].map(async (name) => ({
     name,
     cname: await local(
       `(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.get-account-name "${name}")`,
