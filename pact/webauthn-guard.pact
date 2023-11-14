@@ -44,10 +44,11 @@
 
   (defcap AUTHORIZED() true)
 
-  (defcap AUTHENTICATE(account:string min-approvals:integer)
-    (enforce (> min-approvals 0) "Must authenticate with at least one device")
+  (defcap AUTHENTICATE(account:string)
     (with-read account-table account
-      { 'devices := devices }
+      { 'devices       := devices
+      , 'min-approvals := min-approvals
+      }
       (enforce-guard-min (map (extract-guard) devices) min-approvals)
       (compose-capability (AUTHORIZED))
     )
@@ -93,6 +94,32 @@
     )
   )
 
+  (defun remove-device(account:string credential-id:string)
+    (with-read account-table account
+      { 'devices                    := devices
+      , 'min-approvals              := min-approvals
+      , 'min-registration-approvals := min-registration-approvals
+      }
+      (enforce-guard-min (map (extract-guard) devices) min-registration-approvals)
+      (let* 
+        ((new-devices (filter (where 'credential-id (!= credential-id)) devices))
+         (new-length (length new-devices))
+        )
+        (enforce (> new-length min-approvals) "Must have enough devices to authenticate")
+        (enforce (> new-length min-registration-approvals) "Must have enough devices to register")
+        (update account-table account
+          { 'devices : new-devices }
+        )
+      )
+    )
+  )
+
+  (defun enforce-authenticated(account:string)
+    (with-capability (AUTHENTICATE account)
+      true
+    )
+  )
+
   ;;;;;;;;;;;;;;;
   ; Guard Utils ;
   ;;;;;;;;;;;;;;;
@@ -129,7 +156,7 @@
 
   (defcap GAS_PAYER:bool(user:string limit:integer price:decimal)
     (enforce (= (at 'sender (chain-data)) user) "Sender must be the user")
-    (compose-capability (AUTHENTICATE user limit))
+    (compose-capability (AUTHENTICATE user))
   )
 
   (defun create-gas-payer-guard:guard()
