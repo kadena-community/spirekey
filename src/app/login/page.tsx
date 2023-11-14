@@ -7,6 +7,7 @@ import {
   SelectField,
   Stack,
   Text,
+  TextField,
   TrackerCard,
 } from "@kadena/react-ui";
 import { useCallback, useEffect, useState } from "react";
@@ -102,8 +103,20 @@ const AccountSelector = ({
   returnUrl: string;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }) => {
-  if (!account || !device)
-    return <Text>No account found, please register first.</Text>;
+  const onStoreAccount = useCallback(
+    (event: React.FocusEvent<HTMLInputElement>) => {
+      localStorage.setItem("accounts", JSON.stringify([event.target.value]));
+    },
+    []
+  );
+  if (!account)
+    return (
+      <TextField
+        label="account"
+        inputProps={{ id: "account", onBlur: onStoreAccount }}
+      />
+    );
+  if (!device) return <Text>No account found, please register first.</Text>;
   return (
     <>
       <SelectField

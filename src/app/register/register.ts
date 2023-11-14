@@ -63,6 +63,7 @@ export const registerAccount = ({
   )({});
 };
 
+const getWebAuthnPubkeyFormat = (pubkey: string) => `WEBAUTHN-${pubkey}`;
 const registerAccountCommand = ({
   account,
   credentialId,
@@ -81,18 +82,18 @@ const registerAccountCommand = ({
         () => "coin",
         () => `(read-keyset 'ks)`,
         credentialId,
-        credentialPubkey
+        getWebAuthnPubkeyFormat(credentialPubkey)
       )
     ),
     addSigner({
-      pubKey: credentialPubkey,
+      pubKey: getWebAuthnPubkeyFormat(credentialPubkey),
       // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
       scheme: "WebAuthn",
     }),
     // TODO: remove genesis account and use a gas station
     addSigner(genesisPubKey),
     addData("ks", {
-      keys: [credentialPubkey],
+      keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
       pred: "keys-any",
     }),
     setMeta({

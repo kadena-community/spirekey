@@ -138,7 +138,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
       createTransaction,
       (tx) => {
         data.payload = Buffer.from(JSON.stringify(tx)).toString("base64");
-        return tx;
+        return { ...tx, sigs: [] };
       },
       (tx) =>
         l1Client.local(tx, { preflight: false, signatureVerification: false })

@@ -1,5 +1,6 @@
 "use client";
 
+import RootLayout from "@/app/layout";
 import { getReturnUrl } from "@/utils/url";
 import {
   Box,
@@ -11,9 +12,11 @@ import {
   Stack,
   Text,
 } from "@kadena/react-ui";
+import { darkThemeClass } from "@kadena/react-ui/theme";
+import { ThemeProvider, useTheme } from "next-themes";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import cookieImg from "./chocolate-chip-cookie.jpg";
 import { createOrder } from "./order";
 
@@ -37,7 +40,6 @@ const decodeAccount = (response: string) => {
   );
   return account;
 };
-
 export default function Webshop({ searchParams }: WebshopProps) {
   const { response } = searchParams;
   const account = decodeAccount(response);
@@ -76,6 +78,10 @@ export default function Webshop({ searchParams }: WebshopProps) {
       },
     [response]
   );
+  const { setTheme } = useTheme();
+  useEffect(() => {
+    setTheme("light");
+  }, []);
   return (
     <Stack direction="column" alignItems="center" paddingY="$lg">
       <Stack direction="row" gap="$lg">

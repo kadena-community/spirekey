@@ -6,6 +6,7 @@ const nextConfig = {
   transpilePackages: ["@kadena/react-ui"],
   env: {
     VERCEL_URL: process.env.VERCEL_URL,
+    CHAINWEB_URL: process.env.CHAINWEB_URL,
   },
 };
 
