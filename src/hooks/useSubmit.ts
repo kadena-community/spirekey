@@ -20,17 +20,15 @@ export const useSubmit = (searchParams: SearchParams) => {
       // @TODO: this needs to map the signature to the correct index within the signatures array
       sigs: [
         {
-          sig: JSON.stringify({
-            signature: Buffer.from(
-              base64URLStringToBuffer(r.response.signature)
-            ).toString("base64"),
-            authenticatorData: Buffer.from(
-              base64URLStringToBuffer(r.response.authenticatorData)
-            ).toString("base64"),
-            clientDataJSON: Buffer.from(
-              base64URLStringToBuffer(r.response.clientDataJSON)
-            ).toString("base64"),
-          }),
+          sig: Buffer.from(
+            base64URLStringToBuffer(r.response.signature)
+          ).toString("base64"),
+          authenticatorData: Buffer.from(
+            base64URLStringToBuffer(r.response.authenticatorData)
+          ).toString("base64"),
+          clientDataJSON: Buffer.from(
+            base64URLStringToBuffer(r.response.clientDataJSON)
+          ).toString("base64"),
         },
         ...p.sigs,
       ].filter(Boolean),
