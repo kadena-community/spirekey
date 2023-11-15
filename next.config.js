@@ -5,8 +5,8 @@ const withVanillaExtract = createVanillaExtractPlugin();
 const nextConfig = {
   transpilePackages: ["@kadena/react-ui"],
   env: {
-    VERCEL_URL: process.env.VERCEL_URL,
     CHAINWEB_URL: process.env.CHAINWEB_URL,
+    WALLET_URL: process.env.WALLET_URL,
   },
 };
 

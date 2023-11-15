@@ -69,7 +69,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
           signerPubKey: account.publicKey,
         });
         router.push(
-          `http://${process.env.VERCEL_URL}/sign?payload=${Buffer.from(
+          `${process.env.WALLET_URL}/sign?payload=${Buffer.from(
             JSON.stringify(order)
           ).toString("base64")}&cid=${account.cid}&returnUrl=${getReturnUrl(
             "/example/webshop/submit"
@@ -147,7 +147,7 @@ const Account = ({ account }: { account: Account | null }) => {
   const router = useRouter();
   const onLogin = useCallback(() => {
     router.push(
-      `http://${process.env.VERCEL_URL}/login?returnUrl=${getReturnUrl(
+      `${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(
         "/example/webshop"
       )}`
     );
