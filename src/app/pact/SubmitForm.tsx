@@ -14,7 +14,7 @@ export const SubmitForm: FC<PreviewFormProps> = ({ values, onCancel }) => {
 
   const onSign = async () => {
     router.push(
-      `//${process.env.VERCEL_URL}/sign?payload=${values.payload}&cid=${
+      `${process.env.WALLET_URL}/sign?payload=${values.payload}&cid=${
         values.cid
       }&returnUrl=${getReturnUrl("pact/submit")}`
     );
