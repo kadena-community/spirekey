@@ -3,22 +3,19 @@
 import {
   Button,
   ContentHeader,
-  Select,
   Stack,
+  Text,
   TextField,
 } from "@kadena/react-ui";
-import { useCallback, useEffect, useState } from "react";
 import {
-  startRegistration,
-  bufferToBase64URLString,
   base64URLStringToBuffer,
+  bufferToBase64URLString,
+  startRegistration,
 } from "@simplewebauthn/browser";
-import { getAccountName, registerAccount } from "./register";
-import { useRouter } from "next/navigation";
 import cbor from "cbor";
 import cosekey from "parse-cosekey";
-import { l1Client } from "../utils/client";
-import { getReturnUrl } from "@/utils/url";
+import { useCallback, useState } from "react";
+import { registerAccount } from "./register";
 
 type AccountProps = {
   searchParams: {
@@ -124,8 +121,10 @@ const getPublicKey = async (res: any, publicKeyType: PublicKeyType) => {
   }
 };
 
-export default function Account(req: AccountProps) {
+export default function Account() {
   const [account, setAccount] = useState<string>("");
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [result, setResult] = useState<any>(null);
   const onAccountChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setAccount(e.target.value);
@@ -152,7 +151,7 @@ export default function Account(req: AccountProps) {
       },
       attestation: "direct",
       user: {
-        id: account, // @TODO: this should be a random string
+        id: account + Date.now(),
         displayName: account,
         name: account,
       },
@@ -163,6 +162,7 @@ export default function Account(req: AccountProps) {
 
     // currently only hex-from-cbor works
     const pubKey = await getPublicKey(res, "hex-from-cbor");
+    setLoading(true);
     const result = await registerAccount({
       domain: window.location.hostname,
       displayName: account,
@@ -173,7 +173,36 @@ export default function Account(req: AccountProps) {
     const accounts = localStorage.getItem("accounts") || "[]";
     const accs = JSON.parse(accounts);
     localStorage.setItem("accounts", JSON.stringify([...accs, result]));
+    setLoading(false);
+    setResult(result);
   }, [account]);
+
+  if (isLoading) {
+    return (
+      <Stack direction="column" gap="$md" margin="$md">
+        <ContentHeader
+          heading="Account"
+          description="Create an account using WebAuthN"
+          icon="Account"
+        />
+        <Text>Loading...</Text>
+      </Stack>
+    );
+  }
+
+  if (result) {
+    return (
+      <Stack direction="column" gap="$md" margin="$md">
+        <ContentHeader
+          heading="Account"
+          description="Create an account using WebAuthN"
+          icon="Account"
+        />
+        <Text>Registration complete! Account: {result}</Text>
+      </Stack>
+    );
+  }
+
   return (
     <Stack direction="column" gap="$md" margin="$md">
       <ContentHeader
