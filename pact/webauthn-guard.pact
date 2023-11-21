@@ -56,7 +56,6 @@
 
   (defcap REGISTER(account:string first-guard:guard)
     (enforce (validate-principal first-guard account) "Principal must match the first provided device")
-    (enforce-guard first-guard)
   )
 
   (defcap ADD_DEVICE(account:string)
@@ -80,6 +79,10 @@
 
   (defun extract-guard(device:object{device-schema})
     (at 'guard device)
+  )
+
+  (defun get-account(account:string)
+    (read account-table account)
   )
 
   (defun register(
