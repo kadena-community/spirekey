@@ -33,8 +33,8 @@
       (invariant (> (length devices) 0))
       (invariant (> min-approvals 0))
       (invariant (> min-registration-approvals 0))
-      (invariant (< min-approvals (length devices)))
-      (invariant (< min-registration-approvals (length devices)))
+      (invariant (<= min-approvals (length devices)))
+      (invariant (<= min-registration-approvals (length devices)))
     ]
     devices                    : [object{device-schema}]
     min-approvals              : integer
@@ -100,8 +100,8 @@
     (enforce (> (length devices) 0) "Must register at least one device")
     (enforce (> min-approvals 0) "Must authenticate with at least one device")
     (enforce (> min-registration-approvals 0) "Must register at least one device")
-    (enforce (< min-approvals (length devices)) "Min approvals cannot be greater than the number of devices")
-    (enforce (< min-registration-approvals (length devices)) "Min registration approvals cannot be greater than the number of devices")
+    (enforce (<= min-approvals (length devices)) "Min approvals cannot be greater than the number of devices")
+    (enforce (<= min-registration-approvals (length devices)) "Min registration approvals cannot be greater than the number of devices")
     (let ((first-guard (at 'guard (at 0 devices))))
       (with-capability (REGISTER account first-guard)
         (insert account-table account
@@ -190,4 +190,9 @@
       "Not enough guards passed"
     )
   ) 
+)
+
+(if (read-msg 'upgrade)
+  true
+  (create-table account-table)
 )
