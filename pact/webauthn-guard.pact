@@ -54,6 +54,30 @@
     )
   )
 
+  (defcap REGISTER(account:string first-guard:guard)
+    (enforce (validate-principal first-guard account) "Principal must match the first provided device")
+    (enforce-guard first-guard)
+  )
+
+  (defcap ADD_DEVICE(account:string)
+    (with-read account-table account
+      { 'devices := devices
+      , 'min-registration-approvals := min-registration-approvals
+      }
+      (enforce-guard-min (map (extract-guard) devices) min-registration-approvals)
+    )
+  )
+
+  (defcap REMOVE_DEVICE(account:string)
+    (with-read account-table account
+      { 'devices := devices
+      , 'min-approvals := min-approvals
+      , 'min-registration-approvals := min-registration-approvals
+      }
+      (enforce-guard-min (map (extract-guard) devices) min-registration-approvals)
+    )
+  )
+
   (defun extract-guard(device:object{device-schema})
     (at 'guard device)
   )
@@ -68,47 +92,63 @@
       (property (> (length devices) 0))
       (property (> min-approvals 0))
       (property (> min-registration-approvals 0))
+      (property (is-principal account))
     ]
     (enforce (> (length devices) 0) "Must register at least one device")
     (enforce (> min-approvals 0) "Must authenticate with at least one device")
     (enforce (> min-registration-approvals 0) "Must register at least one device")
     (enforce (< min-approvals (length devices)) "Min approvals cannot be greater than the number of devices")
     (enforce (< min-registration-approvals (length devices)) "Min registration approvals cannot be greater than the number of devices")
-    (insert account-table account
-      { 'devices : devices
-      , 'min-approvals : min-approvals
-      , 'min-registration-approvals : min-registration-approvals
-      }
+    (let ((first-guard (at 'guard (at 0 devices))))
+      (with-capability (REGISTER account first-guard)
+        (insert account-table account
+          { 'devices : devices
+          , 'min-approvals : min-approvals
+          , 'min-registration-approvals : min-registration-approvals
+          }
+        )
+      )
     )
   )
 
   (defun add-device(account:string device:object{device-schema})
-    (with-read account-table account
-      { 'devices := devices
-      , 'min-registration-approvals := min-registration-approvals
-      }
-      (enforce-guard-min (map (extract-guard) devices) min-registration-approvals)
-      (update account-table account
-        { 'devices : (+ devices [device]) }
+    (with-capability (ADD_DEVICE account)
+      (with-read account-table account
+        { 'devices := devices }
+        (let* (
+          (new-devices (+ devices [device]))
+          (expected-new-length (+ (length new-devices) 1))
+          (unique-cred-ids (distinct (map (at 'credential-id) new-devices)))
+        )
+          (enforce (< expected-new-length (length unique-cred-ids)) "Credential IDs must be unique")
+          (update account-table account
+            { 'devices : new-devices }
+          )
+        )
       )
     )
   )
 
   (defun remove-device(account:string credential-id:string)
-    (with-read account-table account
-      { 'devices                    := devices
-      , 'min-approvals              := min-approvals
-      , 'min-registration-approvals := min-registration-approvals
-      }
-      (enforce-guard-min (map (extract-guard) devices) min-registration-approvals)
-      (let* 
-        ((new-devices (filter (where 'credential-id (!= credential-id)) devices))
-         (new-length (length new-devices))
-        )
-        (enforce (> new-length min-approvals) "Must have enough devices to authenticate")
-        (enforce (> new-length min-registration-approvals) "Must have enough devices to register")
-        (update account-table account
-          { 'devices : new-devices }
+    (with-capability (REMOVE_DEVICE account)
+      (with-read account-table account
+        { 'devices                    := devices
+        , 'min-approvals              := min-approvals
+        , 'min-registration-approvals := min-registration-approvals
+        }
+        (let* 
+          ((new-devices:[object{device-schema}] (filter (where 'credential-id (!= credential-id)) devices))
+           (new-length (length new-devices))
+          )
+          (enforce (= 
+            new-length
+            (- (length devices) 1)
+          ) "Must have exactly one fewer device after removal")
+          (enforce (> new-length min-approvals) "Must have enough devices to authenticate")
+          (enforce (> new-length min-registration-approvals) "Must have enough devices to register")
+          (update account-table account
+            { 'devices : new-devices }
+          )
         )
       )
     )
@@ -146,20 +186,5 @@
       )
       "Not enough guards passed"
     )
-  )
-
-  ;;;;;;;;;;;;;;;
-  ; GAS PAYMENT ;
-  ;;;;;;;;;;;;;;;
-
-  (implements gas-payer-v1)
-
-  (defcap GAS_PAYER:bool(user:string limit:integer price:decimal)
-    (enforce (= (at 'sender (chain-data)) user) "Sender must be the user")
-    (compose-capability (AUTHENTICATE user))
-  )
-
-  (defun create-gas-payer-guard:guard()
-    (create-capability-guard (AUTHORIZED))
-  )
+  ) 
 )
