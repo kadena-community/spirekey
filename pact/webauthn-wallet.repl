@@ -73,6 +73,16 @@
     (webauthn-wallet.get-account-name account)
     (webauthn-wallet.get-account-guard account)
   )
+
+  (env-sigs 
+    [{ 'key : "WEBAUTHN-key"
+     , 'caps : [
+      (webauthn-wallet.GAS_PAYER "alice" 1 1.0)
+     ]
+    }]
+  )
+  ;(test-capability (coin.GAS))
+  (test-capability (webauthn-wallet.GAS_PAYER account 1 1.0))
 )
 (commit-tx)
 

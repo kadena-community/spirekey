@@ -158,8 +158,11 @@
   )
 
   (defun enforce-authenticated(account:string)
-    (with-capability (AUTHENTICATE account)
-      true
+    (with-read account-table account
+      { 'devices       := devices
+      , 'min-approvals := min-approvals
+      }
+      (enforce-guard-min (map (extract-guard) devices) min-approvals)
     )
   )
 

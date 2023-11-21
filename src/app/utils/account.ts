@@ -13,9 +13,9 @@ export const getAccount = async (alias: string) =>
     composePactCommand(
       execution(
         `[
-          (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.get-account-name "${alias}")
-          (read n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.account-table "${alias}")
-          (coin.get-balance (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.get-account-name "${alias}"))
+          (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-account-name "${alias}")
+          (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.get-account "${alias}")
+          (coin.get-balance (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-account-name "${alias}"))
         ]`
       ),
       setMeta({

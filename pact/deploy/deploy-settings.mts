@@ -118,7 +118,7 @@ export const getWalletSettings: (upgrade: boolean) => DeploySettings[] = (
     keypair: sender00Keypair,
     data: {
       "webauthn-wallet-keyset-name":
-        "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet-keyset",
+        "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-keyset",
       "webauthn-wallet-namespace": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
       "webauthn-keyset-name":
         "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-keyset",
@@ -126,6 +126,28 @@ export const getWalletSettings: (upgrade: boolean) => DeploySettings[] = (
       upgrade,
     },
   },
+  {
+    hosts,
+    networkId: "fast-development",
+    code: `(coin.transfer-create "sender00" "cookie-shop" (read-keyset 'cookie-ks) 0.0000001)`,
+    sender: "sender00",
+    keypair: sender00Keypair,
+    data: {
+      'cookie-ks': {
+        keys: [sender00Keypair.publicKey],
+        pred: "keys-all",
+      }
+    },
+    caps: [
+    ["coin.GAS"],
+    [
+      "coin.TRANSFER",
+      "sender00",
+      "cookie-shop",
+      0.0000001,
+    ],
+  ] as any,
+  }
 ];
 
 export const getFundSettings: (accounts: Account[]) => DeploySettings[] = (

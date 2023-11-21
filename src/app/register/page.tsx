@@ -125,7 +125,6 @@ const getPublicKey = async (res: any, publicKeyType: PublicKeyType) => {
 };
 
 export default function Account(req: AccountProps) {
-  const router = useRouter();
   const [account, setAccount] = useState<string>("");
   const onAccountChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -164,17 +163,16 @@ export default function Account(req: AccountProps) {
 
     // currently only hex-from-cbor works
     const pubKey = await getPublicKey(res, "hex-from-cbor");
-    const tx = await registerAccount({
+    const result = await registerAccount({
       domain: window.location.hostname,
       displayName: account,
       credentialId: res.id,
       credentialPubkey: pubKey,
     });
-    console.log(tx);
 
     const accounts = localStorage.getItem("accounts") || "[]";
     const accs = JSON.parse(accounts);
-    localStorage.setItem("accounts", JSON.stringify([...accs, account]));
+    localStorage.setItem("accounts", JSON.stringify([...accs, result]));
   }, [account]);
   return (
     <Stack direction="column" gap="$md" margin="$md">

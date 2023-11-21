@@ -24,7 +24,9 @@ export const getAccountName = async (publicKey: string) =>
 (let* ((guard (read-keyset 'ks))
        (account (create-principal guard))
       )
-  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-account-name account)
+  [(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-account-name account)
+    account
+  ]
 )
 `
       ),
@@ -40,10 +42,6 @@ export const getAccountName = async (publicKey: string) =>
       }),
       setNetworkId("fast-development")
     ),
-    (tx) => {
-      console.log(tx);
-      return tx;
-    },
     createTransaction,
     (tx) =>
       l1Client.local(tx, { preflight: false, signatureVerification: false }),
@@ -61,10 +59,10 @@ export const registerAccount = async ({
   credentialId: string;
   credentialPubkey: string;
 }) => {
-  const account = await getAccountName(credentialPubkey);
+  const [caccount, waccount] = await getAccountName(credentialPubkey);
   return asyncPipe(
     registerAccountCommand({
-      account,
+      account: caccount,
       displayName,
       domain,
       credentialId,
@@ -76,7 +74,8 @@ export const registerAccount = async ({
       secretKey: genesisPrivateKey,
     }),
     l1Client.submit,
-    l1Client.listen
+    l1Client.listen,
+    () => waccount
   )({});
 };
 

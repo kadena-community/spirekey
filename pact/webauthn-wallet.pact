@@ -10,8 +10,8 @@
     (enforce-guard GOVERNANCE_KEYSET)
   )
   
-  (defcap DEBIT(account:string) 
-    (webauthn-guard.enforce-authenticated account)
+  (defcap DEBIT(account:string)
+    (enforce-authenticated account)
   )
 
   (defcap TRANSFER(sender:string receiver:string amount:decimal)
@@ -40,7 +40,7 @@
 
   (defun transfer(sender:string receiver:string amount:decimal)
     (let ((account:string (get-account-name sender)))
-      (with-capability (TRANSFER account receiver amount)
+      (with-capability (TRANSFER sender receiver amount)
         (install-capability (coin.TRANSFER account receiver amount))
         (coin.transfer account receiver amount)
       )
@@ -53,7 +53,6 @@
   (implements gas-payer-v1)
 
   (defcap GAS_PAYER:bool(user:string limit:integer price:decimal)
-    (enforce (= (at 'sender (chain-data)) (get-account-name user)) "Sender must be the user")
     (compose-capability (DEBIT user))
   )
 

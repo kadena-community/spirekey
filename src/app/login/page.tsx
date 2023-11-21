@@ -29,6 +29,10 @@ type Account = {
 type Device = {
   ["credential-id"]: string;
   ["credential-pubkey"]: string;
+  name: string;
+  guard: {
+    keys: string[];
+  };
 };
 
 export default function Login({ searchParams }: LoginProps) {
@@ -143,7 +147,7 @@ const AccountSelector = ({
           },
           {
             label: "Display Name",
-            value: account.name,
+            value: device.name,
           },
           {
             label: "Balance",
@@ -178,10 +182,11 @@ const AccountSelector = ({
           as="a"
           href={`${returnUrl}?response=${Buffer.from(
             JSON.stringify({
-              name: account.name,
-              account: account.account,
+              name: device.name,
+              waccount: account.name,
+              caccount: account.account,
               cid: device["credential-id"],
-              publicKey: device["credential-pubkey"],
+              publicKey: device.guard.keys[0],
             })
           ).toString("base64")}`}
         >
