@@ -66,7 +66,6 @@ export default function Webshop({ searchParams }: WebshopProps) {
         const order = await createOrder({
           caccount: account.caccount,
           waccount: account.waccount,
-          name: account.waccount,
           price,
           signerPubKey: account.publicKey,
         });

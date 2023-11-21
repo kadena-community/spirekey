@@ -10,13 +10,11 @@ import { asyncPipe } from "../../utils/asyncPipe";
 
 export const createOrder = async ({
   price,
-  name,
   caccount,
   waccount,
   signerPubKey,
 }: {
   price: number;
-  name: string;
   caccount: string;
   waccount: string;
   signerPubKey: string;

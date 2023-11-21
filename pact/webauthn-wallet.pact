@@ -34,7 +34,7 @@
   )
 
   (defun get-account-guard:guard(account:string)
-    ; (enforce (is-principal account) "Account must be a principal")
+    (enforce (is-principal account) "Account must be a principal")
     (create-capability-guard (DEBIT account))
   )
 
