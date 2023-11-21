@@ -95,7 +95,7 @@ export const getL2DeploymentSettings: (upgrade: boolean) => DeploySettings[] = (
   {
     hosts,
     networkId: "fast-development",
-    codeFile: "./pact/webauthn.pact",
+    codeFile: "./pact/webauthn-guard.pact",
     sender: "sender00",
     keypair: sender00Keypair,
     data: {
@@ -106,6 +106,28 @@ export const getL2DeploymentSettings: (upgrade: boolean) => DeploySettings[] = (
     },
   },
 ];
+
+export const getWalletSettings: (upgrade: boolean) => DeploySettings[] = (
+  upgrade: boolean
+) => [
+  {
+    hosts,
+    networkId: "fast-development",
+    codeFile: "./pact/webauthn-wallet.pact",
+    sender: "sender00",
+    keypair: sender00Keypair,
+    data: {
+      "webauthn-wallet-keyset-name":
+        "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet-keyset",
+      "webauthn-wallet-namespace": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
+      "webauthn-keyset-name":
+        "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-keyset",
+      "webauthn-namespace": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
+      upgrade,
+    },
+  },
+];
+
 export const getFundSettings: (accounts: Account[]) => DeploySettings[] = (
   accounts
 ) => [
