@@ -1,0 +1,89 @@
+(load "util/guards.repl")
+
+(env-data
+  { 'webauthn-wallet-keyset :
+    { 'pred          : "keys-all"
+    , 'keys          :
+      [ "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca" ]
+    }
+  })
+(env-sigs
+  [{ 'key  : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , 'caps : []
+   }])
+(begin-tx "Create webauthn-wallet namespace and define webauthn-wallet keyset")
+(let* ((webauthn-wallet-namespace (ns.create-principal-namespace (read-keyset 'webauthn-wallet-keyset)))
+       (webauthn-wallet-keyset (format "{}.{}" [ webauthn-wallet-namespace 'webauthn-wallet-keyset ]))
+      )
+  (define-namespace
+    webauthn-wallet-namespace
+    (read-keyset 'webauthn-wallet-keyset)
+    (read-keyset 'webauthn-wallet-keyset))
+  (namespace webauthn-wallet-namespace)
+  (define-keyset
+    webauthn-wallet-keyset
+    (read-keyset 'webauthn-wallet-keyset)
+  )
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(env-data
+  { 'webauthn-wallet-keyset-name : "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet-keyset"
+  , 'webauthn-wallet-namespace   : "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9"
+  , 'webauthn-keyset-name        : "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-keyset"
+  , 'webauthn-namespace          : "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9"
+  , 'upgrade                     : false
+  }
+)
+(env-sigs
+  [{ 'key  : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , 'caps : []
+   }
+  ]
+)
+(begin-tx "Load webauthn-wallet contract")
+(load "webauthn-guard.pact")
+(load "webauthn-wallet.pact")
+(commit-tx)
+
+(env-data
+  { 'alice-ks: 
+    { 'keys : ["WEBAUTHN-key"]
+    , 'pred : "keys-any"
+    }
+  }
+)
+(begin-tx "Register a new webauthn-wallet")
+(namespace 'n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9)
+(let* ((guard (read-keyset 'alice-ks))
+       (account (create-principal guard))
+      )
+  (webauthn-guard.register 
+    account 1 1
+    [{ 'name          : 'phone
+     , 'credential-id : 'xysDsaI
+     , 'domain        : "www.example.com"
+     , 'guard         : guard
+     }
+    ]
+  )
+  (coin.create-account 
+    (webauthn-wallet.get-account-name account)
+    (webauthn-wallet.get-account-guard account)
+  )
+
+  (env-sigs 
+    [{ 'key : "WEBAUTHN-key"
+     , 'caps : [
+      (webauthn-wallet.GAS_PAYER "alice" 1 1.0)
+     ]
+    }]
+  )
+  ;(test-capability (coin.GAS))
+  (test-capability (webauthn-wallet.GAS_PAYER account 1 1.0))
+)
+(commit-tx)
+
+(verify "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet")

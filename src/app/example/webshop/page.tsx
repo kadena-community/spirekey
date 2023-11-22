@@ -28,7 +28,8 @@ type WebshopProps = {
 
 type Account = {
   name: string;
-  account: string;
+  waccount: string;
+  caccount: string;
   publicKey: string;
   cid: string;
 };
@@ -63,8 +64,8 @@ export default function Webshop({ searchParams }: WebshopProps) {
       async () => {
         if (!account) return;
         const order = await createOrder({
-          account: account.account,
-          name: account.name,
+          caccount: account.caccount,
+          waccount: account.waccount,
           price,
           signerPubKey: account.publicKey,
         });

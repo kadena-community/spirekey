@@ -1,4 +1,4 @@
-import { createTransaction, Pact } from "@kadena/client";
+import { createTransaction } from "@kadena/client";
 import {
   addData,
   addSigner,
@@ -14,44 +14,57 @@ import {
   genesisPrivateKey,
   genesisPubKey,
 } from "../utils/constants";
-import { signKeyPairLocal, signWithKeyPair } from "../utils/signSubmitListen";
+import { signWithKeyPair } from "../utils/signSubmitListen";
 
-export const getAccountName = async (name: string) =>
+export const getAccountName = async (publicKey: string) =>
   asyncPipe(
     composePactCommand(
       execution(
-        `(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn.get-account-name "${name}")`
+        `
+(let* ((guard (read-keyset 'ks))
+       (account (create-principal guard))
+      )
+  [(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-account-name account)
+    account
+  ]
+)
+`
       ),
       setMeta({
         chainId: "14",
         gasLimit: 1000,
         gasPrice: 0.0000001,
         ttl: 60000,
-        senderAccount: genesisAccount,
       }),
-      addSigner(genesisPubKey),
+      addData("ks", {
+        keys: [getWebAuthnPubkeyFormat(publicKey)],
+        pred: "keys-any",
+      }),
       setNetworkId("fast-development")
     ),
-    // TODO: this doesn't need singing, remove signing and use local preflight false
-    signKeyPairLocal(l1Client, {
-      publicKey: genesisPubKey,
-      secretKey: genesisPrivateKey,
-    }),
+    createTransaction,
+    (tx) =>
+      l1Client.local(tx, { preflight: false, signatureVerification: false }),
     (tx) => tx.result.data
   )({});
 
-export const registerAccount = ({
-  account,
+export const registerAccount = async ({
+  displayName,
+  domain,
   credentialId,
   credentialPubkey,
 }: {
-  account: string;
+  displayName: string;
+  domain: string;
   credentialId: string;
   credentialPubkey: string;
 }) => {
+  const [caccount, waccount] = await getAccountName(credentialPubkey);
   return asyncPipe(
     registerAccountCommand({
-      account,
+      account: caccount,
+      displayName,
+      domain,
       credentialId,
       credentialPubkey,
     }),
@@ -59,46 +72,63 @@ export const registerAccount = ({
     signWithKeyPair({
       publicKey: genesisPubKey,
       secretKey: genesisPrivateKey,
-    })
+    }),
+    l1Client.submit,
+    l1Client.listen,
+    () => waccount
   )({});
 };
 
 const getWebAuthnPubkeyFormat = (pubkey: string) => `WEBAUTHN-${pubkey}`;
 const registerAccountCommand = ({
   account,
+  displayName,
   credentialId,
   credentialPubkey,
+  domain,
 }: {
   account: string;
+  displayName: string;
   credentialId: string;
   credentialPubkey: string;
+  domain: string;
 }) =>
   composePactCommand(
     execution(
-      Pact.modules["n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn"][
-        "create-account"
-      ](
-        account,
-        () => "coin",
-        () => `(read-keyset 'ks)`,
-        credentialId,
-        getWebAuthnPubkeyFormat(credentialPubkey)
+      `
+(namespace 'n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9)
+(let* ((guard (read-keyset 'ks))
+       (account (create-principal guard))
       )
+  (webauthn-guard.register 
+    account 1 1
+    [{ 'name          : "${displayName}"
+     , 'credential-id : "${credentialId}"
+     , 'domain        : "${domain}"
+     , 'guard         : guard
+     }
+    ]
+  )
+  (coin.transfer-create 
+    "sender00"
+    (webauthn-wallet.get-account-name account)
+    (webauthn-wallet.get-account-guard account)
+    10.0
+  )
+)
+      `
     ),
-    addSigner({
-      pubKey: getWebAuthnPubkeyFormat(credentialPubkey),
-      // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
-      scheme: "WebAuthn",
-    }),
-    // TODO: remove genesis account and use a gas station
-    addSigner(genesisPubKey),
+    addSigner(genesisPubKey, (withCap) => [
+      withCap("coin.GAS"),
+      withCap("coin.TRANSFER", "sender00", account, 10.0),
+    ]),
     addData("ks", {
       keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
       pred: "keys-any",
     }),
     setMeta({
       chainId: "14",
-      gasLimit: 1000,
+      gasLimit: 2000,
       gasPrice: 0.0000001,
       ttl: 60000,
       senderAccount: genesisAccount,

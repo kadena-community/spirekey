@@ -3,22 +3,19 @@
 import {
   Button,
   ContentHeader,
-  Select,
   Stack,
+  Text,
   TextField,
 } from "@kadena/react-ui";
-import { useCallback, useEffect, useState } from "react";
 import {
-  startRegistration,
-  bufferToBase64URLString,
   base64URLStringToBuffer,
+  bufferToBase64URLString,
+  startRegistration,
 } from "@simplewebauthn/browser";
-import { getAccountName, registerAccount } from "./register";
-import { useRouter } from "next/navigation";
 import cbor from "cbor";
 import cosekey from "parse-cosekey";
-import { l1Client } from "../utils/client";
-import { getReturnUrl } from "@/utils/url";
+import { useCallback, useState } from "react";
+import { registerAccount } from "./register";
 
 type AccountProps = {
   searchParams: {
@@ -124,51 +121,18 @@ const getPublicKey = async (res: any, publicKeyType: PublicKeyType) => {
   }
 };
 
-export default function Account(req: AccountProps) {
-  const { payload, response } = req.searchParams;
-  const router = useRouter();
+export default function Account() {
   const [account, setAccount] = useState<string>("");
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [result, setResult] = useState<any>(null);
   const onAccountChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setAccount(e.target.value);
     },
     [setAccount]
   );
-  useEffect(() => {
-    if (!payload || !response) return;
-    const p = JSON.parse(Buffer.from(payload, "base64").toString());
-    const r = JSON.parse(Buffer.from(response, "base64").toString());
-    const tx = {
-      ...p,
-      sigs: [
-        {
-          sig: JSON.stringify({
-            signature: Buffer.from(
-              base64URLStringToBuffer(r.response.signature)
-            ).toString("base64"),
-            authenticatorData: Buffer.from(
-              base64URLStringToBuffer(r.response.authenticatorData)
-            ).toString("base64"),
-            clientDataJSON: Buffer.from(
-              base64URLStringToBuffer(r.response.clientDataJSON)
-            ).toString("base64"),
-          }),
-        },
-        ...p.sigs,
-      ],
-    };
-    l1Client.local(tx).then(async (res) => {
-      if (res.result.status !== "success") {
-        console.error(res);
-        throw new Error("Transaction failed");
-      }
-      const txRes = await l1Client.submit(tx);
-      await l1Client.listen(txRes);
-    });
-  }, [payload, response]);
 
   const register = useCallback(async () => {
-    const accName = (await getAccountName(account)) as unknown as string;
     const res = await startRegistration({
       challenge: bufferToBase64URLString(Buffer.from("some-random-string")),
       rp: {
@@ -187,9 +151,9 @@ export default function Account(req: AccountProps) {
       },
       attestation: "direct",
       user: {
-        id: accName,
+        id: account + Date.now(),
         displayName: account,
-        name: accName,
+        name: account,
       },
       timeout: 60000,
     });
@@ -198,22 +162,47 @@ export default function Account(req: AccountProps) {
 
     // currently only hex-from-cbor works
     const pubKey = await getPublicKey(res, "hex-from-cbor");
-    const tx = await registerAccount({
-      account,
+    setLoading(true);
+    const result = await registerAccount({
+      domain: window.location.hostname,
+      displayName: account,
       credentialId: res.id,
       credentialPubkey: pubKey,
     });
 
     const accounts = localStorage.getItem("accounts") || "[]";
     const accs = JSON.parse(accounts);
-    localStorage.setItem("accounts", JSON.stringify([...accs, account]));
-
-    router.push(
-      `/sign?payload=${Buffer.from(JSON.stringify(tx)).toString(
-        "base64"
-      )}&returnUrl=${getReturnUrl("/register")}`
-    );
+    localStorage.setItem("accounts", JSON.stringify([...accs, result]));
+    setLoading(false);
+    setResult(result);
   }, [account]);
+
+  if (isLoading) {
+    return (
+      <Stack direction="column" gap="$md" margin="$md">
+        <ContentHeader
+          heading="Account"
+          description="Create an account using WebAuthN"
+          icon="Account"
+        />
+        <Text>Loading...</Text>
+      </Stack>
+    );
+  }
+
+  if (result) {
+    return (
+      <Stack direction="column" gap="$md" margin="$md">
+        <ContentHeader
+          heading="Account"
+          description="Create an account using WebAuthN"
+          icon="Account"
+        />
+        <Text>Registration complete! Account: {result}</Text>
+      </Stack>
+    );
+  }
+
   return (
     <Stack direction="column" gap="$md" margin="$md">
       <ContentHeader
