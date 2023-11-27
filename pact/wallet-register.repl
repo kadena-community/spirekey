@@ -1,0 +1,79 @@
+(load "util/guards.repl")
+
+(env-data
+  { 'webauthn-keyset :
+    { 'pred          : "keys-all"
+    , 'keys          :
+      [ "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca" ]
+    }
+  }
+)
+(env-sigs
+  [{ 'key  : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , 'caps : []
+   }
+  ]
+)
+
+(begin-tx "Create webauthn namespace and define webauthn keyset")
+(let* ((webauthn-namespace (ns.create-principal-namespace (read-keyset 'webauthn-keyset)))
+       (webauthn-keyset (format "{}.{}" [ webauthn-namespace 'webauthn-keyset ]))
+      )
+  (define-namespace
+    webauthn-namespace
+    (read-keyset 'webauthn-keyset)
+    (read-keyset 'webauthn-keyset))
+  (namespace webauthn-namespace)
+  (define-keyset
+    webauthn-keyset
+    (read-keyset 'webauthn-keyset)
+  )
+)
+(commit-tx)
+
+(env-data {})
+(env-sigs [])
+
+(env-data
+  { 'webauthn-keyset-name : "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-keyset"
+  , 'webauthn-namespace   : "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9"
+  , 'upgrade              : false
+  }
+)
+(env-sigs
+  [{ 'key  : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , 'caps : []
+   }
+  ]
+)
+(begin-tx "Load webauthn contract")
+(load "wallet-register.pact")
+(commit-tx)
+
+(env-data {})
+(env-sigs [])
+
+(verify "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.wallet-register")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+; Prepare test accounts ;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+(env-sigs
+  [{ 'key  : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+   , 'caps : []
+   }
+  ]
+)
+
+(begin-tx)
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.wallet-register.register-wallet
+  "www.wallet.com"
+  "Wallet"
+)
+(expect "Wallet has been registered" 
+  [{ 'domain: "www.wallet.com"
+  , 'name: "Wallet"
+  }]
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.wallet-register.get-wallets)
+)
+(commit-tx)
