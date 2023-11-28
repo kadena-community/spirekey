@@ -13,31 +13,24 @@ type SignResponse = {
   clientDataJSON: string;
 };
 const getSig = (response: SignResponse) => {
+  const signature = Buffer.from(
+    base64URLStringToBuffer(response.signature)
+  ).toString("base64");
+  const authenticatorData = Buffer.from(
+    base64URLStringToBuffer(response.authenticatorData)
+  ).toString("base64");
+  const clientDataJSON = Buffer.from(
+    base64URLStringToBuffer(response.clientDataJSON)
+  ).toString("base64");
   if (process.env.STRING_SIG)
     return {
       sig: JSON.stringify({
-        signature: Buffer.from(
-          base64URLStringToBuffer(response.signature)
-        ).toString("base64"),
-        authenticatorData: Buffer.from(
-          base64URLStringToBuffer(response.authenticatorData)
-        ).toString("base64"),
-        clientDataJSON: Buffer.from(
-          base64URLStringToBuffer(response.clientDataJSON)
-        ).toString("base64"),
+        signature,
+        authenticatorData,
+        clientDataJSON,
       }),
     };
-  return {
-    sig: Buffer.from(base64URLStringToBuffer(response.signature)).toString(
-      "base64"
-    ),
-    authenticatorData: Buffer.from(
-      base64URLStringToBuffer(response.authenticatorData)
-    ).toString("base64"),
-    clientDataJSON: Buffer.from(
-      base64URLStringToBuffer(response.clientDataJSON)
-    ).toString("base64"),
-  };
+  return { sig: signature, authenticatorData, clientDataJSON };
 };
 
 export const useSubmit = (searchParams: SearchParams) => {
