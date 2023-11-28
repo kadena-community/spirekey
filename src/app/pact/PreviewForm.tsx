@@ -1,7 +1,6 @@
 import { getReturnUrl } from "@/utils/url";
 import { createTransaction } from "@kadena/client";
 import {
-  Box,
   Button,
   Card,
   Input,
@@ -11,10 +10,8 @@ import {
   Text,
   TrackerCard,
 } from "@kadena/react-ui";
-import Link from "next/link";
 import { FC, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { getAccount } from "../utils/account";
 import { asyncPipe } from "../utils/asyncPipe";
 import { l1Client } from "../utils/client";
 import {
