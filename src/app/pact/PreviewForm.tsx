@@ -10,7 +10,7 @@ import {
 } from "@kadena/react-ui";
 import { Controller, useForm } from "react-hook-form";
 import { l1Client } from "../utils/client";
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import {
   parseContractData,
   readFile,
@@ -20,6 +20,9 @@ import {
 import { createTransaction } from "@kadena/client";
 import { asyncPipe } from "../utils/asyncPipe";
 import { getAccount } from "../utils/account";
+import { useRouter } from "next/navigation";
+import { getReturnUrl } from "@/utils/url";
+import Link from "next/link";
 
 const FORM_DEFAULT = {
   chainId: "14",
@@ -59,6 +62,15 @@ export const PreviewForm: FC<PreviewFormProps> = ({
     defaultValues: defaults ?? FORM_DEFAULT,
     reValidateMode: "onBlur",
   });
+
+  const router = useRouter();
+  const onLogin = useCallback(() => {
+    router.push(
+      `${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(
+        "/example/webshop"
+      )}`
+    );
+  }, []);
 
   const onChangeFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -161,8 +173,44 @@ export const PreviewForm: FC<PreviewFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Box margin="$md">
-        <Card>
+      <Stack
+        margin="$md"
+        direction={{ xs: "column", sm: "column", md: "row" }}
+        gap="$md"
+      >
+        <Card fullWidth>
+          <InputWrapper htmlFor="publicKey" label="Public Key">
+            <Controller
+              control={control}
+              name="publicKey"
+              defaultValue={getValues("publicKeyList")[0]}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <Select
+                  id="select-public-key"
+                  ariaLabel="Public Key"
+                  {...field}
+                >
+                  {getValues("publicKeyList").map((key: string) => (
+                    <option key={key} value={key}>
+                      {key}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            />
+          </InputWrapper>
+          <Box marginY="$md">
+            <Link
+              href={`${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(
+                "/pact"
+              )}`}
+            >
+              Select account
+            </Link>
+          </Box>
+        </Card>
+        <Card fullWidth>
           <InputWrapper htmlFor="publicKey" label="Chain ID">
             <Controller
               control={control}
@@ -199,35 +247,6 @@ export const PreviewForm: FC<PreviewFormProps> = ({
               )}
             />
           </InputWrapper>
-          <InputWrapper htmlFor="publicKey" label="Public Key">
-            <Controller
-              control={control}
-              name="publicKey"
-              defaultValue={getValues("publicKeyList")[0]}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <Select
-                  id="select-public-key"
-                  ariaLabel="Public Key"
-                  {...field}
-                >
-                  {getValues("publicKeyList").map((key: string) => (
-                    <option key={key} value={key}>
-                      {key}
-                    </option>
-                  ))}
-                </Select>
-              )}
-            />
-          </InputWrapper>
-          <InputWrapper htmlFor="alias" label="alias">
-            <Input
-              id="alias"
-              {...register("alias", {
-                onBlur: onAliasChange,
-              })}
-            />
-          </InputWrapper>
           <InputWrapper htmlFor="senderAccount" label="sender">
             <Input id="senderAccount" {...register("senderAccount")} />
           </InputWrapper>
@@ -241,6 +260,8 @@ export const PreviewForm: FC<PreviewFormProps> = ({
             />
           </InputWrapper>
         </Card>
+      </Stack>
+      <Stack margin="$md" direction="column">
         <InputWrapper htmlFor="code" label="pact code">
           <textarea
             id="code"
@@ -294,7 +315,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
             {...register("capabilities")}
           />
         </InputWrapper>
-      </Box>
+      </Stack>
 
       <Stack direction="column" margin="$md" justifyContent="flex-start">
         {formState.errors.root && (
