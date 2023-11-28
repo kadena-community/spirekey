@@ -10,7 +10,7 @@ import {
 } from "@kadena/react-ui";
 import { Controller, useForm } from "react-hook-form";
 import { l1Client } from "../utils/client";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import {
   parseContractData,
   readFile,
@@ -77,7 +77,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
 
   const onAliasChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
-      const { name, devices } = await getAccount(event.target.value);
+      const { name, devices } = await getAccount(l1Client)(event.target.value);
       setValue("publicKey", devices[0]["credential-pubkey"]);
       setValue(
         "publicKeyList",

@@ -12,6 +12,7 @@ import {
 } from "@kadena/react-ui";
 import { useCallback, useEffect, useState } from "react";
 import { getAccount } from "../utils/account";
+import { l1Client } from "../utils/client";
 
 type LoginProps = {
   searchParams: {
@@ -55,7 +56,7 @@ export default function Login({ searchParams }: LoginProps) {
     Promise.all(
       accs.map(async (acc: string) => ({
         name: acc,
-        account: await getAccount(acc),
+        account: await getAccount(l1Client)(acc),
       }))
     )
       .then((accs) => {
