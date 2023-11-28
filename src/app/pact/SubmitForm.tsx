@@ -16,7 +16,7 @@ export const SubmitForm: FC<PreviewFormProps> = ({ values, onCancel }) => {
     router.push(
       `${process.env.WALLET_URL}/sign?payload=${values.payload}&cid=${
         values.cid
-      }&returnUrl=${getReturnUrl("pact/submit")}`
+      }&returnUrl=${getReturnUrl("/pact/submit")}`
     );
   };
 

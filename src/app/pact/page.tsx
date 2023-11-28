@@ -5,7 +5,12 @@ import { useState } from "react";
 import { PreviewForm, PreviewFormValues } from "./PreviewForm";
 import { SubmitForm } from "./SubmitForm";
 
-export default function Upload() {
+type PactProps = {
+  searchParams: {
+    response: string;
+  };
+};
+export default function Pact({ searchParams }: PactProps) {
   const [cancelled, setCancelled] = useState<boolean>(false);
   const [previewData, setPreviewData] = useState<PreviewFormValues | null>(
     null
@@ -35,7 +40,11 @@ export default function Upload() {
             onCancel={() => setCancelled(true)}
           />
         ) : (
-          <PreviewForm onSubmit={onSubmitPreview} defaults={previewData} />
+          <PreviewForm
+            searchParams={searchParams}
+            onSubmit={onSubmitPreview}
+            defaults={previewData}
+          />
         )}
       </Stack>
     </main>
