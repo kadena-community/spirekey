@@ -1,4 +1,4 @@
-import { createTransaction } from "@kadena/client";
+import { createTransaction, IClient } from "@kadena/client";
 import {
   composePactCommand,
   execution,
@@ -6,9 +6,8 @@ import {
   setNetworkId,
 } from "@kadena/client/fp";
 import { asyncPipe } from "./asyncPipe";
-import { l1Client } from "./client";
 
-export const getAccount = async (alias: string) =>
+export const getAccount = (client: IClient) => async (alias: string) =>
   asyncPipe(
     composePactCommand(
       execution(
@@ -24,7 +23,7 @@ export const getAccount = async (alias: string) =>
       setNetworkId("fast-development")
     ),
     createTransaction,
-    (tx) => l1Client.local(tx, { preflight: false }),
+    (tx) => client.local(tx, { preflight: false }),
     (tx) => {
       const [name, devices, balance] = tx.result.data;
       return {

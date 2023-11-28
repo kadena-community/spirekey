@@ -1,25 +1,25 @@
+import { getReturnUrl } from "@/utils/url";
+import { createTransaction } from "@kadena/client";
 import {
-  Box,
   Button,
+  Card,
   Input,
+  InputWrapper,
+  Select,
   Stack,
   Text,
-  Select,
-  InputWrapper,
-  Card,
+  TrackerCard,
 } from "@kadena/react-ui";
-import { Controller, useForm } from "react-hook-form";
-import { l1Client } from "../utils/client";
 import { FC, useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { asyncPipe } from "../utils/asyncPipe";
+import { l1Client } from "../utils/client";
 import {
   parseContractData,
   readFile,
   uploadModuleTransaction,
   validateJson,
 } from "./pact.utils";
-import { createTransaction } from "@kadena/client";
-import { asyncPipe } from "../utils/asyncPipe";
-import { getAccount } from "../utils/account";
 
 const FORM_DEFAULT = {
   chainId: "14",
@@ -41,11 +41,30 @@ export type PreviewFormValues = typeof FORM_DEFAULT;
 type PreviewFormProps = {
   defaults?: PreviewFormValues | null;
   onSubmit: (data: PreviewFormValues) => void;
+  searchParams: {
+    response: string;
+  };
 };
 
+type Account = {
+  name: string;
+  waccount: string;
+  caccount: string;
+  publicKey: string;
+  cid: string;
+};
+
+const decodeAccount = (response: string) => {
+  if (!response) return null;
+  const account: Account = JSON.parse(
+    Buffer.from(response, "base64").toString()
+  );
+  return account;
+};
 export const PreviewForm: FC<PreviewFormProps> = ({
   defaults,
   onSubmit: onSubmitForm,
+  searchParams,
 }) => {
   const {
     handleSubmit,
@@ -59,6 +78,9 @@ export const PreviewForm: FC<PreviewFormProps> = ({
     defaultValues: defaults ?? FORM_DEFAULT,
     reValidateMode: "onBlur",
   });
+
+  const { response } = searchParams;
+  const account = decodeAccount(response);
 
   const onChangeFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -75,20 +97,13 @@ export const PreviewForm: FC<PreviewFormProps> = ({
     }
   };
 
-  const onAliasChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      const { name, devices } = await getAccount(event.target.value);
-      setValue("publicKey", devices[0]["credential-pubkey"]);
-      setValue(
-        "publicKeyList",
-        devices.map((d: any) => d["credential-pubkey"])
-      );
-      setValue("senderAccount", name);
-      setValue("cid", devices[0]["credential-id"]);
-    } catch (error) {
-      console.error(error);
+  useEffect(() => {
+    if (account) {
+      setValue("publicKey", account.publicKey);
+      setValue("senderAccount", account.caccount);
+      setValue("cid", account.cid);
     }
-  };
+  }, [account]);
 
   const onCodeChange = async (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -161,86 +176,84 @@ export const PreviewForm: FC<PreviewFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Box margin="$md">
-        <Card>
-          <InputWrapper htmlFor="publicKey" label="Chain ID">
-            <Controller
-              control={control}
-              name="chainId"
-              rules={{ required: true }}
-              render={({ field }) => (
-                <Select id="select-chain-id" ariaLabel="Chain ID" {...field}>
-                  {Array.from({ length: 20 }, (_, i) => i).map((i) => (
-                    <option key={i} value={i}>
-                      {i}
-                    </option>
-                  ))}
-                </Select>
-              )}
-            />
-          </InputWrapper>
-          <InputWrapper htmlFor="networkdId" label="Network ID">
-            <Controller
-              control={control}
-              name="networkdId"
-              rules={{ required: true }}
-              render={({ field }) => (
-                <Select
-                  id="select-network-id"
-                  ariaLabel="Network ID"
-                  {...field}
-                >
-                  {["fast-development", "testnet04", "mainnet01"].map((i) => (
-                    <option key={i} value={i}>
-                      {i}
-                    </option>
-                  ))}
-                </Select>
-              )}
-            />
-          </InputWrapper>
-          <InputWrapper htmlFor="publicKey" label="Public Key">
-            <Controller
-              control={control}
-              name="publicKey"
-              defaultValue={getValues("publicKeyList")[0]}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <Select
-                  id="select-public-key"
-                  ariaLabel="Public Key"
-                  {...field}
-                >
-                  {getValues("publicKeyList").map((key: string) => (
-                    <option key={key} value={key}>
-                      {key}
-                    </option>
-                  ))}
-                </Select>
-              )}
-            />
-          </InputWrapper>
-          <InputWrapper htmlFor="alias" label="alias">
-            <Input
-              id="alias"
-              {...register("alias", {
-                onBlur: onAliasChange,
-              })}
-            />
-          </InputWrapper>
-          <InputWrapper htmlFor="senderAccount" label="sender">
-            <Input id="senderAccount" {...register("senderAccount")} />
-          </InputWrapper>
-          <InputWrapper htmlFor="file" label="pact module file">
-            <Input
-              id="file"
-              type="file"
-              {...register("file", {
-                onChange: onChangeFile,
-              })}
-            />
-          </InputWrapper>
-        </Card>
+      <Button
+        as="a"
+        variant="alternative"
+        href={`${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(
+          "/pact"
+        )}`}
+      >
+        Select account
+      </Button>
+      {account && (
+        <TrackerCard
+          icon="ManageKda"
+          labelValues={[
+            {
+              label: "Account",
+              value: account.caccount,
+              isAccount: true,
+            },
+            {
+              label: "Display Name",
+              value: account.name,
+            },
+            {
+              label: "Device",
+              value: account.cid,
+            },
+            {
+              label: "Public key",
+              value: account.publicKey,
+            },
+          ]}
+          helperText="This is the account you will use to login."
+        />
+      )}
+      <Card fullWidth>
+        <InputWrapper htmlFor="publicKey" label="Chain ID">
+          <Controller
+            control={control}
+            name="chainId"
+            rules={{ required: true }}
+            render={({ field }) => (
+              <Select id="select-chain-id" ariaLabel="Chain ID" {...field}>
+                {Array.from({ length: 20 }, (_, i) => i).map((i) => (
+                  <option key={i} value={i}>
+                    {i}
+                  </option>
+                ))}
+              </Select>
+            )}
+          />
+        </InputWrapper>
+        <InputWrapper htmlFor="networkdId" label="Network ID">
+          <Controller
+            control={control}
+            name="networkdId"
+            rules={{ required: true }}
+            render={({ field }) => (
+              <Select id="select-network-id" ariaLabel="Network ID" {...field}>
+                {["fast-development", "testnet04", "mainnet01"].map((i) => (
+                  <option key={i} value={i}>
+                    {i}
+                  </option>
+                ))}
+              </Select>
+            )}
+          />
+        </InputWrapper>
+        <InputWrapper htmlFor="file" label="pact module file">
+          <Input
+            id="file"
+            type="file"
+            {...register("file", {
+              onChange: onChangeFile,
+            })}
+          />
+        </InputWrapper>
+      </Card>
+      <Stack margin="$md" direction="column">
         <InputWrapper htmlFor="code" label="pact code">
           <textarea
             id="code"
@@ -294,8 +307,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
             {...register("capabilities")}
           />
         </InputWrapper>
-      </Box>
-
+      </Stack>
       <Stack direction="column" margin="$md" justifyContent="flex-start">
         {formState.errors.root && (
           <div style={{ marginBottom: "0.5rem" }}>
