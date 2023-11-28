@@ -7,6 +7,7 @@ const nextConfig = {
   env: {
     CHAINWEB_URL: process.env.CHAINWEB_URL,
     WALLET_URL: process.env.WALLET_URL,
+    STRING_SIG: true,
   },
 };
 

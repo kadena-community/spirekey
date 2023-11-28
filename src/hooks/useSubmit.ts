@@ -7,6 +7,39 @@ type SearchParams = {
   response: string;
 };
 
+type SignResponse = {
+  signature: string;
+  authenticatorData: string;
+  clientDataJSON: string;
+};
+const getSig = (response: SignResponse) => {
+  if (process.env.STRING_SIG)
+    return {
+      sig: JSON.stringify({
+        signature: Buffer.from(
+          base64URLStringToBuffer(response.signature)
+        ).toString("base64"),
+        authenticatorData: Buffer.from(
+          base64URLStringToBuffer(response.authenticatorData)
+        ).toString("base64"),
+        clientDataJSON: Buffer.from(
+          base64URLStringToBuffer(response.clientDataJSON)
+        ).toString("base64"),
+      }),
+    };
+  return {
+    sig: Buffer.from(base64URLStringToBuffer(response.signature)).toString(
+      "base64"
+    ),
+    authenticatorData: Buffer.from(
+      base64URLStringToBuffer(response.authenticatorData)
+    ).toString("base64"),
+    clientDataJSON: Buffer.from(
+      base64URLStringToBuffer(response.clientDataJSON)
+    ).toString("base64"),
+  };
+};
+
 export const useSubmit = (searchParams: SearchParams) => {
   const { payload, response } = searchParams;
   const [result, setResult] = useState<any>({});
@@ -18,20 +51,7 @@ export const useSubmit = (searchParams: SearchParams) => {
     const tx = {
       ...p,
       // @TODO: this needs to map the signature to the correct index within the signatures array
-      sigs: [
-        {
-          sig: Buffer.from(
-            base64URLStringToBuffer(r.response.signature)
-          ).toString("base64"),
-          authenticatorData: Buffer.from(
-            base64URLStringToBuffer(r.response.authenticatorData)
-          ).toString("base64"),
-          clientDataJSON: Buffer.from(
-            base64URLStringToBuffer(r.response.clientDataJSON)
-          ).toString("base64"),
-        },
-        ...p.sigs,
-      ].filter(Boolean),
+      sigs: [getSig(r.response), ...p.sigs].filter(Boolean),
     };
     l1Client
       .local(tx)
