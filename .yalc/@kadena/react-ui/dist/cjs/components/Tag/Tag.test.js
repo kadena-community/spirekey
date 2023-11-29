@@ -6,11 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Tag_1 = require("../Tag");
 const react_1 = require("@testing-library/react");
 const react_2 = __importDefault(require("react"));
-describe('Tag', () => {
-    test('renders correctly', () => {
+const vitest_1 = require("vitest");
+(0, vitest_1.describe)('Tag', () => {
+    (0, vitest_1.test)('renders correctly', () => {
         const { getByTestId } = (0, react_1.render)(react_2.default.createElement(Tag_1.Tag, null, "Hello, Tag!"));
         const tagContainer = getByTestId('kda-tag');
-        expect(tagContainer).toBeInTheDocument();
+        (0, vitest_1.expect)(tagContainer).toBeInTheDocument();
     });
 });
 //# sourceMappingURL=Tag.test.js.map

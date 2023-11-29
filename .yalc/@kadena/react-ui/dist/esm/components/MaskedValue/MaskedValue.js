@@ -2,15 +2,16 @@
 import { SystemIcon } from '../Icon';
 import React, { useState } from 'react';
 import { iconContainer, titleContainer, valueContainer, valueIconContainer, } from './MaskedValue.css';
+import { maskValue } from './utils';
 export const MaskedValue = ({ title, value, defaultVisibility = false, startUnmaskedValues = 6, endUnmaskedValues = 4, }) => {
     const [visible, setVisible] = useState(defaultVisibility);
     const toggleVisibility = () => {
         setVisible(!visible);
     };
-    let maskedValue = value;
-    if (startUnmaskedValues + endUnmaskedValues <= value.length - 1) {
-        maskedValue = `${value.slice(0, startUnmaskedValues)}****${value.slice(-endUnmaskedValues)}`;
-    }
+    const maskedValue = maskValue(value, {
+        headLength: startUnmaskedValues,
+        tailLength: endUnmaskedValues,
+    });
     return (React.createElement("div", { "data-testid": "kda-masked-value" },
         React.createElement("div", { className: titleContainer }, title),
         React.createElement("div", { className: valueIconContainer },

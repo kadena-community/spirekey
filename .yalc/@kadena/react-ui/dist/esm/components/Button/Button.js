@@ -43,6 +43,6 @@ export const Button = ({ active = false, as = 'button', asChild = false, childre
     if (renderAsAnchor) {
         return (React.createElement("a", { "aria-label": ariaLabel, className: buttonClassname, "data-testid": "kda-button", href: href, target: target }, getContents(children)));
     }
-    return (React.createElement("button", { ...restProps, "aria-label": ariaLabel, className: buttonClassname, "data-testid": "kda-button", type: type }, getContents(children)));
+    return (React.createElement("button", { ...restProps, "aria-label": ariaLabel, className: buttonClassname, type: type }, getContents(children)));
 };
 //# sourceMappingURL=Button.js.map

@@ -1,45 +1,131 @@
-import { IconButton } from '../IconButton';
+import { Button } from '../Button';
+import { SystemIcon } from '../Icon';
+import { Box, Stack } from '../Layout';
+import { Tooltip } from '../Tooltip';
 import { withCenteredStory } from '../../utils/withCenteredStory';
-import React, { useRef } from 'react';
-import { Tooltip } from './';
-import { container } from './stories.css';
+import React from 'react';
 const meta = {
-    title: 'Components/Tooltip',
-    component: Tooltip.Root,
+    title: 'Overlays/Tooltip',
+    component: Tooltip,
     decorators: [withCenteredStory],
     parameters: {
+        status: {
+            type: ['releaseCandidate'],
+        },
         docs: {
             description: {
-                component: 'The Tooltip component renders a tooltip with text. The placement of the tooltip can be set with the `placement` prop. The tooltip can be triggered by hovering over the `IconButton` component.',
+                component: 'The Tooltip component renders a tooltip with content when the user hovers or focuses the element passed as children.',
             },
         },
     },
     argTypes: {
-        text: {
+        content: {
+            description: 'The content that will be rendered inside the tooltip. This can be a string or a ReactNode.',
             control: {
                 type: 'text',
             },
         },
-        placement: {
-            options: ['top', 'bottom', 'left', 'right'],
-            control: {
-                type: 'select',
+        position: {
+            description: 'The position of the tooltip relative to the element that triggers it.',
+            table: {
+                defaultValue: { summary: 'right' },
+            },
+        },
+        delay: {
+            description: 'The delay in milliseconds before the tooltip is shown when the user hovers or focuses the element.',
+            table: {
+                defaultValue: { summary: 500 },
+            },
+        },
+        closeDelay: {
+            description: 'The delay in milliseconds before the tooltip is hidden when the user stops hovering or focusing the element.',
+            table: {
+                defaultValue: { summary: 300 },
+            },
+        },
+        isDisabled: {
+            description: 'Disables the tooltip when set to true.',
+            table: {
+                defaultValue: { summary: false },
+            },
+        },
+        isOpen: {
+            description: 'Allows the user to control the open state of the tooltip.',
+            table: {
+                defaultValue: { summary: false },
+            },
+        },
+        defaultOpen: {
+            description: 'Sets the initial open state of the tooltip.',
+            table: {
+                defaultValue: { summary: false },
             },
         },
     },
 };
 export default meta;
 export const Dynamic = {
-    name: 'Tooltip',
+    name: 'Tooltip with Text',
     args: {
-        text: "I'm a tooltip, look at me!",
-        placement: 'right',
+        content: "I'm a tooltip, look at me!",
+        position: 'right',
+        isDisabled: false,
+        delay: 500,
+        closeDelay: 300,
     },
-    render: ({ text, placement }) => {
-        const ref = useRef(null);
-        return (React.createElement("div", { className: container },
-            React.createElement(IconButton, { title: "hover me", icon: "Information", onMouseEnter: (e) => Tooltip.handler(e, ref), onMouseLeave: (e) => Tooltip.handler(e, ref) }),
-            React.createElement(Tooltip.Root, { placement: placement, ref: ref }, text)));
+    render: ({ content, position, isDisabled, delay, closeDelay }) => {
+        return (React.createElement(Box, { margin: "$25" },
+            React.createElement(Tooltip, { content: content, position: position, isDisabled: isDisabled, delay: delay, closeDelay: closeDelay },
+                React.createElement(Button, null, "Trigger"))));
+    },
+};
+export const TooltipReactNode = {
+    name: 'Tooltip with components',
+    args: {
+        position: 'right',
+        isDisabled: false,
+        delay: 500,
+        closeDelay: 300,
+    },
+    render: ({ position, isDisabled, delay, closeDelay }) => {
+        return (React.createElement(Box, { margin: "$25" },
+            React.createElement(Tooltip, { position: position, isDisabled: isDisabled, delay: delay, closeDelay: closeDelay, content: React.createElement(Stack, { direction: "row", gap: "$xs", alignItems: "center" },
+                    React.createElement(SystemIcon.AlertBox, null),
+                    React.createElement("code", null, "I have an icon!")) },
+                React.createElement(Button, null, "Trigger"))));
+    },
+};
+export const DefaultOpen = {
+    name: 'Tooltip that is set to defaultOpen',
+    args: {
+        content: "I'm a tooltip, look at me!",
+        position: 'right',
+        isDisabled: false,
+        delay: 500,
+        closeDelay: 300,
+    },
+    render: ({ content, position, isDisabled, delay, closeDelay }) => {
+        return (React.createElement(Box, { margin: "$25" },
+            React.createElement(Tooltip, { content: content, position: position, isDisabled: isDisabled, delay: delay, closeDelay: closeDelay, defaultOpen: true },
+                React.createElement(Button, null, "Trigger"))));
+    },
+};
+export const Controlled = {
+    name: 'Tooltip that is controlled by a button',
+    args: {
+        content: "I'm a tooltip, look at me!",
+        position: 'right',
+        isDisabled: false,
+        delay: 500,
+        closeDelay: 300,
+    },
+    render: ({ content, position, isDisabled, delay, closeDelay }) => {
+        const [isOpen, setIsOpen] = React.useState(false);
+        return (React.createElement(Box, { display: "flex", flexDirection: "column", alignItems: "center" },
+            React.createElement(Button, { onClick: () => setIsOpen(!isOpen) }, isOpen ? 'Hide Tooltip' : 'Show Tooltip'),
+            React.createElement(Box, { margin: "$25" },
+                React.createElement(Tooltip, { content: content, position: position, isDisabled: isDisabled, delay: delay, closeDelay: closeDelay, isOpen: isOpen },
+                    React.createElement(SystemIcon.AlertBox, null)))));
     },
 };
 //# sourceMappingURL=Tooltip.stories.js.map

@@ -50,7 +50,7 @@ export const vars = createGlobalTheme(':root', {
         $md: '2px',
     },
     shadows: {
-        $1: `0px 1px 2px 0 $colors$gray40`,
+        $1: `0px 1px 2px 0 ${colorPalette.$gray90}`,
     },
     sizes: {
         0: '0',
@@ -91,6 +91,9 @@ export const vars = createGlobalTheme(':root', {
         $xl: 'var(--spacing-xl)',
         $2xl: 'var(--spacing-2xl)',
         $3xl: 'var(--spacing-3xl)',
+    },
+    contentWidth: {
+        $maxContentWidth: '42.5rem',
     },
     colors: {
         ...colorPalette,

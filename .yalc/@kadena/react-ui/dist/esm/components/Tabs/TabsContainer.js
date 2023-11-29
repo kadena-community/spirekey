@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Tab } from './Tab';
 import { TabContent } from './TabContent';
 import { selectorLine, tabsContainer, tabsContainerWrapper } from './Tabs.css';
-export const TabsContainer = ({ children, initialTab = undefined, currentTab = undefined, }) => {
+export const TabsContainer = ({ children, initialTab = undefined, currentTab = undefined, ...props }) => {
     const [_activeTab, setActiveTab] = useState(initialTab);
     const activeTab = currentTab || _activeTab;
     const containerRef = useRef(null);
@@ -21,7 +21,7 @@ export const TabsContainer = ({ children, initialTab = undefined, currentTab = u
     const handleClick = (tabId) => {
         setActiveTab(tabId);
     };
-    return (React.createElement("section", null,
+    return (React.createElement("section", { ...props },
         React.createElement("div", { className: tabsContainerWrapper },
             React.createElement("div", { ref: containerRef, className: tabsContainer },
                 React.Children.map(children, (child) => {

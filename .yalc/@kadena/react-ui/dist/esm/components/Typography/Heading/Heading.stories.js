@@ -5,6 +5,11 @@ import { boldVariants, elementVariants } from './Heading.css';
 const meta = {
     title: 'Typography/Heading',
     component: Heading,
+    parameters: {
+        status: {
+            type: ['needsRevision'],
+        },
+    },
     argTypes: {
         children: {
             control: { type: 'text' },

@@ -4,35 +4,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Primary = void 0;
-const Icon_1 = require("../Icon");
 const Notification_1 = require("../Notification");
 const react_1 = __importDefault(require("react"));
+const __1 = require("..");
 const Notification_css_1 = require("./Notification.css");
 const meta = {
     title: 'Components/Notification',
     parameters: {
+        status: {
+            type: ['inDevelopment'],
+        },
         docs: {
             description: {
-                component: 'The Notification component renders a notification with an icon, title, and text. The color variant of the notification can be set with the `color` prop.',
+                component: 'The Notification component renders a notification with an icon, heading, body, and action buttons. This component is used to announce dynamic changes in the content of a live region by asserting a discreet alert or notification. The appropriate role should be used to ensure that assistive technologies announce these dynamic changes. In the case where a user wants to use the Notification component purely for visual purposes, the role can be set to `none`.',
             },
         },
     },
     argTypes: {
-        variant: {
+        styleVariant: {
+            description: 'The Notification component has bordered and borderless variants. The borderless variant is used for notifications that located within a card or content body, while the bordered variant can be used in all other cases. ',
             options: Object.keys(Notification_css_1.displayVariants),
             control: {
                 type: 'select',
             },
-        },
-        icon: {
-            options: Object.keys(Icon_1.SystemIcon),
-            control: {
-                type: 'select',
-            },
-        },
-        title: {
-            control: {
-                type: 'text',
+            table: {
+                defaultValue: { summary: 'bordered' },
             },
         },
         color: {
@@ -41,19 +37,24 @@ const meta = {
                 type: 'select',
             },
         },
-        expanded: {
-            control: {
-                type: 'boolean',
-            },
-        },
         hasCloseButton: {
             control: {
                 type: 'boolean',
             },
         },
-        inline: {
+        children: {
             control: {
-                type: 'boolean',
+                type: 'text',
+            },
+        },
+        role: {
+            description: "The Notification component has a role attribute that can be set to 'alert', 'status', or 'none'.",
+            options: ['alert', 'status', 'none'],
+            control: {
+                type: 'select',
+            },
+            table: {
+                defaultValue: { summary: 'status' },
             },
         },
     },
@@ -62,23 +63,25 @@ exports.default = meta;
 exports.Primary = {
     name: 'Notification',
     args: {
-        icon: 'Information',
-        title: 'Notification title',
+        heading: 'Notification Heading',
         hasCloseButton: true,
-        expanded: false,
         color: undefined,
-        text: 'Notification text to inform users about the event that occurred!',
-        variant: 'standard',
-        inline: false,
+        children: 'Notification children to inform users about the event that occurred!',
+        styleVariant: 'bordered',
     },
-    render: ({ icon, title, hasCloseButton, expanded, color, text, variant, inline, }) => {
-        return (react_1.default.createElement(Notification_1.Notification.Root, { icon: icon, expanded: expanded, color: color, title: title, hasCloseButton: hasCloseButton, onClose: () => {
+    render: ({ heading, hasCloseButton, color, children, styleVariant }) => {
+        return (react_1.default.createElement(Notification_1.Notification, { color: color, hasCloseButton: hasCloseButton, onClose: () => {
                 alert('Close button clicked');
-            }, variant: variant, inline: inline },
-            text,
-            react_1.default.createElement(Notification_1.Notification.Actions, null,
-                react_1.default.createElement(Notification_1.Notification.Button, { icon: "Check", color: 'positive' }, "Accept"),
-                react_1.default.createElement(Notification_1.Notification.Button, { icon: "Close", color: 'negative' }, "Reject"))));
+            }, styleVariant: styleVariant, role: "none" },
+            react_1.default.createElement(Notification_1.NotificationHeading, null, heading),
+            children,
+            react_1.default.createElement(Notification_1.NotificationFooter, null,
+                react_1.default.createElement(Notification_1.NotificationButton, { color: "positive" },
+                    "Accept",
+                    react_1.default.createElement(__1.SystemIcon.Check, null)),
+                react_1.default.createElement(Notification_1.NotificationButton, { color: "negative" },
+                    "Reject",
+                    react_1.default.createElement(__1.SystemIcon.Close, null)))));
     },
 };
 //# sourceMappingURL=Notification.stories.js.map

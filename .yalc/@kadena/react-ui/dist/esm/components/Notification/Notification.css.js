@@ -1,36 +1,22 @@
 import { sprinkles } from '../../styles/sprinkles.css';
 import { vars } from '../../styles/vars.css';
-import { style, styleVariants } from '@vanilla-extract/css';
+import { createVar, style, styleVariants } from '@vanilla-extract/css';
+const accentVar = createVar();
+export const containerClass = style([
+    sprinkles({
+        display: 'flex',
+        alignItems: 'flex-start',
+        padding: '$sm',
+        gap: '$sm',
+        width: '100%',
+    }),
+]);
 export const colorVariants = {
     info: 'info',
     positive: 'positive',
     warning: 'warning',
     negative: 'negative',
-    primary: 'primary',
 };
-export const containerClass = style([
-    sprinkles({
-        display: 'flex',
-        alignItems: 'flex-start',
-        borderStyle: 'solid',
-        justifyContent: 'center',
-    }),
-    {
-        borderLeftWidth: vars.sizes.$1,
-    },
-]);
-export const containerWrapperClass = style([
-    sprinkles({
-        padding: '$md',
-        display: 'flex',
-        width: '100%',
-        alignItems: 'flex-start',
-        gap: '$md',
-    }),
-    {
-        maxWidth: 1440,
-    },
-]);
 export const cardColorVariants = styleVariants(colorVariants, (color) => {
     return [
         sprinkles({
@@ -38,29 +24,25 @@ export const cardColorVariants = styleVariants(colorVariants, (color) => {
             borderColor: `$${color}ContrastInverted`,
             color: `$${color}ContrastInverted`,
         }),
+        {
+            vars: {
+                [accentVar]: vars.colors[`$${color}ContrastInverted`],
+            },
+        },
     ];
 });
-export const expandVariants = styleVariants({
-    true: [sprinkles({ width: '100%', maxWidth: '100%' })],
-    false: [sprinkles({ width: 'max-content', maxWidth: 'maxContent' })],
-});
 export const displayVariants = styleVariants({
-    outlined: [sprinkles({ borderWidth: '$sm', borderRadius: '$sm' })],
-    standard: [sprinkles({ border: 'none', borderRadius: 0 })],
-});
-export const inlineVariants = styleVariants({
-    true: [
+    bordered: [
         sprinkles({
-            display: 'flex',
-            alignItems: {
-                md: 'flex-start',
-            },
-            flexDirection: {
-                md: 'row',
-            },
+            borderStyle: 'solid',
+            borderWidth: '$sm',
+            borderRadius: '$sm',
         }),
+        {
+            borderLeftWidth: vars.sizes.$1,
+        },
     ],
-    false: [],
+    borderless: [],
 });
 export const closeButtonClass = style([
     sprinkles({
@@ -74,10 +56,10 @@ export const closeButtonClass = style([
 ]);
 export const contentClass = style([
     sprinkles({
-        display: 'flex',
-        flexDirection: 'column',
+        color: '$neutral6',
+        fontSize: '$base',
         gap: '$xs',
-        width: '100%',
+        maxWidth: '$maxContentWidth',
     }),
     {
         marginTop: 2,
@@ -85,23 +67,20 @@ export const contentClass = style([
 ]);
 export const titleClass = style([
     sprinkles({
-        color: 'inherit',
         fontSize: '$base',
         fontWeight: '$bold',
+        marginBottom: '$xs',
     }),
-]);
-export const descriptionClass = style([
-    sprinkles({
-        color: '$neutral6',
-        fontSize: '$base',
-    }),
+    {
+        color: accentVar,
+    },
 ]);
 export const actionsContainerClass = style([
     sprinkles({
-        marginTop: '$lg',
+        marginTop: '$md',
         display: 'flex',
         justifyContent: 'flex-start',
-        gap: '$12',
+        gap: '$xl',
     }),
 ]);
 const actionButtonClass = style([
@@ -127,4 +106,10 @@ export const actionButtonColorVariants = styleVariants(colorVariants, (color) =>
         }),
     ];
 });
+export const iconClass = style([
+    sprinkles({
+        color: 'inherit',
+        size: '$6',
+    }),
+]);
 //# sourceMappingURL=Notification.css.js.map

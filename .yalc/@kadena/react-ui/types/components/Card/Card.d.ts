@@ -3,7 +3,6 @@ import React from 'react';
 export interface ICardProps {
     children: React.ReactNode;
     fullWidth?: boolean;
-    stack?: boolean;
     disabled?: boolean;
 }
 export declare const Card: FC<ICardProps>;

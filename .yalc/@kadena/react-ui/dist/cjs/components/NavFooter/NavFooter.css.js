@@ -6,7 +6,7 @@ const vars_css_1 = require("../../styles/vars.css");
 const css_1 = require("@vanilla-extract/css");
 exports.containerClass = (0, css_1.style)([
     (0, sprinkles_css_1.sprinkles)({
-        maxWidth: { xs: 'maxContent', sm: '100%' },
+        maxWidth: { xs: '$maxContentWidth', sm: '100%' },
         height: 'min-content',
         alignItems: 'stretch',
         display: 'flex',

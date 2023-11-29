@@ -1,11 +1,11 @@
 import { Card } from '../Card';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
+import { describe, expect, test } from 'vitest';
 describe('Card', () => {
     test('renders correctly', () => {
-        const { getByTestId } = render(React.createElement(Card, null, "Hello, Card!"));
-        const cardContainer = getByTestId('kda-card');
-        expect(cardContainer).toBeInTheDocument();
+        render(React.createElement(Card, null, "Hello, Card!"));
+        expect(screen.getByText('Hello, Card!')).toBeInTheDocument();
     });
 });
 //# sourceMappingURL=Card.test.js.map

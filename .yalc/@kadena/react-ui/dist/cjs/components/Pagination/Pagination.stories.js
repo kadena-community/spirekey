@@ -4,12 +4,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Uncontrolled = exports.Controlled = void 0;
+const Stack_1 = require("../Layout/Stack");
 const Pagination_1 = require("../Pagination");
-const Stack_1 = require("../Stack");
 const react_1 = __importDefault(require("react"));
 const meta = {
-    title: 'Navigation/Pagination',
+    title: 'Components/Pagination',
     parameters: {
+        status: {
+            type: ['inDevelopment'],
+        },
         docs: {
             description: {
                 component: 'This is a navigation component that is used to visually represent and provide interaction elements for pagination. I provides previous and next buttons as well as a subset of the available pages closest to the selected page.<br><br><i>This component has a controlled and uncontrolled state. When a currentPage is not provided, the component will track state internally.</i>',

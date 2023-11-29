@@ -1,5 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
+import { describe, expect, test, vi } from 'vitest';
 import { Tree } from './Tree';
 describe('Tree', () => {
     test('renders without title', () => {
@@ -13,8 +14,8 @@ describe('Tree', () => {
         expect(treeTitleElement).toBeInTheDocument();
     });
     test('expands/collapses on click', () => {
-        const onOpen = jest.fn();
-        const onClose = jest.fn();
+        const onOpen = vi.fn();
+        const onClose = vi.fn();
         const { getAllByTestId } = render(React.createElement(Tree, { title: 'Example Title', items: [{ title: 'Child Title' }], onOpen: onOpen, onClose: onClose }));
         const treeTitleElement = getAllByTestId('kda-tree-title')[0];
         expect(onOpen).toHaveBeenCalledTimes(0);
@@ -28,10 +29,10 @@ describe('Tree', () => {
         expect(onClose).toHaveBeenCalledTimes(1);
     });
     test('expands/collapses on click while linked prop is true', () => {
-        const onOpenFirst = jest.fn();
-        const onCloseFirst = jest.fn();
-        const onOpenSecond = jest.fn();
-        const onCloseSecond = jest.fn();
+        const onOpenFirst = vi.fn();
+        const onCloseFirst = vi.fn();
+        const onOpenSecond = vi.fn();
+        const onCloseSecond = vi.fn();
         const { getAllByTestId } = render(React.createElement(Tree, { title: 'Example Title', isOpen: true, linked: true, items: [
                 {
                     title: 'First Child Title',
@@ -65,8 +66,8 @@ describe('Tree', () => {
         expect(onCloseSecond).toHaveBeenCalledTimes(1);
     });
     test('renders child items when expanded, and callbacks should not get called when there is no grand child', () => {
-        const onChildOpen = jest.fn();
-        const onChildClose = jest.fn();
+        const onChildOpen = vi.fn();
+        const onChildClose = vi.fn();
         const { getAllByTestId } = render(React.createElement(Tree, { title: 'Example Title', items: [
                 {
                     title: 'Child Title',
@@ -85,8 +86,8 @@ describe('Tree', () => {
         expect(onChildClose).toHaveBeenCalledTimes(0);
     });
     test('renders child items when expanded, and callbacks should get called when there is grand child', () => {
-        const onChildOpen = jest.fn();
-        const onChildClose = jest.fn();
+        const onChildOpen = vi.fn();
+        const onChildClose = vi.fn();
         const { getAllByTestId } = render(React.createElement(Tree, { title: 'Example Title', items: [
                 {
                     title: 'Child Title',

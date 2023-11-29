@@ -1,1 +1,0 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../src/components/ProfileCard/index.ts"],"names":[],"mappings":";;;AACA,+CAA4C;AAEX,4FAFxB,yBAAW,OAEwB","sourcesContent":["import type { IProfileCardProps } from './ProfileCard';\nimport { ProfileCard } from './ProfileCard';\n\nexport { type IProfileCardProps, ProfileCard };\n"]}

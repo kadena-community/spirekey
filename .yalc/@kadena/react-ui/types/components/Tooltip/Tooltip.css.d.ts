@@ -1,4 +1,3 @@
-export declare const container: string;
-export declare const arrowVariants: Record<"bottom" | "left" | "right" | "top", string>;
-export declare const visibleClass: string;
+export declare const base: string;
+export declare const tooltipPositionVariants: Record<"bottom" | "left" | "right" | "top", string>;
 //# sourceMappingURL=Tooltip.css.d.ts.map

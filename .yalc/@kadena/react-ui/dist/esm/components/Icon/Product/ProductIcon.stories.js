@@ -4,6 +4,11 @@ import { sizeVariants } from '../IconWrapper.css';
 import { gridContainer, gridItem } from '../stories.css';
 const meta = {
     title: 'Icons/ProductIcons',
+    parameters: {
+        status: {
+            type: ['needsRevision'],
+        },
+    },
     argTypes: {
         icon: {
             control: {

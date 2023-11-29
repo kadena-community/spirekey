@@ -1,0 +1,1 @@
+{"version":3,"file":"DialogFooter.d.ts","sourceRoot":"","sources":["../../../src/components/Dialog/DialogFooter.tsx"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,EAAE,EAAE,SAAS,EAAE,MAAM,OAAO,CAAC;AAI3C,MAAM,WAAW,kBAAkB;IACjC,QAAQ,EAAE,SAAS,CAAC;IACpB,SAAS,CAAC,EAAE,MAAM,CAAC;CACpB;AAED,eAAO,MAAM,YAAY,EAAE,EAAE,CAAC,kBAAkB,CAe/C,CAAC"}

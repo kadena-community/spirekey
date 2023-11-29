@@ -3,7 +3,7 @@ import { vars } from '../../styles/vars.css';
 import { style } from '@vanilla-extract/css';
 export const containerClass = style([
     sprinkles({
-        maxWidth: { xs: 'maxContent', sm: '100%' },
+        maxWidth: { xs: '$maxContentWidth', sm: '100%' },
         height: 'min-content',
         alignItems: 'stretch',
         display: 'flex',

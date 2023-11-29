@@ -10,6 +10,11 @@ const IconWrapper_css_1 = require("../IconWrapper.css");
 const stories_css_1 = require("../stories.css");
 const meta = {
     title: 'Icons/SystemIcons',
+    parameters: {
+        status: {
+            type: ['stable'],
+        },
+    },
     argTypes: {
         icon: {
             control: {

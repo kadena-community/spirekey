@@ -1,7 +1,10 @@
-import React from 'react';
-export interface ITooltipProps {
-    placement?: 'top' | 'bottom' | 'left' | 'right';
-    children: React.ReactNode;
+import type { FC, ReactElement, ReactNode } from 'react';
+import type { TooltipTriggerProps } from 'react-stately';
+import { tooltipPositionVariants } from './Tooltip.css';
+export interface ITooltipProps extends Omit<TooltipTriggerProps, 'trigger' | 'onOpenChange'> {
+    children: ReactElement;
+    content: ReactNode;
+    position?: keyof typeof tooltipPositionVariants;
 }
-export declare const Tooltip: React.ForwardRefExoticComponent<Omit<ITooltipProps, 'ref'> & React.RefAttributes<HTMLDivElement>>;
+export declare const Tooltip: FC<ITooltipProps>;
 //# sourceMappingURL=Tooltip.d.ts.map

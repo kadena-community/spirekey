@@ -1,38 +1,51 @@
 "use strict";
 'use client';
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Modal = void 0;
-const Card_1 = require("../Card");
-const Icon_1 = require("../Icon");
-const Heading_1 = require("../Typography/Heading/Heading");
-const focus_trap_react_1 = __importDefault(require("focus-trap-react"));
-const react_1 = __importDefault(require("react"));
+const utils_1 = require("@react-aria/utils");
+const react_1 = __importStar(require("react"));
+const react_aria_1 = require("react-aria");
 const Modal_css_1 = require("./Modal.css");
-const useModal_1 = require("./useModal");
-const Modal = ({ children, title, onClose }) => {
-    const { clearModal } = (0, useModal_1.useModal)();
-    function handleCloseModal() {
-        onClose === null || onClose === void 0 ? void 0 : onClose();
-        clearModal();
+const Modal = ({ children, state, isDismissable = true, isKeyboardDismissDisabled, }) => {
+    const nodeRef = (0, react_1.useRef)(null);
+    const { modalProps, underlayProps } = (0, react_aria_1.useModalOverlay)({
+        isDismissable,
+        isKeyboardDismissDisabled,
+    }, state, nodeRef);
+    if (!state.isOpen) {
+        return null;
     }
-    return (react_1.default.createElement(react_1.default.Fragment, null,
-        react_1.default.createElement(focus_trap_react_1.default, { focusTrapOptions: {
-                fallbackFocus: '[data-cy="modal-background"]',
-            } },
-            react_1.default.createElement("div", null,
-                react_1.default.createElement("button", { "data-cy": "modal-background", className: Modal_css_1.background, onClick: handleCloseModal }),
-                react_1.default.createElement("div", { className: Modal_css_1.wrapper, "data-cy": "modal", "data-testid": "kda-modal" },
-                    react_1.default.createElement("section", { className: Modal_css_1.modal },
-                        react_1.default.createElement(Card_1.Card, { fullWidth: true },
-                            react_1.default.createElement("div", { className: Modal_css_1.titleWrapper },
-                                react_1.default.createElement(Heading_1.Heading, { as: "h3" }, title)),
-                            react_1.default.createElement("button", { className: Modal_css_1.closeButton, onClick: handleCloseModal, title: "Close modal" },
-                                "Close",
-                                react_1.default.createElement(Icon_1.SystemIcon.Close, null)),
-                            children)))))));
+    return (react_1.default.createElement(react_aria_1.Overlay, null,
+        react_1.default.createElement("div", { className: Modal_css_1.underlayClass, ...underlayProps }, typeof children === 'function'
+            ? children(modalProps, nodeRef)
+            : (0, react_1.cloneElement)(children, {
+                ...children.props,
+                ...modalProps,
+                ref: (0, utils_1.mergeRefs)(nodeRef, children.ref),
+            }))));
 };
 exports.Modal = Modal;
 //# sourceMappingURL=Modal.js.map

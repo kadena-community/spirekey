@@ -1,6 +1,7 @@
 import { MaskedValue } from '../MaskedValue';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
+import { describe, expect, test } from 'vitest';
 describe('MaskedValue', () => {
     test('renders correctly', () => {
         const { getByTestId } = render(React.createElement(MaskedValue, { value: "TestValue1234" }));
@@ -9,7 +10,7 @@ describe('MaskedValue', () => {
     });
     test('shows masked value by default', () => {
         render(React.createElement(MaskedValue, { value: "TestValue1234" }));
-        expect(screen.getByText('TestVa****1234')).toBeInTheDocument();
+        expect(screen.getByText('TestVa***1234')).toBeInTheDocument();
     });
     test('shows correct masked value when non default characters set', () => {
         render(React.createElement(MaskedValue, { value: "TestValue1234", startUnmaskedValues: 1, endUnmaskedValues: 3 }));

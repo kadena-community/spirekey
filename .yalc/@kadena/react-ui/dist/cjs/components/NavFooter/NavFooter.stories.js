@@ -9,6 +9,9 @@ const react_1 = __importDefault(require("react"));
 const meta = {
     title: 'Navigation/NavFooter',
     parameters: {
+        status: {
+            type: ['needsRevision'],
+        },
         docs: {
             description: {
                 component: 'The NavFooter component provides styled bottom bar navigation that be configured with main nav links on the left side and buttons on the right side.<br><br><i>Note: In times when you need to use a different `Link` component (like next/link in Next.js), you can wrap it in the `NavHeader.Link` component and set the `asChild` prop to pass on styles and additional props.</i><br><br><i>In progress: maximum navigation items is currently limited (not technically enforced).<br>Pending design update to support more items.</i>',

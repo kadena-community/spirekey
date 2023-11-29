@@ -9,8 +9,11 @@ const Icon_1 = require("../Icon");
 const TrackerCard_1 = require("./TrackerCard");
 const TrackerCard_css_1 = require("./TrackerCard.css");
 const meta = {
-    title: 'Content/TrackerCard',
+    title: 'Patterns/TrackerCard',
     parameters: {
+        status: {
+            type: ['experimental'],
+        },
         docs: {
             description: {
                 component: 'The TrackerCard component renders a card with a title, label values, and an optional icon. The layout of the card can be set to either horizonal or vertical with the `variant` prop.',

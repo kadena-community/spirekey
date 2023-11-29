@@ -29,7 +29,7 @@ const react_1 = __importStar(require("react"));
 const Tab_1 = require("./Tab");
 const TabContent_1 = require("./TabContent");
 const Tabs_css_1 = require("./Tabs.css");
-const TabsContainer = ({ children, initialTab = undefined, currentTab = undefined, }) => {
+const TabsContainer = ({ children, initialTab = undefined, currentTab = undefined, ...props }) => {
     const [_activeTab, setActiveTab] = (0, react_1.useState)(initialTab);
     const activeTab = currentTab || _activeTab;
     const containerRef = (0, react_1.useRef)(null);
@@ -47,7 +47,7 @@ const TabsContainer = ({ children, initialTab = undefined, currentTab = undefine
     const handleClick = (tabId) => {
         setActiveTab(tabId);
     };
-    return (react_1.default.createElement("section", null,
+    return (react_1.default.createElement("section", { ...props },
         react_1.default.createElement("div", { className: Tabs_css_1.tabsContainerWrapper },
             react_1.default.createElement("div", { ref: containerRef, className: Tabs_css_1.tabsContainer },
                 react_1.default.Children.map(children, (child) => {

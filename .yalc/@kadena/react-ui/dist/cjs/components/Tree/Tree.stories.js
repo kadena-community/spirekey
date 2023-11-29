@@ -9,6 +9,9 @@ const _1 = require("./");
 const meta = {
     title: 'Components/Tree',
     parameters: {
+        status: {
+            type: ['needsRevision'],
+        },
         docs: {
             description: {
                 component: '<strong>Deprecated. Do not use.</strong><br />Will be refactored as it does not meet our standards.<br /><br /><em>The Tree component renders a tree structure with a root node and child nodes. The tree can be expanded and collapsed by clicking on the root node. The tree can be set to open by default with the `isOpen` prop. The tree can be set to close its siblings when opened with the `linked` prop.</em>',

@@ -8,6 +8,7 @@ import {
   Card,
   ContentHeader,
   Grid,
+  GridItem,
   Heading,
   Stack,
   Text,
@@ -97,9 +98,9 @@ export default function Webshop({ searchParams }: WebshopProps) {
           <Account account={account} />
         </Box>
       </Stack>
-      <Grid.Root columns={{ sm: 1, md: 2, lg: 2 }} gap="$lg" margin="$lg">
+      <Grid columns={{ sm: 1, md: 2, lg: 2 }} gap="$lg" margin="$lg">
         {cookies.map(({ description, name, image, price }) => (
-          <Grid.Item key={name}>
+          <GridItem key={name}>
             <Card fullWidth>
               <Image
                 src={image}
@@ -137,9 +138,9 @@ export default function Webshop({ searchParams }: WebshopProps) {
                 </Stack>
               </Box>
             </Card>
-          </Grid.Item>
+          </GridItem>
         ))}
-      </Grid.Root>
+      </Grid>
     </Stack>
   );
 }

@@ -1,9 +1,14 @@
 import { Button } from '../Button';
 import { Card } from '../Card';
+import { Stack } from '../Layout';
+import { Heading, Text } from '../Typography';
 import React from 'react';
 const meta = {
     title: 'Layout/Card',
     parameters: {
+        status: {
+            type: ['needsRevision'],
+        },
         docs: {
             description: {
                 component: 'A component used for grouping items in a card.',
@@ -12,16 +17,6 @@ const meta = {
     },
     component: Card,
     argTypes: {
-        stack: {
-            control: {
-                type: 'boolean',
-            },
-            description: 'If true, the component vertically stacks multiple card together and applies styles that combine them into a single card with separators.',
-            table: {
-                type: { summary: 'boolean' },
-                defaultValue: { summary: 'false' },
-            },
-        },
         fullWidth: {
             control: {
                 type: 'boolean',
@@ -48,20 +43,16 @@ export default meta;
 export const Primary = {
     name: 'Card',
     args: {
-        stack: false,
         fullWidth: false,
         disabled: false,
     },
-    render: ({ stack, fullWidth, disabled }) => {
+    render: ({ fullWidth, disabled }) => {
         return (React.createElement(React.Fragment, null,
-            React.createElement(Card, { stack: stack, fullWidth: fullWidth, disabled: disabled },
-                React.createElement("h4", null, "Getting Started is Simple"),
-                React.createElement("div", null, "Learn Kadena's core concepts & tools for development in 15 minutes"),
-                React.createElement(Button, { title: 'Button' }, "Hello World Tutorial")),
-            React.createElement(Card, { stack: stack, fullWidth: fullWidth, disabled: disabled },
-                React.createElement("h4", null, "Getting Started is Simple"),
-                React.createElement("div", null, "Learn Kadena's core concepts & tools for development in 15 minutes"),
-                React.createElement(Button, { title: 'Button' }, "Hello World Tutorial"))));
+            React.createElement(Card, { fullWidth: fullWidth, disabled: disabled },
+                React.createElement(Stack, { direction: "column", gap: "$2", alignItems: "flex-start", marginBottom: "$6", maxWidth: "$maxContentWidth" },
+                    React.createElement(Heading, { as: "h5" }, "Intro to Kadena"),
+                    React.createElement(Text, null, "Kadena is the only platform offering a complete decentralized infrastructure for builders. Combining a revolutionary chain architecture with the tools needed for widespread adoption, your teams get the full capabilities of blockchain with the ability to go from concept to launch in days vs. months by not having to build from scratch. Learn about our core concepts.")),
+                React.createElement(Button, { title: 'Button' }, "Kadena Docs"))));
     },
 };
 //# sourceMappingURL=Card.stories.js.map

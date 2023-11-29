@@ -79,7 +79,7 @@ exports.CardContainer = (0, css_1.style)([
         borderRadius: '$sm',
         alignItems: 'flex-start',
         fontSize: '$sm',
-        background: {
+        backgroundColor: {
             lightMode: '$white',
             darkMode: '$gray100',
         },

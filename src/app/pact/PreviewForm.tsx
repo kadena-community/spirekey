@@ -4,7 +4,7 @@ import {
   Button,
   Card,
   Input,
-  InputWrapper,
+  FormFieldWrapper,
   Select,
   Stack,
   Text,
@@ -215,7 +215,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
         />
       )}
       <Card fullWidth>
-        <InputWrapper htmlFor="publicKey" label="Chain ID">
+        <FormFieldWrapper htmlFor="publicKey" label="Chain ID">
           <Controller
             control={control}
             name="chainId"
@@ -230,8 +230,8 @@ export const PreviewForm: FC<PreviewFormProps> = ({
               </Select>
             )}
           />
-        </InputWrapper>
-        <InputWrapper htmlFor="networkdId" label="Network ID">
+        </FormFieldWrapper>
+        <FormFieldWrapper htmlFor="networkdId" label="Network ID">
           <Controller
             control={control}
             name="networkdId"
@@ -246,8 +246,8 @@ export const PreviewForm: FC<PreviewFormProps> = ({
               </Select>
             )}
           />
-        </InputWrapper>
-        <InputWrapper htmlFor="file" label="pact module file">
+        </FormFieldWrapper>
+        <FormFieldWrapper htmlFor="file" label="pact module file">
           <Input
             id="file"
             type="file"
@@ -255,10 +255,10 @@ export const PreviewForm: FC<PreviewFormProps> = ({
               onChange: onChangeFile,
             })}
           />
-        </InputWrapper>
+        </FormFieldWrapper>
       </Card>
       <Stack margin="$md" direction="column">
-        <InputWrapper htmlFor="code" label="pact code">
+        <FormFieldWrapper htmlFor="code" label="pact code">
           <textarea
             id="code"
             style={{
@@ -275,8 +275,8 @@ export const PreviewForm: FC<PreviewFormProps> = ({
               onChange: onCodeChange,
             })}
           />
-        </InputWrapper>
-        <InputWrapper htmlFor="contractData" label="module data json">
+        </FormFieldWrapper>
+        <FormFieldWrapper htmlFor="contractData" label="module data json">
           <textarea
             id="contractData"
             style={{
@@ -294,8 +294,8 @@ export const PreviewForm: FC<PreviewFormProps> = ({
               validate: validateJson,
             })}
           />
-        </InputWrapper>
-        <InputWrapper htmlFor="capabilities" label="Capabilities">
+        </FormFieldWrapper>
+        <FormFieldWrapper htmlFor="capabilities" label="Capabilities">
           <textarea
             id="capabilities"
             style={{
@@ -310,7 +310,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
             }}
             {...register("capabilities")}
           />
-        </InputWrapper>
+        </FormFieldWrapper>
       </Stack>
       <Stack direction="column" margin="$md" justifyContent="flex-start">
         {formState.errors.root && (

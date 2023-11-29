@@ -1,8 +1,11 @@
 import React from 'react';
 import { MaskedValue } from './MaskedValue';
 const meta = {
-    title: 'Components/MaskedValue',
+    title: 'Patterns/MaskedValue',
     parameters: {
+        status: {
+            type: ['experimental'],
+        },
         docs: {
             description: {
                 component: 'This component will visually render the set value with a mask. The mask will hide part of the value and show a number of asterisks in its stead. The number of unmasked characters can be set with the `startUnmaskedValues` and `endUnmaskedValues` props. The default visibility of the value can be set with the `defaultVisibility` prop.',

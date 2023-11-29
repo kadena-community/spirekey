@@ -3,8 +3,11 @@ import { ProductIcon } from '../Icon';
 import { TrackerCard } from './TrackerCard';
 import { layoutVariant } from './TrackerCard.css';
 const meta = {
-    title: 'Content/TrackerCard',
+    title: 'Patterns/TrackerCard',
     parameters: {
+        status: {
+            type: ['experimental'],
+        },
         docs: {
             description: {
                 component: 'The TrackerCard component renders a card with a title, label values, and an optional icon. The layout of the card can be set to either horizonal or vertical with the `variant` prop.',

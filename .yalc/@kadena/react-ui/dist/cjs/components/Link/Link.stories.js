@@ -12,6 +12,9 @@ const meta = {
     title: 'Components/Link',
     component: Link_1.Link,
     parameters: {
+        status: {
+            type: ['inDevelopment'],
+        },
         docs: {
             description: {
                 component: 'This component provides a styled anchor element that takes an optional icon prop that can be aligned to the left or right of the text.<br><br><i>Note: In times when you need to use a different `Link` component (like next/link in Next.js), you can wrap it in this component and set the `asChild` prop to pass on styles, icons, and additional props.</i>',

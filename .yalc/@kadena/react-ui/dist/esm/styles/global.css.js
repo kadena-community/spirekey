@@ -1,8 +1,6 @@
-import { KodeMono } from '@kadena/fonts';
 import { globalFontFace, globalStyle } from '@vanilla-extract/css';
 import { breakpoints } from './themeUtils';
 import { vars } from './vars.css';
-KodeMono();
 globalFontFace('Haas Grotesk Display', {
     fontWeight: 300,
     src: "url(https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7W0Q5nw.woff2) format('woff2')",

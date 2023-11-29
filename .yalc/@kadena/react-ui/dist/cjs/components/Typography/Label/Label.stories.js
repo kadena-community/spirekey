@@ -4,13 +4,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Primary = void 0;
-const Input_1 = require("../../Input");
-const Stack_1 = require("../../Stack");
+const Input_1 = require("../../Form/Input");
+const Stack_1 = require("../../Layout/Stack");
 const Label_1 = require("../../Typography/Label/Label");
 const react_1 = __importDefault(require("react"));
 const meta = {
     title: 'Typography/Label',
     component: Label_1.Label,
+    parameters: {
+        status: {
+            type: ['needsRevision'],
+        },
+    },
     argTypes: {
         children: {
             control: { type: 'text' },

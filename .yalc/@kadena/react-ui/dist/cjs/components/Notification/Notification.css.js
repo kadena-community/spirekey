@@ -1,39 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actionButtonColorVariants = exports.actionsContainerClass = exports.descriptionClass = exports.titleClass = exports.contentClass = exports.closeButtonClass = exports.inlineVariants = exports.displayVariants = exports.expandVariants = exports.cardColorVariants = exports.containerWrapperClass = exports.containerClass = exports.colorVariants = void 0;
+exports.iconClass = exports.actionButtonColorVariants = exports.actionsContainerClass = exports.titleClass = exports.contentClass = exports.closeButtonClass = exports.displayVariants = exports.cardColorVariants = exports.colorVariants = exports.containerClass = void 0;
 const sprinkles_css_1 = require("../../styles/sprinkles.css");
 const vars_css_1 = require("../../styles/vars.css");
 const css_1 = require("@vanilla-extract/css");
+const accentVar = (0, css_1.createVar)();
+exports.containerClass = (0, css_1.style)([
+    (0, sprinkles_css_1.sprinkles)({
+        display: 'flex',
+        alignItems: 'flex-start',
+        padding: '$sm',
+        gap: '$sm',
+        width: '100%',
+    }),
+]);
 exports.colorVariants = {
     info: 'info',
     positive: 'positive',
     warning: 'warning',
     negative: 'negative',
-    primary: 'primary',
 };
-exports.containerClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        display: 'flex',
-        alignItems: 'flex-start',
-        borderStyle: 'solid',
-        justifyContent: 'center',
-    }),
-    {
-        borderLeftWidth: vars_css_1.vars.sizes.$1,
-    },
-]);
-exports.containerWrapperClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        padding: '$md',
-        display: 'flex',
-        width: '100%',
-        alignItems: 'flex-start',
-        gap: '$md',
-    }),
-    {
-        maxWidth: 1440,
-    },
-]);
 exports.cardColorVariants = (0, css_1.styleVariants)(exports.colorVariants, (color) => {
     return [
         (0, sprinkles_css_1.sprinkles)({
@@ -41,29 +27,25 @@ exports.cardColorVariants = (0, css_1.styleVariants)(exports.colorVariants, (col
             borderColor: `$${color}ContrastInverted`,
             color: `$${color}ContrastInverted`,
         }),
+        {
+            vars: {
+                [accentVar]: vars_css_1.vars.colors[`$${color}ContrastInverted`],
+            },
+        },
     ];
 });
-exports.expandVariants = (0, css_1.styleVariants)({
-    true: [(0, sprinkles_css_1.sprinkles)({ width: '100%', maxWidth: '100%' })],
-    false: [(0, sprinkles_css_1.sprinkles)({ width: 'max-content', maxWidth: 'maxContent' })],
-});
 exports.displayVariants = (0, css_1.styleVariants)({
-    outlined: [(0, sprinkles_css_1.sprinkles)({ borderWidth: '$sm', borderRadius: '$sm' })],
-    standard: [(0, sprinkles_css_1.sprinkles)({ border: 'none', borderRadius: 0 })],
-});
-exports.inlineVariants = (0, css_1.styleVariants)({
-    true: [
+    bordered: [
         (0, sprinkles_css_1.sprinkles)({
-            display: 'flex',
-            alignItems: {
-                md: 'flex-start',
-            },
-            flexDirection: {
-                md: 'row',
-            },
+            borderStyle: 'solid',
+            borderWidth: '$sm',
+            borderRadius: '$sm',
         }),
+        {
+            borderLeftWidth: vars_css_1.vars.sizes.$1,
+        },
     ],
-    false: [],
+    borderless: [],
 });
 exports.closeButtonClass = (0, css_1.style)([
     (0, sprinkles_css_1.sprinkles)({
@@ -77,10 +59,10 @@ exports.closeButtonClass = (0, css_1.style)([
 ]);
 exports.contentClass = (0, css_1.style)([
     (0, sprinkles_css_1.sprinkles)({
-        display: 'flex',
-        flexDirection: 'column',
+        color: '$neutral6',
+        fontSize: '$base',
         gap: '$xs',
-        width: '100%',
+        maxWidth: '$maxContentWidth',
     }),
     {
         marginTop: 2,
@@ -88,23 +70,20 @@ exports.contentClass = (0, css_1.style)([
 ]);
 exports.titleClass = (0, css_1.style)([
     (0, sprinkles_css_1.sprinkles)({
-        color: 'inherit',
         fontSize: '$base',
         fontWeight: '$bold',
+        marginBottom: '$xs',
     }),
-]);
-exports.descriptionClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        color: '$neutral6',
-        fontSize: '$base',
-    }),
+    {
+        color: accentVar,
+    },
 ]);
 exports.actionsContainerClass = (0, css_1.style)([
     (0, sprinkles_css_1.sprinkles)({
-        marginTop: '$lg',
+        marginTop: '$md',
         display: 'flex',
         justifyContent: 'flex-start',
-        gap: '$12',
+        gap: '$xl',
     }),
 ]);
 const actionButtonClass = (0, css_1.style)([
@@ -130,4 +109,10 @@ exports.actionButtonColorVariants = (0, css_1.styleVariants)(exports.colorVarian
         }),
     ];
 });
+exports.iconClass = (0, css_1.style)([
+    (0, sprinkles_css_1.sprinkles)({
+        color: 'inherit',
+        size: '$6',
+    }),
+]);
 //# sourceMappingURL=Notification.css.js.map

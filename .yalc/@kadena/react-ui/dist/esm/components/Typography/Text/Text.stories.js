@@ -4,6 +4,11 @@ import { colorVariant, elementVariant, fontVariant, sizeVariant, transformVarian
 const meta = {
     title: 'Typography/Text',
     component: Text,
+    parameters: {
+        status: {
+            type: ['needsRevision'],
+        },
+    },
     argTypes: {
         children: {
             control: { type: 'text' },

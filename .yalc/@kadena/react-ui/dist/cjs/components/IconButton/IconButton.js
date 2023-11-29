@@ -41,7 +41,7 @@ const IconButton = ({ as = 'button', color = 'primary', variant = 'compact', hre
         return (react_1.default.createElement("a", { className: buttonClassname, href: href, target: target, "aria-label": ariaLabel },
             react_1.default.createElement(Icon, { size: "md" })));
     }
-    return (react_1.default.createElement("button", { ...restProps, className: buttonClassname, "aria-label": ariaLabel, "data-testid": "kda-icon-button", type: type },
+    return (react_1.default.createElement("button", { ...restProps, className: buttonClassname, "aria-label": ariaLabel, type: type },
         react_1.default.createElement(Icon, { size: "md" })));
 };
 exports.IconButton = IconButton;

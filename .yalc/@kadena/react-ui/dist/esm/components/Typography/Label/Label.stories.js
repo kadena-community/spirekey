@@ -1,10 +1,15 @@
-import { Input } from '../../Input';
-import { Stack } from '../../Stack';
+import { Input } from '../../Form/Input';
+import { Stack } from '../../Layout/Stack';
 import { Label } from '../../Typography/Label/Label';
 import React from 'react';
 const meta = {
     title: 'Typography/Label',
     component: Label,
+    parameters: {
+        status: {
+            type: ['needsRevision'],
+        },
+    },
     argTypes: {
         children: {
             control: { type: 'text' },

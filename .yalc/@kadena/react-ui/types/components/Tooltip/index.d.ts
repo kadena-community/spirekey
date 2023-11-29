@@ -1,9 +1,3 @@
-import type { ITooltipProps } from './Tooltip';
-import { tooltipHandler } from './tooltipHandler';
-export type { ITooltipProps };
-interface ITooltip {
-    Root: React.ForwardRefExoticComponent<Omit<ITooltipProps, 'ref'> & React.RefAttributes<HTMLDivElement>>;
-    handler: typeof tooltipHandler;
-}
-export declare const Tooltip: ITooltip;
+export { Tooltip } from './Tooltip';
+export type { ITooltipProps } from './Tooltip';
 //# sourceMappingURL=index.d.ts.map

@@ -8,7 +8,10 @@ const ContentHeader_1 = require("../ContentHeader");
 const Icon_1 = require("../Icon");
 const react_1 = __importDefault(require("react"));
 const meta = {
-    title: 'Content/ContentHeader',
+    title: 'Patterns/ContentHeader',
+    parameters: {
+        status: { type: 'experimental' },
+    },
     argTypes: {
         icon: {
             options: Object.keys(Icon_1.SystemIcon),
