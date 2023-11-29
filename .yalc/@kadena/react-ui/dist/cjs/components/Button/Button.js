@@ -49,7 +49,7 @@ const Button = ({ active = false, as = 'button', asChild = false, children, colo
     if (renderAsAnchor) {
         return (react_1.default.createElement("a", { "aria-label": ariaLabel, className: buttonClassname, "data-testid": "kda-button", href: href, target: target }, getContents(children)));
     }
-    return (react_1.default.createElement("button", { ...restProps, "aria-label": ariaLabel, className: buttonClassname, "data-testid": "kda-button", type: type }, getContents(children)));
+    return (react_1.default.createElement("button", { ...restProps, "aria-label": ariaLabel, className: buttonClassname, type: type }, getContents(children)));
 };
 exports.Button = Button;
 //# sourceMappingURL=Button.js.map

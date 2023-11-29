@@ -1,6 +1,7 @@
 import type { FC } from 'react';
+import React from 'react';
 export interface ITagProps {
-    children: string;
+    children: React.ReactNode;
     onClose?: () => void;
 }
 export declare const Tag: FC<ITagProps>;

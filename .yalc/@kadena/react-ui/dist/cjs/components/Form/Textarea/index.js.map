@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../../src/components/Form/Textarea/index.ts"],"names":[],"mappings":";;;AAAA,4DAA2D;AAAlD,4GAAA,YAAY,OAAA;AACrB,uCAA2D;AAAlD,oGAAA,QAAQ,OAAA","sourcesContent":["export { TextareaCopy } from './TextAreaCopy/TextareaCopy';\nexport { Textarea, type ITextareaProps } from './Textarea';\n"]}

@@ -9,6 +9,11 @@ const react_1 = __importDefault(require("react"));
 const meta = {
     title: 'Typography/GradientText',
     component: GradientText_1.GradientText,
+    parameters: {
+        status: {
+            type: ['stable'],
+        },
+    },
     argTypes: {
         children: {
             control: { type: 'text' },

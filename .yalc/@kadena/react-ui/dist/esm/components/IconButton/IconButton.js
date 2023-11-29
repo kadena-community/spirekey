@@ -35,7 +35,7 @@ export const IconButton = ({ as = 'button', color = 'primary', variant = 'compac
         return (React.createElement("a", { className: buttonClassname, href: href, target: target, "aria-label": ariaLabel },
             React.createElement(Icon, { size: "md" })));
     }
-    return (React.createElement("button", { ...restProps, className: buttonClassname, "aria-label": ariaLabel, "data-testid": "kda-icon-button", type: type },
+    return (React.createElement("button", { ...restProps, className: buttonClassname, "aria-label": ariaLabel, type: type },
         React.createElement(Icon, { size: "md" })));
 };
 //# sourceMappingURL=IconButton.js.map

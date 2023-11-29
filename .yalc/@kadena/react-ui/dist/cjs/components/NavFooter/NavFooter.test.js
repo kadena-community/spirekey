@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const NavFooter_1 = require("../NavFooter");
 const react_1 = require("@testing-library/react");
 const react_2 = __importDefault(require("react"));
+const vitest_1 = require("vitest");
 const menuLinks = [
     {
         label: 'Tutorial',
@@ -25,8 +26,8 @@ const icons = [
         icon: 'Account',
     },
 ];
-describe('NavFooter', () => {
-    test('renders correctly', () => {
+(0, vitest_1.describe)('NavFooter', () => {
+    (0, vitest_1.test)('renders correctly', () => {
         const { getByTestId } = (0, react_1.render)(react_2.default.createElement(NavFooter_1.NavFooter.Root, null,
             react_2.default.createElement(NavFooter_1.NavFooter.Panel, null, menuLinks.map((item, index) => {
                 return (react_2.default.createElement(NavFooter_1.NavFooter.Link, { key: index, href: item.href }, item.label));
@@ -35,9 +36,9 @@ describe('NavFooter', () => {
                 return (react_2.default.createElement(NavFooter_1.NavFooter.IconButton, { key: index, icon: item.icon, text: item.text }));
             }))));
         const footerContainer = getByTestId('kda-footer');
-        expect(footerContainer).toBeInTheDocument();
+        (0, vitest_1.expect)(footerContainer).toBeInTheDocument();
     });
-    test('shows values correctly', () => {
+    (0, vitest_1.test)('shows values correctly', () => {
         const { getAllByTestId } = (0, react_1.render)(react_2.default.createElement(NavFooter_1.NavFooter.Root, null,
             react_2.default.createElement(NavFooter_1.NavFooter.Panel, null, menuLinks.map((item, index) => {
                 return (react_2.default.createElement(NavFooter_1.NavFooter.Link, { key: index, href: item.href }, item.label));
@@ -48,11 +49,11 @@ describe('NavFooter', () => {
         const footerPanels = getAllByTestId('kda-footer-panel');
         const menuLinksItems = getAllByTestId('kda-footer-link-item');
         const iconButtons = getAllByTestId('kda-footer-icon-item');
-        expect(footerPanels).toHaveLength(2);
-        expect(menuLinksItems).toHaveLength(2);
-        expect(iconButtons).toHaveLength(2);
-        expect(menuLinksItems[0]).toHaveTextContent('Tutorial');
-        expect(iconButtons[0]).toHaveTextContent('English');
+        (0, vitest_1.expect)(footerPanels).toHaveLength(2);
+        (0, vitest_1.expect)(menuLinksItems).toHaveLength(2);
+        (0, vitest_1.expect)(iconButtons).toHaveLength(2);
+        (0, vitest_1.expect)(menuLinksItems[0]).toHaveTextContent('Tutorial');
+        (0, vitest_1.expect)(iconButtons[0]).toHaveTextContent('English');
     });
 });
 //# sourceMappingURL=NavFooter.test.js.map

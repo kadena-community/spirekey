@@ -1,7 +1,2 @@
-import { Tooltip as TooltipComponent } from './Tooltip';
-import { tooltipHandler } from './tooltipHandler';
-export const Tooltip = {
-    Root: TooltipComponent,
-    handler: tooltipHandler,
-};
+export { Tooltip } from './Tooltip';
 //# sourceMappingURL=index.js.map

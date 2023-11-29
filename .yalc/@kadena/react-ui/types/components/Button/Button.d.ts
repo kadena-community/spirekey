@@ -1,5 +1,5 @@
 import { SystemIcon } from '../Icon';
-import type { ButtonHTMLAttributes, FC } from 'react';
+import type { ButtonHTMLAttributes, FC, HTMLAttributeAnchorTarget } from 'react';
 import React from 'react';
 import type { colorVariants, typeVariants } from './Button.css';
 export interface IButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'as' | 'disabled' | 'className'> {
@@ -14,7 +14,7 @@ export interface IButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElemen
     iconAlign?: 'left' | 'right';
     loading?: boolean;
     onClick?: React.MouseEventHandler<HTMLButtonElement> | React.FormEventHandler<HTMLButtonElement>;
-    target?: '_blank' | '_self';
+    target?: HTMLAttributeAnchorTarget;
     title?: string;
     type?: 'button' | 'submit' | 'reset';
     variant?: keyof typeof typeVariants;

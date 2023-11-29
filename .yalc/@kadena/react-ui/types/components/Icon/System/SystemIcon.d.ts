@@ -43,6 +43,8 @@ export declare const Information: import("react").FC<import("react").SVGProps<SV
 export declare const KeyIconFilled: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
 export declare const KeyIconOutlined: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
 export declare const KIcon: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const WIcon: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
+export declare const CIcon: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
 export declare const LeadingIcon: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
 export declare const Link: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;
 export declare const Linkedin: import("react").FC<import("react").SVGProps<SVGSVGElement> & import("../IconWrapper").IIconProps>;

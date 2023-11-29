@@ -1,31 +1,24 @@
 'use client';
-import { Card } from '../Card';
-import { SystemIcon } from '../Icon';
-import { Heading } from '../Typography/Heading/Heading';
-import FocusTrap from 'focus-trap-react';
-import React from 'react';
-import { background, closeButton, modal, titleWrapper, wrapper, } from './Modal.css';
-import { useModal } from './useModal';
-export const Modal = ({ children, title, onClose }) => {
-    const { clearModal } = useModal();
-    function handleCloseModal() {
-        onClose === null || onClose === void 0 ? void 0 : onClose();
-        clearModal();
+import { mergeRefs } from '@react-aria/utils';
+import React, { cloneElement, useRef } from 'react';
+import { Overlay, useModalOverlay } from 'react-aria';
+import { underlayClass } from './Modal.css';
+export const Modal = ({ children, state, isDismissable = true, isKeyboardDismissDisabled, }) => {
+    const nodeRef = useRef(null);
+    const { modalProps, underlayProps } = useModalOverlay({
+        isDismissable,
+        isKeyboardDismissDisabled,
+    }, state, nodeRef);
+    if (!state.isOpen) {
+        return null;
     }
-    return (React.createElement(React.Fragment, null,
-        React.createElement(FocusTrap, { focusTrapOptions: {
-                fallbackFocus: '[data-cy="modal-background"]',
-            } },
-            React.createElement("div", null,
-                React.createElement("button", { "data-cy": "modal-background", className: background, onClick: handleCloseModal }),
-                React.createElement("div", { className: wrapper, "data-cy": "modal", "data-testid": "kda-modal" },
-                    React.createElement("section", { className: modal },
-                        React.createElement(Card, { fullWidth: true },
-                            React.createElement("div", { className: titleWrapper },
-                                React.createElement(Heading, { as: "h3" }, title)),
-                            React.createElement("button", { className: closeButton, onClick: handleCloseModal, title: "Close modal" },
-                                "Close",
-                                React.createElement(SystemIcon.Close, null)),
-                            children)))))));
+    return (React.createElement(Overlay, null,
+        React.createElement("div", { className: underlayClass, ...underlayProps }, typeof children === 'function'
+            ? children(modalProps, nodeRef)
+            : cloneElement(children, {
+                ...children.props,
+                ...modalProps,
+                ref: mergeRefs(nodeRef, children.ref),
+            }))));
 };
 //# sourceMappingURL=Modal.js.map

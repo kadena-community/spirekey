@@ -6,27 +6,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const MaskedValue_1 = require("../MaskedValue");
 const react_1 = require("@testing-library/react");
 const react_2 = __importDefault(require("react"));
-describe('MaskedValue', () => {
-    test('renders correctly', () => {
+const vitest_1 = require("vitest");
+(0, vitest_1.describe)('MaskedValue', () => {
+    (0, vitest_1.test)('renders correctly', () => {
         const { getByTestId } = (0, react_1.render)(react_2.default.createElement(MaskedValue_1.MaskedValue, { value: "TestValue1234" }));
         const maskedValue = getByTestId('kda-masked-value');
-        expect(maskedValue).toBeInTheDocument();
+        (0, vitest_1.expect)(maskedValue).toBeInTheDocument();
     });
-    test('shows masked value by default', () => {
+    (0, vitest_1.test)('shows masked value by default', () => {
         (0, react_1.render)(react_2.default.createElement(MaskedValue_1.MaskedValue, { value: "TestValue1234" }));
-        expect(react_1.screen.getByText('TestVa****1234')).toBeInTheDocument();
+        (0, vitest_1.expect)(react_1.screen.getByText('TestVa***1234')).toBeInTheDocument();
     });
-    test('shows correct masked value when non default characters set', () => {
+    (0, vitest_1.test)('shows correct masked value when non default characters set', () => {
         (0, react_1.render)(react_2.default.createElement(MaskedValue_1.MaskedValue, { value: "TestValue1234", startUnmaskedValues: 1, endUnmaskedValues: 3 }));
-        expect(react_1.screen.getByText('T****234')).toBeInTheDocument();
+        (0, vitest_1.expect)(react_1.screen.getByText('T****234')).toBeInTheDocument();
     });
-    test('shows correct unmasked value', () => {
+    (0, vitest_1.test)('shows correct unmasked value', () => {
         (0, react_1.render)(react_2.default.createElement(MaskedValue_1.MaskedValue, { value: "TestValue1234", defaultVisibility: true }));
-        expect(react_1.screen.getByText('TestValue1234')).toBeInTheDocument();
+        (0, vitest_1.expect)(react_1.screen.getByText('TestValue1234')).toBeInTheDocument();
     });
-    test('shows unmasked value when unmasked characters are greater or equal than value size', () => {
+    (0, vitest_1.test)('shows unmasked value when unmasked characters are greater or equal than value size', () => {
         (0, react_1.render)(react_2.default.createElement(MaskedValue_1.MaskedValue, { value: "TestValue1234", startUnmaskedValues: 8, endUnmaskedValues: 5 }));
-        expect(react_1.screen.getByText('TestValue1234')).toBeInTheDocument();
+        (0, vitest_1.expect)(react_1.screen.getByText('TestValue1234')).toBeInTheDocument();
     });
 });
 //# sourceMappingURL=MaskedValue.test.js.map

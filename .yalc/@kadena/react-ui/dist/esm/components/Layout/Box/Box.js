@@ -1,0 +1,53 @@
+import { sprinkles } from '../../../styles/sprinkles.css';
+import classnames from 'classnames';
+import { createElement } from 'react';
+export const Box = ({ as = 'div', children, className, alignItems, backgroundColor, borderColor, borderRadius, borderStyle, borderWidth, bottom, cursor, display = 'block', flexDirection, flexGrow, flexShrink, flexWrap, height, inset, justifyContent, left, margin, marginBottom, marginLeft, marginRight, marginTop, marginX, marginY, maxHeight, maxWidth, minHeight, minWidth, opacity, overflow, padding, paddingBottom, paddingLeft, paddingRight, paddingTop, paddingX, paddingY, position, right, textAlign, top, width, zIndex, }) => {
+    return createElement(as, {
+        className: classnames(sprinkles({
+            alignItems,
+            backgroundColor,
+            borderColor,
+            borderRadius,
+            borderStyle,
+            borderWidth,
+            bottom,
+            cursor,
+            display,
+            flexDirection,
+            flexGrow,
+            flexShrink,
+            flexWrap,
+            height,
+            inset,
+            justifyContent,
+            left,
+            margin,
+            marginBottom,
+            marginLeft,
+            marginRight,
+            marginTop,
+            marginX,
+            marginY,
+            maxHeight,
+            maxWidth,
+            minHeight,
+            minWidth,
+            opacity,
+            overflow,
+            padding,
+            paddingBottom,
+            paddingLeft,
+            paddingRight,
+            paddingTop,
+            paddingX,
+            paddingY,
+            position,
+            right,
+            textAlign,
+            top,
+            width,
+            zIndex,
+        }), className),
+    }, children);
+};
+//# sourceMappingURL=Box.js.map

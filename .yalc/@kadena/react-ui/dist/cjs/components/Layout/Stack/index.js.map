@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../../src/components/Layout/Stack/index.ts"],"names":[],"mappings":";;;AAAA,iCAAkD;AAAzC,8FAAA,KAAK,OAAA","sourcesContent":["export { Stack, type IStackProps } from './Stack';\n"]}

@@ -14,6 +14,7 @@ const meta = {
     component: Button_1.Button,
     decorators: [withCenteredStory_1.withCenteredStory],
     parameters: {
+        status: { type: 'inDevelopment' },
         controls: {
             hideNoControlsWarning: true,
             sort: 'requiredFirst',

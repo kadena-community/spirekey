@@ -9,6 +9,9 @@ const _1 = require("./");
 const meta = {
     title: 'Navigation/NavAccordion',
     parameters: {
+        status: {
+            type: ['needsRevision'],
+        },
         controls: {
             hideNoControlsWarning: true,
             sort: 'requiredFirst',

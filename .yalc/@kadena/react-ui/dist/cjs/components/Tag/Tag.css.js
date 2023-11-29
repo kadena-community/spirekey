@@ -6,7 +6,7 @@ const vars_css_1 = require("../../styles/vars.css");
 const css_1 = require("@vanilla-extract/css");
 exports.tagClass = (0, css_1.style)([
     (0, sprinkles_css_1.sprinkles)({
-        backgroundColor: '$neutral1',
+        backgroundColor: '$layoutSurfaceCard',
         color: '$neutral6',
         borderRadius: '$xs',
         padding: '$1',

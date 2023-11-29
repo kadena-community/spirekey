@@ -1,83 +1,89 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.visibleClass = exports.arrowVariants = exports.container = void 0;
+exports.tooltipPositionVariants = exports.base = void 0;
 const sprinkles_css_1 = require("../../styles/sprinkles.css");
 const vars_css_1 = require("../../styles/vars.css");
 const css_1 = require("@vanilla-extract/css");
-exports.container = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        placeItems: 'center',
-        gap: '$2',
-        borderRadius: '$md',
-        paddingX: '$4',
-        paddingY: '$3',
-        border: 'none',
-        fontSize: '$base',
-        backgroundColor: '$neutral1',
-        color: '$neutral6',
-        width: 'max-content',
-        position: 'fixed',
-        display: 'none',
-        pointerEvents: 'none',
-    }),
-    {
-        zIndex: 10,
-        top: '50%',
-        marginRight: '-50%',
-        border: `${vars_css_1.vars.borderWidths.$md} solid ${vars_css_1.vars.colors.$neutral2}`,
-    },
-]);
-const baseArrow = (0, css_1.style)([
+exports.base = (0, css_1.style)([
     (0, sprinkles_css_1.sprinkles)({
         position: 'absolute',
-        width: '$4',
-        height: '$4',
-        backgroundColor: '$neutral1',
+        backgroundColor: '$neutral6',
+        fontSize: '$sm',
+        paddingY: '$xs',
+        paddingX: '$sm',
+        borderRadius: '$md',
+        color: '$neutral1',
         pointerEvents: 'none',
+        width: 'max-content',
+        maxWidth: '$maxContentWidth',
     }),
     {
-        rotate: '45deg',
+        ':before': {
+            content: '',
+            position: 'absolute',
+            borderTop: '6px solid transparent',
+            borderRight: '6px solid transparent',
+            borderBottom: `6px solid ${vars_css_1.vars.colors.$neutral6}`,
+            borderLeft: '6px solid transparent',
+        },
     },
 ]);
-exports.arrowVariants = (0, css_1.styleVariants)({
-    right: [
-        baseArrow,
+exports.tooltipPositionVariants = (0, css_1.styleVariants)({
+    bottom: [
+        exports.base,
         {
-            top: `calc(50% - ${vars_css_1.vars.sizes.$4} / 2)`,
-            left: `calc((-1 * ${vars_css_1.vars.sizes.$4} / 2) - 1px)`,
-            borderLeft: `${vars_css_1.vars.borderWidths.$md} solid ${vars_css_1.vars.colors.$neutral2}`,
-            borderBottom: `${vars_css_1.vars.borderWidths.$md} solid ${vars_css_1.vars.colors.$neutral2}`,
-        },
-    ],
-    left: [
-        baseArrow,
-        {
-            top: `calc(50% - ${vars_css_1.vars.sizes.$4} / 2)`,
-            right: `calc((-1 * ${vars_css_1.vars.sizes.$4} / 2) - 1px)`,
-            borderRight: `${vars_css_1.vars.borderWidths.$md} solid ${vars_css_1.vars.colors.$neutral2}`,
-            borderTop: `${vars_css_1.vars.borderWidths.$md} solid ${vars_css_1.vars.colors.$neutral2}`,
+            marginTop: vars_css_1.vars.sizes.$sm,
+            top: '100%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            ':before': {
+                top: '0',
+                left: '50%',
+                transform: 'translate(-50%, -100%)',
+            },
         },
     ],
     top: [
-        baseArrow,
+        exports.base,
         {
-            top: `calc(100% - ${vars_css_1.vars.sizes.$4} / 2)`,
-            borderBottom: `${vars_css_1.vars.borderWidths.$md} solid ${vars_css_1.vars.colors.$neutral2}`,
-            borderRight: `${vars_css_1.vars.borderWidths.$md} solid ${vars_css_1.vars.colors.$neutral2}`,
+            marginBottom: vars_css_1.vars.sizes.$sm,
+            bottom: '100%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            ':before': {
+                bottom: '0',
+                left: '50%',
+                transform: 'translate(-50%, 100%) rotate(180deg)',
+            },
         },
     ],
-    bottom: [
-        baseArrow,
+    right: [
+        exports.base,
         {
-            top: `calc(-1 * ${vars_css_1.vars.sizes.$4} / 2)`,
-            borderTop: `${vars_css_1.vars.borderWidths.$md} solid ${vars_css_1.vars.colors.$neutral2}`,
-            borderLeft: `${vars_css_1.vars.borderWidths.$md} solid ${vars_css_1.vars.colors.$neutral2}`,
+            marginLeft: vars_css_1.vars.sizes.$sm,
+            left: '100%',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            ':before': {
+                top: '50%',
+                left: '0',
+                transform: 'translate(-100%, -50%) rotate(270deg)',
+            },
+        },
+    ],
+    left: [
+        exports.base,
+        {
+            marginRight: vars_css_1.vars.sizes.$sm,
+            right: '100%',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            ':before': {
+                top: '50%',
+                right: '0',
+                transform: 'translate(100%, -50%) rotate(90deg)',
+            },
         },
     ],
 });
-exports.visibleClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        display: 'flex',
-    }),
-]);
 //# sourceMappingURL=Tooltip.css.js.map

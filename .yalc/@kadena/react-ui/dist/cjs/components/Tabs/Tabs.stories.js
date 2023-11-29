@@ -20,6 +20,9 @@ const meta = {
     title: 'Layout/Tabs',
     decorators: [withCenteredStory_1.withCenteredStory],
     parameters: {
+        status: {
+            type: ['inDevelopment'],
+        },
         docs: {
             description: {
                 component: 'The Tab component consists of three sub components:<br /><strong><Tabs.Root></strong> as the parent container<br /><strong><Tabs.Tab></strong> for each tab item<br /><strong><Tabs.Content></strong> for the tab content<br /><br /><em>This component has a controlled and uncontrolled state. When a currentTab is not provided, the component will track state internally.</em>',

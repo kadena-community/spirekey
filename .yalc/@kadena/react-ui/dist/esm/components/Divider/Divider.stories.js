@@ -4,6 +4,7 @@ import { ContentClass } from './stories.css';
 const meta = {
     title: 'Layout/Divider',
     parameters: {
+        status: { type: 'stable' },
         docs: {
             description: {
                 component: 'Component which helps to separate one logical group of element from others.',

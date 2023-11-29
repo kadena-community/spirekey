@@ -11,6 +11,11 @@ const Heading_css_1 = require("./Heading.css");
 const meta = {
     title: 'Typography/Heading',
     component: Heading_1.Heading,
+    parameters: {
+        status: {
+            type: ['needsRevision'],
+        },
+    },
     argTypes: {
         children: {
             control: { type: 'text' },

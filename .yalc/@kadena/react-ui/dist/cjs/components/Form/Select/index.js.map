@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../../src/components/Form/Select/index.ts"],"names":[],"mappings":";;;AAAA,mCAAkC;AAAzB,gGAAA,MAAM,OAAA","sourcesContent":["export { Select } from './Select';\nexport type { ISelectProps } from './Select';\n"]}

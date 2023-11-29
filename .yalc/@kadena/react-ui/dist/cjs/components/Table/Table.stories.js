@@ -12,8 +12,11 @@ const selectOptions = [
     ...Object.keys(vars_css_1.vars.sizes),
 ];
 const meta = {
-    title: 'Content/Table',
+    title: 'Components/Table',
     parameters: {
+        status: {
+            type: ['inDevelopment'],
+        },
         docs: {
             description: {
                 component: 'The Table component renders a table element with a head and body. The table can have a visual distinction between rows with the `striped` prop. The column width can be adjusted via `width`, `minWidth`, and `maxWidth` prop applied to the `Table.Th` subcomponent.',

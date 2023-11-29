@@ -53,7 +53,7 @@ exports.vars = (0, css_1.createGlobalTheme)(':root', {
         $md: '2px',
     },
     shadows: {
-        $1: `0px 1px 2px 0 $colors$gray40`,
+        $1: `0px 1px 2px 0 ${colors_1.colorPalette.$gray90}`,
     },
     sizes: {
         0: '0',
@@ -94,6 +94,9 @@ exports.vars = (0, css_1.createGlobalTheme)(':root', {
         $xl: 'var(--spacing-xl)',
         $2xl: 'var(--spacing-2xl)',
         $3xl: 'var(--spacing-3xl)',
+    },
+    contentWidth: {
+        $maxContentWidth: '42.5rem',
     },
     colors: {
         ...colors_1.colorPalette,

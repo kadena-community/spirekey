@@ -7,9 +7,12 @@ exports.Primary = void 0;
 const ProfileSummary_1 = require("../ProfileSummary");
 const react_1 = __importDefault(require("react"));
 const meta = {
-    title: 'Content/ProfileSummary',
+    title: 'Patterns/ProfileSummary',
     component: ProfileSummary_1.ProfileSummary.Root,
     parameters: {
+        status: {
+            type: ['experimental'],
+        },
         docs: {
             description: {
                 component: 'The ProfileSummary component renders a card with a profile picture, name, title, tags, and links. The links are rendered using the `Link` component and can be set with the `links` prop.',

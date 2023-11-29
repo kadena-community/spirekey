@@ -2,7 +2,10 @@ import { ContentHeader } from '../ContentHeader';
 import { SystemIcon } from '../Icon';
 import React from 'react';
 const meta = {
-    title: 'Content/ContentHeader',
+    title: 'Patterns/ContentHeader',
+    parameters: {
+        status: { type: 'experimental' },
+    },
     argTypes: {
         icon: {
             options: Object.keys(SystemIcon),

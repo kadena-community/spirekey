@@ -1,9 +1,4 @@
-import { NotificationActions } from './NotificationActions';
-import { NotificationButton } from './NotificationButton';
-import { NotificationContainer } from './NotificationContainer';
-export const Notification = {
-    Root: NotificationContainer,
-    Actions: NotificationActions,
-    Button: NotificationButton,
-};
+export { Notification } from './Notification';
+export { NotificationButton } from './NotificationButton';
+export { NotificationFooter, NotificationHeading, } from './NotificationSubComponents';
 //# sourceMappingURL=index.js.map

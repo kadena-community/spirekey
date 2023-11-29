@@ -9,6 +9,9 @@ const ProgressBar_1 = require("./ProgressBar");
 const meta = {
     title: 'Components/ProgressBar',
     parameters: {
+        status: {
+            type: ['inDevelopment'],
+        },
         docs: {
             description: {
                 component: 'A component that shows the completion status of a task or process.',

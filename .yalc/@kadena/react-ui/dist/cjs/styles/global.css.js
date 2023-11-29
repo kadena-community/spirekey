@@ -1,10 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const fonts_1 = require("@kadena/fonts");
 const css_1 = require("@vanilla-extract/css");
 const themeUtils_1 = require("./themeUtils");
 const vars_css_1 = require("./vars.css");
-(0, fonts_1.KodeMono)();
 (0, css_1.globalFontFace)('Haas Grotesk Display', {
     fontWeight: 300,
     src: "url(https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7W0Q5nw.woff2) format('woff2')",

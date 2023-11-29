@@ -8,6 +8,7 @@ const meta = {
     component: Button,
     decorators: [withCenteredStory],
     parameters: {
+        status: { type: 'inDevelopment' },
         controls: {
             hideNoControlsWarning: true,
             sort: 'requiredFirst',

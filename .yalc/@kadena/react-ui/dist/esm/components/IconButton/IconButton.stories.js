@@ -6,6 +6,9 @@ const meta = {
     title: 'Components/IconButton',
     component: IconButton,
     parameters: {
+        status: {
+            type: ['deprecated'],
+        },
         docs: {
             description: {
                 component: 'Use this variation of the Button component if you require a button with only an icon.',

@@ -17,6 +17,9 @@ const sampleSections = generateSections(sampleCount);
 const meta = {
     title: 'Layout/Accordion',
     parameters: {
+        status: {
+            type: 'inDevelopment',
+        },
         controls: {
             hideNoControlsWarning: true,
             sort: 'requiredFirst',

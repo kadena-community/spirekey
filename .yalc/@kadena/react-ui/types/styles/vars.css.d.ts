@@ -90,6 +90,9 @@ export declare const vars: {
         $2xl: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
         $3xl: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
     };
+    contentWidth: {
+        $maxContentWidth: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+    };
     colors: {
         $primarySurface: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
         $primaryContrast: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;

@@ -10,6 +10,11 @@ const Text_css_1 = require("./Text.css");
 const meta = {
     title: 'Typography/Text',
     component: Text_1.Text,
+    parameters: {
+        status: {
+            type: ['needsRevision'],
+        },
+    },
     argTypes: {
         children: {
             control: { type: 'text' },

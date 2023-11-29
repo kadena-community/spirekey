@@ -49,6 +49,9 @@ const sampleNetworkItems = ['Mainnet', 'Testnet'];
 const meta = {
     title: 'Navigation/NavHeader',
     parameters: {
+        status: {
+            type: ['needsRevision'],
+        },
         controls: {
             hideNoControlsWarning: true,
             sort: 'requiredFirst',

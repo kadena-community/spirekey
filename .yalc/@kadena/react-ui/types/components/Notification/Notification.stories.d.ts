@@ -1,11 +1,10 @@
 import type { INotificationProps } from '../Notification';
 import type { Meta, StoryObj } from '@storybook/react';
-declare const meta: Meta<{
-    text: string;
-} & INotificationProps>;
+type StoryType = {
+    heading: string;
+} & INotificationProps;
+declare const meta: Meta<StoryType>;
 export default meta;
-type Story = StoryObj<{
-    text: string;
-} & INotificationProps>;
+type Story = StoryObj<StoryType>;
 export declare const Primary: Story;
 //# sourceMappingURL=Notification.stories.d.ts.map

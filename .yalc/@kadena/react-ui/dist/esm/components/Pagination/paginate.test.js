@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { paginate } from './paginate';
 describe('paginate', () => {
     it(`should return the required pages when 'total' < 'maxPages'`, () => {

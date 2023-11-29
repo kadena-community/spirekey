@@ -1,9 +1,12 @@
 import { ProfileSummary } from '../ProfileSummary';
 import React from 'react';
 const meta = {
-    title: 'Content/ProfileSummary',
+    title: 'Patterns/ProfileSummary',
     component: ProfileSummary.Root,
     parameters: {
+        status: {
+            type: ['experimental'],
+        },
         docs: {
             description: {
                 component: 'The ProfileSummary component renders a card with a profile picture, name, title, tags, and links. The links are rendered using the `Link` component and can be set with the `links` prop.',

@@ -28,15 +28,16 @@ exports.MaskedValue = void 0;
 const Icon_1 = require("../Icon");
 const react_1 = __importStar(require("react"));
 const MaskedValue_css_1 = require("./MaskedValue.css");
+const utils_1 = require("./utils");
 const MaskedValue = ({ title, value, defaultVisibility = false, startUnmaskedValues = 6, endUnmaskedValues = 4, }) => {
     const [visible, setVisible] = (0, react_1.useState)(defaultVisibility);
     const toggleVisibility = () => {
         setVisible(!visible);
     };
-    let maskedValue = value;
-    if (startUnmaskedValues + endUnmaskedValues <= value.length - 1) {
-        maskedValue = `${value.slice(0, startUnmaskedValues)}****${value.slice(-endUnmaskedValues)}`;
-    }
+    const maskedValue = (0, utils_1.maskValue)(value, {
+        headLength: startUnmaskedValues,
+        tailLength: endUnmaskedValues,
+    });
     return (react_1.default.createElement("div", { "data-testid": "kda-masked-value" },
         react_1.default.createElement("div", { className: MaskedValue_css_1.titleContainer }, title),
         react_1.default.createElement("div", { className: MaskedValue_css_1.valueIconContainer },
