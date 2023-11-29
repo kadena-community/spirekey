@@ -22,7 +22,7 @@ const getSig = (response: SignResponse) => {
   const clientDataJSON = Buffer.from(
     base64URLStringToBuffer(response.clientDataJSON)
   ).toString("base64");
-  if (process.env.STRING_SIG)
+  if (Boolean(process.env.STRING_SIG))
     return {
       sig: JSON.stringify({
         signature,
