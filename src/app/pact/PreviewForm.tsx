@@ -203,6 +203,10 @@ export const PreviewForm: FC<PreviewFormProps> = ({
               value: account.cid,
             },
             {
+              label: "Account ID",
+              value: account.waccount,
+            },
+            {
               label: "Public key",
               value: account.publicKey,
             },
