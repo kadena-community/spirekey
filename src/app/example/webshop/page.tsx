@@ -18,6 +18,8 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
 import cookieImg from "./chocolate-chip-cookie.jpg";
 import { createOrder } from "./order";
+import { Account } from "../(shared)/Account";
+import { decodeAccount } from "../(shared)/decodeAccount";
 
 type WebshopProps = {
   searchParams: {
@@ -25,21 +27,6 @@ type WebshopProps = {
   };
 };
 
-type Account = {
-  name: string;
-  waccount: string;
-  caccount: string;
-  publicKey: string;
-  cid: string;
-};
-
-const decodeAccount = (response: string) => {
-  if (!response) return null;
-  const account: Account = JSON.parse(
-    Buffer.from(response, "base64").toString()
-  );
-  return account;
-};
 export default function Webshop({ searchParams }: WebshopProps) {
   const { response } = searchParams;
   const account = decodeAccount(response);
@@ -79,86 +66,76 @@ export default function Webshop({ searchParams }: WebshopProps) {
       },
     [response]
   );
+
   const { setTheme } = useTheme();
   useEffect(() => {
     setTheme("light");
   }, []);
+
   return (
-    <Stack direction="column" alignItems="center" paddingY="$lg">
-      <Stack direction="row" gap="$lg">
-        <Box>
-          <ContentHeader
-            description={`We sell the best cookies in town!`}
-            heading="Cookie Shop"
-            icon="Cookie"
-          />
-        </Box>
-        <Box>
-          <Account account={account} />
-        </Box>
-      </Stack>
-      <Grid columns={{ sm: 1, md: 2, lg: 2 }} gap="$lg" margin="$lg">
-        {cookies.map(({ description, name, image, price }) => (
-          <GridItem key={name}>
-            <Card fullWidth>
-              <Image
-                src={image}
-                priority
-                alt="Chocolate chip cookie"
-                width={200}
-                height={200}
-                sizes="100vw"
-                style={{
-                  width: "100%",
-                  height: "auto",
-                  borderRadius: "1rem",
-                }}
-              />
-              <Box marginY="$5">
-                <Heading as="h3">{name}</Heading>
-                <Text>{description}</Text>
-                <Stack
-                  direction="row"
-                  gap="$md"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  marginTop="$4"
-                >
-                  <Text as="span" bold font="mono" size="lg" color="emphasize">
-                    {price.toFixed(2)} KDA
-                  </Text>
-                  <Button
-                    color="primary"
-                    title="Shop now"
-                    onClick={onOrder({ price })}
+    <Stack direction="column" alignItems="center" paddingY="$lg" gap="$md">
+      <Box>
+        <ContentHeader
+          description="We sell the best cookies in town!"
+          heading="Cookie Shop"
+          icon="Cookie"
+        />
+      </Box>
+
+      <Box>
+        <Account account={account} returnPath="/example/webshop" />
+      </Box>
+      {account && (
+        <Grid columns={{ sm: 1, md: 2, lg: 2 }} gap="$lg" margin="$lg">
+          {cookies.map(({ description, name, image, price }) => (
+            <GridItem key={name}>
+              <Card fullWidth>
+                <Image
+                  src={image}
+                  priority
+                  alt="Chocolate chip cookie"
+                  width={200}
+                  height={200}
+                  sizes="100vw"
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    borderRadius: "1rem",
+                  }}
+                />
+                <Box marginY="$5">
+                  <Heading as="h3">{name}</Heading>
+                  <Text>{description}</Text>
+                  <Stack
+                    direction="row"
+                    gap="$md"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    marginTop="$4"
                   >
-                    Buy now
-                  </Button>
-                </Stack>
-              </Box>
-            </Card>
-          </GridItem>
-        ))}
-      </Grid>
+                    <Text
+                      as="span"
+                      bold
+                      font="mono"
+                      size="lg"
+                      color="emphasize"
+                    >
+                      {price.toFixed(2)} KDA
+                    </Text>
+                    <Button
+                      color="primary"
+                      title="Shop now"
+                      onClick={onOrder({ price })}
+                    >
+                      Buy now
+                    </Button>
+                  </Stack>
+                </Box>
+              </Card>
+            </GridItem>
+          ))}
+        </Grid>
+      )}
     </Stack>
   );
 }
-
-const Account = ({ account }: { account: Account | null }) => {
-  const router = useRouter();
-  const { getReturnUrl } = useReturnUrl();
-  const onLogin = useCallback(() => {
-    router.push(
-      `${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(
-        "/example/webshop"
-      )}`
-    );
-  }, []);
-  if (!account)
-    return (
-      <Button icon="Account" onClick={onLogin}>
-        Login
-      </Button>
-    );
-  return <Text bold>Account: {account.name}</Text>;
-};

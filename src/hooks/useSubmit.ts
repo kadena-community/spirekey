@@ -1,44 +1,28 @@
 import { l1Client } from "@/app/utils/client";
-import { base64URLStringToBuffer } from "@simplewebauthn/browser";
-import { useEffect, useState } from "react";
+import { getSig } from "@/app/utils/getSig";
+import { useState } from "react";
 
-type SearchParams = {
+type Props = {
   payload: string;
   response: string;
 };
 
-type SignResponse = {
-  signature: string;
-  authenticatorData: string;
-  clientDataJSON: string;
-};
-const getSig = (response: SignResponse) => {
-  const signature = Buffer.from(
-    base64URLStringToBuffer(response.signature)
-  ).toString("base64");
-  const authenticatorData = Buffer.from(
-    base64URLStringToBuffer(response.authenticatorData)
-  ).toString("base64");
-  const clientDataJSON = Buffer.from(
-    base64URLStringToBuffer(response.clientDataJSON)
-  ).toString("base64");
-  if (Boolean(process.env.STRING_SIG))
-    return {
-      sig: JSON.stringify({
-        signature,
-        authenticatorData,
-        clientDataJSON,
-      }),
-    };
-  return { sig: signature, authenticatorData, clientDataJSON };
-};
+enum SubmitStatus {
+  IDLE = "idle",
+  SUCCESS = "success",
+  ERROR = "error",
+  LOADING = "loading",
+}
 
-export const useSubmit = (searchParams: SearchParams) => {
-  const { payload, response } = searchParams;
+export const useSubmit = ({ payload, response }: Props) => {
   const [result, setResult] = useState<any>({});
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
+  const [status, setStatus] = useState(SubmitStatus.IDLE);
+
+  const doSubmit = () => {
     if (!payload || !response) return;
+
+    setStatus(SubmitStatus.LOADING);
+
     const p = JSON.parse(Buffer.from(payload, "base64").toString());
     const r = JSON.parse(Buffer.from(response, "base64").toString());
     const tx = {
@@ -55,22 +39,24 @@ export const useSubmit = (searchParams: SearchParams) => {
         }
         const txRes = await l1Client.submit(tx);
         const result = await l1Client.listen(txRes);
+
+        setStatus(SubmitStatus.SUCCESS);
         setResult(result);
       })
       .catch((err) => {
         console.log(err);
+        setStatus(SubmitStatus.ERROR);
         setResult({
           status: "Could not submit transaction",
           data: err.toString(),
         });
-      })
-      .finally(() => {
-        setIsLoading(false);
       });
-  }, [payload, response]);
+  };
 
   return {
+    doSubmit,
     result,
-    isLoading,
+    status,
+    SubmitStatus,
   };
 };
