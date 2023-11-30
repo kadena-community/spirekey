@@ -1,5 +1,6 @@
 "use client";
 
+import { usePubkeys } from "@/hooks/usePubkeys";
 import { useReturnUrl } from "@/hooks/useReturnUrl";
 import { createTransaction } from "@kadena/client";
 import {
@@ -102,13 +103,15 @@ export const PreviewForm: FC<PreviewFormProps> = ({
     }
   };
 
+  const { pubkeys } = usePubkeys();
+
   useEffect(() => {
     if (account) {
       setValue("publicKey", account.publicKey);
       setValue("senderAccount", account.caccount);
       setValue("cid", account.cid);
     }
-  }, [account]);
+  }, [account, setValue]);
 
   const onCodeChange = async (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -123,6 +126,14 @@ export const PreviewForm: FC<PreviewFormProps> = ({
     } catch (error) {
       //do nothing
     }
+  };
+
+  const onPublicKeyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const pubkey = event.target.value;
+    const pk = pubkeys.find((pk) => pk.pubkey === pubkey);
+    if (!pk) return;
+    setValue("publicKey", pk.pubkey);
+    setValue("cid", pk.cid);
   };
 
   const formatContractData = (
@@ -220,7 +231,30 @@ export const PreviewForm: FC<PreviewFormProps> = ({
         />
       )}
       <Card fullWidth>
-        <FormFieldWrapper htmlFor="publicKey" label="Chain ID">
+        <FormFieldWrapper htmlFor="publicKey" label="Public Key">
+          <Controller
+            control={control}
+            name="publicKey"
+            rules={{ required: true }}
+            render={({ field }) => (
+              <Select
+                id="public-key"
+                ariaLabel="Public Key"
+                {...field}
+                {...register("publicKey", {
+                  onChange: onPublicKeyChange,
+                })}
+              >
+                {pubkeys.map(({ pubkey, cid }) => (
+                  <option key={cid} value={pubkey}>
+                    {pubkey}
+                  </option>
+                ))}
+              </Select>
+            )}
+          />
+        </FormFieldWrapper>
+        <FormFieldWrapper htmlFor="chainId" label="Chain ID">
           <Controller
             control={control}
             name="chainId"
