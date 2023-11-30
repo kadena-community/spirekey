@@ -1,4 +1,6 @@
-import { getReturnUrl } from "@/utils/url";
+"use client";
+
+import { useReturnUrl } from "@/hooks/useReturnUrl";
 import { createTransaction } from "@kadena/client";
 import {
   Button,
@@ -37,6 +39,8 @@ const FORM_DEFAULT = {
   cid: "",
 };
 export type PreviewFormValues = typeof FORM_DEFAULT;
+
+// somehow get and store public keys and cred-ids
 
 type PreviewFormProps = {
   defaults?: PreviewFormValues | null;
@@ -81,6 +85,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
 
   const { response } = searchParams;
   const account = decodeAccount(response);
+  const { getReturnUrl } = useReturnUrl();
 
   const onChangeFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {

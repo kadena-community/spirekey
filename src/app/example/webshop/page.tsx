@@ -1,7 +1,6 @@
 "use client";
 
-import RootLayout from "@/app/layout";
-import { getReturnUrl } from "@/utils/url";
+import { useReturnUrl } from "@/hooks/useReturnUrl";
 import {
   Box,
   Button,
@@ -13,8 +12,7 @@ import {
   Stack,
   Text,
 } from "@kadena/react-ui";
-import { darkThemeClass } from "@kadena/react-ui/theme";
-import { ThemeProvider, useTheme } from "next-themes";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
@@ -60,6 +58,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
     },
   ];
   const router = useRouter();
+  const { getReturnUrl } = useReturnUrl();
   const onOrder = useCallback(
     ({ price }: { price: number }) =>
       async () => {
@@ -147,6 +146,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
 
 const Account = ({ account }: { account: Account | null }) => {
   const router = useRouter();
+  const { getReturnUrl } = useReturnUrl();
   const onLogin = useCallback(() => {
     router.push(
       `${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(
