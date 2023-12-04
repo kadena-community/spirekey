@@ -6,8 +6,8 @@ import { createTransaction } from "@kadena/client";
 import {
   Button,
   Card,
-  Input,
   FormFieldWrapper,
+  Input,
   Select,
   Stack,
   Text,
@@ -103,15 +103,15 @@ export const PreviewForm: FC<PreviewFormProps> = ({
     }
   };
 
-  const { pubkeys } = usePubkeys();
+  const { pubkeys, addPubkey } = usePubkeys();
 
   useEffect(() => {
-    if (account) {
-      setValue("publicKey", account.publicKey);
-      setValue("senderAccount", account.caccount);
-      setValue("cid", account.cid);
-    }
-  }, [account, setValue]);
+    if (!account) return;
+    setValue("publicKey", account.publicKey);
+    setValue("senderAccount", account.caccount);
+    setValue("cid", account.cid);
+    addPubkey({ pubkey: account.publicKey, cid: account.cid });
+  }, [account?.cid, account?.caccount, account?.publicKey]);
 
   const onCodeChange = async (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -252,6 +252,13 @@ export const PreviewForm: FC<PreviewFormProps> = ({
                 ))}
               </Select>
             )}
+          />
+        </FormFieldWrapper>
+        <FormFieldWrapper htmlFor="senderAccount" label="Sender Account">
+          <Input
+            id="senderAccount"
+            type="text"
+            {...register("senderAccount")}
           />
         </FormFieldWrapper>
         <FormFieldWrapper htmlFor="chainId" label="Chain ID">

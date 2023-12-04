@@ -51,27 +51,27 @@ export const getNameSpaceAndKeysetSettings: () => DeploySettings[] = () => [
     sender: "sender00",
     keypair: sender00Keypair,
     data: {
-      "l2-keyset": l2Keyset,
+      "webauthn-keyset": l2Keyset,
     },
     code: `
-    (let ((ns-name (ns.create-principal-namespace (read-keyset 'l2-keyset))))
+    (let ((ns-name (ns.create-principal-namespace (read-keyset 'webauthn-keyset))))
       (define-namespace
         ns-name
-        (read-keyset 'l2-keyset )
-        (read-keyset 'l2-keyset )
+        (read-keyset 'webauthn-keyset )
+        (read-keyset 'webauthn-keyset )
       )
       (namespace ns-name)
       (define-keyset
         (format "{}.{}"
           [ns-name 'l2-keyset]
         )
-        (read-keyset 'l2-keyset)
+        (read-keyset 'webauthn-keyset)
       )
       (define-keyset
         (format "{}.{}"
           [ns-name 'webauthn-keyset]
         )
-        (read-keyset 'l2-keyset)
+        (read-keyset 'webauthn-keyset)
       )
     )
   `,
