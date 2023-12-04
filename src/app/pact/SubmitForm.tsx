@@ -1,4 +1,6 @@
-import { getReturnUrl } from "@/utils/url";
+"use client";
+
+import { useReturnUrl } from "@/hooks/useReturnUrl";
 import { Box, Button, Stack, Text } from "@kadena/react-ui";
 import { useRouter } from "next/navigation";
 import { FC } from "react";
@@ -11,6 +13,7 @@ type PreviewFormProps = {
 
 export const SubmitForm: FC<PreviewFormProps> = ({ values, onCancel }) => {
   const router = useRouter();
+  const { getReturnUrl } = useReturnUrl();
 
   const onSign = async () => {
     router.push(
