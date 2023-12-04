@@ -27,11 +27,7 @@ type SignProps = {
 /* valueLabels to be used to explain cmd.code */
 const capTranslations: Record<string, any> = {
   "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.TRANSFER": {
-    default: {
-      title: "Transfer",
-      description: "Transfer {{2}} KDA from {{0}} to {{1}}",
-      valueLabels: ["From", "To", "Amount"],
-    },
+    default: "nl",
     en: {
       title: "Transfer",
       description: "Transfer {{2}} KDA from {{0}} to {{1}}",
@@ -47,9 +43,8 @@ const capTranslations: Record<string, any> = {
 
 const getDescription = (key: string, args: any, language: string) => {
   const translation =
-    capTranslations?.[key]?.[language] || capTranslations[key]?.default;
-
-  if (!translation) return;
+    capTranslations?.[key]?.[language] ||
+    capTranslations[key]?.[capTranslations[key]?.default];
 
   return {
     title: translation.title,
@@ -82,7 +77,7 @@ const getLabels = (signers: any[], language: string) =>
                     raw: c,
                     label: title,
                     description,
-                    valueString: valuesString,
+                    valuesString,
                   }
                 : { raw: c, label: c.name, values: valuesString },
             ];
@@ -131,10 +126,11 @@ export default function Sign(req: SignProps) {
         <option value="">Select language</option>
         <option value="en">English</option>
         <option value="nl">Nederlands</option>
+        <option value="fr">Français</option>
       </Select>
 
       {getLabels(txData.signers, language).map((x) => (
-        <div key={x.label}>
+        <Box key={x.label} width="100%">
           <Heading variant="h6">{x.label}</Heading>
           <Stack alignItems="center">
             <Text>{x.description ?? "No description available"}</Text>
@@ -148,7 +144,7 @@ export default function Sign(req: SignProps) {
             )}
           </Stack>
           <Box marginTop="$sm">
-            <Text size="md">
+            <Text font="mono" size="md">
               <details>
                 <summary>View raw capability</summary>
                 <Text bold size="md">
@@ -159,12 +155,21 @@ export default function Sign(req: SignProps) {
                 <Text bold size="md">
                   Values:
                 </Text>{" "}
-                {x.raw.values}
+                {x.valuesString}
               </details>
             </Text>
           </Box>
-        </div>
+        </Box>
       ))}
+
+      <Box width="100%">
+        <Text font="mono" size="md">
+          <details>
+            <summary>View raw transaction</summary>
+            <pre>{JSON.stringify({ ...tx, cmd: txData }, null, 2)}</pre>
+          </details>
+        </Text>
+      </Box>
 
       <Button onClick={sign}>Sign</Button>
     </Stack>

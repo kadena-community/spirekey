@@ -1,6 +1,5 @@
 import { l1Client } from "@/app/utils/client";
 import { getSig } from "@/app/utils/getSig";
-import { ICommand } from "@kadena/client";
 import { PactNumber } from "@kadena/pactjs";
 import { useEffect, useState } from "react";
 
@@ -9,9 +8,11 @@ type Props = {
   response: string;
 };
 
-export const useGasEstimate = ({ payload, response }: Props) => {
+export const usePreview = ({ payload, response }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [estimatedGas, setEstimatedGas] = useState<number>();
+  const [isSuccessful, setSuccessful] = useState<boolean>();
+  const [error, setError] = useState<string>();
 
   const p = JSON.parse(Buffer.from(payload, "base64").toString());
   const r = JSON.parse(Buffer.from(response, "base64").toString());
@@ -25,22 +26,27 @@ export const useGasEstimate = ({ payload, response }: Props) => {
 
   const gasPayer = parsedCmd.meta.sender;
   useEffect(() => {
-    const calculateGas = async () => {
+    const doLocal = async () => {
       setIsLoading(true);
-      const result = await l1Client.local(tx, {
-        signatureVerification: false,
-      });
+      try {
+        const result = await l1Client.local(tx);
 
-      if (result.gas) {
-        setEstimatedGas(
-          new PactNumber(result.gas).times(parsedCmd.meta.gasPrice).toNumber()
-        );
+        if (result.gas) {
+          setEstimatedGas(
+            new PactNumber(result.gas).times(parsedCmd.meta.gasPrice).toNumber()
+          );
+        }
+        setSuccessful(true);
+      } catch (e: any) {
+        setSuccessful(false);
+        setError(e.message);
+      } finally {
         setIsLoading(false);
       }
     };
 
-    calculateGas();
+    doLocal();
   }, [tx]);
 
-  return { estimatedGas, isLoading, gasPayer };
+  return { isSuccessful, error, estimatedGas, isLoading, gasPayer };
 };

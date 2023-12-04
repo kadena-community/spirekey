@@ -7,7 +7,7 @@ type Props = {
   response: string;
 };
 
-enum SubmitStatus {
+export enum SubmitStatus {
   IDLE = "idle",
   SUCCESS = "success",
   ERROR = "error",

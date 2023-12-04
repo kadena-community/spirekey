@@ -23,6 +23,7 @@ import {
   uploadModuleTransaction,
   validateJson,
 } from "./pact.utils";
+import { decodeAccount } from "../example/(shared)/decodeAccount";
 
 const FORM_DEFAULT = {
   chainId: "14",
@@ -51,21 +52,6 @@ type PreviewFormProps = {
   };
 };
 
-type Account = {
-  name: string;
-  waccount: string;
-  caccount: string;
-  publicKey: string;
-  cid: string;
-};
-
-const decodeAccount = (response: string) => {
-  if (!response) return null;
-  const account: Account = JSON.parse(
-    Buffer.from(response, "base64").toString()
-  );
-  return account;
-};
 export const PreviewForm: FC<PreviewFormProps> = ({
   defaults,
   onSubmit: onSubmitForm,

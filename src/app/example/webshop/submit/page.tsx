@@ -1,16 +1,17 @@
 "use client";
 
-import { getSig } from "@/app/utils/getSig";
-import { useGasEstimate } from "@/hooks/useGasEstimate";
+import { usePreview } from "@/hooks/usePreview";
 import { useSubmit } from "@/hooks/useSubmit";
 import {
+  Box,
   Button,
   ContentHeader,
   Heading,
   Stack,
   Text,
-  TrackerCard,
+  SystemIcon,
 } from "@kadena/react-ui";
+import { SubmitResult } from "@/app/components/SubmitResult";
 
 type SearchParams = {
   searchParams: {
@@ -21,10 +22,12 @@ type SearchParams = {
 export default function Submit({ searchParams }: SearchParams) {
   const { doSubmit, result, status, SubmitStatus } = useSubmit(searchParams);
   const {
+    isSuccessful,
+    error,
     estimatedGas,
     isLoading: estimatedGasIsLoading,
     gasPayer,
-  } = useGasEstimate(searchParams);
+  } = usePreview(searchParams);
 
   return (
     <Stack direction="column" gap="$md" alignItems="center" margin="$xl">
@@ -34,38 +37,52 @@ export default function Submit({ searchParams }: SearchParams) {
         icon="Earth"
       />
 
-      <Heading variant="h5">Transaction costs</Heading>
       <Stack direction="column">
-        <Heading variant="h6">Estimated transaction costs:</Heading>
-        <Text>
-          {estimatedGasIsLoading ? "Loading..." : `${estimatedGas} KDA`}
-        </Text>
-        <Heading variant="h6">Paid by:</Heading>
-        <Text>{gasPayer}</Text>
+        {isSuccessful === true && (
+          <Stack direction="column" gap="$md">
+            <Stack direction="column" gap="$sm">
+              <Heading variant="h6">Estimated transaction costs:</Heading>
+              <Text>
+                {estimatedGasIsLoading ? "Loading..." : `${estimatedGas} KDA`}
+              </Text>
+              <Heading variant="h6">Paid by:</Heading>
+              <Text>{gasPayer}</Text>
+            </Stack>
+
+            <Stack
+              direction="row"
+              alignItems="center"
+              gap="$3"
+              marginBottom="$md"
+            >
+              <SystemIcon.CheckDecagramOutline color="#4bb543" />
+              <Text>Transaction can be submitted</Text>
+            </Stack>
+
+            <Button onClick={doSubmit} disabled={status !== SubmitStatus.IDLE}>
+              {status === SubmitStatus.LOADING
+                ? "Loading..."
+                : "Submit transaction"}
+            </Button>
+          </Stack>
+        )}{" "}
+        {isSuccessful === false && (
+          <>
+            <Stack direction="row" alignItems="center" gap="$3">
+              <SystemIcon.Close color="#ff0000" />
+              <Text>Transaction can not be submitted</Text>
+            </Stack>
+            <Box marginTop="$md">
+              <Text font="mono">
+                <pre>{error}</pre>
+              </Text>
+            </Box>
+          </>
+        )}
+        <Box marginTop="$lg">
+          <SubmitResult result={result} status={status} />
+        </Box>
       </Stack>
-
-      <Button onClick={doSubmit} disabled={status !== SubmitStatus.IDLE}>
-        {status === SubmitStatus.LOADING ? "Loading..." : "Submit transaction"}
-      </Button>
-
-      {status === SubmitStatus.ERROR ||
-        (status === SubmitStatus.SUCCESS && (
-          <TrackerCard
-            icon="Chainweb"
-            labelValues={[
-              {
-                label: "Status",
-                value: result?.result?.status || "Failed",
-              },
-              {
-                label: "Data",
-                value:
-                  JSON.stringify(result?.result?.data, null, 2) ||
-                  "Something went wrong...",
-              },
-            ]}
-          />
-        ))}
     </Stack>
   );
 }
