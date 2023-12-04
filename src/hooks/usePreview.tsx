@@ -21,11 +21,13 @@ export const usePreview = ({ payload, response }: Props) => {
     // @TODO: this needs to map the signature to the correct index within the signatures array
     sigs: [getSig(r.response), ...p.sigs].filter(Boolean),
   };
-
   const parsedCmd = JSON.parse(tx.cmd);
-
   const gasPayer = parsedCmd.meta.sender;
+
+  const stringifiedTx = JSON.stringify(tx);
+
   useEffect(() => {
+    const tx = JSON.parse(stringifiedTx);
     const doLocal = async () => {
       setIsLoading(true);
       try {
@@ -46,7 +48,7 @@ export const usePreview = ({ payload, response }: Props) => {
     };
 
     doLocal();
-  }, [tx]);
+  }, [stringifiedTx]);
 
   return { isSuccessful, error, estimatedGas, isLoading, gasPayer };
 };

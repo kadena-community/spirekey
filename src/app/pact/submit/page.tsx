@@ -23,7 +23,7 @@ type SearchParams = {
 export default function Submit({ searchParams }: SearchParams) {
   const { doSubmit, result, status, SubmitStatus } = useSubmit(searchParams);
   const {
-    isSuccessful,
+    isSuccessful: isPreviewSuccesfull,
     error,
     estimatedGas,
     isLoading: estimatedGasIsLoading,
@@ -39,7 +39,7 @@ export default function Submit({ searchParams }: SearchParams) {
       />
 
       <Stack direction="column">
-        {isSuccessful === true && (
+        {isPreviewSuccesfull === true && (
           <Stack direction="column" gap="$md">
             <Stack direction="column" gap="$sm">
               <Heading variant="h6">Estimated transaction costs:</Heading>
@@ -66,8 +66,9 @@ export default function Submit({ searchParams }: SearchParams) {
                 : "Submit transaction"}
             </Button>
           </Stack>
-        )}{" "}
-        {isSuccessful === false && (
+        )}
+
+        {isPreviewSuccesfull === false && (
           <>
             <Stack direction="row" alignItems="center" gap="$3">
               <SystemIcon.Close color="#ff0000" />

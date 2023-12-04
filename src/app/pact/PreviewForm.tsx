@@ -23,7 +23,7 @@ import {
   uploadModuleTransaction,
   validateJson,
 } from "./pact.utils";
-import { decodeAccount } from "../example/(shared)/decodeAccount";
+import { decodeAccount } from "../utils/decodeAccount";
 
 const FORM_DEFAULT = {
   chainId: "14",

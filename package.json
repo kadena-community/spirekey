@@ -13,7 +13,7 @@
     "postinstall": "npx pactjs contract-generate --file=\"./pact/root/fungible-v2.pact\" --file=\"./pact/root/gas-payer-v1.pact\" --file=\"./pact/root/fungible-xchain-v1.pact\" --file=\"./pact/root/coin.pact\" --file=\"./pact/webauthn-guard.pact\" --file=\"./pact/webauthn-wallet.pact\" --file=\"./pact/l2-coin.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9"
   },
   "dependencies": {
-    "@kadena/client": "^1.6.3",
+    "@kadena/client": "^1.6.4",
     "@kadena/cryptography-utils": "^0.4.2",
     "@kadena/pactjs": "^0.4.2",
     "@kadena/react-ui": "file:.yalc/@kadena/react-ui",
@@ -30,11 +30,11 @@
     "react-hook-form": "^7.48.2"
   },
   "devDependencies": {
-    "@kadena/pactjs-cli": "^1.6.3",
-    "@types/node": "^20.10.1",
-    "@types/react": "^18.2.39",
+    "@kadena/pactjs-cli": "^1.6.4",
+    "@types/node": "^20.10.3",
+    "@types/react": "^18.2.41",
     "@types/react-dom": "^18.2.17",
-    "tsx": "^4.6.1",
+    "tsx": "^4.6.2",
     "typescript": "^5.3.2"
   }
 }

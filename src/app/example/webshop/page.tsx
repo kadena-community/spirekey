@@ -18,8 +18,8 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
 import cookieImg from "./chocolate-chip-cookie.jpg";
 import { createOrder } from "./order";
-import { Account } from "../(shared)/Account";
-import { decodeAccount } from "../(shared)/decodeAccount";
+import { Account } from "../../components/Account";
+import { decodeAccount } from "../../utils/decodeAccount";
 
 type WebshopProps = {
   searchParams: {
