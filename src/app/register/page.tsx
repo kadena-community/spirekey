@@ -7,6 +7,7 @@ import {
   Text,
   TextField,
 } from "@kadena/react-ui";
+import { useCallback, useState } from "react";
 import {
   base64URLStringToBuffer,
   bufferToBase64URLString,
@@ -14,22 +15,12 @@ import {
 } from "@simplewebauthn/browser";
 import cbor from "cbor";
 import cosekey from "parse-cosekey";
-import { useCallback, useState } from "react";
 import { registerAccount } from "./register";
-
-type AccountProps = {
-  searchParams: {
-    payload: string;
-    response: string;
-  };
-};
 
 const getJosePublicKey = async (res: any) => {
   const { authData } = cbor.decode(
     base64URLStringToBuffer(res.response.attestationObject)
   );
-
-  console.log(authData);
 
   const dataView = new DataView(new ArrayBuffer(2));
   const idLenBytes = authData.slice(53, 55);

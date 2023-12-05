@@ -13,28 +13,28 @@
     "postinstall": "npx pactjs contract-generate --file=\"./pact/root/fungible-v2.pact\" --file=\"./pact/root/gas-payer-v1.pact\" --file=\"./pact/root/fungible-xchain-v1.pact\" --file=\"./pact/root/coin.pact\" --file=\"./pact/webauthn-guard.pact\" --file=\"./pact/webauthn-wallet.pact\" --file=\"./pact/l2-coin.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9"
   },
   "dependencies": {
-    "@kadena/client": "^1.4.0",
-    "@kadena/cryptography-utils": "^0.3.8",
-    "@kadena/pactjs": "^0.4.1",
+    "@kadena/client": "^1.6.4",
+    "@kadena/cryptography-utils": "^0.4.2",
+    "@kadena/pactjs": "^0.4.2",
     "@kadena/react-ui": "file:.yalc/@kadena/react-ui",
     "@react-aria/utils": "^3.22.0",
-    "@simplewebauthn/browser": "^8.3.1",
-    "@vanilla-extract/next-plugin": "^2.3.1",
+    "@simplewebauthn/browser": "^8.3.4",
+    "@vanilla-extract/next-plugin": "^2.3.2",
     "cbor": "^9.0.1",
     "encoding": "^0.1.13",
-    "next": "13.5.5",
+    "next": "14.0.3",
     "next-themes": "^0.2.1",
     "parse-cosekey": "^1.0.2",
-    "react": "^18",
-    "react-dom": "^18",
-    "react-hook-form": "^7.47.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.48.2"
   },
   "devDependencies": {
-    "@kadena/pactjs-cli": "^1.4.0",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "tsx": "^3.14.0",
-    "typescript": "^5"
+    "@kadena/pactjs-cli": "^1.6.4",
+    "@types/node": "^20.10.3",
+    "@types/react": "^18.2.41",
+    "@types/react-dom": "^18.2.17",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.2"
   }
 }
