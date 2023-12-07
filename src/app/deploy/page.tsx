@@ -113,7 +113,7 @@ export default function DeployPage() {
       const pubKey = signer?.publicKey || step.pubKey || "";
       const tx = await asyncPipe(
         composePactCommand(
-          execution(step.code || ""),
+          execution(getCode(contracts, step.code, step.codeFile)),
           setMeta({
             chainId: "14",
             gasLimit: 100000,
@@ -130,18 +130,20 @@ export default function DeployPage() {
               // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
               scheme: signer ? "ED25519" : "WebAuthn", // WebAuthn
             },
-            (withCap) =>
-              (step.caps as any).map((cap: string[]) => {
-                const [name, ...args] = cap;
-                return withCap(
-                  name,
-                  ...args.map((resValue: any) => {
-                    if (isNaN(resValue)) return resValue;
-                    if (resValue.includes(".")) return Number(resValue);
-                    return { int: Number(resValue) };
+            Array.isArray(step.caps)
+              ? (withCap) =>
+                  (step.caps as any).map((cap: string[]) => {
+                    const [name, ...args] = cap;
+                    return withCap(
+                      name,
+                      ...args.map((resValue: any) => {
+                        if (isNaN(resValue)) return resValue;
+                        if (resValue.includes(".")) return Number(resValue);
+                        return { int: Number(resValue) };
+                      })
+                    );
                   })
-                );
-              })
+              : undefined
           )
         ),
         createTransaction,
