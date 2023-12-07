@@ -12,9 +12,12 @@ import {
 import {
   Button,
   FormFieldWrapper,
+  Grid,
+  GridItem,
   Heading,
   Input,
   Stack,
+  Text,
   TrackerCard,
 } from "@kadena/react-ui";
 import { startAuthentication } from "@simplewebauthn/browser";
@@ -66,6 +69,7 @@ export default function DeployPage() {
   const [orchestrationData, setOrchestrationData] =
     useState<OrchestrationData | null>(null);
   const [contracts, setContracts] = useState<PactContracts | null>(null);
+  const [results, setResults] = useState<any[]>([]);
   const { setTheme } = useTheme();
   const { register, setValue } = useForm({
     defaultValues: {
@@ -170,11 +174,19 @@ export default function DeployPage() {
               });
               tx.sigs = [getSig(res.response)];
               return tx;
-            }
+            },
+        (tx) => {
+          setResults((results) => [...results, tx]);
+          return tx;
+        },
+        l1Client.submit,
+        l1Client.listen
       )({});
-      console.log("sending tx", tx);
-      const res = await l1Client.submit(tx);
-      await l1Client.listen(res);
+      setResults((results) => {
+        console.log("hello", results);
+        console.log("write", results.slice(0, results.length - 1));
+        return [...results.slice(0, results.length - 1), tx];
+      });
     }
   };
   useEffect(() => {
@@ -203,7 +215,12 @@ export default function DeployPage() {
         />
       </FormFieldWrapper>
       <Profiles profiles={orchestrationData?.profiles} />
-      <DeploySteps steps={orchestrationData?.steps} contracts={contracts} />
+      {orchestrationData?.steps && <Button onClick={onDeploy}>Deploy</Button>}
+      <DeploySteps
+        steps={orchestrationData?.steps}
+        contracts={contracts}
+        results={results}
+      />
       <Button variant="alternative" onClick={onSave}>
         Save
       </Button>
@@ -260,40 +277,61 @@ const getCode = (
 const DeploySteps = ({
   steps,
   contracts,
+  results,
 }: {
   steps?: Step[];
   contracts: PactContracts | null;
+  results: any[];
 }) => {
   if (!steps) return null;
   return (
     <>
       {steps.map((step, index) => (
-        <TrackerCard
+        <Grid
           key={step.profile + index}
-          icon="PactLanguage"
-          labelValues={[
-            {
-              label: "Profile",
-              value: step.profile,
-            },
-            {
-              label: "Sender",
-              value: step.sender,
-            },
-            {
-              label: "Code",
-              value: getCode(contracts, step.code, step.codeFile),
-            },
-            {
-              label: "Data",
-              value: JSON.stringify(step.data) || "No data",
-            },
-            {
-              label: "Caps",
-              value: JSON.stringify(step.caps) || "unrestricted",
-            },
-          ]}
-        />
+          columns={{
+            xs: 1,
+            md: 2,
+          }}
+        >
+          <GridItem>
+            <TrackerCard
+              icon="PactLanguage"
+              labelValues={[
+                {
+                  label: "Profile",
+                  value: step.profile,
+                },
+                {
+                  label: "Sender",
+                  value: step.sender,
+                },
+                {
+                  label: "Code",
+                  value: getCode(contracts, step.code, step.codeFile),
+                },
+                {
+                  label: "Data",
+                  value: JSON.stringify(step.data) || "No data",
+                },
+                {
+                  label: "Caps",
+                  value: JSON.stringify(step.caps) || "unrestricted",
+                },
+              ]}
+            />
+          </GridItem>
+          <GridItem>
+            <Stack margin="$md">
+              {!results[index] && <Text>Ready for deployment</Text>}
+              {results[index] && (
+                <Text variant="code">
+                  {JSON.stringify(results[index], null, 2)}
+                </Text>
+              )}
+            </Stack>
+          </GridItem>
+        </Grid>
       ))}
     </>
   );
