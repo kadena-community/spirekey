@@ -39,12 +39,25 @@ const capTranslations: Record<string, any> = {
       valueLabels: ["Van", "Naar", "Hoeveelheid"],
     },
   },
+  "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.GAS_PAYER": {
+    default: "nl",
+    en: {
+      title: "Gas payer",
+      description: "You will pay for the transaction costs",
+    },
+    nl: {
+      title: "Gas payer",
+      description: "Jij betaalt de transactiekosten",
+    },
+  },
 };
 
 const getDescription = (key: string, args: any, language: string) => {
   const translation =
     capTranslations?.[key]?.[language] ||
     capTranslations[key]?.[capTranslations[key]?.default];
+
+  if (!translation) return null;
 
   return {
     title: translation.title,
@@ -60,28 +73,22 @@ const getArgValue = (x: any) => (x?.decimal ? x.decimal : x?.int ? x.int : x);
 const getLabels = (signers: any[], language: string) =>
   signers.flatMap((signer) =>
     Array.isArray(signer.clist)
-      ? signer.clist
-          .filter(
-            (c: ICap) =>
-              c.name !== "coin.GAS" &&
-              !c.name.includes("webauthn-wallet.GAS_PAYER")
-          )
-          .flatMap((c: ICap) => {
-            const { title, description } =
-              getDescription(c.name, c.args, language) || {};
-            const valuesString = c.args.map(getArgValue).join(", ");
+      ? signer.clist.flatMap((c: ICap) => {
+          const { title, description } =
+            getDescription(c.name, c.args, language) || {};
+          const valuesString = c.args.map(getArgValue).join(", ");
 
-            return [
-              title
-                ? {
-                    raw: c,
-                    label: title,
-                    description,
-                    valuesString,
-                  }
-                : { raw: c, label: c.name, values: valuesString },
-            ];
-          })
+          return [
+            title
+              ? {
+                  raw: c,
+                  label: title,
+                  description,
+                  valuesString,
+                }
+              : { raw: c, label: c.name, values: valuesString },
+          ];
+        })
       : []
   );
 
@@ -132,7 +139,7 @@ export default function Sign(req: SignProps) {
       {getLabels(txData.signers, language).map((x) => (
         <Box key={x.label} width="100%">
           <Heading variant="h6">{x.label}</Heading>
-          <Stack alignItems="center">
+          <Stack alignItems="center" gap="$1">
             <Text>{x.description ?? "No description available"}</Text>
             {!x.description && (
               <Tooltip
@@ -152,10 +159,14 @@ export default function Sign(req: SignProps) {
                 </Text>{" "}
                 {x.raw.name}
                 <br />
-                <Text bold size="md">
-                  Values:
-                </Text>{" "}
-                {x.valuesString}
+                {x.valuesString && (
+                  <>
+                    <Text bold size="md">
+                      Values:
+                    </Text>{" "}
+                    {x.valuesString}
+                  </>
+                )}
               </details>
             </Text>
           </Box>
