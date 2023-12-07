@@ -65,7 +65,7 @@ export default function DeployPage() {
   const [orchestrationData, setOrchestrationData] =
     useState<OrchestrationData | null>(null);
   const [contracts, setContracts] = useState<PactContracts | null>(null);
-  const { register, getValues, setValue } = useForm({
+  const { register, setValue } = useForm({
     defaultValues: {
       orchestrationFile: "",
       orchestrationData: null as OrchestrationData | null,
@@ -80,6 +80,7 @@ export default function DeployPage() {
       const content = await readFile(event.target.files?.item(0));
       const data = JSON.parse(content);
       setValue("orchestrationData", data);
+      if (data.contracts) setContracts(data.contracts);
       setOrchestrationData(data);
     } catch (error) {
       console.error("could not parse file", error);
@@ -97,24 +98,21 @@ export default function DeployPage() {
         }),
         {} as any
       );
-      setValue("pactContracts", files);
-      setContracts(files);
+      const newContracts = { ...contracts, ...files };
+      setValue("pactContracts", newContracts);
+      setContracts(newContracts);
     } catch (error) {
       console.error("could add pact file", error);
     }
   };
-  const onSave = async (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const onSave = async () => {
     const data = { ...orchestrationData, contracts };
     const blob = new Blob([JSON.stringify(data, null, 2)], {
       type: "application/json",
     });
     window.open(URL.createObjectURL(blob));
   };
-  const onDeploy = async (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const onDeploy = async () => {
     if (!orchestrationData) return;
     for (const step of orchestrationData.steps) {
       const signer = orchestrationData.signers[step.sender];
