@@ -103,7 +103,15 @@ export default function DeployPage() {
       console.error("could add pact file", error);
     }
   };
-
+  const onSave = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const data = { ...orchestrationData, contracts };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
+    window.open(URL.createObjectURL(blob));
+  };
   const onDeploy = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -193,6 +201,9 @@ export default function DeployPage() {
       </FormFieldWrapper>
       <Profiles profiles={orchestrationData?.profiles} />
       <DeploySteps steps={orchestrationData?.steps} contracts={contracts} />
+      <Button variant="alternative" onClick={onSave}>
+        Save
+      </Button>
       <Button onClick={onDeploy}>Deploy</Button>
     </Stack>
   );
