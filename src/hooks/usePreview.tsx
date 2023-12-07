@@ -31,10 +31,7 @@ export const usePreview = ({ payload, response }: Props) => {
     const doLocal = async () => {
       setIsLoading(true);
       try {
-        const result = await l1Client.local(tx, {
-          preflight: false,
-          signatureVerification: true,
-        });
+        const result = await l1Client.local(tx);
 
         if (result.gas) {
           setEstimatedGas(

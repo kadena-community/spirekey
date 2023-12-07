@@ -27,7 +27,6 @@ import { useForm } from "react-hook-form";
 import { readFile } from "../pact/pact.utils";
 import { asyncPipe } from "../utils/asyncPipe";
 import { l1Client } from "../utils/client";
-import { genesisPrivateKey, genesisPubKey } from "../utils/constants";
 import { signWithKeyPair } from "../utils/signSubmitListen";
 
 type Profile = {
@@ -137,7 +136,6 @@ export default function DeployPage() {
             cmd.payload.exec.data = step.data;
             return cmd;
           }, // add data
-          addSigner(genesisPubKey),
           addSigner(
             {
               pubKey,
@@ -161,10 +159,6 @@ export default function DeployPage() {
           )
         ),
         createTransaction,
-        signWithKeyPair({
-          publicKey: genesisPubKey,
-          secretKey: genesisPrivateKey,
-        }),
         !step.cid
           ? signWithKeyPair({
               publicKey: orchestrationData.signers[step.sender].publicKey,
