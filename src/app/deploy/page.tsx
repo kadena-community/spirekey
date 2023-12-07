@@ -18,7 +18,8 @@ import {
   TrackerCard,
 } from "@kadena/react-ui";
 import { startAuthentication } from "@simplewebauthn/browser";
-import { useState } from "react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { readFile } from "../pact/pact.utils";
 import { asyncPipe } from "../utils/asyncPipe";
@@ -65,6 +66,7 @@ export default function DeployPage() {
   const [orchestrationData, setOrchestrationData] =
     useState<OrchestrationData | null>(null);
   const [contracts, setContracts] = useState<PactContracts | null>(null);
+  const { setTheme } = useTheme();
   const { register, setValue } = useForm({
     defaultValues: {
       orchestrationFile: "",
@@ -175,6 +177,9 @@ export default function DeployPage() {
       await l1Client.listen(res);
     }
   };
+  useEffect(() => {
+    setTheme("dark");
+  }, []);
   return (
     <Stack direction="column">
       <Heading>Deploy</Heading>
