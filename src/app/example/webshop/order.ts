@@ -37,9 +37,9 @@ export const createOrder = async ({
       }),
       setNetworkId("fast-development"),
       addSigner(
+        // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
         {
           pubKey: signerPubKey,
-          // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
           scheme: "WebAuthn",
         },
         (withCap: any) => [
