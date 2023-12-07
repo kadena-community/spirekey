@@ -12,9 +12,8 @@ export const getAccount = (client: IClient) => async (alias: string) =>
     composePactCommand(
       execution(
         `[
-          (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-account-name "${alias}")
-          (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.get-account "${alias}")
-          (coin.get-balance (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-account-name "${alias}"))
+          (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-webauthn-guard "${alias}")
+          (coin.get-balance "${alias}")
         ]`
       ),
       setMeta({
@@ -25,9 +24,9 @@ export const getAccount = (client: IClient) => async (alias: string) =>
     createTransaction,
     (tx) => client.local(tx, { preflight: false }),
     (tx) => {
-      const [name, devices, balance] = tx.result.data;
+      const [devices, balance] = tx.result.data;
       return {
-        name,
+        name: alias,
         devices: devices.devices,
         balance,
       };
