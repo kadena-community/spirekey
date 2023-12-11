@@ -19,7 +19,7 @@ import { useCallback, useEffect } from "react";
 import cookieImg from "./chocolate-chip-cookie.jpg";
 import { createOrder } from "./order";
 import { Account } from "@/components/Account";
-import { decodeAccount } from "../../utils/decodeAccount";
+import { decodeAccount } from "@/utils/decodeAccount";
 
 type WebshopProps = {
   searchParams: {

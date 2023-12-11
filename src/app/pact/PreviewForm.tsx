@@ -15,15 +15,15 @@ import {
 } from "@kadena/react-ui";
 import { FC, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { asyncPipe } from "../utils/asyncPipe";
-import { l1Client } from "../utils/client";
+import { asyncPipe } from "@/utils/asyncPipe";
+import { l1Client } from "@/utils/client";
 import {
   parseContractData,
   readFile,
   uploadModuleTransaction,
   validateJson,
 } from "./pact.utils";
-import { decodeAccount } from "../utils/decodeAccount";
+import { decodeAccount } from "@/utils/decodeAccount";
 
 const FORM_DEFAULT = {
   chainId: "14",

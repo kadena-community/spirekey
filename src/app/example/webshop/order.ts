@@ -6,7 +6,7 @@ import {
   setMeta,
   setNetworkId,
 } from "@kadena/client/fp";
-import { asyncPipe } from "../../utils/asyncPipe";
+import { asyncPipe } from "@/utils/asyncPipe";
 
 export const createOrder = async ({
   price,
