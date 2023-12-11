@@ -1,6 +1,6 @@
 "use client";
 
-import { SubmitResult } from "@/app/components/SubmitResult";
+import { SubmitResult } from "@/components/SubmitResult";
 import { usePreview } from "@/hooks/usePreview";
 import { useSubmit } from "@/hooks/useSubmit";
 import {
