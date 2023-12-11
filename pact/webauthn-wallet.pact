@@ -80,6 +80,13 @@
     )
   )
 
+  (defun add-device(account:string device:object{device-schema})
+    (with-read guard-lookup-table account
+      { 'webauthn-guard-name := guard-name }
+      (webauthn-guard.add-device guard-name device)
+    )
+  )
+
   ;;;;;;;;;;;;;;;
   ; GAS PAYMENT ;
   ;;;;;;;;;;;;;;;
