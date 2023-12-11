@@ -21,6 +21,53 @@ type LoginProps = {
 };
 
 export default function Login({ searchParams }: LoginProps) {
+  const { returnUrl } = searchParams;
+  const { accounts, account, device, content } = useAccountSelector({});
+  return (
+    <Stack direction="column" alignItems="center" paddingY="$lg">
+      <Box>
+        <ContentHeader
+          description={`Which account do you want to use to identify on ${searchParams.returnUrl}?`}
+          heading="Login"
+          icon="Account"
+        />
+        {content}
+        {account && device && (
+          <Stack
+            direction="row"
+            gap="$xl"
+            justifyContent="flex-end"
+            marginY="$md"
+          >
+            <Button as="a" href={returnUrl} variant="alternative">
+              Cancel
+            </Button>
+            <Button
+              as="a"
+              href={`${returnUrl}?response=${Buffer.from(
+                JSON.stringify({
+                  name: device.name,
+                  waccount: account.name,
+                  caccount: account.account,
+                  cid: device["credential-id"],
+                  publicKey: device.guard.keys[0],
+                })
+              ).toString("base64")}`}
+            >
+              Login
+            </Button>
+          </Stack>
+        )}
+      </Box>
+    </Stack>
+  );
+}
+
+const useAccountSelector = ({
+  onChange,
+}: {
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+}) => {
   const { accounts, account, device, setDevice, setAccount } =
     useAccounts(l1Client);
   const onAccountChange = useCallback(
@@ -32,38 +79,32 @@ export default function Login({ searchParams }: LoginProps) {
     },
     [setAccount, accounts]
   );
-  return (
-    <Stack direction="column" alignItems="center" paddingY="$lg">
-      <Box>
-        <ContentHeader
-          description={`Which account do you want to use to identify on ${searchParams.returnUrl}?`}
-          heading="Login"
-          icon="Account"
-        />
-        <AccountSelector
-          accounts={accounts}
-          account={account}
-          returnUrl={searchParams.returnUrl}
-          device={device}
-          onChange={onAccountChange}
-        />
-      </Box>
-    </Stack>
-  );
-}
+  return {
+    accounts,
+    account,
+    device,
+    content: (
+      <AccountSelectorContent
+        accounts={accounts}
+        account={account}
+        device={device}
+        onAccountChange={onAccountChange}
+      />
+    ),
+  };
+};
 
-const AccountSelector = ({
-  accounts,
+const AccountSelectorContent = ({
   account,
+  accounts,
   device,
-  returnUrl,
-  onChange,
+  onAccountChange,
 }: {
   accounts: Account[];
   account: Account | null;
   device: Device | null;
-  returnUrl: string;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onAccountChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onStoreAccount?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }) => {
   const onStoreAccount = useCallback(
     (event: React.FocusEvent<HTMLInputElement>) => {
@@ -86,7 +127,7 @@ const AccountSelector = ({
         selectProps={{
           id: "account",
           ariaLabel: "Select your account",
-          onChange,
+          onChange: onAccountChange,
         }}
       >
         {accounts.map((account) => (
@@ -132,25 +173,6 @@ const AccountSelector = ({
           ))}
         </SelectField>
       )}
-      <Stack direction="row" gap="$xl" justifyContent="flex-end" marginY="$md">
-        <Button as="a" href={returnUrl} variant="alternative">
-          Cancel
-        </Button>
-        <Button
-          as="a"
-          href={`${returnUrl}?response=${Buffer.from(
-            JSON.stringify({
-              name: device.name,
-              waccount: account.name,
-              caccount: account.account,
-              cid: device["credential-id"],
-              publicKey: device.guard.keys[0],
-            })
-          ).toString("base64")}`}
-        >
-          Login
-        </Button>
-      </Stack>
     </>
   );
 };
