@@ -54,7 +54,7 @@ export const registerAccount = async ({
   domain: string;
   credentialId: string;
   credentialPubkey: string;
-}) => {
+}): Promise<string> => {
   const caccount = await getAccountName(credentialPubkey);
   return asyncPipe(
     registerAccountCommand({

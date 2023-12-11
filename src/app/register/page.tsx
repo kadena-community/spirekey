@@ -13,10 +13,11 @@ import {
   bufferToBase64URLString,
   startRegistration,
 } from "@simplewebauthn/browser";
+import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 import cbor from "cbor";
 import { registerAccount } from "./register";
 
-const getHexFromCbor = async (res: any) => {
+const getPublicKey = async (res: RegistrationResponseJSON) => {
   const { authData } = cbor.decode(
     base64URLStringToBuffer(res.response.attestationObject)
   );
@@ -32,14 +33,10 @@ const getHexFromCbor = async (res: any) => {
   return Buffer.from(publicKeyBytes).toString("hex");
 };
 
-const getPublicKey = async (res: any) => {
-  return getHexFromCbor(res);
-};
-
 export default function Account() {
   const [account, setAccount] = useState<string>("");
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<string>();
   const onAccountChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setAccount(e.target.value);
