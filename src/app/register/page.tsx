@@ -14,34 +14,7 @@ import {
   startRegistration,
 } from "@simplewebauthn/browser";
 import cbor from "cbor";
-import cosekey from "parse-cosekey";
 import { registerAccount } from "./register";
-
-const getJosePublicKey = async (res: any) => {
-  const { authData } = cbor.decode(
-    base64URLStringToBuffer(res.response.attestationObject)
-  );
-
-  const dataView = new DataView(new ArrayBuffer(2));
-  const idLenBytes = authData.slice(53, 55);
-  idLenBytes.forEach((value: number, index: number) =>
-    dataView.setUint8(index, value)
-  );
-  const credentialIdLength = dataView.getUint16(0);
-  const publicKeyBytes = authData.slice(55 + credentialIdLength);
-
-  // the publicKeyBytes are encoded again as CBOR
-  const publicKeyObject = cbor.decode(publicKeyBytes);
-  const jwk = cosekey.KeyParser.cose2jwk(publicKeyObject);
-  const pubKey = Buffer.from(JSON.stringify(jwk)).toString("base64");
-  return pubKey;
-};
-
-const getHexFromBase64 = async (res: any) => {
-  return Buffer.from(base64URLStringToBuffer(res.response.publicKey)).toString(
-    "hex"
-  );
-};
 
 const getHexFromCbor = async (res: any) => {
   const { authData } = cbor.decode(
@@ -59,57 +32,8 @@ const getHexFromCbor = async (res: any) => {
   return Buffer.from(publicKeyBytes).toString("hex");
 };
 
-const getHexFromSubtle = async (res: any) => {
-  const { authData } = cbor.decode(
-    base64URLStringToBuffer(res.response.attestationObject)
-  );
-
-  const dataView = new DataView(new ArrayBuffer(2));
-  const idLenBytes = authData.slice(53, 55);
-  idLenBytes.forEach((value: number, index: number) =>
-    dataView.setUint8(index, value)
-  );
-  const credentialIdLength = dataView.getUint16(0);
-  const publicKeyBytes = authData.slice(55 + credentialIdLength);
-
-  const publicKeyObject = cbor.decode(publicKeyBytes);
-  const jwk = cosekey.KeyParser.cose2jwk(publicKeyObject);
-  const importedJWK = await crypto.subtle.importKey(
-    "jwk",
-    jwk,
-    { name: "ECDSA", namedCurve: "P-256" },
-    true,
-    ["verify"]
-  );
-  const rawKey = await crypto.subtle.exportKey("raw", importedJWK);
-  return Buffer.from(rawKey).toString("hex");
-};
-
-const getBase64PublicKey = async (res: any) => {
-  return res.response.publicKey;
-};
-
-type PublicKeyType =
-  | "jose"
-  | "base64"
-  | "hex-from-subtle-crypto"
-  | "hex-from-base64"
-  | "hex-from-cbor";
-const getPublicKey = async (res: any, publicKeyType: PublicKeyType) => {
-  switch (publicKeyType) {
-    case "jose":
-      return getJosePublicKey(res);
-    case "base64":
-      return getBase64PublicKey(res);
-    case "hex-from-subtle-crypto":
-      return getHexFromSubtle(res);
-    case "hex-from-base64":
-      return getHexFromBase64(res);
-    case "hex-from-cbor":
-      return getHexFromCbor(res);
-    default:
-      throw new Error("Invalid public key type");
-  }
+const getPublicKey = async (res: any) => {
+  return getHexFromCbor(res);
 };
 
 export default function Account() {
@@ -151,8 +75,7 @@ export default function Account() {
     if (!res.response.publicKey)
       throw new Error("No public key returned from webauthn");
 
-    // currently only hex-from-cbor works
-    const pubKey = await getPublicKey(res, "hex-from-cbor");
+    const pubKey = await getPublicKey(res);
     setLoading(true);
     const result = await registerAccount({
       domain: window.location.hostname,
