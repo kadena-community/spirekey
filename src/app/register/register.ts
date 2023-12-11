@@ -19,17 +19,13 @@ import { signWithKeyPair } from "../utils/signSubmitListen";
 export const getAccountName = async (publicKey: string) =>
   asyncPipe(
     composePactCommand(
-      execution(
-        `
+      execution(`
 (let* ((guard (read-keyset 'ks))
        (account (create-principal guard))
       )
-  [(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-account-name account)
-    account
-  ]
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-account-name account)
 )
-`
-      ),
+`),
       setMeta({
         chainId: "14",
         gasLimit: 1000,
@@ -59,7 +55,7 @@ export const registerAccount = async ({
   credentialId: string;
   credentialPubkey: string;
 }) => {
-  const [caccount, waccount] = await getAccountName(credentialPubkey);
+  const caccount = await getAccountName(credentialPubkey);
   return asyncPipe(
     registerAccountCommand({
       account: caccount,
@@ -75,7 +71,7 @@ export const registerAccount = async ({
     }),
     l1Client.submit,
     l1Client.listen,
-    () => waccount
+    () => caccount
   )({});
 };
 
@@ -97,22 +93,18 @@ const registerAccountCommand = ({
     execution(
       `
 (namespace 'n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9)
-(let* ((guard (read-keyset 'ks))
-       (account (create-principal guard))
-      )
-  (webauthn-guard.register 
-    account 1 1
-    [{ 'name          : "${displayName}"
-     , 'credential-id : "${credentialId}"
-     , 'domain        : "${domain}"
-     , 'guard         : guard
-     }
-    ]
-  )
-  (coin.transfer-create 
+(let ((guard (read-keyset 'ks)))
+  (coin.transfer 
     "sender00"
-    (webauthn-wallet.get-account-name account)
-    (webauthn-wallet.get-account-guard account)
+    (webauthn-wallet.create-wallet 
+      1 1
+      [{ 'name          : "${displayName}"
+       , 'credential-id : "${credentialId}"
+       , 'domain        : "${domain}"
+       , 'guard         : guard
+       }
+      ]
+    )
     10.0
   )
 )

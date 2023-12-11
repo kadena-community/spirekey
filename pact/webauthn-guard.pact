@@ -86,6 +86,18 @@
   )
 
   (defun register(
+    min-approvals:integer
+    min-registration-approvals:integer
+    devices:[object{device-schema}]
+  )
+    (let (
+      (first-guard (at 'guard (at 0 devices)))
+    )
+      (register-guard (create-principal first-guard) min-approvals min-registration-approvals devices)
+    )
+  )
+
+  (defun register-guard(
     account:string
     min-approvals:integer
     min-registration-approvals:integer
@@ -182,7 +194,7 @@
   (defun enforce-guard-min:bool (guards:[guard] min-approvals:integer)
     "Will succeed if at least MIN-APPROVALS guards in GUARDS are successfully enforced."
     (enforce
-      (>= min-approvals
+      (<= min-approvals
         (length
           (filter
             (= true)

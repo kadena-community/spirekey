@@ -24,7 +24,7 @@ export const createOrder = async ({
       execution(
         Pact.modules[
           "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet"
-        ].transfer(waccount, "cookie-shop", {
+        ].transfer(caccount, "cookie-shop", {
           decimal: price.toString(),
         })
       ),

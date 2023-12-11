@@ -122,7 +122,7 @@ export default function DeployPage() {
     if (!orchestrationData) return;
     for (const step of orchestrationData.steps) {
       const signer = orchestrationData.signers[step.sender];
-      const pubKey = signer?.publicKey || step.pubKey || "";
+      const pubKey = step.pubKey || signer?.publicKey || "";
       const tx = await asyncPipe(
         composePactCommand(
           execution(getCode(contracts, step.code, step.codeFile)),
@@ -140,7 +140,7 @@ export default function DeployPage() {
             {
               pubKey,
               // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
-              scheme: signer ? "ED25519" : "WebAuthn", // WebAuthn
+              scheme: !step.cid ? "ED25519" : "WebAuthn", // WebAuthn
             },
             Array.isArray(step.caps)
               ? (withCap) =>
@@ -159,7 +159,7 @@ export default function DeployPage() {
           )
         ),
         createTransaction,
-        signer
+        !step.cid
           ? signWithKeyPair({
               publicKey: orchestrationData.signers[step.sender].publicKey,
               secretKey: orchestrationData.signers[step.sender].secretKey,
@@ -172,7 +172,7 @@ export default function DeployPage() {
                   ? [{ id: step.cid, type: "public-key" }]
                   : undefined,
               });
-              tx.sigs = [getSig(res.response)];
+              tx.sigs = [tx.sigs[0], getSig(res.response)];
               return tx;
             },
         (tx) => {

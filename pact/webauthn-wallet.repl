@@ -55,34 +55,26 @@
     }
   }
 )
+(env-sigs [
+  { 'key  : "WEBAUTHN-key"
+  , 'caps : [
+    ]
+  }
+])
 (begin-tx "Register a new webauthn-wallet")
-(namespace 'n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9)
 (let* ((guard (read-keyset 'alice-ks))
-       (account (create-principal guard))
-      )
-  (webauthn-guard.register 
-    account 1 1
+  (caccount (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.create-wallet 
+    1 1
     [{ 'name          : 'phone
      , 'credential-id : 'xysDsaI
      , 'domain        : "www.example.com"
      , 'guard         : guard
      }
     ]
-  )
-  (coin.create-account 
-    (webauthn-wallet.get-account-name account)
-    (webauthn-wallet.get-account-guard account)
-  )
-
-  (env-sigs 
-    [{ 'key : "WEBAUTHN-key"
-     , 'caps : [
-      (webauthn-wallet.GAS_PAYER "alice" 1 1.0)
-     ]
-    }]
-  )
-  ;(test-capability (coin.GAS))
-  (test-capability (webauthn-wallet.GAS_PAYER account 1 1.0))
+  ))
+)
+  (test-capability (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.GAS_PAYER caccount 1 1.0))
+  (require-capability (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.GAS_PAYER caccount 1 1.0))
 )
 (commit-tx)
 

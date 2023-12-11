@@ -1,5 +1,4 @@
-import { useBalances } from "@/hooks/useBalance";
-import { getReturnUrl } from "@/utils/url";
+import { useReturnUrl } from "@/hooks/useReturnUrl";
 import { Button, Text } from "@kadena/react-ui";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
@@ -20,6 +19,7 @@ export const Account = ({
   returnPath: string;
 }) => {
   const router = useRouter();
+  const { getReturnUrl } = useReturnUrl();
 
   const onLogin = useCallback(() => {
     router.push(

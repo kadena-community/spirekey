@@ -41,64 +41,23 @@
   "steps": [
     {
       "profile": "default",
-      "code": "(coin.transfer-create \"sender00\" \"w:GUJVyN7459v8JdyagZg4vFXyZzp6wVxyubVslL0O0r8:keys-any\" (read-keyset 'ks) 100.0)",
+      "codeFile": "webauthn-guard.pact",
       "data": {
-        "ks": {
-          "keys": [
-            "WEBAUTHN-a501020326200121582067ca1ca4580a80d87eab5a80de140e31cc51b2db28af471ba3c44bce8e8089532258207f56d8593f00a9d4b7833efb0fc65bb84eae151f8c1aaf875117f92399014a89"
-          ],
-          "pred": "keys-any"
-        }
+        "webauthn-keyset-name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-keyset",
+        "webauthn-namespace": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
+        "upgrade": true
       },
-      "sender": "sender00",
-      "caps": [
-        ["coin.GAS"],
-        [
-          "coin.TRANSFER",
-          "sender00",
-          "w:GUJVyN7459v8JdyagZg4vFXyZzp6wVxyubVslL0O0r8:keys-any",
-          "100.0"
-        ]
-      ]
+      "sender": "sender00"
     },
     {
       "profile": "default",
-      "code": "(coin.transfer \"w:GUJVyN7459v8JdyagZg4vFXyZzp6wVxyubVslL0O0r8:keys-any\" \"c:aPBnSWWuS0xmrX5npLlGjvYnmF2kaVhPAgd_qLtz698\" 50.0)",
-      "data": {},
-      "sender": "w:GUJVyN7459v8JdyagZg4vFXyZzp6wVxyubVslL0O0r8:keys-any",
-      "pubKey": "WEBAUTHN-a501020326200121582067ca1ca4580a80d87eab5a80de140e31cc51b2db28af471ba3c44bce8e8089532258207f56d8593f00a9d4b7833efb0fc65bb84eae151f8c1aaf875117f92399014a89",
-      "cid": "A-CSRDLMEBgurW0pHgBN3w",
-      "caps": [
-        ["coin.GAS"],
-        [
-          "coin.TRANSFER",
-          "w:GUJVyN7459v8JdyagZg4vFXyZzp6wVxyubVslL0O0r8:keys-any",
-          "c:aPBnSWWuS0xmrX5npLlGjvYnmF2kaVhPAgd_qLtz698",
-          "50.0"
-        ]
-      ]
-    },
-    {
-      "profile": "default",
-      "code": "(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.transfer \"w:GUJVyN7459v8JdyagZg4vFXyZzp6wVxyubVslL0O0r8:keys-any\" \"w:GUJVyN7459v8JdyagZg4vFXyZzp6wVxyubVslL0O0r8:keys-any\" 25.0)",
-      "data": {},
-      "sender": "c:aPBnSWWuS0xmrX5npLlGjvYnmF2kaVhPAgd_qLtz698",
-      "pubKey": "WEBAUTHN-a501020326200121582067ca1ca4580a80d87eab5a80de140e31cc51b2db28af471ba3c44bce8e8089532258207f56d8593f00a9d4b7833efb0fc65bb84eae151f8c1aaf875117f92399014a89",
-      "cid": "A-CSRDLMEBgurW0pHgBN3w",
-      "caps": [
-        [
-          "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.GAS_PAYER",
-          "w:GUJVyN7459v8JdyagZg4vFXyZzp6wVxyubVslL0O0r8:keys-any",
-          "1",
-          "1.0"
-        ],
-        [
-          "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.TRANSFER",
-          "w:GUJVyN7459v8JdyagZg4vFXyZzp6wVxyubVslL0O0r8:keys-any",
-          "w:GUJVyN7459v8JdyagZg4vFXyZzp6wVxyubVslL0O0r8:keys-any",
-          "25.0"
-        ]
-      ]
+      "codeFile": "webauthn-wallet.pact",
+      "data": {
+        "webauthn-keyset-name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-keyset",
+        "webauthn-namespace": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
+        "upgrade": true
+      },
+      "sender": "sender00"
     }
   ]
 }
