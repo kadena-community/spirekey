@@ -12,10 +12,10 @@ export const AccountSelector = ({
   account: Account | null;
   device: Device | null;
   onAccountChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  onStoreAccount?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onStoreAccount?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   const onStoreAccount = useCallback(
-    (event: React.FocusEvent<HTMLInputElement>) => {
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       localStorage.setItem("accounts", JSON.stringify([event.target.value]));
     },
     []

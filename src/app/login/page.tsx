@@ -3,7 +3,7 @@
 import { AccountSelector } from "@/components/AccountSelector";
 import { LoginConfirmation } from "@/components/LoginConfirmation";
 import { useAccountSelector } from "@/hooks/useAccountSelector";
-import { Box, ContentHeader, Stack } from "@kadena/react-ui";
+import { Box, Button, ContentHeader, Stack } from "@kadena/react-ui";
 
 type LoginProps = {
   searchParams: {

@@ -10,11 +10,12 @@ export type Account = {
 };
 
 export type Device = {
-  ["credential-id"]: string;
-  ["credential-pubkey"]: string;
   name: string;
+  domain: string;
+  ["credential-id"]: string;
   guard: {
     keys: string[];
+    pred: "keys-any";
   };
 };
 
