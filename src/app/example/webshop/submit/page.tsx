@@ -11,7 +11,7 @@ import {
   Text,
   SystemIcon,
 } from "@kadena/react-ui";
-import { SubmitResult } from "@/app/components/SubmitResult";
+import { SubmitResult } from "@/components/SubmitResult";
 
 type SearchParams = {
   searchParams: {

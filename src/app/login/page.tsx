@@ -12,7 +12,7 @@ import {
   TrackerCard,
 } from "@kadena/react-ui";
 import { useCallback } from "react";
-import { l1Client } from "../utils/client";
+import { l1Client } from "@/utils/client";
 
 type LoginProps = {
   searchParams: {

@@ -1,4 +1,4 @@
-import { getAccount } from "@/app/utils/account";
+import { getAccount } from "@/utils/account";
 import { IClient } from "@kadena/client";
 import { useEffect, useState } from "react";
 

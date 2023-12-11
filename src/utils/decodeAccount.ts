@@ -1,4 +1,4 @@
-import { Account } from "../components/Account";
+import { Account } from "@/components/Account";
 
 export const decodeAccount = (response: string) => {
   if (!response) return null;

@@ -6,7 +6,7 @@ import {
 } from "@kadena/client";
 import { sign } from "@kadena/cryptography-utils";
 import { isSignedCommand } from "@kadena/pactjs";
-import { asyncPipe } from "../utils/asyncPipe";
+import { asyncPipe } from "@/utils/asyncPipe";
 
 export const signSubmitListen = (client: IClient) => {
   return asyncPipe(

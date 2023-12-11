@@ -55,6 +55,9 @@ devDependencies:
   '@kadena/pactjs-cli':
     specifier: ^1.6.4
     version: 1.6.4(encoding@0.1.13)
+  '@simplewebauthn/typescript-types':
+    specifier: ^8.3.4
+    version: 8.3.4
   '@types/node':
     specifier: ^20.10.3
     version: 20.10.3
@@ -2322,7 +2325,6 @@ packages:
 
   /@simplewebauthn/typescript-types@8.3.4:
     resolution: {integrity: sha512-38xtca0OqfRVNloKBrFB5LEM6PN5vzFbJG6rAutPVrtGHFYxPdiV3btYWq0eAZAZmP+dqFPYJxJWeJrGfmYHng==}
-    dev: false
 
   /@stablelib/aead@1.0.1:
     resolution: {integrity: sha512-q39ik6sxGHewqtO0nP4BuSe3db5G1fEJE8ukvngS2gLkBXyy6E7pLubhbYgnkDFv6V8cWaxcE4Xn0t6LWcJkyg==}

@@ -47,9 +47,9 @@ export const uploadModuleTransaction = ({
     }),
     setNetworkId(networkdId),
     addSigner(
+      // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
       {
         pubKey: publicKey,
-        // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
         scheme: "WebAuthn",
       },
       (withCap) =>

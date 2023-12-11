@@ -1,5 +1,5 @@
-import { l1Client } from "@/app/utils/client";
-import { getSig } from "@/app/utils/getSig";
+import { l1Client } from "@/utils/client";
+import { getSig } from "@/utils/getSig";
 import { useState } from "react";
 
 type Props = {

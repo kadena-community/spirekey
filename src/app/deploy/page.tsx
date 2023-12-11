@@ -1,6 +1,6 @@
 "use client";
 
-import { getSig } from "@/app/utils/getSig";
+import { getSig } from "@/utils/getSig";
 import { createTransaction } from "@kadena/client";
 import {
   addSigner,
@@ -25,9 +25,9 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { readFile } from "../pact/pact.utils";
-import { asyncPipe } from "../utils/asyncPipe";
-import { l1Client } from "../utils/client";
-import { signWithKeyPair } from "../utils/signSubmitListen";
+import { asyncPipe } from "@/utils/asyncPipe";
+import { l1Client } from "@/utils/client";
+import { signWithKeyPair } from "@/utils/signSubmitListen";
 
 type Profile = {
   host: string;
@@ -137,10 +137,10 @@ export default function DeployPage() {
             return cmd;
           }, // add data
           addSigner(
+            // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
             {
               pubKey,
-              // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
-              scheme: !step.cid ? "ED25519" : "WebAuthn", // WebAuthn
+              scheme: !step.cid ? "ED25519" : "WebAuthn",
             },
             Array.isArray(step.caps)
               ? (withCap) =>

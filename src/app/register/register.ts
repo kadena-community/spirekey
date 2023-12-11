@@ -7,14 +7,14 @@ import {
   setMeta,
   setNetworkId,
 } from "@kadena/client/fp";
-import { asyncPipe } from "../utils/asyncPipe";
-import { l1Client } from "../utils/client";
+import { asyncPipe } from "@/utils/asyncPipe";
+import { l1Client } from "@/utils/client";
 import {
   genesisAccount,
   genesisPrivateKey,
   genesisPubKey,
-} from "../utils/constants";
-import { signWithKeyPair } from "../utils/signSubmitListen";
+} from "@/utils/constants";
+import { signWithKeyPair } from "@/utils/signSubmitListen";
 
 export const getAccountName = async (publicKey: string) =>
   asyncPipe(
@@ -54,7 +54,7 @@ export const registerAccount = async ({
   domain: string;
   credentialId: string;
   credentialPubkey: string;
-}) => {
+}): Promise<string> => {
   const caccount = await getAccountName(credentialPubkey);
   return asyncPipe(
     registerAccountCommand({

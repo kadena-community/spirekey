@@ -7,7 +7,7 @@ import {
   setMeta,
   setNetworkId,
 } from "@kadena/client/fp";
-import { genesisPubKey } from "../utils/constants";
+import { genesisPubKey } from "@/utils/constants";
 
 export function createL2ContinuationCommand(
   options: IContinuationPayloadObject["cont"],
