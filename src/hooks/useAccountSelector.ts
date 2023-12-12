@@ -14,10 +14,21 @@ export const useAccountSelector = () => {
     },
     [setAccount, accounts]
   );
+  const onDeviceChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const dev = account?.devices.find(
+        (dev) => dev["credential-id"] === event.target.value
+      );
+      if (!dev) return;
+      setDevice(dev);
+    },
+    [account, setDevice]
+  );
   return {
     accounts,
     account,
     device,
     onAccountChange,
+    onDeviceChange,
   };
 };

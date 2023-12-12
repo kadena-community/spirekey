@@ -28,7 +28,8 @@ const registerOrAddDevice = async (
 export default function Account() {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<string>();
-  const { accounts, account, device, onAccountChange } = useAccountSelector();
+  const { accounts, account, device, onAccountChange, onDeviceChange } =
+    useAccountSelector();
   const { sign } = useSign("http://localhost:1337");
   const onAddDevice = useCallback(
     async (newDevice: Device) => {
@@ -81,6 +82,7 @@ export default function Account() {
         account={account}
         device={device}
         onAccountChange={onAccountChange}
+        onDeviceChange={onDeviceChange}
       />
       <AddDevice onAddDevice={onAddDevice} />
     </Stack>

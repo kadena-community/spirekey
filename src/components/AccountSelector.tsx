@@ -7,11 +7,13 @@ export const AccountSelector = ({
   accounts,
   device,
   onAccountChange,
+  onDeviceChange,
 }: {
   accounts: Account[];
   account: Account | null;
   device: Device | null;
   onAccountChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onDeviceChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onStoreAccount?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   const onStoreAccount = useCallback(
@@ -69,6 +71,7 @@ export const AccountSelector = ({
           selectProps={{
             id: "device",
             ariaLabel: "Select which device you'd like to use",
+            onChange: onDeviceChange,
           }}
         >
           {account.devices.map((device) => (

@@ -3,7 +3,7 @@
 import { AccountSelector } from "@/components/AccountSelector";
 import { LoginConfirmation } from "@/components/LoginConfirmation";
 import { useAccountSelector } from "@/hooks/useAccountSelector";
-import { Box, Button, ContentHeader, Stack } from "@kadena/react-ui";
+import { Box, ContentHeader, Stack } from "@kadena/react-ui";
 
 type LoginProps = {
   searchParams: {
@@ -13,7 +13,8 @@ type LoginProps = {
 
 export default function Login({ searchParams }: LoginProps) {
   const { returnUrl } = searchParams;
-  const { accounts, account, device, onAccountChange } = useAccountSelector();
+  const { accounts, account, device, onAccountChange, onDeviceChange } =
+    useAccountSelector();
   return (
     <Stack direction="column" alignItems="center" paddingY="$lg">
       <Box>
@@ -26,6 +27,7 @@ export default function Login({ searchParams }: LoginProps) {
           account={account}
           device={device}
           onAccountChange={onAccountChange}
+          onDeviceChange={onDeviceChange}
           accounts={accounts}
         />
         <LoginConfirmation
