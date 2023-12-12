@@ -14,6 +14,14 @@
     (enforce-authenticated account)
   )
 
+  (defcap ADD_DEVICE(account:string)
+    true
+  )
+
+  (defcap REMOVE_DEVICE(account:string)
+    true
+  )
+
   (defcap TRANSFER(sender:string receiver:string amount:decimal)
     @managed amount TRANSFER-mgr
     (with-read guard-lookup-table sender
@@ -81,9 +89,20 @@
   )
 
   (defun add-device(account:string device:object{device-schema})
-    (with-read guard-lookup-table account
-      { 'webauthn-guard-name := guard-name }
-      (webauthn-guard.add-device guard-name device)
+    (with-capability (ADD_DEVICE account)
+      (with-read guard-lookup-table account
+        { 'webauthn-guard-name := guard-name }
+        (webauthn-guard.add-device guard-name device)
+      )
+    )
+  )
+
+  (defun remove-device(account:string credential-id:string)
+    (with-capability (REMOVE_DEVICE account)
+      (with-read guard-lookup-table account
+        { 'webauthn-guard-name := guard-name }
+        (webauthn-guard.remove-device guard-name credential-id)
+      )
     )
   )
 

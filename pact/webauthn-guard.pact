@@ -132,10 +132,10 @@
         { 'devices := devices }
         (let* (
           (new-devices (+ devices [device]))
-          (expected-new-length (+ (length new-devices) 1))
+          (expected-new-length (+ (length devices) 1))
           (unique-cred-ids (distinct (map (at 'credential-id) new-devices)))
         )
-          (enforce (< expected-new-length (length unique-cred-ids)) "Credential IDs must be unique")
+          (enforce (= expected-new-length (length unique-cred-ids)) "Credential IDs must be unique")
           (update account-table account
             { 'devices : new-devices }
           )

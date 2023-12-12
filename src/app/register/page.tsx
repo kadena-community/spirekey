@@ -4,32 +4,41 @@ import { AccountSelector } from "@/components/AccountSelector";
 import { AddDevice } from "@/components/AddDevice";
 import { Account, Device } from "@/hooks/useAccounts";
 import { useAccountSelector } from "@/hooks/useAccountSelector";
+import { useSign } from "@/hooks/useSign";
 import { ContentHeader, Stack, Text } from "@kadena/react-ui";
 import { useCallback, useState } from "react";
 import { addDevice } from "./addDevice";
 import { registerAccount } from "./register";
 
-const registerOrAddDevice = async (device: Device, account: Account | null) => {
-  if (!account)
+const registerOrAddDevice = async (
+  signingDevice: Device | null,
+  device: Device,
+  account: Account | null
+) => {
+  if (!account || !signingDevice)
     return registerAccount({
       displayName: device.name,
       credentialId: device["credential-id"],
       credentialPubkey: device.guard.keys[0],
       domain: device.domain,
     });
-  return addDevice(account, device);
+  return addDevice(signingDevice, account, device);
 };
 
 export default function Account() {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<string>();
   const { accounts, account, device, onAccountChange } = useAccountSelector();
+  const { sign } = useSign("http://localhost:1337");
   const onAddDevice = useCallback(
-    async (device: Device) => {
+    async (newDevice: Device) => {
       setLoading(true);
-      const res = await registerOrAddDevice(device, account);
+      const result = await registerOrAddDevice(device, newDevice, account);
       setLoading(false);
-      setResult(res);
+      if (!device) return setResult(result);
+      // navigate to sign page of "original device"
+      // for now we just go to this wallet's sign page
+      sign(result, device, "/pact/submit");
     },
     [setResult, setLoading, account]
   );
