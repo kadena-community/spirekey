@@ -183,8 +183,6 @@ export default function DeployPage() {
         l1Client.listen
       )({});
       setResults((results) => {
-        console.log("hello", results);
-        console.log("write", results.slice(0, results.length - 1));
         return [...results.slice(0, results.length - 1), tx];
       });
     }

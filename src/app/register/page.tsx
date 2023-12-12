@@ -1,92 +1,48 @@
 "use client";
 
-import {
-  Button,
-  ContentHeader,
-  Stack,
-  Text,
-  TextField,
-} from "@kadena/react-ui";
+import { AccountSelector } from "@/components/AccountSelector";
+import { AddDevice } from "@/components/AddDevice";
+import { Account, Device } from "@/hooks/useAccounts";
+import { useAccountSelector } from "@/hooks/useAccountSelector";
+import { useSign } from "@/hooks/useSign";
+import { ContentHeader, Stack, Text } from "@kadena/react-ui";
 import { useCallback, useState } from "react";
-import {
-  base64URLStringToBuffer,
-  bufferToBase64URLString,
-  startRegistration,
-} from "@simplewebauthn/browser";
-import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
-import cbor from "cbor";
+import { addDevice } from "./addDevice";
 import { registerAccount } from "./register";
 
-const getPublicKey = async (res: RegistrationResponseJSON) => {
-  const { authData } = cbor.decode(
-    base64URLStringToBuffer(res.response.attestationObject)
-  );
-
-  const dataView = new DataView(new ArrayBuffer(2));
-  const idLenBytes = authData.slice(53, 55);
-  idLenBytes.forEach((value: number, index: number) =>
-    dataView.setUint8(index, value)
-  );
-  const credentialIdLength = dataView.getUint16(0);
-  const publicKeyBytes = authData.slice(55 + credentialIdLength);
-
-  return Buffer.from(publicKeyBytes).toString("hex");
+const registerOrAddDevice = async (
+  signingDevice: Device | null,
+  device: Device,
+  account: Account | null
+) => {
+  if (!account || !signingDevice)
+    return registerAccount({
+      displayName: device.name,
+      credentialId: device["credential-id"],
+      credentialPubkey: device.guard.keys[0],
+      domain: device.domain,
+    });
+  return addDevice(signingDevice, account, device);
 };
 
 export default function Account() {
-  const [account, setAccount] = useState<string>("");
   const [isLoading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<string>();
-  const onAccountChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setAccount(e.target.value);
+  const { accounts, account, device, onAccountChange, onDeviceChange } =
+    useAccountSelector();
+  const { sign } = useSign("http://localhost:1337");
+  const onAddDevice = useCallback(
+    async (newDevice: Device) => {
+      setLoading(true);
+      const result = await registerOrAddDevice(device, newDevice, account);
+      setLoading(false);
+      if (!device) return setResult(result);
+      // navigate to sign page of "original device"
+      // for now we just go to this wallet's sign page
+      sign(result, device, "/pact/submit");
     },
-    [setAccount]
+    [setResult, setLoading, account]
   );
-
-  const register = useCallback(async () => {
-    const res = await startRegistration({
-      challenge: bufferToBase64URLString(Buffer.from("some-random-string")),
-      rp: {
-        name: "Kadena WebAuthN Wallet",
-        id: window.location.hostname,
-      },
-      pubKeyCredParams: [
-        {
-          alg: -7,
-          type: "public-key",
-        },
-      ],
-      authenticatorSelection: {
-        requireResidentKey: true,
-        userVerification: "preferred",
-      },
-      attestation: "direct",
-      user: {
-        id: account + Date.now(),
-        displayName: account,
-        name: account,
-      },
-      timeout: 60000,
-    });
-    if (!res.response.publicKey)
-      throw new Error("No public key returned from webauthn");
-
-    const pubKey = await getPublicKey(res);
-    setLoading(true);
-    const result = await registerAccount({
-      domain: window.location.hostname,
-      displayName: account,
-      credentialId: res.id,
-      credentialPubkey: pubKey,
-    });
-
-    const accounts = localStorage.getItem("accounts") || "[]";
-    const accs = JSON.parse(accounts);
-    localStorage.setItem("accounts", JSON.stringify([...accs, result]));
-    setLoading(false);
-    setResult(result);
-  }, [account]);
 
   if (isLoading) {
     return (
@@ -121,16 +77,14 @@ export default function Account() {
         description="Create an account using WebAuthN"
         icon="Account"
       />
-      <TextField
-        label="account"
-        inputProps={{
-          id: "account",
-          value: account,
-          onChange: onAccountChange,
-        }}
-        helperText="Enter your account name"
+      <AccountSelector
+        accounts={accounts}
+        account={account}
+        device={device}
+        onAccountChange={onAccountChange}
+        onDeviceChange={onDeviceChange}
       />
-      <Button onClick={register}>Register</Button>
+      <AddDevice onAddDevice={onAddDevice} />
     </Stack>
   );
 }

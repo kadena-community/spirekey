@@ -10,11 +10,12 @@ export type Account = {
 };
 
 export type Device = {
-  ["credential-id"]: string;
-  ["credential-pubkey"]: string;
   name: string;
+  domain: string;
+  ["credential-id"]: string;
   guard: {
     keys: string[];
+    pred: "keys-any";
   };
 };
 
@@ -45,7 +46,7 @@ export const useAccounts = (client: IClient) => {
       .then((accs) => {
         setAccounts(accs);
         setAccount(accs[0]);
-        if (accs[0].devices.length === 1) setDevice(accs[0].devices[0]);
+        if (accs[0].devices.length > 0) setDevice(accs[0].devices[0]);
       });
   }, []);
 
