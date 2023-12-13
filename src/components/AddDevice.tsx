@@ -79,13 +79,13 @@ export const AddDevice = ({
   return (
     <Stack direction="column">
       <TextField
-        label="account"
+        label="device name"
         inputProps={{
-          id: "account",
+          id: "device-name",
           value: account,
           onChange: onAccountChange,
         }}
-        helperText="Enter your account name"
+        helperText="Enter the name of your device"
       />
       <Button onClick={register}>Add Device</Button>
     </Stack>
