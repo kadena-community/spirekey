@@ -36,7 +36,7 @@ export const getAccountName = async (publicKey: string) =>
         keys: [getWebAuthnPubkeyFormat(publicKey)],
         pred: "keys-any",
       }),
-      setNetworkId("fast-development")
+      setNetworkId(process.env.NETWORK_ID || "fast-development")
     ),
     createTransaction,
     (tx) =>
@@ -125,5 +125,5 @@ const registerAccountCommand = ({
       ttl: 60000,
       senderAccount: genesisAccount,
     }),
-    setNetworkId("fast-development")
+    setNetworkId(process.env.NETWORK_ID || "fast-development")
   );

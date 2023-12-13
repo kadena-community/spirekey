@@ -9,6 +9,7 @@ const nextConfig = {
     WALLET_URL: process.env.WALLET_URL,
     STRING_SIG: "true",
     NAMESPACE: process.env.NAMESPACE,
+    NETWORK_ID: process.env.NETWORK_ID,
   },
 };
 

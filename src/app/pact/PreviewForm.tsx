@@ -27,7 +27,7 @@ import { decodeAccount } from "@/utils/decodeAccount";
 
 const FORM_DEFAULT = {
   chainId: "14",
-  networkdId: "fast-development",
+  networkdId: process.env.NETWORK_ID || "fast-development",
   code: "",
   file: null as FileList | null,
   contractData: JSON.stringify({}),

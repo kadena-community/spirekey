@@ -28,7 +28,7 @@ export const addDevice = async (
         chainId: "14",
         gasPrice: 0.00000001,
       }),
-      setNetworkId("fast-development"),
+      setNetworkId(process.env.NETWORK_ID || "fast-development"),
       addSigner(
         // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
         {

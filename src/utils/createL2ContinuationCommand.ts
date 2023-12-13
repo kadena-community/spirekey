@@ -26,6 +26,6 @@ export function createL2ContinuationCommand(
       withCapabilities("coin.GAS"),
       withCapabilities(`${process.env.NAMESPACE}.l2.GOVERNANCE`),
     ]),
-    setNetworkId("fast-development")
+    setNetworkId(process.env.NETWORK_ID || "fast-development")
   )();
 }

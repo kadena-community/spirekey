@@ -19,7 +19,7 @@ export const getAccount = (client: IClient) => async (alias: string) =>
       setMeta({
         chainId: "14",
       }),
-      setNetworkId("fast-development")
+      setNetworkId(process.env.NETWORK_ID || "fast-development")
     ),
     createTransaction,
     (tx) => client.local(tx, { preflight: false }),
