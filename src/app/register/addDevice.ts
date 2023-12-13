@@ -18,7 +18,7 @@ export const addDevice = async (
   const result = await asyncPipe(
     composePactCommand(
       execution(
-        `(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.add-device
+        `(${process.env.NAMESPACE}.webauthn-wallet.add-device
           "${account.account}" (read-msg 'device))`
       ),
       addData("device", device),
@@ -37,11 +37,11 @@ export const addDevice = async (
         },
         (withCap) => [
           withCap(
-            "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.ADD_DEVICE",
+            `${process.env.NAMESPACE}.webauthn-wallet.ADD_DEVICE`,
             account.account
           ),
           withCap(
-            "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.GAS_PAYER",
+            `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
             account.account,
             { int: 1 },
             1

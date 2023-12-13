@@ -14,12 +14,12 @@ To get started you need to have the following installed:
 
 We need [devnet](https://github.com/kadena-io/devnet/tree/main/nix#running-the-devnet-docker-image)
 to run this application for development. A special image has been prepared for
-development using WebAuthn. The image is called `kadena/devnet:l2-webauthn`.
+development using WebAuthn. The image is called `kadena/devnet:latest`.
 The command to run is:
 
 ```sh
 docker volume create l1
-docker run -it -p 8080:8080 -v l1:/data kadena/devnet:l2-webauthn
+docker run -it -p 8080:8080 -v l1:/data kadena/devnet:latest
 ```
 
 When devnet is up and running, you can deploy the contracts using:

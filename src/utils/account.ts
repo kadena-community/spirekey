@@ -12,7 +12,7 @@ export const getAccount = (client: IClient) => async (alias: string) =>
     composePactCommand(
       execution(
         `[
-          (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-webauthn-guard "${alias}")
+          (${process.env.NAMESPACE}.webauthn-wallet.get-webauthn-guard "${alias}")
           (coin.get-balance "${alias}")
         ]`
       ),

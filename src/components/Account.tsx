@@ -25,7 +25,7 @@ export const Account = ({
     router.push(
       `${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(returnPath)}`
     );
-  }, []);
+  }, [getReturnUrl, returnPath]);
   if (!account)
     return (
       <Button icon="Account" onClick={onLogin}>
