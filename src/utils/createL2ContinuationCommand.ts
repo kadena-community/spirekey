@@ -24,9 +24,7 @@ export function createL2ContinuationCommand(
     }),
     addSigner(genesisPubKey, (withCapabilities) => [
       withCapabilities("coin.GAS"),
-      withCapabilities(
-        "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.GOVERNANCE"
-      ),
+      withCapabilities(`${process.env.NAMESPACE}.l2.GOVERNANCE`),
     ]),
     setNetworkId("fast-development")
   )();

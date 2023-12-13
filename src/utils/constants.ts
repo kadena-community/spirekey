@@ -1,14 +1,12 @@
 // L1 Accounts
-export const l2GasStationAccount =
-  "u:n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.gas-station.enforce-guard-any:2_2Hme6mPWedofd8myNxsJ1cnHeujAFRQCc4VKEGBP8";
+export const l2GasStationAccount = `u:${process.env.NAMESPACE}.gas-station.enforce-guard-any:2_2Hme6mPWedofd8myNxsJ1cnHeujAFRQCc4VKEGBP8`;
 
 // TODO: Have the user provide this
 export const signerPubKey =
   "457117167173a2afafdd72fd05106eaee745a37d808476455d3b1a8acc9ad8d5";
 
 // L2 Accounts
-export const escrowAccount =
-  "u:n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2.sync-guard:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g";
+export const escrowAccount = `u:${process.env.NAMESPACE}.l2.sync-guard:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g`;
 
 export const genesisAccount = "sender00";
 export const genesisPubKey =

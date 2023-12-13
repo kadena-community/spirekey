@@ -22,11 +22,11 @@ export const createOrder = async ({
   return asyncPipe(
     composePactCommand(
       execution(
-        Pact.modules[
-          "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet"
-        ].transfer(caccount, "cookie-shop", {
-          decimal: price.toString(),
-        })
+        `(${
+          process.env.NAMESPACE
+        }.webauthn-wallet.transfer "${caccount}" "cookie-shop" ${price.toPrecision(
+          8
+        )}`
       ),
       setMeta({
         chainId: "14",
@@ -44,13 +44,13 @@ export const createOrder = async ({
         },
         (withCap: any) => [
           withCap(
-            "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.TRANSFER",
+            `${process.env.NAMESPACE}.webauthn-wallet.TRANSFER`,
             waccount,
             "cookie-shop",
             price
           ),
           withCap(
-            "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.GAS_PAYER",
+            `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
             waccount,
             { int: 1 },
             1

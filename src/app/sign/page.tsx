@@ -26,7 +26,7 @@ type SignProps = {
 
 /* valueLabels to be used to explain cmd.code */
 const capTranslations: Record<string, any> = {
-  "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.TRANSFER": {
+  [`${process.env.NAMESPACE}.webauthn-wallet.TRANSFER`]: {
     default: "nl",
     en: {
       title: "Transfer",
@@ -39,7 +39,7 @@ const capTranslations: Record<string, any> = {
       valueLabels: ["Van", "Naar", "Hoeveelheid"],
     },
   },
-  "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.GAS_PAYER": {
+  [`${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`]: {
     default: "nl",
     en: {
       title: "Gas payer",

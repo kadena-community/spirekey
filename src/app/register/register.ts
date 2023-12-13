@@ -23,7 +23,7 @@ export const getAccountName = async (publicKey: string) =>
 (let* ((guard (read-keyset 'ks))
        (account (create-principal guard))
       )
-  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-account-name account)
+  (${process.env.NAMESPACE}.webauthn-wallet.get-account-name account)
 )
 `),
       setMeta({
@@ -92,7 +92,7 @@ const registerAccountCommand = ({
   composePactCommand(
     execution(
       `
-(namespace 'n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9)
+(namespace '${process.env.NAMESPACE})
 (let ((guard (read-keyset 'ks)))
   (coin.transfer 
     "sender00"
