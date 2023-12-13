@@ -42,7 +42,11 @@ export default function Account() {
       setLoading(true);
       const result = await registerOrAddDevice(device, newDevice, account);
       setLoading(false);
-      if (!device) return setResult(result);
+      if (!device) {
+        setResult(result);
+        onRestore(result);
+        return;
+      }
       // navigate to sign page of "original device"
       // for now we just go to this wallet's sign page
       sign(result, device, "/pact/submit");
