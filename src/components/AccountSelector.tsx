@@ -1,33 +1,52 @@
 import { Account, Device } from "@/hooks/useAccounts";
-import { SelectField, Text, TextField, TrackerCard } from "@kadena/react-ui";
-import { useCallback } from "react";
+import { getAccount } from "@/utils/account";
+import { l1Client } from "@/utils/client";
+import {
+  Button,
+  SelectField,
+  Stack,
+  Text,
+  TextField,
+  TrackerCard,
+} from "@kadena/react-ui";
+import { useCallback, useState } from "react";
 
 export const AccountSelector = ({
   account,
   accounts,
   device,
+  onRestore,
   onAccountChange,
   onDeviceChange,
 }: {
   accounts: Account[];
   account: Account | null;
   device: Device | null;
+  onRestore: (account: string) => void;
   onAccountChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onDeviceChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onStoreAccount?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
+  const [restoreAccount, setRestoreAccount] = useState<string>("");
   const onStoreAccount = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      localStorage.setItem("accounts", JSON.stringify([event.target.value]));
+      setRestoreAccount(event.target.value);
     },
     []
   );
+  const onRestoreAccount = useCallback(async () => {
+    onRestore(restoreAccount);
+  }, [restoreAccount, onAccountChange]);
   if (!account)
     return (
-      <TextField
-        label="account"
-        inputProps={{ id: "account", onBlur: onStoreAccount }}
-      />
+      <Stack direction="column" gap="$md">
+        <TextField
+          label="Restore existing account"
+          inputProps={{ id: "account", onBlur: onStoreAccount }}
+          helperText="Enter the account name you want to restore"
+        />
+        <Button onClick={onRestoreAccount}>Restore</Button>
+      </Stack>
     );
   if (!device) return <Text>No account found, please register first.</Text>;
   return (

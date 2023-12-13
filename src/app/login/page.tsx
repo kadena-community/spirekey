@@ -13,8 +13,14 @@ type LoginProps = {
 
 export default function Login({ searchParams }: LoginProps) {
   const { returnUrl } = searchParams;
-  const { accounts, account, device, onAccountChange, onDeviceChange } =
-    useAccountSelector();
+  const {
+    accounts,
+    account,
+    device,
+    onAccountChange,
+    onDeviceChange,
+    onRestore,
+  } = useAccountSelector();
   return (
     <Stack direction="column" alignItems="center" paddingY="$lg">
       <Box>
@@ -29,6 +35,7 @@ export default function Login({ searchParams }: LoginProps) {
           onAccountChange={onAccountChange}
           onDeviceChange={onDeviceChange}
           accounts={accounts}
+          onRestore={onRestore}
         />
         <LoginConfirmation
           account={account}

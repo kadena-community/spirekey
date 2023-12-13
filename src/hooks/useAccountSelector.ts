@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { useAccounts } from "./useAccounts";
 
 export const useAccountSelector = () => {
-  const { accounts, account, device, setDevice, setAccount } =
+  const { accounts, account, device, setDevice, setAccount, onRestore } =
     useAccounts(l1Client);
   const onAccountChange = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -30,5 +30,6 @@ export const useAccountSelector = () => {
     device,
     onAccountChange,
     onDeviceChange,
+    onRestore,
   };
 };

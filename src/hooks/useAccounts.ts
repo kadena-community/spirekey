@@ -1,6 +1,6 @@
 import { getAccount } from "@/utils/account";
 import { IClient } from "@kadena/client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export type Account = {
   name: string;
@@ -21,6 +21,7 @@ export type Device = {
 
 export const useAccounts = (client: IClient) => {
   const [account, setAccount] = useState<Account | null>(null);
+  const [restore, setRestore] = useState<string>("");
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [device, setDevice] = useState<Device | null>(null);
   useEffect(() => {
@@ -48,13 +49,21 @@ export const useAccounts = (client: IClient) => {
         setAccount(accs[0]);
         if (accs[0].devices.length > 0) setDevice(accs[0].devices[0]);
       });
-  }, []);
+  }, [restore]);
 
+  const onRestore = useCallback(
+    (account: string) => {
+      localStorage.setItem("accounts", JSON.stringify([account]));
+      setRestore(account);
+    },
+    [restore, setRestore]
+  );
   return {
     account,
     accounts,
     device,
     setAccount,
     setDevice,
+    onRestore,
   };
 };
