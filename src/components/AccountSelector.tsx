@@ -1,6 +1,5 @@
+import { fundAccount } from "@/app/register/fund";
 import { Account, Device } from "@/hooks/useAccounts";
-import { getAccount } from "@/utils/account";
-import { l1Client } from "@/utils/client";
 import {
   Button,
   SelectField,
@@ -34,6 +33,11 @@ export const AccountSelector = ({
     },
     []
   );
+  const onFundAccount = async () => {
+    if (!account) throw new Error("No account selected");
+    await fundAccount(account);
+    window.location.reload();
+  };
   const onRestoreAccount = useCallback(async () => {
     onRestore(restoreAccount);
   }, [restoreAccount, onAccountChange]);
@@ -103,6 +107,7 @@ export const AccountSelector = ({
           ))}
         </SelectField>
       )}
+      <Button onClick={onFundAccount}>Fund account</Button>
     </>
   );
 };

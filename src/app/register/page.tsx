@@ -5,9 +5,10 @@ import { AddDevice } from "@/components/AddDevice";
 import { Account, Device } from "@/hooks/useAccounts";
 import { useAccountSelector } from "@/hooks/useAccountSelector";
 import { useSign } from "@/hooks/useSign";
-import { ContentHeader, Stack, Text } from "@kadena/react-ui";
+import { Button, ContentHeader, Stack, Text } from "@kadena/react-ui";
 import { useCallback, useState } from "react";
 import { addDevice } from "./addDevice";
+import { fundAccount } from "./fund";
 import { registerAccount } from "./register";
 
 const registerOrAddDevice = async (
@@ -37,6 +38,11 @@ export default function Account() {
     onRestore,
   } = useAccountSelector();
   const { sign } = useSign("http://localhost:1337");
+  const onFundAccount = async () => {
+    if (!account) throw new Error("No account selected");
+    await fundAccount(account);
+    window.location.reload();
+  };
   const onAddDevice = useCallback(
     async (newDevice: Device) => {
       setLoading(true);
@@ -76,6 +82,7 @@ export default function Account() {
           icon="Account"
         />
         <Text>Registration complete! Account: {result}</Text>
+        <Button onClick={onFundAccount}>Fund account</Button>
       </Stack>
     );
   }
