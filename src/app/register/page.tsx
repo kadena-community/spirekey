@@ -70,7 +70,7 @@ export default function Account() {
           icon="Account"
         />
         <div>
-          loading...
+          <Text>loading...</Text>
           <div className="container">
             <div className="bg"></div>
             <div className="arm-left"></div>
