@@ -81,6 +81,12 @@ const fundViaFaucet = (account: string) =>
         { int: 1 },
         1
       ),
+      withCap(
+        "coin.TRANSFER",
+        "c:Ecwy85aCW3eogZUnIQxknH8tG8uXHM5QiC__jeI0nWA",
+        account,
+        100
+      ),
     ]),
     setNetworkId("testnet04")
   );
