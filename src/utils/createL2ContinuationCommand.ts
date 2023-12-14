@@ -7,7 +7,7 @@ import {
   setMeta,
   setNetworkId,
 } from "@kadena/client/fp";
-import { genesisPubKey } from "@/utils/constants";
+import { genesisAccount, genesisPubKey } from "@/utils/constants";
 
 export function createL2ContinuationCommand(
   options: IContinuationPayloadObject["cont"],
@@ -20,7 +20,7 @@ export function createL2ContinuationCommand(
       gasLimit: 1000,
       gasPrice: 0.0000001,
       ttl: 60000,
-      senderAccount: "sender00",
+      senderAccount: genesisAccount,
     }),
     addSigner(genesisPubKey, (withCapabilities) => [
       withCapabilities("coin.GAS"),
