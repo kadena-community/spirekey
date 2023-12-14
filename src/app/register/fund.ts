@@ -48,7 +48,7 @@ const fundLocally = (account: string) =>
     ),
     setMeta({
       chainId: "14",
-      gasLimit: 1000,
+      gasLimit: 10000,
       gasPrice: 0.0000001,
       ttl: 60000,
       senderAccount: "sender00",
@@ -69,7 +69,7 @@ const fundViaFaucet = (account: string) =>
     ),
     setMeta({
       chainId: "14",
-      gasLimit: 1000,
+      gasLimit: 10000,
       gasPrice: 0.0000001,
       ttl: 60000,
       senderAccount: "c:Ecwy85aCW3eogZUnIQxknH8tG8uXHM5QiC__jeI0nWA", // faucet gas account
