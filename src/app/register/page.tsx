@@ -10,6 +10,7 @@ import { useCallback, useState } from "react";
 import { addDevice } from "./addDevice";
 import { fundAccount } from "./fund";
 import { registerAccount } from "./register";
+import "./createwallet.css"
 
 const registerOrAddDevice = async (
   signingDevice: Device | null,
@@ -68,7 +69,36 @@ export default function Account() {
           description="Create an account using WebAuthN"
           icon="Account"
         />
-        <Text>Loading...</Text>
+        <div>
+          loading...
+          <div className="container">
+            <div className="bg"></div>
+            <div className="arm-left"></div>
+            <div className="blacksmith">
+              <div className="shape">
+                <div className="dress"></div>
+                <div className="dress"></div>
+              </div>
+              <div className="head">
+                <div className="moustache"></div>
+                <div className="moustache"></div>
+                <div className="eye"></div>
+              </div>
+              <div className="arm-right">
+                <div className="hammer"></div>
+              </div>
+            </div>
+            <div className="sword">
+            </div>
+            <div className="anvil">Kadena</div>
+            <div className="fire-box">
+              <div className="fire"></div>
+              <div className="fire"></div>
+              <div className="fire"></div>
+              <div className="fire"></div>
+            </div>
+          </div>
+        </div>
       </Stack>
     );
   }
