@@ -10,7 +10,7 @@ import { useCallback, useState } from "react";
 import { addDevice } from "./addDevice";
 import { fundAccount } from "./fund";
 import { registerAccount } from "./register";
-import "./createwallet.css"
+import "./createwallet.css";
 
 const registerOrAddDevice = async (
   signingDevice: Device | null,
@@ -88,9 +88,12 @@ export default function Account() {
                 <div className="hammer"></div>
               </div>
             </div>
-            <div className="sword">
+            <div className="sword"></div>
+            <div className="anvil">
+              <Text bold variant="code">
+                Kadena
+              </Text>
             </div>
-            <div className="anvil">Kadena</div>
             <div className="fire-box">
               <div className="fire"></div>
               <div className="fire"></div>

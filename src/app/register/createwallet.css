@@ -88,7 +88,8 @@
   top: 0;
   width: 20px;
 }
-.blacksmith .shape .dress:after, .blacksmith .shape .dress:before {
+.blacksmith .shape .dress:after,
+.blacksmith .shape .dress:before {
   position: absolute;
   border: 5px solid #a0a0a0;
   box-sizing: border-box;
@@ -116,12 +117,13 @@
   top: -20px;
   width: 90px;
 }
-.blacksmith .head:after, .blacksmith .head:before {
+.blacksmith .head:after,
+.blacksmith .head:before {
   content: "";
   left: 50%;
   position: absolute;
   transform: translateX(-50%);
-  background-color: #13242C;
+  background-color: #13242c;
   border-radius: 10px;
   height: 20px;
   transform-origin: bottom;
@@ -144,7 +146,8 @@
   top: 50px;
   width: 30px;
 }
-.blacksmith .head .eye:after, .blacksmith .head .eye:before {
+.blacksmith .head .eye:after,
+.blacksmith .head .eye:before {
   left: 50%;
   position: absolute;
   top: 50%;
@@ -237,6 +240,7 @@
   height: 50px;
   width: 120px;
   text-align: center;
+  line-height: 50px;
 }
 .anvil:after {
   left: 50%;
@@ -249,6 +253,7 @@
   bottom: -35px;
   height: 0;
   width: 0;
+  z-index: -1;
 }
 .anvil:before {
   left: 50%;
@@ -301,7 +306,7 @@
 }
 .sword .handle:before {
   position: absolute;
-  border-color: transparent transparent transparent #CCCCCC;
+  border-color: transparent transparent transparent #cccccc;
   border-style: solid;
   border-width: 7.5px 0 7.5px 15px;
   content: "";
