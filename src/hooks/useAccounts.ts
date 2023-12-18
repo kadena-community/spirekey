@@ -53,6 +53,7 @@ export const useAccounts = (client: IClient) => {
   }, [restore]);
 
   const onRestore = async (caccount: string) => {
+    if (!caccount) throw new Error("Please enter an account name");
     const account = await getAccount(client)(caccount);
     if (!account) throw new Error("Account not found");
     const res = await startAuthentication({

@@ -9,7 +9,6 @@ import {
   Stack,
   TextField,
 } from "@kadena/react-ui";
-import { startAuthentication } from "@simplewebauthn/browser";
 import { useForm } from "react-hook-form";
 
 const FORM_DEFAULT = {
@@ -31,14 +30,15 @@ export default function RestorePage() {
     reValidateMode: "onBlur",
   });
   const { onRestore } = useAccounts(l1Client);
-  const onRestoreAccount = () => {
+  const onRestoreAccount = async () => {
     const { caccount } = getValues();
-    if (!caccount) {
-      setError("caccount", { message: "Please enter an account name" });
-      return;
+    try {
+      await onRestore(caccount);
+    } catch (error) {
+      if (error instanceof Error)
+        return setError("caccount", { message: error.message });
+      return setError("caccount", { message: "Unknown error" });
     }
-    console.log("Restore account", caccount);
-    onRestore(caccount);
   };
   return (
     <Stack direction="column" gap="$md" margin="$md">
@@ -51,7 +51,11 @@ export default function RestorePage() {
         <TextField
           label="account"
           inputProps={{ id: "caccount", ...register("caccount") }}
-          helperText="Enter the account name you want to restore, this should look like c:account"
+          status={formState.errors.caccount ? "negative" : undefined}
+          helperText={
+            formState.errors.caccount?.message ||
+            "Enter the account name you want to restore, this should look like c:account"
+          }
         />
         <Button onClick={onRestoreAccount}>Restore</Button>
       </Card>
