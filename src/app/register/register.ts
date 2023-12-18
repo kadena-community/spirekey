@@ -10,6 +10,7 @@ import {
 import { asyncPipe } from "@/utils/asyncPipe";
 import { l1Client } from "@/utils/client";
 import {
+  gasStation,
   genesisAccount,
   genesisPrivateKey,
   genesisPubKey,
@@ -36,7 +37,7 @@ export const getAccountName = async (publicKey: string) =>
         keys: [getWebAuthnPubkeyFormat(publicKey)],
         pred: "keys-any",
       }),
-      setNetworkId("fast-development")
+      setNetworkId(process.env.NETWORK_ID || "fast-development")
     ),
     createTransaction,
     (tx) =>
@@ -58,32 +59,32 @@ export const registerAccount = async ({
   const caccount = await getAccountName(credentialPubkey);
   return asyncPipe(
     registerAccountCommand({
-      account: caccount,
+      caccount,
       displayName,
       domain,
       credentialId,
       credentialPubkey,
     }),
     createTransaction,
-    signWithKeyPair({
-      publicKey: genesisPubKey,
-      secretKey: genesisPrivateKey,
-    }),
+    signWithKeyPair({ publicKey: genesisPubKey, secretKey: genesisPrivateKey }),
     l1Client.submit,
     l1Client.listen,
     () => caccount
   )({});
 };
 
-const getWebAuthnPubkeyFormat = (pubkey: string) => `WEBAUTHN-${pubkey}`;
+const getWebAuthnPubkeyFormat = (pubkey: string) => {
+  if (/^WEBAUTHN-/.test(pubkey)) return pubkey;
+  return `WEBAUTHN-${pubkey}`;
+};
 const registerAccountCommand = ({
-  account,
+  caccount,
   displayName,
   credentialId,
   credentialPubkey,
   domain,
 }: {
-  account: string;
+  caccount: string;
   displayName: string;
   credentialId: string;
   credentialPubkey: string;
@@ -92,27 +93,25 @@ const registerAccountCommand = ({
   composePactCommand(
     execution(
       `
-(namespace '${process.env.NAMESPACE})
-(let ((guard (read-keyset 'ks)))
-  (coin.transfer 
-    "sender00"
-    (webauthn-wallet.create-wallet 
-      1 1
-      [{ 'name          : "${displayName}"
-       , 'credential-id : "${credentialId}"
-       , 'domain        : "${domain}"
-       , 'guard         : guard
-       }
-      ]
-    )
-    10.0
-  )
+(${process.env.NAMESPACE}.webauthn-wallet.create-wallet 
+  1 1
+  [{ 'name          : "${displayName}"
+   , 'credential-id : "${credentialId}"
+   , 'domain        : "${domain}"
+   , 'guard         : (read-keyset 'ks)
+   }
+  ]
 )
-      `
+      `.trim()
     ),
     addSigner(genesisPubKey, (withCap) => [
       withCap("coin.GAS"),
-      withCap("coin.TRANSFER", "sender00", account, 10.0),
+      withCap(
+        `${process.env.NAMESPACE}.gas-station.GAS_PAYER`,
+        caccount,
+        { int: 1 },
+        1
+      ),
     ]),
     addData("ks", {
       keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
@@ -123,7 +122,7 @@ const registerAccountCommand = ({
       gasLimit: 2000,
       gasPrice: 0.0000001,
       ttl: 60000,
-      senderAccount: genesisAccount,
+      senderAccount: gasStation,
     }),
-    setNetworkId("fast-development")
+    setNetworkId(process.env.NETWORK_ID || "fast-development")
   );

@@ -1,9 +1,11 @@
 import { Device } from "@/hooks/useAccounts";
-import { Button, Stack, TextField } from "@kadena/react-ui";
+import { CredentialPair, usePubkeys } from "@/hooks/usePubkeys";
+import { Button, SelectField, Stack, TextField } from "@kadena/react-ui";
 import {
   base64URLStringToBuffer,
   bufferToBase64URLString,
   startRegistration,
+  startAuthentication,
 } from "@simplewebauthn/browser";
 import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 import cbor from "cbor";
@@ -30,14 +32,25 @@ export const AddDevice = ({
 }: {
   onAddDevice: (device: Device) => void;
 }) => {
-  const [account, setAccount] = useState<string>("");
-  const onAccountChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setAccount(e.target.value);
-    },
-    [setAccount]
-  );
-  const register = useCallback(async () => {
+  const [deviceName, setDeviceName] = useState<string>("");
+  const [cPair, setCPair] = useState<CredentialPair>();
+  const { pubkeys } = usePubkeys();
+  const onDeviceNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setDeviceName(e.target.value);
+  const onCidChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
+    setCPair(pubkeys.find((p) => p.cid === e.target.value));
+  const register = async () => {
+    if (cPair) {
+      return onAddDevice({
+        domain: window.location.hostname,
+        name: deviceName,
+        ["credential-id"]: cPair.cid,
+        guard: {
+          keys: [cPair.pubkey],
+          pred: "keys-any",
+        },
+      });
+    }
     const res = await startRegistration({
       challenge: bufferToBase64URLString(Buffer.from("some-random-string")),
       rp: {
@@ -56,9 +69,9 @@ export const AddDevice = ({
       },
       attestation: "direct",
       user: {
-        id: account + Date.now(),
-        displayName: account,
-        name: account,
+        id: deviceName + Date.now(),
+        displayName: deviceName,
+        name: deviceName,
       },
       timeout: 60000,
     });
@@ -68,25 +81,40 @@ export const AddDevice = ({
     const pubKey = await getPublicKey(res);
     onAddDevice({
       domain: window.location.hostname,
-      name: account,
+      name: deviceName,
       ["credential-id"]: res.id,
       guard: {
         keys: [pubKey],
         pred: "keys-any",
       },
     });
-  }, [account, onAddDevice]);
+  };
   return (
     <Stack direction="column">
       <TextField
         label="device name"
         inputProps={{
           id: "device-name",
-          value: account,
-          onChange: onAccountChange,
+          value: deviceName,
+          onChange: onDeviceNameChange,
         }}
         helperText="Enter the name of your device"
       />
+      <SelectField
+        label="credential id"
+        selectProps={{
+          id: "credential-id",
+          onChange: onCidChange,
+          ariaLabel: "credential id",
+        }}
+        helperText="Enter the credential id of your previously registered device (optional)"
+      >
+        {pubkeys.map((p) => (
+          <option key={p.cid} value={p.cid}>
+            {p.cid}
+          </option>
+        ))}
+      </SelectField>
       <Button onClick={register}>Add Device</Button>
     </Stack>
   );

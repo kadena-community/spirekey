@@ -4,36 +4,30 @@
   (implements gas-payer-v1)
   (use coin)
 
-  (defconst NS_HASH:string "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9")
-  (defconst NS_KEYSET:guard (keyset-ref-guard (format "{}.{}" [NS_HASH "l2-keyset"])))
+  (defconst NS_HASH:string (read-msg 'ns))
+  (defconst NS_KEYSET:guard (keyset-ref-guard (format "{}.{}" [NS_HASH (read-string 'ks-name)])))
   (defconst GAS_STATION_GUARD:guard
     (guard-any
-          [
-            (create-gas-payer-guard)
-            NS_KEYSET
-          ]))
+      [
+        (create-gas-payer-guard)
+        NS_KEYSET
+      ]
+    )
+  )
   (defconst GAS_STATION:string (create-principal GAS_STATION_GUARD))
 
-  (defcap GOVERNANCE ()
-    (enforce-guard NS_KEYSET))
+  (defcap GOVERNANCE () (enforce-guard NS_KEYSET))
 
-  (defschema gas
-    balance:decimal
-    guard:guard)
-
-  (deftable ledger:{gas})
-
-  (defcap GAS_PAYER:bool
-    ( user:string
-      limit:integer
-      price:decimal
+  (defcap GAS_PAYER : bool
+    ( user          : string
+      limit         : integer
+      price         : decimal
     )
-    ; (enforce (= "exec" (at "tx-type" (read-msg))) "Inside an exec")
-    ; (enforce (= 1 (length (at "exec-code" (read-msg)))) "Tx of only one pact function")
-    ; (enforce
-    ;   (= (format "({}." [NS_HASH])
-    ;      (take 44 (at 0 (at "exec-code" (read-msg)))))
-    ;   "only n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9 namespace is payed for")
+    (enforce
+      (= (format "({}." [NS_HASH])
+         (take 44 (at 0 (read-msg 'exec-code))))
+      (format "only {} namespace is payed for" [NS_HASH])
+    )
     (enforce-below-or-at-gas-price 0.0000001)
     (compose-capability (ALLOW_GAS))
   )
@@ -75,7 +69,9 @@
         [
           (create-gas-payer-guard)
           NS_KEYSET
-        ]))
+        ]
+      )
+    )
   )
 
   (defun create-gas-payer-guard:guard ()

@@ -8,7 +8,10 @@ const nextConfig = {
     CHAINWEB_URL: process.env.CHAINWEB_URL,
     WALLET_URL: process.env.WALLET_URL,
     STRING_SIG: "true",
-    NAMESPACE: "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
+    NAMESPACE: process.env.NAMESPACE,
+    NETWORK_ID: process.env.NETWORK_ID,
+    GAS_STATION:
+      "u:n_999ab0660c701e0c19ce8a529f2ed22c15127d41.gas-station.enforce-guard-any:tY8VyiHmldvMOw4vxddWPZ0pQjBJyH-PrXxfku38VTo",
   },
 };
 
