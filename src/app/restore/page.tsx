@@ -9,6 +9,7 @@ import {
   Stack,
   TextField,
 } from "@kadena/react-ui";
+import { startAuthentication } from "@simplewebauthn/browser";
 import { useForm } from "react-hook-form";
 
 const FORM_DEFAULT = {
