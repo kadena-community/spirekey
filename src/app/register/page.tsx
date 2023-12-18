@@ -2,13 +2,13 @@
 
 import { AccountSelector } from "@/components/AccountSelector";
 import { AddDevice } from "@/components/AddDevice";
+import { Loader } from "@/components/CreateWalletLoader/Loader";
 import { Account, Device } from "@/hooks/useAccounts";
 import { useAccountSelector } from "@/hooks/useAccountSelector";
 import { useSign } from "@/hooks/useSign";
 import { Button, ContentHeader, Stack, Text } from "@kadena/react-ui";
 import { useCallback, useState } from "react";
 import { addDevice } from "./addDevice";
-import "./createwallet.css";
 import { fundAccount } from "./fund";
 import { registerAccount } from "./register";
 
@@ -71,36 +71,7 @@ export default function Account() {
         />
         <div>
           <Text>loading...</Text>
-          <div className="container">
-            <div className="bg"></div>
-            <div className="arm-left"></div>
-            <div className="blacksmith">
-              <div className="shape">
-                <div className="dress"></div>
-                <div className="dress"></div>
-              </div>
-              <div className="head">
-                <div className="moustache"></div>
-                <div className="moustache"></div>
-                <div className="eye"></div>
-              </div>
-              <div className="arm-right">
-                <div className="hammer"></div>
-              </div>
-            </div>
-            <div className="sword"></div>
-            <div className="anvil">
-              <Text bold variant="code">
-                Kadena
-              </Text>
-            </div>
-            <div className="fire-box">
-              <div className="fire"></div>
-              <div className="fire"></div>
-              <div className="fire"></div>
-              <div className="fire"></div>
-            </div>
-          </div>
+          <Loader />
         </div>
       </Stack>
     );
