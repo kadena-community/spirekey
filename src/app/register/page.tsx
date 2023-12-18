@@ -8,9 +8,9 @@ import { useSign } from "@/hooks/useSign";
 import { Button, ContentHeader, Stack, Text } from "@kadena/react-ui";
 import { useCallback, useState } from "react";
 import { addDevice } from "./addDevice";
+import "./createwallet.css";
 import { fundAccount } from "./fund";
 import { registerAccount } from "./register";
-import "./createwallet.css";
 
 const registerOrAddDevice = async (
   signingDevice: Device | null,

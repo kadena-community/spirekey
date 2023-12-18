@@ -11,7 +11,6 @@ import { asyncPipe } from "@/utils/asyncPipe";
 export const createOrder = async ({
   price,
   caccount,
-  waccount,
   signerPubKey,
 }: {
   price: number;
@@ -45,13 +44,13 @@ export const createOrder = async ({
         (withCap: any) => [
           withCap(
             `${process.env.NAMESPACE}.webauthn-wallet.TRANSFER`,
-            waccount,
+            caccount,
             "cookie-shop",
             price
           ),
           withCap(
             `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
-            waccount,
+            caccount,
             { int: 1 },
             1
           ),
