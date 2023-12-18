@@ -7,13 +7,13 @@ import {
 } from "@kadena/client/fp";
 import { asyncPipe } from "./asyncPipe";
 
-export const getAccount = (client: IClient) => async (alias: string) =>
+export const getAccount = (client: IClient) => async (caccount: string) =>
   asyncPipe(
     composePactCommand(
       execution(
         `[
-          (${process.env.NAMESPACE}.webauthn-wallet.get-webauthn-guard "${alias}")
-          (coin.get-balance "${alias}")
+          (${process.env.NAMESPACE}.webauthn-wallet.get-webauthn-guard "${caccount}")
+          (coin.get-balance "${caccount}")
         ]`
       ),
       setMeta({
@@ -24,9 +24,10 @@ export const getAccount = (client: IClient) => async (alias: string) =>
     createTransaction,
     (tx) => client.local(tx, { preflight: false }),
     (tx) => {
+      if (tx?.result?.status !== "success") return null;
       const [devices, balance] = tx.result.data;
       return {
-        name: alias,
+        name: caccount,
         devices: devices.devices,
         balance,
       };
