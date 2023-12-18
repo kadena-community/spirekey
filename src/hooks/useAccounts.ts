@@ -51,13 +51,14 @@ export const useAccounts = (client: IClient) => {
       });
   }, [restore]);
 
-  const onRestore = useCallback(
-    (account: string) => {
-      localStorage.setItem("accounts", JSON.stringify([account]));
-      setRestore(account);
-    },
-    [restore, setRestore]
-  );
+  const onRestore = (account: string) => {
+    const accs = JSON.parse(localStorage.getItem("accounts") || "[]");
+    localStorage.setItem(
+      "accounts",
+      JSON.stringify(Array.from(new Set([...accs, account])))
+    );
+    setRestore(account);
+  };
   return {
     account,
     accounts,
