@@ -1,6 +1,7 @@
 import { getAccount } from "@/utils/account";
 import { IClient } from "@kadena/client";
-import { useCallback, useEffect, useState } from "react";
+import { startAuthentication } from "@simplewebauthn/browser";
+import { useEffect, useState } from "react";
 
 export type Account = {
   name: string;
@@ -51,11 +52,29 @@ export const useAccounts = (client: IClient) => {
       });
   }, [restore]);
 
-  const onRestore = (account: string) => {
+  const onRestore = async (caccount: string) => {
+    const account = await getAccount(client)(caccount);
+    if (!account) throw new Error("Account not found");
+    const res = await startAuthentication({
+      challenge: "somethingrandom",
+      rpId: window.location.hostname,
+      allowCredentials: account.devices.map(
+        ({ ["credential-id"]: cid }: Device) => ({
+          id: cid,
+          type: "public-key",
+        })
+      ),
+    });
+    if (
+      !account.devices.some(
+        ({ ["credential-id"]: cid }: Device) => cid === res.id
+      )
+    )
+      throw new Error("Please authenticate using one of your devices");
     const accs = JSON.parse(localStorage.getItem("accounts") || "[]");
     localStorage.setItem(
       "accounts",
-      JSON.stringify(Array.from(new Set([...accs, account])))
+      JSON.stringify(Array.from(new Set([...accs, caccount])))
     );
     setRestore(account);
   };
