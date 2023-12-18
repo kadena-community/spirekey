@@ -1,8 +1,7 @@
 "use client";
 
-import { useAccounts } from "@/hooks/useAccounts";
-import { l1Client } from "@/utils/client";
 import { ContentHeader, Stack } from "@kadena/react-ui";
+import Link from "next/link";
 
 const Register = () => {
   return (
@@ -24,12 +23,16 @@ const Restore = () => {
         description="Restore an account using WebAuthn"
         icon="Account"
       />
+      <Link href="/restore">Restore</Link>
     </Stack>
   );
 };
 
 export default function Home() {
-  const { account } = useAccounts(l1Client);
-  if (!account) <Register />;
-  return <Restore />;
+  return (
+    <Stack direction="column" gap="$md">
+      <Register />
+      <Restore />
+    </Stack>
+  );
 }
