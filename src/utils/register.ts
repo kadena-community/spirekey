@@ -40,6 +40,7 @@ export const getAccountName = async (publicKey: string) =>
     ),
     createTransaction,
     (tx) =>
+      // TODO: use preflight
       l1Client.local(tx, { preflight: false, signatureVerification: false }),
     (tx) => tx.result.data
   )({});
