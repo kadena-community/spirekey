@@ -1,4 +1,4 @@
-import { getAccount } from "@/utils/account";
+import { getAccount, getAccountFrom } from "@/utils/account";
 import { IClient } from "@kadena/client";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { useEffect, useState } from "react";
@@ -36,14 +36,16 @@ export const useAccounts = (client: IClient) => {
       }))
     )
       .then((accs) => {
-        return accs.map(({ name, account }) => {
-          return {
-            name,
-            account: account.name,
-            devices: account.devices,
-            balance: account.balance,
-          };
-        });
+        return accs
+          .map(({ name, account }) => {
+            return {
+              name,
+              account: account?.name,
+              devices: account?.devices,
+              balance: account?.balance,
+            };
+          })
+          .filter((acc) => acc.account);
       })
       .then((accs) => {
         setAccounts(accs);
@@ -52,9 +54,17 @@ export const useAccounts = (client: IClient) => {
       });
   }, [restore]);
 
-  const onRestore = async (caccount: string) => {
+  const onRestore = async ({
+    caccount,
+    networkId,
+    namespace,
+  }: {
+    caccount: string;
+    networkId: string;
+    namespace: string;
+  }) => {
     if (!caccount) throw new Error("Please enter an account name");
-    const account = await getAccount(client)(caccount);
+    const account = await getAccountFrom({ caccount, networkId, namespace });
     if (!account) throw new Error("Account not found");
     const res = await startAuthentication({
       challenge: "somethingrandom",
