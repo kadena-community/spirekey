@@ -1,4 +1,4 @@
-import { Account, Device } from "@/hooks/useAccounts";
+import { type Account, type Device } from "@/context/AccountContext";
 import { asyncPipe } from "@/utils/asyncPipe";
 import { createTransaction } from "@kadena/client";
 import {

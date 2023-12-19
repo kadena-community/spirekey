@@ -78,9 +78,15 @@ export function AccountsProvider({ client, children }: Props) {
       )
       .then((accounts) => {
         setAccounts(accounts);
+
+        if (!activeAccount) {
+          return;
+        }
+
         setActiveAccount(accounts[0]);
-        if (accounts[0].devices.length > 0)
-          setActiveAccount(accounts[0].devices[0]);
+        if (accounts[0].devices.length > 0) {
+          setActiveDevice(accounts[0].devices[0]);
+        }
       });
   };
 
@@ -111,6 +117,7 @@ export function AccountsProvider({ client, children }: Props) {
     namespace: string;
   }): Promise<void> => {
     if (!caccount) throw new Error("Please enter an account name");
+
     const account = await getAccountFrom({ caccount, networkId, namespace });
     if (!account) throw new Error("Account not found");
 

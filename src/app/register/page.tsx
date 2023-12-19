@@ -43,7 +43,7 @@ export default function Account() {
 
   const handleAddDevice = async (newDevice: Device) => {
     setLoading(true);
-    const result = await registerOrAddDevice(
+    const caccount = await registerOrAddDevice(
       activeDevice ?? null,
       newDevice,
       activeAccount ?? null
@@ -52,10 +52,15 @@ export default function Account() {
     setLoading(false);
 
     if (!activeDevice) {
-      setResult(result);
-      handleRestoreAccount(result);
+      setResult(caccount);
+      handleRestoreAccount({
+        caccount,
+        networkId: process.env.NETWORK_ID!,
+        namespace: process.env.NAMESPACE!,
+      });
       return;
     }
+
     // navigate to sign page of "original device"
     // for now we just go to this wallet's sign page
     sign(result, activeDevice, "/pact/submit");
