@@ -2,7 +2,6 @@
 
 import { registerAccount } from "@/utils/register";
 import {
-  Box,
   Button,
   Card,
   ContentHeader,
@@ -21,6 +20,7 @@ import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { Loader } from "@/components/CreateWalletLoader/Loader";
+import { useAccounts } from "@/hooks/useAccounts";
 
 const getPublicKey = async (res: RegistrationResponseJSON) => {
   const { authData } = cbor.decode(
@@ -46,6 +46,7 @@ const Register = () => {
     defaultValues: FORM_DEFAULT,
     reValidateMode: "onBlur",
   });
+  const { storeAccount } = useAccounts();
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState("");
   const onRegister = async () => {
@@ -87,6 +88,7 @@ const Register = () => {
       displayName,
       domain: window.location.hostname,
     });
+    await storeAccount(caccount);
     setIsLoading(false);
     setResult(caccount);
   };
