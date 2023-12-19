@@ -113,7 +113,8 @@ export function AccountsProvider({ client, children }: Props) {
     if (!caccount) throw new Error("Please enter an account name");
     const account = await getAccountFrom({ caccount, networkId, namespace });
     if (!account) throw new Error("Account not found");
-    const res = await startAuthentication({
+
+    const response = await startAuthentication({
       challenge: "somethingrandom",
       rpId: window.location.hostname,
       allowCredentials: account.devices.map(
@@ -126,7 +127,7 @@ export function AccountsProvider({ client, children }: Props) {
 
     if (
       !account.devices.some(
-        ({ ["credential-id"]: cid }: Device) => cid === res.id
+        ({ ["credential-id"]: cid }: Device) => cid === response.id
       )
     ) {
       throw new Error("Please authenticate using one of your devices");

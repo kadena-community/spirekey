@@ -8,7 +8,6 @@ import {
   TextField,
   TrackerCard,
 } from "@kadena/react-ui";
-import { useState } from "react";
 
 export const AccountSelector = () => {
   const {
@@ -33,11 +32,19 @@ export const AccountSelector = () => {
           label="Restore existing account"
           inputProps={{
             id: "account",
-            onBlur: (e) => handleRestoreAccount(e.target.value),
           }}
           helperText="Enter the account name you want to restore"
         />
-        <Button onClick={(e: any) => handleRestoreAccount(e.target.value)}>
+        <Button
+          onClick={(e: any) => {
+            console.log("e.target.value", e.target.value);
+            return handleRestoreAccount({
+              caccount: e.target.value,
+              networkId: process.env.NETWORK_ID!,
+              namespace: process.env.NAMESPACE!,
+            });
+          }}
+        >
           Restore
         </Button>
       </Stack>
@@ -62,6 +69,7 @@ export const AccountSelector = () => {
           </option>
         ))}
       </SelectField>
+
       <TrackerCard
         icon="ManageKda"
         labelValues={[
@@ -81,6 +89,7 @@ export const AccountSelector = () => {
         ]}
         helperText="This is the account you will use to login."
       />
+
       {activeAccount.devices.length > 1 && (
         <SelectField
           label="device"
@@ -100,6 +109,7 @@ export const AccountSelector = () => {
           ))}
         </SelectField>
       )}
+
       <Button onClick={handleFundAccount}>Fund account</Button>
     </>
   );

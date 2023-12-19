@@ -2,7 +2,6 @@
 
 import { AccountSelector } from "@/components/AccountSelector";
 import { LoginConfirmation } from "@/components/LoginConfirmation";
-import { useAccountSelector } from "@/hooks/useAccountSelector";
 import { Box, ContentHeader, Stack } from "@kadena/react-ui";
 
 type LoginProps = {
@@ -13,14 +12,6 @@ type LoginProps = {
 
 export default function Login({ searchParams }: LoginProps) {
   const { returnUrl } = searchParams;
-  const {
-    accounts,
-    account,
-    device,
-    onAccountChange,
-    onDeviceChange,
-    onRestore,
-  } = useAccountSelector();
   return (
     <Stack direction="column" alignItems="center" paddingY="$lg">
       <Box>
@@ -29,19 +20,10 @@ export default function Login({ searchParams }: LoginProps) {
           heading="Login"
           icon="Account"
         />
-        <AccountSelector
-          account={account}
-          device={device}
-          onAccountChange={onAccountChange}
-          onDeviceChange={onDeviceChange}
-          accounts={accounts}
-          onRestore={onRestore}
-        />
-        <LoginConfirmation
-          account={account}
-          device={device}
-          returnUrl={returnUrl}
-        />
+
+        <AccountSelector />
+
+        <LoginConfirmation returnUrl={returnUrl} />
       </Box>
     </Stack>
   );

@@ -7,5 +7,6 @@ export function useAccounts() {
   if (context === undefined) {
     throw new Error("useAccounts must be used within an AccountProvider");
   }
+
   return context;
 }

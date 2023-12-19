@@ -17,26 +17,25 @@ const FORM_DEFAULT = {
 export type RestoreFormValues = typeof FORM_DEFAULT;
 
 export default function RestorePage() {
-  const {
-    handleSubmit,
-    register,
-    getValues,
-    setValue,
-    setError,
-    formState,
-    control,
-  } = useForm({
+  const { register, getValues, setError, formState } = useForm({
     defaultValues: FORM_DEFAULT,
     reValidateMode: "onBlur",
   });
-  const { onRestore } = useAccounts(l1Client);
-  const onRestoreAccount = async () => {
+  const { handleRestoreAccount } = useAccounts();
+
+  const yolo = async () => {
     const { caccount } = getValues();
     try {
-      await onRestore(caccount);
+      await handleRestoreAccount({
+        caccount,
+        networkId: process.env.NETWORK_ID!,
+        namespace: process.env.NAMESPACE!,
+      });
     } catch (error) {
-      if (error instanceof Error)
+      if (error instanceof Error) {
         return setError("caccount", { message: error.message });
+      }
+
       return setError("caccount", { message: "Unknown error" });
     }
   };
@@ -57,7 +56,7 @@ export default function RestorePage() {
             "Enter the account name you want to restore, this should look like c:account"
           }
         />
-        <Button onClick={onRestoreAccount}>Restore</Button>
+        <Button onClick={yolo}>Restore</Button>
       </Card>
     </Stack>
   );
