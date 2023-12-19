@@ -10,7 +10,7 @@ import { Button, ContentHeader, Stack, Text } from "@kadena/react-ui";
 import { useState } from "react";
 import { addDevice } from "./addDevice";
 import { fundAccount } from "./fund";
-import { registerAccount } from "./register";
+import { registerAccount } from "@/utils/register";
 
 const registerOrAddDevice = async (
   signingDevice: Device | null,
