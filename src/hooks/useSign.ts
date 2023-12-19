@@ -1,5 +1,5 @@
+import type { Device } from "@/context/AccountContext";
 import { useRouter } from "next/navigation";
-import { Device } from "./useAccounts";
 import { useReturnUrl } from "./useReturnUrl";
 
 export const useSign = (walletUrl: string) => {
