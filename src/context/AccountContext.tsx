@@ -25,8 +25,8 @@ interface AccountContext {
   activeAccount: Account | null;
   activeDevice: Device | null;
   accounts: Account[];
-  setAccount: (caccount: string) => void;
-  setDevice: (cid: string) => void;
+  setActiveAccount: (caccount: string) => void;
+  setActiveDevice: (cid: string) => void;
   handleRestoreAccount: ({
     caccount,
     networkId,
@@ -154,8 +154,8 @@ export function AccountsProvider({ client, children }: Props) {
     accounts,
     activeAccount,
     activeDevice,
-    setAccount,
-    setDevice,
+    setActiveAccount: setAccount,
+    setActiveDevice: setDevice,
     handleRestoreAccount,
   };
 

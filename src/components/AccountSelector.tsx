@@ -15,15 +15,15 @@ export const AccountSelector = () => {
     activeAccount,
     activeDevice,
     handleRestoreAccount,
-    setAccount,
-    setDevice,
+    setActiveAccount,
+    setActiveDevice,
   } = useAccounts();
 
   const onAccountChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
-    setAccount(event.target.value);
+    setActiveDevice(event.target.value);
 
   const onDeviceChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
-    setDevice(event.target.value);
+    setActiveDevice(event.target.value);
 
   const handleFundAccount = async () => {
     if (!activeAccount) throw new Error("No account selected");

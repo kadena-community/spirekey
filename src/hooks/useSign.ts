@@ -1,4 +1,4 @@
-import { Device } from "@/context/AccountContext";
+import type { Device } from "@/context/AccountContext";
 import { useRouter } from "next/navigation";
 import { useReturnUrl } from "./useReturnUrl";
 
