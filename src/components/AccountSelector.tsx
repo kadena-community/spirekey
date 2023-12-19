@@ -1,4 +1,3 @@
-import { fundAccount } from "@/app/register/fund";
 import { useAccounts } from "@/hooks/useAccounts";
 import {
   Button,
@@ -8,6 +7,7 @@ import {
   TextField,
   TrackerCard,
 } from "@kadena/react-ui";
+import { FundAccount } from "./FundAccount";
 
 export const AccountSelector = () => {
   const {
@@ -20,16 +20,10 @@ export const AccountSelector = () => {
   } = useAccounts();
 
   const onAccountChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
-    setActiveDevice(event.target.value);
+    setActiveAccount(event.target.value);
 
   const onDeviceChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
     setActiveDevice(event.target.value);
-
-  const handleFundAccount = async () => {
-    if (!activeAccount) throw new Error("No account selected");
-    await fundAccount(activeAccount);
-    window.location.reload();
-  };
 
   if (!activeAccount)
     return (
@@ -116,7 +110,7 @@ export const AccountSelector = () => {
         </SelectField>
       )}
 
-      <Button onClick={handleFundAccount}>Fund account</Button>
+      <FundAccount />
     </>
   );
 };

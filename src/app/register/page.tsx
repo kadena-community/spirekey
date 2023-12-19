@@ -6,11 +6,11 @@ import { Loader } from "@/components/CreateWalletLoader/Loader";
 import { type Device, type Account } from "@/context/AccountContext";
 import { useAccounts } from "@/hooks/useAccounts";
 import { useSign } from "@/hooks/useSign";
-import { Button, ContentHeader, Stack, Text } from "@kadena/react-ui";
+import { ContentHeader, Stack, Text } from "@kadena/react-ui";
 import { useState } from "react";
 import { addDevice } from "./addDevice";
-import { fundAccount } from "./fund";
 import { registerAccount } from "@/utils/register";
+import { FundAccount } from "@/components/FundAccount";
 
 const registerOrAddDevice = async (
   signingDevice: Device | null,
@@ -33,13 +33,6 @@ export default function Account() {
   const [result, setResult] = useState<string>();
   const { activeAccount, activeDevice, handleRestoreAccount } = useAccounts();
   const { sign } = useSign(process.env.WALLET_URL!);
-
-  const handleFundAccount = async () => {
-    if (!activeAccount) throw new Error("No account selected");
-
-    await fundAccount(activeAccount);
-    window.location.reload();
-  };
 
   const handleAddDevice = async (newDevice: Device) => {
     setLoading(true);
@@ -91,7 +84,8 @@ export default function Account() {
           icon="Account"
         />
         <Text>Registration complete! Account: {result}</Text>
-        <Button onClick={handleFundAccount}>Fund account</Button>
+
+        <FundAccount />
       </Stack>
     );
   }
