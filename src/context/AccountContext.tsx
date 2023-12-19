@@ -25,6 +25,7 @@ interface AccountContext {
   activeAccount: Account | null;
   activeDevice: Device | null;
   accounts: Account[];
+  storeAccount: (caccount: string) => Promise<void>;
   setActiveAccount: (caccount: string) => void;
   setActiveDevice: (cid: string) => void;
   getAccountDetails: () => Promise<void>;
@@ -57,44 +58,43 @@ export function AccountsProvider({ client, children }: Props) {
     getAccountDetails();
   }, []);
 
-  const getAccountDetails = async () => {
-    console.log("getAccounts");
-    const storedAccounts = JSON.parse(localStorage.getItem("accounts") ?? "[]");
-    if (!storedAccounts.length) return;
-
-    Promise.all(
-      storedAccounts.map(async (account: string) => ({
+  const getAccountDetailsFor = async (accounts: string[]) => {
+    const accs = await Promise.all(
+      accounts.map(async (account: string) => ({
         name: account,
         account: await getAccount(client)(account),
       }))
-    )
-      .then((accounts) =>
-        accounts
-          .map(({ name, account }) => ({
-            name,
-            account: account?.name,
-            devices: account?.devices,
-            balance: account?.balance,
-          }))
-          .filter((acc) => acc.account)
-      )
-      .then((accounts) => {
-        setAccounts(accounts);
+    );
+    return accs
+      .map(({ name, account }) => ({
+        name,
+        account: account?.name,
+        devices: account?.devices,
+        balance: account?.balance,
+      }))
+      .filter((acc) => acc.account);
+  };
 
-        // if we have an active account, update it's data
-        if (activeAccount) {
-          const account = accounts.find(
-            (acc) => acc.account === activeAccount.account
-          );
-          setActiveAccount(account ?? accounts[0]);
-          return;
-        }
+  const getAccountDetails = async () => {
+    const storedAccounts = JSON.parse(localStorage.getItem("accounts") ?? "[]");
+    if (!storedAccounts.length) return;
 
-        setActiveAccount(accounts[0]);
-        if (accounts[0].devices.length > 0) {
-          setActiveDevice(accounts[0].devices[0]);
-        }
-      });
+    const accounts = await getAccountDetailsFor(storedAccounts);
+    setAccounts(accounts);
+
+    // if we have an active account, update it's data
+    if (activeAccount) {
+      const account = accounts.find(
+        (acc) => acc.account === activeAccount.account
+      );
+      setActiveAccount(account ?? accounts[0]);
+      return;
+    }
+
+    setActiveAccount(accounts[0]);
+    if (accounts[0].devices.length > 0) {
+      setActiveDevice(accounts[0].devices[0]);
+    }
   };
 
   const setAccount = (caccount: string) => {
@@ -112,6 +112,20 @@ export function AccountsProvider({ client, children }: Props) {
     if (!device) return;
 
     setActiveDevice(device);
+  };
+
+  const storeAccount = async (caccount: string) => {
+    const storedAccounts = JSON.parse(localStorage.getItem("accounts") || "[]");
+
+    const newAccounts = Array.from(new Set([...storedAccounts, caccount]));
+    localStorage.setItem("accounts", JSON.stringify(newAccounts));
+    setAccounts(newAccounts);
+    const details = await getAccountDetailsFor(newAccounts);
+    const newAccount = details.find((acc) => acc.account === caccount);
+    if (!newAccount) return;
+    setActiveAccount(newAccount);
+    if (!newAccount.devices.length) return;
+    setActiveDevice(newAccount.devices[0]);
   };
 
   const handleRestoreAccount = async ({
@@ -162,6 +176,7 @@ export function AccountsProvider({ client, children }: Props) {
     activeAccount,
     activeDevice,
     getAccountDetails,
+    storeAccount,
     setActiveAccount: setAccount,
     setActiveDevice: setDevice,
     handleRestoreAccount,
