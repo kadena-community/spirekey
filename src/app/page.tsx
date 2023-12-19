@@ -2,10 +2,12 @@
 
 import { registerAccount } from "@/utils/register";
 import {
+  Box,
   Button,
   Card,
   ContentHeader,
   Stack,
+  Text,
   TextField,
 } from "@kadena/react-ui";
 import {
@@ -17,6 +19,8 @@ import Link from "next/link";
 import cbor from "cbor";
 import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { Loader } from "@/components/CreateWalletLoader/Loader";
 
 const getPublicKey = async (res: RegistrationResponseJSON) => {
   const { authData } = cbor.decode(
@@ -42,8 +46,12 @@ const Register = () => {
     defaultValues: FORM_DEFAULT,
     reValidateMode: "onBlur",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState("");
   const onRegister = async () => {
     const { displayName } = getValues();
+    if (!displayName) throw new Error("Display name is required");
+    setIsLoading(true);
     const res = await startRegistration({
       challenge: bufferToBase64URLString(Buffer.from("some-random-string")),
       rp: {
@@ -73,13 +81,39 @@ const Register = () => {
 
     const pubKey = await getPublicKey(res);
 
-    await registerAccount({
+    const caccount = await registerAccount({
       credentialPubkey: pubKey,
       credentialId: res.id,
       displayName,
       domain: window.location.hostname,
     });
+    setIsLoading(false);
+    setResult(caccount);
   };
+  if (result)
+    return (
+      <Card fullWidth>
+        <Stack direction="column" gap="$md" margin="$md">
+          <ContentHeader
+            heading="WebAuthn Wallet"
+            description="Create an account using WebAuthn"
+            icon="Account"
+          />
+          <Text>Your account has been forged successfully!</Text>
+          <Text bold>{result}</Text>
+        </Stack>
+      </Card>
+    );
+
+  if (isLoading)
+    return (
+      <Card fullWidth>
+        <Stack direction="column" gap="$md" margin="$md">
+          <Text>Your wallet is forging...</Text>
+          <Loader />
+        </Stack>
+      </Card>
+    );
   return (
     <Card fullWidth>
       <Stack direction="column" gap="$md" margin="$md">
