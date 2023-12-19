@@ -25,7 +25,7 @@ interface AccountContext {
   activeAccount: Account | null;
   activeDevice: Device | null;
   accounts: Account[];
-  handleAccountChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleAccountChange: (caccount: string) => void;
   handleDeviceChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   handleRestoreAccount: ({
     caccount,
@@ -90,8 +90,8 @@ export function AccountsProvider({ client, children }: Props) {
       });
   };
 
-  const handleAccountChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const account = accounts.find((acc) => acc.account === event.target.value);
+  const handleAccountChange = (caccount: string) => {
+    const account = accounts.find((acc) => acc.account === caccount);
     if (!account) return;
 
     setActiveAccount(account);

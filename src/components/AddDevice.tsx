@@ -1,4 +1,4 @@
-import { Device } from "@/hooks/useAccounts";
+import { Device } from "@/context/AccountContext";
 import { CredentialPair, usePubkeys } from "@/hooks/usePubkeys";
 import { Button, SelectField, Stack, TextField } from "@kadena/react-ui";
 import {
