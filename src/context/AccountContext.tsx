@@ -26,7 +26,7 @@ interface AccountContext {
   activeDevice: Device | null;
   accounts: Account[];
   handleAccountChange: (caccount: string) => void;
-  handleDeviceChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleDeviceChange: (cid: string) => void;
   handleRestoreAccount: ({
     caccount,
     networkId,
@@ -98,9 +98,9 @@ export function AccountsProvider({ client, children }: Props) {
     setActiveDevice(account.devices[0]);
   };
 
-  const handleDeviceChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleDeviceChange = (cid: string) => {
     const device = activeAccount?.devices.find(
-      (device) => device["credential-id"] === event.target.value
+      (device) => device["credential-id"] === cid
     );
     if (!device) return;
 

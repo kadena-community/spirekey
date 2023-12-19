@@ -22,6 +22,9 @@ export const AccountSelector = () => {
   const onAccountChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
     handleAccountChange(event.target.value);
 
+  const onDeviceChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
+    handleDeviceChange(event.target.value);
+
   const handleFundAccount = async () => {
     if (!activeAccount) throw new Error("No account selected");
     await fundAccount(activeAccount);
@@ -99,7 +102,7 @@ export const AccountSelector = () => {
           selectProps={{
             id: "device",
             ariaLabel: "Select which device you'd like to use",
-            onChange: handleDeviceChange,
+            onChange: onDeviceChange,
           }}
         >
           {activeAccount.devices.map((device) => (
