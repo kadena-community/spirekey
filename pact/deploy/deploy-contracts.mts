@@ -26,4 +26,4 @@ await deploy(getWalletSettings(IS_UPGRADE));
 //     fund: 100,
 //   }))
 // );
-// await deploy(getFundSettings(accounts));
+await deploy(getFundSettings());
