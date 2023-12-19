@@ -39,6 +39,13 @@ export default function Account() {
     onRestore,
   } = useAccountSelector();
   const { sign } = useSign("http://localhost:1337");
+  const onRestoreAccount = (caccount: string) =>
+    onRestore({
+      caccount,
+      networkId: process.env.NETWORK_ID || "testnet04",
+      namespace:
+        process.env.NAMESPACE || "n_999ab0660c701e0c19ce8a529f2ed22c15127d41",
+    });
   const onFundAccount = async () => {
     if (!account) throw new Error("No account selected");
     await fundAccount(account);
@@ -104,7 +111,7 @@ export default function Account() {
         device={device}
         onAccountChange={onAccountChange}
         onDeviceChange={onDeviceChange}
-        onRestore={onRestore}
+        onRestore={onRestoreAccount}
       />
       <AddDevice onAddDevice={onAddDevice} />
     </Stack>

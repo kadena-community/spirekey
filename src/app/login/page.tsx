@@ -21,6 +21,14 @@ export default function Login({ searchParams }: LoginProps) {
     onDeviceChange,
     onRestore,
   } = useAccountSelector();
+  const onRestoreAccount = (caccount: string) =>
+    onRestore({
+      caccount,
+      networkId: process.env.NETWORK_ID || "testnet04",
+      namespace:
+        process.env.NAMESPACE || "n_999ab0660c701e0c19ce8a529f2ed22c15127d41",
+    });
+
   return (
     <Stack direction="column" alignItems="center" paddingY="$lg">
       <Box>
@@ -35,7 +43,7 @@ export default function Login({ searchParams }: LoginProps) {
           onAccountChange={onAccountChange}
           onDeviceChange={onDeviceChange}
           accounts={accounts}
-          onRestore={onRestore}
+          onRestore={onRestoreAccount}
         />
         <LoginConfirmation
           account={account}
