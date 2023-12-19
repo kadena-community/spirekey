@@ -25,8 +25,8 @@ interface AccountContext {
   activeAccount: Account | null;
   activeDevice: Device | null;
   accounts: Account[];
-  handleAccountChange: (caccount: string) => void;
-  handleDeviceChange: (cid: string) => void;
+  setAccount: (caccount: string) => void;
+  setDevice: (cid: string) => void;
   handleRestoreAccount: ({
     caccount,
     networkId,
@@ -90,7 +90,7 @@ export function AccountsProvider({ client, children }: Props) {
       });
   };
 
-  const handleAccountChange = (caccount: string) => {
+  const setAccount = (caccount: string) => {
     const account = accounts.find((acc) => acc.account === caccount);
     if (!account) return;
 
@@ -98,7 +98,7 @@ export function AccountsProvider({ client, children }: Props) {
     setActiveDevice(account.devices[0]);
   };
 
-  const handleDeviceChange = (cid: string) => {
+  const setDevice = (cid: string) => {
     const device = activeAccount?.devices.find(
       (device) => device["credential-id"] === cid
     );
@@ -154,8 +154,8 @@ export function AccountsProvider({ client, children }: Props) {
     accounts,
     activeAccount,
     activeDevice,
-    handleAccountChange,
-    handleDeviceChange,
+    setAccount,
+    setDevice,
     handleRestoreAccount,
   };
 
