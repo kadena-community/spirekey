@@ -130,31 +130,45 @@ export const getWalletSettings: (upgrade: boolean) => DeploySettings[] = (
     sender: "sender00",
     keypair: sender00Keypair,
     data: {
-      'cookie-ks': {
+      "cookie-ks": {
         keys: [sender00Keypair.publicKey],
         pred: "keys-all",
-      }
+      },
     },
     caps: [
-    ["coin.GAS"],
-    [
-      "coin.TRANSFER",
-      "sender00",
-      "cookie-shop",
-      0.0000001,
-    ],
-  ] as any,
-  }
+      ["coin.GAS"],
+      ["coin.TRANSFER", "sender00", "cookie-shop", 0.0000001],
+    ] as any,
+  },
+  {
+    hosts,
+    networkId: "fast-development",
+    codeFile: "./pact/gas-station.pact",
+    sender: "sender00",
+    keypair: sender00Keypair,
+    data: {
+      ns: "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
+      "ks-name": "webauthn-keyset",
+      upgrade: false,
+    },
+  },
 ];
 
-export const getFundSettings: (accounts: Account[]) => DeploySettings[] = (
-  accounts
-) => [
+export const getFundSettings: () => DeploySettings[] = () => [
   {
-    hosts: [l1],
+    hosts,
     networkId: "fast-development",
     sender: "sender00",
     keypair: sender00Keypair,
-    ...getFundData(accounts),
+    code: `(coin.transfer "sender00" "u:n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.gas-station.enforce-guard-any:7AdJhJTZk-wJEAWGaoO36HADDU58EtRw5La0LGw1ErI" 100.0)`,
+    caps: [
+      ["coin.GAS"],
+      [
+        "coin.TRANSFER",
+        "sender00",
+        "u:n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.gas-station.enforce-guard-any:7AdJhJTZk-wJEAWGaoO36HADDU58EtRw5La0LGw1ErI",
+        100.0,
+      ],
+    ] as any,
   },
 ];
