@@ -1,7 +1,8 @@
 import { ReactNode, createContext, useEffect, useState } from "react";
 
-import { getAccount } from "@/utils/account";
+import { getAccount, getAccountFrom } from "@/utils/account";
 import { IClient } from "@kadena/client";
+import { startAuthentication } from "@simplewebauthn/browser";
 
 export type Device = {
   name: string;
@@ -26,7 +27,15 @@ interface AccountContext {
   accounts: Account[];
   handleAccountChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   handleDeviceChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  handleRestoreAccount: (account: string) => void;
+  handleRestoreAccount: ({
+    caccount,
+    networkId,
+    namespace,
+  }: {
+    caccount: string;
+    networkId: string;
+    namespace: string;
+  }) => Promise<void>;
 }
 
 export const AccountContext = createContext<AccountContext>(
@@ -58,12 +67,14 @@ export function AccountsProvider({ client, children }: Props) {
       }))
     )
       .then((accounts) =>
-        accounts.map(({ name, account }) => ({
-          name,
-          account: account.name,
-          devices: account.devices,
-          balance: account.balance,
-        }))
+        accounts
+          .map(({ name, account }) => ({
+            name,
+            account: account?.name,
+            devices: account?.devices,
+            balance: account?.balance,
+          }))
+          .filter((acc) => acc.account)
       )
       .then((accounts) => {
         setAccounts(accounts);
@@ -90,12 +101,42 @@ export function AccountsProvider({ client, children }: Props) {
     setActiveDevice(device);
   };
 
-  const handleRestoreAccount = (account: string) => {
-    const storedAccounts = JSON.parse(localStorage.getItem("accounts") ?? "[]");
+  const handleRestoreAccount = async ({
+    caccount,
+    networkId,
+    namespace,
+  }: {
+    caccount: string;
+    networkId: string;
+    namespace: string;
+  }): Promise<void> => {
+    if (!caccount) throw new Error("Please enter an account name");
+    const account = await getAccountFrom({ caccount, networkId, namespace });
+    if (!account) throw new Error("Account not found");
+    const res = await startAuthentication({
+      challenge: "somethingrandom",
+      rpId: window.location.hostname,
+      allowCredentials: account.devices.map(
+        ({ ["credential-id"]: cid }: Device) => ({
+          id: cid,
+          type: "public-key",
+        })
+      ),
+    });
+
+    if (
+      !account.devices.some(
+        ({ ["credential-id"]: cid }: Device) => cid === res.id
+      )
+    ) {
+      throw new Error("Please authenticate using one of your devices");
+    }
+
+    const storedAccounts = JSON.parse(localStorage.getItem("accounts") || "[]");
 
     localStorage.setItem(
       "accounts",
-      JSON.stringify([...storedAccounts, account])
+      JSON.stringify(Array.from(new Set([...storedAccounts, caccount])))
     );
 
     getAccounts();
