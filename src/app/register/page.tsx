@@ -3,11 +3,11 @@
 import { AccountSelector } from "@/components/AccountSelector";
 import { AddDevice } from "@/components/AddDevice";
 import { Loader } from "@/components/CreateWalletLoader/Loader";
-import { Account, Device } from "@/hooks/useAccounts";
-import { useAccountSelector } from "@/hooks/useAccountSelector";
+import { type Device, type Account } from "@/context/AccountContext";
+import { useAccounts } from "@/hooks/useAccounts";
 import { useSign } from "@/hooks/useSign";
 import { Button, ContentHeader, Stack, Text } from "@kadena/react-ui";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { addDevice } from "./addDevice";
 import { fundAccount } from "./fund";
 import { registerAccount } from "./register";
@@ -24,49 +24,47 @@ const registerOrAddDevice = async (
       credentialPubkey: device.guard.keys[0],
       domain: device.domain,
     });
+
   return addDevice(signingDevice, account, device);
 };
 
 export default function Account() {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<string>();
-  const {
-    accounts,
-    account,
-    device,
-    onAccountChange,
-    onDeviceChange,
-    onRestore,
-  } = useAccountSelector();
-  const { sign } = useSign("http://localhost:1337");
-  const onRestoreAccount = (caccount: string) =>
-    onRestore({
-      caccount,
-      networkId: process.env.NETWORK_ID || "testnet04",
-      namespace:
-        process.env.NAMESPACE || "n_999ab0660c701e0c19ce8a529f2ed22c15127d41",
-    });
-  const onFundAccount = async () => {
-    if (!account) throw new Error("No account selected");
-    await fundAccount(account);
+  const { activeAccount, activeDevice, handleRestoreAccount } = useAccounts();
+  const { sign } = useSign(process.env.WALLET_URL!);
+
+  const handleFundAccount = async () => {
+    if (!activeAccount) throw new Error("No account selected");
+
+    await fundAccount(activeAccount);
     window.location.reload();
   };
-  const onAddDevice = useCallback(
-    async (newDevice: Device) => {
-      setLoading(true);
-      const result = await registerOrAddDevice(device, newDevice, account);
-      setLoading(false);
-      if (!device) {
-        setResult(result);
-        onRestore(result);
-        return;
-      }
-      // navigate to sign page of "original device"
-      // for now we just go to this wallet's sign page
-      sign(result, device, "/pact/submit");
-    },
-    [setResult, setLoading, account]
-  );
+
+  const handleAddDevice = async (newDevice: Device) => {
+    setLoading(true);
+    const caccount = await registerOrAddDevice(
+      activeDevice ?? null,
+      newDevice,
+      activeAccount ?? null
+    );
+
+    setLoading(false);
+
+    if (!activeDevice) {
+      setResult(caccount);
+      handleRestoreAccount({
+        caccount,
+        networkId: process.env.NETWORK_ID!,
+        namespace: process.env.NAMESPACE!,
+      });
+      return;
+    }
+
+    // navigate to sign page of "original device"
+    // for now we just go to this wallet's sign page
+    sign(result, activeDevice, "/pact/submit");
+  };
 
   if (isLoading) {
     return (
@@ -93,7 +91,7 @@ export default function Account() {
           icon="Account"
         />
         <Text>Registration complete! Account: {result}</Text>
-        <Button onClick={onFundAccount}>Fund account</Button>
+        <Button onClick={handleFundAccount}>Fund account</Button>
       </Stack>
     );
   }
@@ -105,15 +103,10 @@ export default function Account() {
         description="Create an account using WebAuthN"
         icon="Account"
       />
-      <AccountSelector
-        accounts={accounts}
-        account={account}
-        device={device}
-        onAccountChange={onAccountChange}
-        onDeviceChange={onDeviceChange}
-        onRestore={onRestoreAccount}
-      />
-      <AddDevice onAddDevice={onAddDevice} />
+
+      <AccountSelector />
+
+      <AddDevice onAddDevice={handleAddDevice} />
     </Stack>
   );
 }

@@ -1,5 +1,5 @@
 import { fundAccount } from "@/app/register/fund";
-import { Account, Device } from "@/hooks/useAccounts";
+import { useAccounts } from "@/hooks/useAccounts";
 import {
   Button,
   SelectField,
@@ -8,51 +8,51 @@ import {
   TextField,
   TrackerCard,
 } from "@kadena/react-ui";
-import { useCallback, useState } from "react";
 
-export const AccountSelector = ({
-  account,
-  accounts,
-  device,
-  onRestore,
-  onAccountChange,
-  onDeviceChange,
-}: {
-  accounts: Account[];
-  account: Account | null;
-  device: Device | null;
-  onRestore: (account: string) => Promise<void>;
-  onAccountChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  onDeviceChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  onStoreAccount?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => {
-  const [restoreAccount, setRestoreAccount] = useState<string>("");
-  const onStoreAccount = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setRestoreAccount(event.target.value);
-    },
-    []
-  );
-  const onFundAccount = async () => {
-    if (!account) throw new Error("No account selected");
-    await fundAccount(account);
+export const AccountSelector = () => {
+  const {
+    accounts,
+    activeAccount,
+    activeDevice,
+    handleRestoreAccount,
+    handleAccountChange,
+    handleDeviceChange,
+  } = useAccounts();
+
+  const handleFundAccount = async () => {
+    if (!activeAccount) throw new Error("No account selected");
+    await fundAccount(activeAccount);
     window.location.reload();
   };
-  const onRestoreAccount = useCallback(async () => {
-    onRestore(restoreAccount);
-  }, [restoreAccount, onAccountChange]);
-  if (!account)
+
+  if (!activeAccount)
     return (
       <Stack direction="column" gap="$md">
         <TextField
           label="Restore existing account"
-          inputProps={{ id: "account", onBlur: onStoreAccount }}
+          inputProps={{
+            id: "account",
+          }}
           helperText="Enter the account name you want to restore"
         />
-        <Button onClick={onRestoreAccount}>Restore</Button>
+        <Button
+          onClick={(e: any) => {
+            console.log("e.target.value", e.target.value);
+            return handleRestoreAccount({
+              caccount: e.target.value,
+              networkId: process.env.NETWORK_ID!,
+              namespace: process.env.NAMESPACE!,
+            });
+          }}
+        >
+          Restore
+        </Button>
       </Stack>
     );
-  if (!device) return <Text>No account found, please register first.</Text>;
+
+  if (!activeDevice)
+    return <Text>No account found, please register first.</Text>;
+
   return (
     <>
       <SelectField
@@ -60,7 +60,7 @@ export const AccountSelector = ({
         selectProps={{
           id: "account",
           ariaLabel: "Select your account",
-          onChange: onAccountChange,
+          onChange: handleAccountChange,
         }}
       >
         {accounts.map((account) => (
@@ -69,35 +69,37 @@ export const AccountSelector = ({
           </option>
         ))}
       </SelectField>
+
       <TrackerCard
         icon="ManageKda"
         labelValues={[
           {
             label: "Account",
-            value: account.account,
+            value: activeAccount.account,
             isAccount: true,
           },
           {
             label: "Display Name",
-            value: device.name,
+            value: activeDevice.name,
           },
           {
             label: "Balance",
-            value: account.balance,
+            value: activeAccount.balance,
           },
         ]}
         helperText="This is the account you will use to login."
       />
-      {account.devices.length > 1 && (
+
+      {activeAccount.devices.length > 1 && (
         <SelectField
           label="device"
           selectProps={{
             id: "device",
             ariaLabel: "Select which device you'd like to use",
-            onChange: onDeviceChange,
+            onChange: handleDeviceChange,
           }}
         >
-          {account.devices.map((device) => (
+          {activeAccount.devices.map((device) => (
             <option
               value={device["credential-id"]}
               key={device["credential-id"]}
@@ -107,7 +109,8 @@ export const AccountSelector = ({
           ))}
         </SelectField>
       )}
-      <Button onClick={onFundAccount}>Fund account</Button>
+
+      <Button onClick={handleFundAccount}>Fund account</Button>
     </>
   );
 };

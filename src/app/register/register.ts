@@ -11,7 +11,6 @@ import { asyncPipe } from "@/utils/asyncPipe";
 import { l1Client } from "@/utils/client";
 import {
   gasStation,
-  genesisAccount,
   genesisPrivateKey,
   genesisPubKey,
 } from "@/utils/constants";
@@ -21,7 +20,7 @@ export const getAccountName = async (publicKey: string) =>
   asyncPipe(
     composePactCommand(
       execution(`
-(let* ((guard (read-keyset 'ks))
+      (let* ((guard (read-keyset 'ks))
        (account (create-principal guard))
       )
   (${process.env.NAMESPACE}.webauthn-wallet.get-account-name account)
@@ -57,6 +56,7 @@ export const registerAccount = async ({
   credentialPubkey: string;
 }): Promise<string> => {
   const caccount = await getAccountName(credentialPubkey);
+
   return asyncPipe(
     registerAccountCommand({
       caccount,
@@ -77,6 +77,7 @@ const getWebAuthnPubkeyFormat = (pubkey: string) => {
   if (/^WEBAUTHN-/.test(pubkey)) return pubkey;
   return `WEBAUTHN-${pubkey}`;
 };
+
 const registerAccountCommand = ({
   caccount,
   displayName,
@@ -93,15 +94,15 @@ const registerAccountCommand = ({
   composePactCommand(
     execution(
       `
-(${process.env.NAMESPACE}.webauthn-wallet.create-wallet 
-  1 1
-  [{ 'name          : "${displayName}"
-   , 'credential-id : "${credentialId}"
-   , 'domain        : "${domain}"
-   , 'guard         : (read-keyset 'ks)
-   }
-  ]
-)
+        (${process.env.NAMESPACE}.webauthn-wallet.create-wallet 
+          1 1
+          [{ 
+              'name          : "${displayName}"
+            , 'credential-id : "${credentialId}"
+            , 'domain        : "${domain}"
+            , 'guard         : (read-keyset 'ks)
+          }]
+        )
       `.trim()
     ),
     addSigner(genesisPubKey, (withCap) => [
