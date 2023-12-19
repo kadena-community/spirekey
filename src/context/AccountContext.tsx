@@ -27,6 +27,7 @@ interface AccountContext {
   accounts: Account[];
   setActiveAccount: (caccount: string) => void;
   setActiveDevice: (cid: string) => void;
+  getAccountDetails: () => Promise<void>;
   handleRestoreAccount: ({
     caccount,
     networkId,
@@ -53,10 +54,11 @@ export function AccountsProvider({ client, children }: Props) {
   const [activeDevice, setActiveDevice] = useState<Device | null>(null);
 
   useEffect(() => {
-    getAccounts();
+    getAccountDetails();
   }, []);
 
-  const getAccounts = async () => {
+  const getAccountDetails = async () => {
+    console.log("getAccounts");
     const storedAccounts = JSON.parse(localStorage.getItem("accounts") ?? "[]");
     if (!storedAccounts.length) return;
 
@@ -79,7 +81,12 @@ export function AccountsProvider({ client, children }: Props) {
       .then((accounts) => {
         setAccounts(accounts);
 
-        if (!activeAccount) {
+        // if we have an active account, update it's data
+        if (activeAccount) {
+          const account = accounts.find(
+            (acc) => acc.account === activeAccount.account
+          );
+          setActiveAccount(account ?? accounts[0]);
           return;
         }
 
@@ -147,13 +154,14 @@ export function AccountsProvider({ client, children }: Props) {
       JSON.stringify(Array.from(new Set([...storedAccounts, caccount])))
     );
 
-    getAccounts();
+    getAccountDetails();
   };
 
   const value = {
     accounts,
     activeAccount,
     activeDevice,
+    getAccountDetails,
     setActiveAccount: setAccount,
     setActiveDevice: setDevice,
     handleRestoreAccount,

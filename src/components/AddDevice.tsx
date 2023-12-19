@@ -1,15 +1,14 @@
-import { Device } from "@/context/AccountContext";
+import { type Device } from "@/context/AccountContext";
 import { CredentialPair, usePubkeys } from "@/hooks/usePubkeys";
 import { Button, SelectField, Stack, TextField } from "@kadena/react-ui";
 import {
   base64URLStringToBuffer,
   bufferToBase64URLString,
   startRegistration,
-  startAuthentication,
 } from "@simplewebauthn/browser";
 import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 import cbor from "cbor";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 const getPublicKey = async (res: RegistrationResponseJSON) => {
   const { authData } = cbor.decode(
@@ -39,6 +38,7 @@ export const AddDevice = ({
     setDeviceName(e.target.value);
   const onCidChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
     setCPair(pubkeys.find((p) => p.cid === e.target.value));
+
   const register = async () => {
     if (cPair) {
       return onAddDevice({
@@ -51,6 +51,7 @@ export const AddDevice = ({
         },
       });
     }
+
     const res = await startRegistration({
       challenge: bufferToBase64URLString(Buffer.from("some-random-string")),
       rp: {
@@ -115,6 +116,7 @@ export const AddDevice = ({
           </option>
         ))}
       </SelectField>
+
       <Button onClick={register}>Add Device</Button>
     </Stack>
   );
