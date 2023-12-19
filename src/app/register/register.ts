@@ -11,7 +11,6 @@ import { asyncPipe } from "@/utils/asyncPipe";
 import { l1Client } from "@/utils/client";
 import {
   gasStation,
-  genesisAccount,
   genesisPrivateKey,
   genesisPubKey,
 } from "@/utils/constants";
@@ -58,7 +57,6 @@ export const registerAccount = async ({
 }): Promise<string> => {
   const caccount = await getAccountName(credentialPubkey);
 
-  console.log({ caccount, credentialPubkey });
   return asyncPipe(
     registerAccountCommand({
       caccount,

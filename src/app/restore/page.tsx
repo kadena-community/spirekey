@@ -1,7 +1,6 @@
 "use client";
 
 import { useAccounts } from "@/hooks/useAccounts";
-import { l1Client } from "@/utils/client";
 import {
   Button,
   Card,
@@ -29,7 +28,7 @@ export default function RestorePage() {
 
   const { handleRestoreAccount } = useAccounts();
 
-  const yolo = async () => {
+  const handleSubmit = async () => {
     const { caccount } = getValues();
     try {
       await handleRestoreAccount({
@@ -93,12 +92,13 @@ export default function RestorePage() {
             ariaLabel: "from network",
             ...register("fromNetworkId"),
           }}
-          helperText={"Select the network you want to restore from"}
+          helperText="Select the network you want to restore from"
         >
           <option value="mainnet01">mainnet01</option>
           <option value="testnet04">testnet04</option>
           <option value="fast-development">fast-development</option>
         </SelectField>
+
         <TextField
           label="account"
           inputProps={{ id: "namespace", ...register("namespace") }}
@@ -106,7 +106,8 @@ export default function RestorePage() {
             "Enter the namespace of the account you want to restore, this should look like n_hash"
           }
         />
-        <Button onClick={yolo}>Restore</Button>
+
+        <Button onClick={handleSubmit}>Restore</Button>
       </Card>
     </Stack>
   );
