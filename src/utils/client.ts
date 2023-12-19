@@ -5,5 +5,9 @@ export const l1Client = createClient(({ chainId, networkId }) => {
     return `https://api.chainweb.com/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
   if (networkId === "testnet04")
     return `https://api.testnet.chainweb.com/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
+  if (networkId === "l1")
+    return `http://localhost:8080/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
+  if (networkId === "l2")
+    return `http://localhost:8081/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
   return `${process.env.CHAINWEB_URL}/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
 });

@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   ContentHeader,
+  Divider,
   SelectField,
   Stack,
   TextField,
@@ -14,9 +15,9 @@ import { useForm } from "react-hook-form";
 
 const FORM_DEFAULT = {
   caccount: "",
-  network: "fast-development",
-  fromNetwork: "fast-development",
-  host: "",
+  networkId: "fast-development",
+  fromNetworkId: "fast-development",
+  namespace: process.env.NAMESPACE || "",
 };
 export type RestoreFormValues = typeof FORM_DEFAULT;
 
@@ -35,9 +36,9 @@ export default function RestorePage() {
   });
   const { onRestore } = useAccounts(l1Client);
   const onRestoreAccount = async () => {
-    const { caccount } = getValues();
+    const { caccount, namespace, networkId } = getValues();
     try {
-      await onRestore(caccount);
+      await onRestore({ caccount, networkId, namespace });
     } catch (error) {
       if (error instanceof Error)
         return setError("caccount", { message: error.message });
@@ -48,44 +49,26 @@ export default function RestorePage() {
     <Stack direction="column" gap="$md" margin="$md">
       <Card fullWidth>
         <ContentHeader
-          heading="WebAuthn Wallet"
+          heading="Target network"
           description="On which network do you want to restore your account?"
           icon="Account"
         />
         <SelectField
           label="Network"
           selectProps={{
-            id: "network",
+            id: "networkId",
             ariaLabel: "network",
-            ...register("network"),
+            ...register("networkId"),
           }}
         >
           <option value="mainnet01">mainnet01</option>
           <option value="testnet04">testnet04</option>
           <option value="fast-development">fast-development</option>
         </SelectField>
-      </Card>
-      <Card fullWidth>
+        <Divider />
         <ContentHeader
-          heading="From selected network"
-          description="Restore an account using c:account"
-          icon="Account"
-        />
-        <TextField
-          label="account"
-          inputProps={{ id: "caccount", ...register("caccount") }}
-          status={formState.errors.caccount ? "negative" : undefined}
-          helperText={
-            formState.errors.caccount?.message ||
-            "Enter the account name you want to restore, this should look like c:account"
-          }
-        />
-        <Button onClick={onRestoreAccount}>Restore</Button>
-      </Card>
-      <Card fullWidth>
-        <ContentHeader
-          heading="From another network"
-          description="Restore an account from another network"
+          heading="Source network"
+          description="From which network do you want to restore your account?"
           icon="Account"
         />
         <TextField
@@ -98,22 +81,26 @@ export default function RestorePage() {
           }
         />
         <SelectField
-          label="Network"
+          label="From Network"
           selectProps={{
-            id: "network",
-            ariaLabel: "network",
-            ...register("network"),
+            id: "fromNetworkId",
+            ariaLabel: "from network",
+            ...register("fromNetworkId"),
           }}
+          helperText={"Select the network you want to restore from"}
         >
           <option value="mainnet01">mainnet01</option>
           <option value="testnet04">testnet04</option>
           <option value="fast-development">fast-development</option>
         </SelectField>
         <TextField
-          label="host"
-          inputProps={{ id: "host", ...register("host") }}
-          helperText="Leave the host empty to use the default host"
+          label="account"
+          inputProps={{ id: "namespace", ...register("namespace") }}
+          helperText={
+            "Enter the namespace of the account you want to restore, this should look like n_hash"
+          }
         />
+        <Button onClick={onRestoreAccount}>Restore</Button>
       </Card>
     </Stack>
   );

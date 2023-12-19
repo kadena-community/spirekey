@@ -21,7 +21,7 @@ export const AccountSelector = ({
   accounts: Account[];
   account: Account | null;
   device: Device | null;
-  onRestore: (account: string) => void;
+  onRestore: (account: string) => Promise<void>;
   onAccountChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onDeviceChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onStoreAccount?: (e: React.ChangeEvent<HTMLInputElement>) => void;
