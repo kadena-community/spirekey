@@ -1,6 +1,9 @@
 "use client";
 
+import { Loader } from "@/components/CreateWalletLoader/Loader";
+import { useAccounts } from "@/hooks/useAccounts";
 import { registerAccount } from "@/utils/register";
+import { getNewWebauthnKey } from "@/utils/webauthnKey";
 import {
   Button,
   Card,
@@ -9,34 +12,9 @@ import {
   Text,
   TextField,
 } from "@kadena/react-ui";
-import {
-  base64URLStringToBuffer,
-  bufferToBase64URLString,
-  startRegistration,
-} from "@simplewebauthn/browser";
 import Link from "next/link";
-import cbor from "cbor";
-import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
-import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { Loader } from "@/components/CreateWalletLoader/Loader";
-import { useAccounts } from "@/hooks/useAccounts";
-
-const getPublicKey = async (res: RegistrationResponseJSON) => {
-  const { authData } = cbor.decode(
-    base64URLStringToBuffer(res.response.attestationObject)
-  );
-
-  const dataView = new DataView(new ArrayBuffer(2));
-  const idLenBytes = authData.slice(53, 55);
-  idLenBytes.forEach((value: number, index: number) =>
-    dataView.setUint8(index, value)
-  );
-  const credentialIdLength = dataView.getUint16(0);
-  const publicKeyBytes = authData.slice(55 + credentialIdLength);
-
-  return Buffer.from(publicKeyBytes).toString("hex");
-};
+import { useForm } from "react-hook-form";
 
 const FORM_DEFAULT = {
   displayName: "",
@@ -53,38 +31,12 @@ const Register = () => {
     const { displayName } = getValues();
     if (!displayName) throw new Error("Display name is required");
     setIsLoading(true);
-    const res = await startRegistration({
-      challenge: bufferToBase64URLString(Buffer.from("some-random-string")),
-      rp: {
-        name: "Kadena WebAuthN Wallet",
-        id: window.location.hostname,
-      },
-      pubKeyCredParams: [
-        {
-          alg: -7,
-          type: "public-key",
-        },
-      ],
-      authenticatorSelection: {
-        requireResidentKey: true,
-        userVerification: "preferred",
-      },
-      attestation: "direct",
-      user: {
-        id: displayName + Date.now(),
-        displayName: displayName,
-        name: displayName,
-      },
-      timeout: 60000,
-    });
-    if (!res.response.publicKey)
-      throw new Error("No public key returned from webauthn");
 
-    const pubKey = await getPublicKey(res);
+    const { credentialId, publicKey } = await getNewWebauthnKey(displayName);
 
     const caccount = await registerAccount({
-      credentialPubkey: pubKey,
-      credentialId: res.id,
+      credentialPubkey: publicKey,
+      credentialId: credentialId,
       displayName,
       domain: window.location.hostname,
     });
