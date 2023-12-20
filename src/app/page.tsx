@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader } from "@/components/CreateWalletLoader/Loader";
+import { useNetwork } from "@/context/NetworkContext";
 import { useAccounts } from "@/hooks/useAccounts";
 import { registerAccount } from "@/utils/register";
 import { getNewWebauthnKey } from "@/utils/webauthnKey";
@@ -121,8 +122,9 @@ const Restore = () => {
 
 export default function Home() {
   const { activeAccount } = useAccounts();
+  const { chainwebDataUrl } = useNetwork();
   const { data, error, isLoading } = useSWR(
-    `${process.env.CHAINWEB_DATA}/txs/account/${activeAccount?.account}`,
+    `${chainwebDataUrl}/txs/account/${activeAccount?.account}`,
     async (url: string) => {
       if (!activeAccount) return [];
       return await fetch(url).then((res) => res.json());
