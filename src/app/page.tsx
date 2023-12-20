@@ -122,8 +122,8 @@ const Restore = () => {
 export default function Home() {
   const { activeAccount } = useAccounts();
   const { data, error, isLoading } = useSWR(
-    `http://localhost:8080/txs/account/${activeAccount?.account}`,
-    async (url) => {
+    `${process.env.CHAINWEB_DATA}/txs/account/${activeAccount?.account}`,
+    async (url: string) => {
       if (!activeAccount) return [];
       return await fetch(url).then((res) => res.json());
     }
