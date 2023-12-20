@@ -17,9 +17,7 @@ const getChainwebDataUrl = (network: string) => {
   return "https://estats.testnet.chainweb.com";
 };
 const NetworkProvider = ({ children }: Props) => {
-  const [network, setNetwork] = useState(
-    process.env.NETWORK_ID || "fast-development"
-  );
+  const [network, setNetwork] = useState("testnet04");
   const [chainwebDataUrl, setChainwebDataUrl] = useState(
     getChainwebDataUrl("testnet04")
   );

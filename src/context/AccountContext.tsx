@@ -3,6 +3,7 @@ import { ReactNode, createContext, useEffect, useState } from "react";
 import { getAccount, getAccountFrom } from "@/utils/account";
 import { IClient } from "@kadena/client";
 import { startAuthentication } from "@simplewebauthn/browser";
+import { useNetwork } from "./NetworkContext";
 
 export type Device = {
   name: string;
@@ -53,16 +54,21 @@ export function AccountsProvider({ client, children }: Props) {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [activeAccount, setActiveAccount] = useState<Account | null>(null);
   const [activeDevice, setActiveDevice] = useState<Device | null>(null);
+  const { network } = useNetwork();
 
   useEffect(() => {
     getAccountDetails();
-  }, []);
+  }, [network]);
 
   const getAccountDetailsFor = async (accounts: string[]) => {
     const accs = await Promise.all(
       accounts.map(async (account: string) => ({
         name: account,
-        account: await getAccount(client)(account),
+        account: await getAccountFrom({
+          caccount: account,
+          networkId: network,
+          namespace: process.env.NAMESPACE ?? "",
+        }),
       }))
     );
     return accs
@@ -139,7 +145,11 @@ export function AccountsProvider({ client, children }: Props) {
   }): Promise<void> => {
     if (!caccount) throw new Error("Please enter an account name");
 
-    const account = await getAccountFrom({ caccount, networkId, namespace });
+    const account = await getAccountFrom({
+      caccount,
+      networkId: network,
+      namespace,
+    });
     if (!account) throw new Error("Account not found");
 
     const response = await startAuthentication({

@@ -12,8 +12,8 @@ export default function Providers({ children }: { children: ReactNode }) {
   const client = l1Client;
 
   return (
-    <AccountsProvider client={client}>
-      <NetworkProvider>
+    <NetworkProvider>
+      <AccountsProvider client={client}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -24,7 +24,7 @@ export default function Providers({ children }: { children: ReactNode }) {
         >
           {children}
         </ThemeProvider>
-      </NetworkProvider>
-    </AccountsProvider>
+      </AccountsProvider>
+    </NetworkProvider>
   );
 }
