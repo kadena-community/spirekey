@@ -8,13 +8,25 @@ import {
   Button,
   Card,
   ContentHeader,
+  MaskedValue,
   Stack,
+  Table,
   Text,
   TextField,
+  TrackerCard,
 } from "@kadena/react-ui";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import useSWR from "swr";
+
+type Transaction = {
+  fromAccount: string;
+  toAccount: string;
+  amount: string;
+  blockTime: string;
+  requestKey: string;
+};
 
 const FORM_DEFAULT = {
   displayName: "",
@@ -44,6 +56,7 @@ const Register = () => {
     setIsLoading(false);
     setResult(caccount);
   };
+
   if (result)
     return (
       <Card fullWidth>
@@ -107,6 +120,82 @@ const Restore = () => {
 };
 
 export default function Home() {
+  const { activeAccount } = useAccounts();
+  const { data, error, isLoading } = useSWR(
+    `${process.env.CHAINWEB_DATA}/txs/account/${activeAccount?.account}`,
+    async (url: string) => {
+      if (!activeAccount) return [];
+      return await fetch(url).then((res) => res.json());
+    }
+  );
+
+  if (activeAccount) {
+    return (
+      <Stack margin="$md">
+        <Card fullWidth>
+          <Stack direction="column" gap="$md">
+            <ContentHeader
+              heading="WebAuthn Wallet"
+              description="Manage your WebAuthn account"
+              icon="Account"
+            />
+            <TrackerCard
+              icon="ManageKda"
+              labelValues={[
+                {
+                  label: "Account",
+                  value: activeAccount.account,
+                  isAccount: true,
+                },
+                {
+                  label: "Balance",
+                  value: `${activeAccount.balance} KDA`,
+                },
+              ]}
+            />
+            <Table.Root striped>
+              <Table.Head>
+                <Table.Tr>
+                  <Table.Th>From</Table.Th>
+                  <Table.Th>To</Table.Th>
+                  <Table.Th>KDA</Table.Th>
+                  <Table.Th>Date</Table.Th>
+                </Table.Tr>
+              </Table.Head>
+              <Table.Body>
+                {data?.map((tx: Transaction) => (
+                  <Table.Tr key={tx.requestKey}>
+                    <Table.Td>
+                      <MaskedValue value={tx.fromAccount} />
+                    </Table.Td>
+                    <Table.Td>
+                      <MaskedValue value={tx.toAccount} />
+                    </Table.Td>
+                    <Table.Td>
+                      <span
+                        style={{
+                          color:
+                            tx.fromAccount === activeAccount.account
+                              ? "red"
+                              : "green",
+                        }}
+                      >
+                        {tx.amount}
+                      </span>
+                    </Table.Td>
+                    <Table.Td>
+                      {new Date(tx.blockTime).toLocaleDateString()}
+                    </Table.Td>
+                  </Table.Tr>
+                ))}
+              </Table.Body>
+            </Table.Root>
+          </Stack>
+        </Card>
+      </Stack>
+    );
+  }
+
   return (
     <Stack direction="column" gap="$md" margin="$md">
       <Register />
