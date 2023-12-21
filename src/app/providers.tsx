@@ -6,14 +6,11 @@ import { ReactNode } from 'react';
 
 import { AccountsProvider } from '@/context/AccountContext';
 import { NetworkProvider } from '@/context/NetworkContext';
-import { l1Client } from '@/utils/client';
 
 export default function Providers({ children }: { children: ReactNode }) {
-  const client = l1Client;
-
   return (
-    <NetworkProvider>
-      <AccountsProvider client={client}>
+    <NetworkProvider defaultNetwork={process.env.NETWORK_ID || 'testnet04'}>
+      <AccountsProvider>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

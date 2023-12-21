@@ -15,32 +15,41 @@ const NetworkContext = createContext({
 });
 
 type Props = {
+  defaultNetwork: string;
   children: ReactNode;
 };
+
 const getChainwebDataUrl = (network: string) => {
   if (network === 'mainnet01')
     throw new Error('mainnet01 is not supported yet');
   if (network === 'fast-development') return 'http://localhost:8080';
   return 'https://estats.testnet.chainweb.com';
 };
-const NetworkProvider = ({ children }: Props) => {
-  const [network, setNetwork] = useState('testnet04');
+
+const NetworkProvider = ({ defaultNetwork, children }: Props) => {
+  const storedNetwork =
+    typeof window !== 'undefined' && localStorage.getItem('network');
+  const [network, setNetwork] = useState(storedNetwork || defaultNetwork);
   const [chainwebDataUrl, setChainwebDataUrl] = useState(
-    getChainwebDataUrl('testnet04'),
+    getChainwebDataUrl(network),
   );
+
   useEffect(() => {
     setNetworkById(localStorage.getItem('network') || 'testnet04');
   }, []);
+
   const setNetworkById = (network: string) => {
     localStorage.setItem('network', network);
     setNetwork(network);
     setChainwebDataUrl(getChainwebDataUrl(network));
   };
+
   const value = {
     network,
     chainwebDataUrl,
     setNetwork: setNetworkById,
   };
+
   return (
     <NetworkContext.Provider value={value}>{children}</NetworkContext.Provider>
   );
