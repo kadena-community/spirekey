@@ -4,7 +4,7 @@ import { NetworkSelector } from "@/components/NetworkSelector";
 import { useNetwork } from "@/context/NetworkContext";
 import { useAccounts } from "@/hooks/useAccounts";
 import { useSign } from "@/hooks/useSign";
-import { useSubmit } from "@/hooks/useSubmit";
+import { SubmitStatus, useSubmit } from "@/hooks/useSubmit";
 import { transfer } from "@/utils/transfer";
 import {
   Button,
@@ -54,6 +54,9 @@ export default function Page({ searchParams }: Props) {
     sign(tx, activeDevice, "/transfer");
   };
   const { doSubmit, result, status } = useSubmit(searchParams);
+  useEffect(() => {
+    if (status === SubmitStatus.SUBMITABLE) doSubmit();
+  }, [status, doSubmit]);
   return (
     <Stack direction="column" gap="$md" margin="$md">
       <NetworkSelector />
