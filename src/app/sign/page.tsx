@@ -1,6 +1,16 @@
 'use client';
 
-import { ICap } from '@kadena/client';
+import { Device } from '@/context/AccountContext';
+import { usePubkeys } from '@/hooks/usePubkeys';
+import { useSign } from '@/hooks/useSign';
+import { getSig } from '@/utils/getSig';
+import {
+  addSignatures,
+  ICap,
+  IExecutionPayloadObject,
+  IPactCommand,
+  IUnsignedQuicksignTransaction,
+} from '@kadena/client';
 import {
   Box,
   Button,
@@ -10,6 +20,7 @@ import {
   Stack,
   SystemIcon,
   Text,
+  TextField,
   Tooltip,
 } from '@kadena/react-ui';
 import { startAuthentication } from '@simplewebauthn/browser';
@@ -21,6 +32,8 @@ type SignProps = {
     payload: string;
     returnUrl: string;
     cid: string;
+    signers: string;
+    originReturnUrl: string;
   };
 };
 
@@ -93,26 +106,59 @@ const getLabels = (signers: any[], language: string) =>
   );
 
 export default function Sign(req: SignProps) {
-  const { payload, returnUrl, cid } = req.searchParams;
+  const { payload, returnUrl, cid, signers, originReturnUrl } =
+    req.searchParams;
   const router = useRouter();
   const data = payload ? Buffer.from(payload, 'base64').toString() : null;
+  const singersData = signers
+    ? Buffer.from(signers, 'base64').toString()
+    : null;
   const tx = JSON.parse(data ?? '{}');
   const txData = JSON.parse(tx.cmd || '{}');
+  const { pubkeys } = usePubkeys();
+  const { getSignParams } = useSign(process.env.WALLET_URL!);
 
   const [language, setLanguage] = useState('en');
+  const [signUrl, setSignUrl] = useState<string | null>(null);
 
-  const sign = useCallback(async () => {
+  const onSign = async () => {
+    const pubKey = pubkeys.find((x) => x.cid === cid);
+    if (!pubKey) throw new Error('No public key found');
     const res = await startAuthentication({
       challenge: tx.hash,
       rpId: window.location.hostname,
       allowCredentials: cid ? [{ id: cid, type: 'public-key' }] : undefined,
     });
+    const signedTx = addSignatures(tx, {
+      ...getSig(res.response),
+      pubKey: pubKey.pubkey,
+    });
+    const unsignedSigIndex = signedTx.sigs.findIndex((x: null) => x === null);
+    if (unsignedSigIndex !== -1) {
+      console.log('Unsigned sig', signedTx.cmd);
+      const payload: IPactCommand = JSON.parse(signedTx.cmd);
+      const nextSigner: any = payload.signers[unsignedSigIndex];
+      console.log('Next signer', nextSigner);
+      const s = JSON.parse(singersData!);
+      console.log('Signers', s);
+      const params = getSignParams(signedTx, s[0].devices[0]);
+      console.log('Params', params);
+      return setSignUrl(
+        `${process.env.WALLET_URL}/sign?payload=${params.payload}&cid=${params.cid}&signers=${signers}&originReturnUrl=${returnUrl}`,
+      );
+    }
+    if (originReturnUrl)
+      return setSignUrl(
+        `${originReturnUrl}?payload=${Buffer.from(
+          JSON.stringify(signedTx),
+        ).toString('base64')}`,
+      );
     router.push(
       `${returnUrl}?payload=${payload}&response=${Buffer.from(
         JSON.stringify(res),
       ).toString('base64')}`,
     );
-  }, [data, router, startAuthentication]);
+  };
 
   return (
     <Stack direction="column" gap="$md" alignItems="center" margin="$xl">
@@ -182,7 +228,12 @@ export default function Sign(req: SignProps) {
         </Text>
       </Box>
 
-      <Button onClick={sign}>Sign</Button>
+      {!signUrl && <Button onClick={onSign}>Sign</Button>}
+      {signUrl && (
+        <TextField
+          inputProps={{ id: 'signUrl', value: signUrl, readOnly: true }}
+        />
+      )}
     </Stack>
   );
 }

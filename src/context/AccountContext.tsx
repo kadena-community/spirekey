@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useEffect, useState } from 'react';
 
+import { usePubkeys } from '@/hooks/usePubkeys';
 import { getAccount, getAccountFrom } from '@/utils/account';
 import { IClient } from '@kadena/client';
 import { startAuthentication } from '@simplewebauthn/browser';
@@ -53,6 +54,7 @@ export function AccountsProvider({ children }: Props) {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [activeAccount, setActiveAccount] = useState<Account | null>(null);
   const [activeDevice, setActiveDevice] = useState<Device | null>(null);
+  const { addPubkey } = usePubkeys();
   const { network } = useNetwork();
 
   useEffect(() => {
@@ -85,6 +87,17 @@ export function AccountsProvider({ children }: Props) {
 
     const accounts = await getAccountDetailsFor(storedAccounts);
     setAccounts(accounts);
+
+    if (accounts.length === 0) return;
+
+    for (const account of accounts) {
+      for (const device of account.devices) {
+        addPubkey({
+          cid: device['credential-id'],
+          pubkey: device.guard.keys[0],
+        });
+      }
+    }
 
     // if we have an active account, update it's data
     if (activeAccount) {

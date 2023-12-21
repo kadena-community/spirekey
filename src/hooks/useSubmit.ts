@@ -15,40 +15,28 @@ export enum SubmitStatus {
   SUBMITABLE = 'submitable',
 }
 
-export const useSubmit = ({ payload, response }: Props) => {
+export const useSubmit = ({ payload }: Props) => {
   const [result, setResult] = useState<any>({});
   const [status, setStatus] = useState(SubmitStatus.IDLE);
   const [tx, setTx] = useState<any>(null);
   const [preview, setPreview] = useState<any>(null);
 
   useEffect(() => {
-    if (!payload || !response) return;
-    const p = JSON.parse(Buffer.from(payload, 'base64').toString());
-    const r = JSON.parse(Buffer.from(response, 'base64').toString());
-    const tx = {
-      ...p,
-      // @TODO: this needs to map the signature to the correct index within the signatures array
-      sigs: [getSig(r.response), ...p.sigs].filter(Boolean),
-    };
+    if (!payload) return;
+    const tx = JSON.parse(Buffer.from(payload, 'base64').toString());
     setTx(tx);
     l1Client.local(tx).then((res) => {
       setPreview(res);
       setStatus(SubmitStatus.SUBMITABLE);
     });
-  }, [payload, response]);
+  }, [payload]);
 
   const doSubmit = async () => {
-    if (!payload || !response) return;
+    if (!payload) return;
 
     setStatus(SubmitStatus.LOADING);
 
-    const p = JSON.parse(Buffer.from(payload, 'base64').toString());
-    const r = JSON.parse(Buffer.from(response, 'base64').toString());
-    const tx = {
-      ...p,
-      // @TODO: this needs to map the signature to the correct index within the signatures array
-      sigs: [getSig(r.response), ...p.sigs].filter(Boolean),
-    };
+    const tx = JSON.parse(Buffer.from(payload, 'base64').toString());
     try {
       const txRes = await l1Client.submit(tx);
       const result = await l1Client.listen(txRes);
