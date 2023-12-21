@@ -54,10 +54,6 @@ export default function Page({ searchParams }: Props) {
     sign(tx, activeDevice, "/transfer");
   };
   const { doSubmit, result, status } = useSubmit(searchParams);
-  useEffect(() => {
-    if (!searchParams) return;
-    doSubmit();
-  }, [searchParams]);
   return (
     <Stack direction="column" gap="$md" margin="$md">
       <NetworkSelector />

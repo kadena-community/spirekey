@@ -1,6 +1,6 @@
 import { l1Client } from "@/utils/client";
 import { getSig } from "@/utils/getSig";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   payload: string;
@@ -17,6 +17,23 @@ export enum SubmitStatus {
 export const useSubmit = ({ payload, response }: Props) => {
   const [result, setResult] = useState<any>({});
   const [status, setStatus] = useState(SubmitStatus.IDLE);
+  const [tx, setTx] = useState<any>(null);
+  const [preview, setPreview] = useState<any>(null);
+
+  useEffect(() => {
+    if (!payload || !response) return;
+    const p = JSON.parse(Buffer.from(payload, "base64").toString());
+    const r = JSON.parse(Buffer.from(response, "base64").toString());
+    const tx = {
+      ...p,
+      // @TODO: this needs to map the signature to the correct index within the signatures array
+      sigs: [getSig(r.response), ...p.sigs].filter(Boolean),
+    };
+    setTx(tx);
+    l1Client.local(tx).then((res) => {
+      setPreview(res);
+    });
+  }, [payload, response]);
 
   const doSubmit = () => {
     if (!payload || !response) return;
@@ -55,6 +72,8 @@ export const useSubmit = ({ payload, response }: Props) => {
 
   return {
     doSubmit,
+    tx,
+    preview,
     result,
     status,
     SubmitStatus,
