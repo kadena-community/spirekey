@@ -1,10 +1,9 @@
-import { NavBar } from '@/components/NavBar';
 import type { Metadata } from 'next';
 import Providers from './providers';
 
 export const metadata: Metadata = {
   title: 'WebAuthn Wallet',
-  description: 'Conveniently secure your internet',
+  description: 'Conviniently secure your internet',
 };
 
 export default function RootLayout({
@@ -15,14 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <Providers>
-          <>
-            <nav>
-              <NavBar />
-            </nav>
-            {children}
-          </>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

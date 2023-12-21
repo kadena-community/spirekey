@@ -7,6 +7,7 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
+import { getAccount, getAccountFrom } from './account';
 
 export const transfer = async ({
   amount,
@@ -15,6 +16,7 @@ export const transfer = async ({
   receiver,
   sender,
   networkId,
+  gasPayer,
 }: {
   publicKey: string;
   sender: string;
@@ -22,8 +24,16 @@ export const transfer = async ({
   amount: number;
   namespace: string;
   networkId: string;
-}): Promise<string> =>
-  asyncPipe(
+  gasPayer: string;
+}): Promise<string> => {
+  // TODO: make a decicion which command to get (safe/unsafe transfer)
+  const receiverAcc = await getAccountFrom({
+    caccount: receiver,
+    namespace,
+    networkId,
+  });
+
+  return asyncPipe(
     composePactCommand(
       execution(
         `(${namespace}.webauthn-wallet.transfer "${sender}" "${receiver}" ${amount.toPrecision(
@@ -35,7 +45,7 @@ export const transfer = async ({
         gasLimit: 2000,
         gasPrice: 0.0000001,
         ttl: 60000,
-        senderAccount: sender,
+        senderAccount: gasPayer,
       }),
       setNetworkId(networkId),
       addSigner(
@@ -51,9 +61,18 @@ export const transfer = async ({
             receiver,
             amount,
           ),
+        ],
+      ),
+      addSigner(
+        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
+        {
+          pubKey: receiverAcc.devices[0].guard.keys[0],
+          scheme: 'WebAuthn',
+        },
+        (signFor) => [
           signFor(
             `${namespace}.webauthn-wallet.GAS_PAYER`,
-            sender,
+            receiver,
             { int: 1 },
             1,
           ),
@@ -62,3 +81,4 @@ export const transfer = async ({
     ),
     createTransaction,
   )({});
+};

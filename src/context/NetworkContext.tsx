@@ -1,45 +1,46 @@
 'use client';
 
-import { ReactNode, createContext, useContext, useState } from 'react';
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 const NetworkContext = createContext({
-  network: '',
-  chainwebDataUrl: '',
+  network: process.env.NETWORK_ID || 'fast-development',
+  chainwebDataUrl: process.env.CHAINWEB_DATA_URL || '',
   setNetwork: (network: string) => {},
 });
 
 type Props = {
-  defaultNetwork: string;
   children: ReactNode;
 };
-
 const getChainwebDataUrl = (network: string) => {
   if (network === 'mainnet01')
     throw new Error('mainnet01 is not supported yet');
   if (network === 'fast-development') return 'http://localhost:8080';
   return 'https://estats.testnet.chainweb.com';
 };
-
-const NetworkProvider = ({ defaultNetwork, children }: Props) => {
-  const [network, setNetwork] = useState(
-    localStorage.getItem('network') || defaultNetwork,
-  );
+const NetworkProvider = ({ children }: Props) => {
+  const [network, setNetwork] = useState('testnet04');
   const [chainwebDataUrl, setChainwebDataUrl] = useState(
-    getChainwebDataUrl(network),
+    getChainwebDataUrl('testnet04'),
   );
-
+  useEffect(() => {
+    setNetworkById(localStorage.getItem('network') || 'testnet04');
+  }, []);
   const setNetworkById = (network: string) => {
     localStorage.setItem('network', network);
     setNetwork(network);
     setChainwebDataUrl(getChainwebDataUrl(network));
   };
-
   const value = {
     network,
     chainwebDataUrl,
     setNetwork: setNetworkById,
   };
-
   return (
     <NetworkContext.Provider value={value}>{children}</NetworkContext.Provider>
   );

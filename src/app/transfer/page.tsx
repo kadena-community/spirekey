@@ -5,6 +5,7 @@ import { useNetwork } from '@/context/NetworkContext';
 import { useAccounts } from '@/hooks/useAccounts';
 import { useSign } from '@/hooks/useSign';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
+import { getAccountFrom } from '@/utils/account';
 import { transfer } from '@/utils/transfer';
 import {
   Button,
@@ -27,7 +28,6 @@ const FORM_DEFAULTS = {
 type Props = {
   searchParams: {
     payload: string;
-    response: string;
   };
 };
 export default function Page({ searchParams }: Props) {
@@ -44,6 +44,11 @@ export default function Page({ searchParams }: Props) {
     if (!activeAccount) throw new Error('No active account');
     if (!activeDevice) throw new Error('No active device');
     if (!amount || !receiver) throw new Error('Invalid form');
+    const receiverAcc = await getAccountFrom({
+      caccount: receiver,
+      namespace: process.env.NAMESPACE!,
+      networkId: network,
+    });
     const tx = await transfer({
       amount: parseFloat(amount),
       sender: activeAccount.account,
@@ -51,8 +56,9 @@ export default function Page({ searchParams }: Props) {
       namespace: process.env.NAMESPACE!,
       networkId: network,
       publicKey: activeDevice.guard.keys[0],
+      gasPayer: receiver,
     });
-    sign(tx, activeDevice, '/transfer');
+    sign(tx, activeDevice, '/transfer', [receiverAcc]);
   };
   const { doSubmit, status } = useSubmit(searchParams);
   useEffect(() => {
@@ -78,35 +84,37 @@ export default function Page({ searchParams }: Props) {
               Transfer successful
             </Notification>
           )}
-          <Grid
-            columns={{
-              xs: 3,
-            }}
-            gap="$xs"
-          >
-            <GridItem columnSpan={2}>
-              <TextField
-                label="to"
-                inputProps={{
-                  id: 'receiver',
-                  type: 'text',
-                  ...register('receiver'),
-                }}
-              />
-            </GridItem>
-            <GridItem>
-              <TextField
-                label="amount"
-                inputProps={{
-                  id: 'amount',
-                  type: 'number',
-                  step: '0.001',
-                  min: '0',
-                  ...register('amount'),
-                }}
-              />
-            </GridItem>
-          </Grid>
+          <form>
+            <Grid
+              columns={{
+                xs: 3,
+              }}
+              gap="$xs"
+            >
+              <GridItem columnSpan={2}>
+                <TextField
+                  label="to"
+                  inputProps={{
+                    id: 'receiver',
+                    type: 'text',
+                    ...register('receiver'),
+                  }}
+                />
+              </GridItem>
+              <GridItem>
+                <TextField
+                  label="amount"
+                  inputProps={{
+                    id: 'amount',
+                    type: 'number',
+                    step: '0.001',
+                    min: '0',
+                    ...register('amount'),
+                  }}
+                />
+              </GridItem>
+            </Grid>
+          </form>
           <Button onClick={onSign}>Send</Button>
         </Stack>
       </Card>
