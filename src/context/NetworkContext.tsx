@@ -17,11 +17,13 @@ const getChainwebDataUrl = (network: string) => {
   return "https://estats.testnet.chainweb.com";
 };
 const NetworkProvider = ({ children }: Props) => {
-  const [network, setNetwork] = useState("testnet04");
+  const networkId = localStorage.getItem("network") || "testnet04";
+  const [network, setNetwork] = useState(networkId);
   const [chainwebDataUrl, setChainwebDataUrl] = useState(
-    getChainwebDataUrl("testnet04")
+    getChainwebDataUrl(networkId)
   );
   const setNetworkById = (network: string) => {
+    localStorage.setItem("network", network);
     setNetwork(network);
     setChainwebDataUrl(getChainwebDataUrl(network));
   };

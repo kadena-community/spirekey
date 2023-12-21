@@ -2,16 +2,14 @@ import { useNetwork } from "@/context/NetworkContext";
 import { SelectField } from "@kadena/react-ui";
 import { useForm } from "react-hook-form";
 
-const FORM_DEFAULT = {
-  network: "testnet04",
-};
-
 export const NetworkSelector = () => {
+  const { network, setNetwork } = useNetwork();
   const { getValues, register } = useForm({
-    defaultValues: FORM_DEFAULT,
+    defaultValues: {
+      network,
+    },
     reValidateMode: "onBlur",
   });
-  const { setNetwork } = useNetwork();
   const onNetworkChange = () => setNetwork(getValues("network"));
   return (
     <SelectField
