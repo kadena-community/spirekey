@@ -11,8 +11,7 @@ const nextConfig = {
     NAMESPACE: process.env.NAMESPACE,
     NETWORK_ID: process.env.NETWORK_ID,
     CHAINWEB_DATA: process.env.CHAINWEB_DATA,
-    GAS_STATION:
-      "u:n_999ab0660c701e0c19ce8a529f2ed22c15127d41.gas-station.enforce-guard-any:tY8VyiHmldvMOw4vxddWPZ0pQjBJyH-PrXxfku38VTo",
+    GAS_STATION: process.env.GAS_STATION,
   },
 };
 

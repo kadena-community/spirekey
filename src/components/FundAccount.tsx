@@ -6,7 +6,7 @@ import { useState } from "react";
 export const FundAccount = () => {
   const { activeAccount, getAccountDetails } = useAccounts();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>("AAA");
+  const [error, setError] = useState<string>("");
 
   const handleFundAccount = async () => {
     try {
