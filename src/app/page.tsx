@@ -168,8 +168,8 @@ export default function Home() {
                 </Table.Tr>
               </Table.Head>
               <Table.Body>
-                {data?.map((tx: Transaction) => (
-                  <Table.Tr key={tx.requestKey}>
+                {data?.map((tx: Transaction, index: number) => (
+                  <Table.Tr key={tx.requestKey + index}>
                     <Table.Td>
                       <MaskedValue value={tx.fromAccount} />
                     </Table.Td>
