@@ -1,3 +1,4 @@
+import type { Account } from '@/context/AccountContext';
 import { createTransaction, IClient } from '@kadena/client';
 import {
   composePactCommand,
@@ -43,7 +44,7 @@ export const getAccountFrom = async ({
   caccount: string;
   networkId: string;
   namespace?: string;
-}) =>
+}): Promise<Account> =>
   asyncPipe(
     composePactCommand(
       execution(
