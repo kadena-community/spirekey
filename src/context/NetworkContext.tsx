@@ -1,4 +1,6 @@
-import { ReactNode, useContext, useState } from "react";
+"use client";
+
+import { ReactNode, useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 
 const NetworkContext = createContext({
@@ -21,7 +23,11 @@ const NetworkProvider = ({ children }: Props) => {
   const [chainwebDataUrl, setChainwebDataUrl] = useState(
     getChainwebDataUrl("testnet04")
   );
+  useEffect(() => {
+    setNetworkById(localStorage.getItem("network") || "testnet04");
+  }, []);
   const setNetworkById = (network: string) => {
+    localStorage.setItem("network", network);
     setNetwork(network);
     setChainwebDataUrl(getChainwebDataUrl(network));
   };

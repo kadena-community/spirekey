@@ -4,7 +4,7 @@ import { NetworkSelector } from "@/components/NetworkSelector";
 import { useNetwork } from "@/context/NetworkContext";
 import { useAccounts } from "@/hooks/useAccounts";
 import { useSign } from "@/hooks/useSign";
-import { useSubmit } from "@/hooks/useSubmit";
+import { SubmitStatus, useSubmit } from "@/hooks/useSubmit";
 import { transfer } from "@/utils/transfer";
 import {
   Button,
@@ -12,6 +12,7 @@ import {
   ContentHeader,
   Grid,
   GridItem,
+  Notification,
   Stack,
   TextField,
 } from "@kadena/react-ui";
@@ -53,11 +54,10 @@ export default function Page({ searchParams }: Props) {
     });
     sign(tx, activeDevice, "/transfer");
   };
-  const { doSubmit, result, status } = useSubmit(searchParams);
+  const { doSubmit, status } = useSubmit(searchParams);
   useEffect(() => {
-    if (!searchParams) return;
-    doSubmit();
-  }, [searchParams]);
+    if (status === SubmitStatus.SUBMITABLE) doSubmit();
+  }, [status, doSubmit]);
   return (
     <Stack direction="column" gap="$md" margin="$md">
       <NetworkSelector />
@@ -68,6 +68,16 @@ export default function Page({ searchParams }: Props) {
             description="Send KDA to another account"
             icon="BadgeAccount"
           />
+          {status === SubmitStatus.LOADING && (
+            <Notification role="status" color="info" hasCloseButton>
+              Transfer in progress
+            </Notification>
+          )}
+          {status === SubmitStatus.SUCCESS && (
+            <Notification role="status" color="positive" hasCloseButton>
+              Transfer successful
+            </Notification>
+          )}
           <Grid
             columns={{
               xs: 3,

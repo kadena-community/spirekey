@@ -1,18 +1,20 @@
 import { useNetwork } from "@/context/NetworkContext";
 import { SelectField } from "@kadena/react-ui";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-const FORM_DEFAULT = {
-  network: "testnet04",
-};
-
 export const NetworkSelector = () => {
-  const { getValues, register } = useForm({
-    defaultValues: FORM_DEFAULT,
+  const { network, setNetwork } = useNetwork();
+  const { getValues, setValue, register } = useForm({
+    defaultValues: {
+      network,
+    },
     reValidateMode: "onBlur",
   });
-  const { setNetwork } = useNetwork();
   const onNetworkChange = () => setNetwork(getValues("network"));
+  useEffect(() => {
+    setValue("network", network);
+  }, [network]);
   return (
     <SelectField
       label="Network"
@@ -21,6 +23,7 @@ export const NetworkSelector = () => {
         ariaLabel: "Network",
         ...register("network", {
           onChange: onNetworkChange,
+          value: network,
         }),
       }}
     >
