@@ -38,10 +38,10 @@ export const getAccount = (client: IClient) => async (caccount: string) =>
 export const getAccountFrom = async ({
   caccount,
   networkId,
-  namespace = process.env.NAMESPACE,
+  namespace,
 }: {
   caccount: string;
-  namespace?: string;
+  namespace: string;
   networkId: string;
 }) =>
   asyncPipe(
