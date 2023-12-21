@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 
 type Props = {
   payload: string;
-  response: string;
 };
 
 export enum SubmitStatus {
