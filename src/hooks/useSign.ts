@@ -1,4 +1,4 @@
-import type { Device } from '@/context/AccountContext';
+import type { Account, Device } from '@/context/AccountContext';
 import { useRouter } from 'next/navigation';
 import { useReturnUrl } from './useReturnUrl';
 
@@ -17,7 +17,7 @@ export const useSign = (walletUrl: string) => {
       tx: unknown,
       device: Device,
       returnPath: string,
-      signers?: Device[],
+      signers?: Account[],
     ) => {
       router.push(
         `${walletUrl}/sign?payload=${toBase64(tx)}&cid=${
