@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 1337",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "generate": "npx pactjs contract-generate --file=\"./pact/webauthn.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
     "deploy": "tsx pact/deploy/deploy-contracts.mts",
-    "update": "tsx pact/deploy/update-contracts.mts",
-    "postinstall": "npx pactjs contract-generate --file=\"./pact/root/fungible-v2.pact\" --file=\"./pact/root/gas-payer-v1.pact\" --file=\"./pact/root/fungible-xchain-v1.pact\" --file=\"./pact/root/coin.pact\" --file=\"./pact/webauthn-guard.pact\" --file=\"./pact/webauthn-wallet.pact\" --file=\"./pact/l2-coin.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9"
+    "dev": "next dev --port 1337",
+    "generate": "npx pactjs contract-generate --file=\"./pact/webauthn.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
+    "postinstall": "npx pactjs contract-generate --file=\"./pact/root/fungible-v2.pact\" --file=\"./pact/root/gas-payer-v1.pact\" --file=\"./pact/root/fungible-xchain-v1.pact\" --file=\"./pact/root/coin.pact\" --file=\"./pact/webauthn-guard.pact\" --file=\"./pact/webauthn-wallet.pact\" --file=\"./pact/l2-coin.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
+    "lint": "next lint",
+    "start": "next start",
+    "update": "tsx pact/deploy/update-contracts.mts"
   },
   "dependencies": {
     "@kadena/client": "^1.6.4",
@@ -36,6 +36,9 @@
     "@types/node": "^20.10.3",
     "@types/react": "^18.2.41",
     "@types/react-dom": "^18.2.17",
+    "prettier": "^3.1.1",
+    "prettier-plugin-organize-imports": "^3.2.4",
+    "prettier-plugin-packagejson": "^2.4.7",
     "tsx": "^4.6.2",
     "typescript": "^5.3.2"
   }

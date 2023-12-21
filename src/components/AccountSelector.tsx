@@ -1,4 +1,4 @@
-import { useAccounts } from "@/hooks/useAccounts";
+import { useAccounts } from '@/hooks/useAccounts';
 import {
   Button,
   SelectField,
@@ -6,8 +6,8 @@ import {
   Text,
   TextField,
   TrackerCard,
-} from "@kadena/react-ui";
-import { FundAccount } from "./FundAccount";
+} from '@kadena/react-ui';
+import { FundAccount } from './FundAccount';
 
 export const AccountSelector = () => {
   const {
@@ -31,13 +31,13 @@ export const AccountSelector = () => {
         <TextField
           label="Restore existing account"
           inputProps={{
-            id: "account",
+            id: 'account',
           }}
           helperText="Enter the account name you want to restore"
         />
         <Button
           onClick={(e: any) => {
-            console.log("e.target.value", e.target.value);
+            console.log('e.target.value', e.target.value);
             return handleRestoreAccount({
               caccount: e.target.value,
               networkId: process.env.NETWORK_ID!,
@@ -58,8 +58,8 @@ export const AccountSelector = () => {
       <SelectField
         label="account"
         selectProps={{
-          id: "account",
-          ariaLabel: "Select your account",
+          id: 'account',
+          ariaLabel: 'Select your account',
           onChange: onAccountChange,
         }}
       >
@@ -74,16 +74,16 @@ export const AccountSelector = () => {
         icon="ManageKda"
         labelValues={[
           {
-            label: "Account",
+            label: 'Account',
             value: activeAccount.account,
             isAccount: true,
           },
           {
-            label: "Display Name",
+            label: 'Display Name',
             value: activeDevice.name,
           },
           {
-            label: "Balance",
+            label: 'Balance',
             value: activeAccount.balance,
           },
         ]}
@@ -94,17 +94,17 @@ export const AccountSelector = () => {
         <SelectField
           label="device"
           selectProps={{
-            id: "device",
+            id: 'device',
             ariaLabel: "Select which device you'd like to use",
             onChange: onDeviceChange,
           }}
         >
           {activeAccount.devices.map((device) => (
             <option
-              value={device["credential-id"]}
-              key={device["credential-id"]}
+              value={device['credential-id']}
+              key={device['credential-id']}
             >
-              {device["credential-id"]}
+              {device['credential-id']}
             </option>
           ))}
         </SelectField>

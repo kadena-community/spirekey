@@ -27,7 +27,7 @@
   background-color: rgba(204, 204, 204, 0.2);
   border-radius: 50%;
   bottom: 0;
-  content: "";
+  content: '';
   height: 350px;
   width: 350px;
 }
@@ -46,7 +46,7 @@
   position: absolute;
   background-color: #b06c49;
   border-radius: 50%;
-  content: "";
+  content: '';
   height: 80px;
   left: -10px;
   top: -40px;
@@ -74,7 +74,7 @@
   width: 250px;
 }
 .blacksmith .shape:after {
-  content: "";
+  content: '';
   left: 50%;
   position: absolute;
   top: 50%;
@@ -98,7 +98,7 @@
   border: 5px solid #a0a0a0;
   box-sizing: border-box;
   border-radius: 50%;
-  content: "";
+  content: '';
   height: 30px;
   left: -5px;
   top: 75px;
@@ -123,7 +123,7 @@
 }
 .blacksmith .head:after,
 .blacksmith .head:before {
-  content: "";
+  content: '';
   left: 50%;
   position: absolute;
   transform: translateX(-50%);
@@ -159,7 +159,7 @@
   border: 5px solid #a0a0a0;
   border-radius: 50%;
   box-sizing: border-box;
-  content: "";
+  content: '';
   height: 100%;
   width: 100%;
 }
@@ -196,7 +196,7 @@
   position: absolute;
   background-color: #b06c49;
   border-radius: 50%;
-  content: "";
+  content: '';
   height: 80px;
   left: -10px;
   width: 80px;
@@ -213,7 +213,7 @@
   z-index: 1;
 }
 .blacksmith .arm-right .hammer:after {
-  content: "";
+  content: '';
   position: absolute;
   background-color: #666666;
   border-radius: 10px;
@@ -223,7 +223,7 @@
   width: 60px;
 }
 .blacksmith .arm-right .hammer:before {
-  content: "";
+  content: '';
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -250,7 +250,7 @@
   left: 50%;
   position: absolute;
   transform: translateX(-50%);
-  content: "";
+  content: '';
   border-color: transparent transparent #444 transparent;
   border-style: solid;
   border-width: 0 50px 60px 50px;
@@ -264,7 +264,7 @@
   position: absolute;
   transform: translateX(-50%);
   background-color: #666666;
-  content: "";
+  content: '';
   border-radius: 10px;
   height: 10px;
   width: 140px;
@@ -284,7 +284,7 @@
   transform: translateY(-50%);
   background-color: rgba(19, 36, 44, 0.15);
   border-radius: 5px;
-  content: "";
+  content: '';
   height: 5px;
   left: 20px;
   width: 170px;
@@ -302,7 +302,7 @@
   position: absolute;
   background-color: rgba(204, 204, 204, 0.9);
   border-radius: 10px 0 0 10px;
-  content: "";
+  content: '';
   height: 15px;
   left: 80px;
   top: 8px;
@@ -313,7 +313,7 @@
   border-color: transparent transparent transparent #cccccc;
   border-style: solid;
   border-width: 7.5px 0 7.5px 15px;
-  content: "";
+  content: '';
   height: 0;
   left: 200px;
   opacity: 0.9;
@@ -338,7 +338,7 @@
   width: 30px;
 }
 .fire-box .fire:after {
-  content: "";
+  content: '';
   left: 50%;
   position: absolute;
   transform: translateX(-50%);

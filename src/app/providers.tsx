@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import { ThemeProvider } from "next-themes";
-import { darkThemeClass } from "@kadena/react-ui/theme";
+import { darkThemeClass } from '@kadena/react-ui/theme';
+import { ThemeProvider } from 'next-themes';
+import { ReactNode } from 'react';
 
-import { AccountsProvider } from "@/context/AccountContext";
-import { NetworkProvider } from "@/context/NetworkContext";
-import { l1Client } from "@/utils/client";
+import { AccountsProvider } from '@/context/AccountContext';
+import { NetworkProvider } from '@/context/NetworkContext';
+import { l1Client } from '@/utils/client';
 
 export default function Providers({ children }: { children: ReactNode }) {
   const client = l1Client;
@@ -18,7 +18,7 @@ export default function Providers({ children }: { children: ReactNode }) {
           attribute="class"
           defaultTheme="dark"
           value={{
-            light: "light",
+            light: 'light',
             dark: darkThemeClass,
           }}
         >

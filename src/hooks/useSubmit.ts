@@ -1,6 +1,6 @@
-import { l1Client } from "@/utils/client";
-import { getSig } from "@/utils/getSig";
-import { useEffect, useState } from "react";
+import { l1Client } from '@/utils/client';
+import { getSig } from '@/utils/getSig';
+import { useEffect, useState } from 'react';
 
 type Props = {
   payload: string;
@@ -8,11 +8,11 @@ type Props = {
 };
 
 export enum SubmitStatus {
-  IDLE = "idle",
-  SUCCESS = "success",
-  ERROR = "error",
-  LOADING = "loading",
-  SUBMITABLE = "submitable",
+  IDLE = 'idle',
+  SUCCESS = 'success',
+  ERROR = 'error',
+  LOADING = 'loading',
+  SUBMITABLE = 'submitable',
 }
 
 export const useSubmit = ({ payload, response }: Props) => {
@@ -23,8 +23,8 @@ export const useSubmit = ({ payload, response }: Props) => {
 
   useEffect(() => {
     if (!payload || !response) return;
-    const p = JSON.parse(Buffer.from(payload, "base64").toString());
-    const r = JSON.parse(Buffer.from(response, "base64").toString());
+    const p = JSON.parse(Buffer.from(payload, 'base64').toString());
+    const r = JSON.parse(Buffer.from(response, 'base64').toString());
     const tx = {
       ...p,
       // @TODO: this needs to map the signature to the correct index within the signatures array
@@ -42,8 +42,8 @@ export const useSubmit = ({ payload, response }: Props) => {
 
     setStatus(SubmitStatus.LOADING);
 
-    const p = JSON.parse(Buffer.from(payload, "base64").toString());
-    const r = JSON.parse(Buffer.from(response, "base64").toString());
+    const p = JSON.parse(Buffer.from(payload, 'base64').toString());
+    const r = JSON.parse(Buffer.from(response, 'base64').toString());
     const tx = {
       ...p,
       // @TODO: this needs to map the signature to the correct index within the signatures array
@@ -59,7 +59,7 @@ export const useSubmit = ({ payload, response }: Props) => {
       console.log(err);
       setStatus(SubmitStatus.ERROR);
       setResult({
-        status: "Could not submit transaction",
+        status: 'Could not submit transaction',
         data: err.toString(),
       });
     }

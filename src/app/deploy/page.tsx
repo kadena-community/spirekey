@@ -1,14 +1,17 @@
-"use client";
+'use client';
 
-import { getSig } from "@/utils/getSig";
-import { createTransaction } from "@kadena/client";
+import { asyncPipe } from '@/utils/asyncPipe';
+import { l1Client } from '@/utils/client';
+import { getSig } from '@/utils/getSig';
+import { signWithKeyPair } from '@/utils/signSubmitListen';
+import { createTransaction } from '@kadena/client';
 import {
   addSigner,
   composePactCommand,
   execution,
   setMeta,
   setNetworkId,
-} from "@kadena/client/fp";
+} from '@kadena/client/fp';
 import {
   Button,
   FormFieldWrapper,
@@ -19,15 +22,12 @@ import {
   Stack,
   Text,
   TrackerCard,
-} from "@kadena/react-ui";
-import { startAuthentication } from "@simplewebauthn/browser";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { readFile } from "../pact/pact.utils";
-import { asyncPipe } from "@/utils/asyncPipe";
-import { l1Client } from "@/utils/client";
-import { signWithKeyPair } from "@/utils/signSubmitListen";
+} from '@kadena/react-ui';
+import { startAuthentication } from '@simplewebauthn/browser';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { readFile } from '../pact/pact.utils';
 
 type Profile = {
   host: string;
@@ -73,27 +73,27 @@ export default function DeployPage() {
   const { setTheme } = useTheme();
   const { register, setValue } = useForm({
     defaultValues: {
-      orchestrationFile: "",
+      orchestrationFile: '',
       orchestrationData: null as OrchestrationData | null,
-      pactFiles: "",
+      pactFiles: '',
       pactContracts: {} as PactContracts,
     },
-    reValidateMode: "onBlur",
+    reValidateMode: 'onBlur',
   });
   const onChangeFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       if (!event.target.files) return;
       const content = await readFile(event.target.files?.item(0));
       const data = JSON.parse(content);
-      setValue("orchestrationData", data);
+      setValue('orchestrationData', data);
       if (data.contracts) setContracts(data.contracts);
       setOrchestrationData(data);
     } catch (error) {
-      console.error("could not parse file", error);
+      console.error('could not parse file', error);
     }
   };
   const onChangePactFiles = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     try {
       if (!event.target.files) return;
@@ -102,19 +102,19 @@ export default function DeployPage() {
           ...(await allFiles),
           [file.name]: await readFile(file),
         }),
-        {} as any
+        {} as any,
       );
       const newContracts = { ...contracts, ...files };
-      setValue("pactContracts", newContracts);
+      setValue('pactContracts', newContracts);
       setContracts(newContracts);
     } catch (error) {
-      console.error("could add pact file", error);
+      console.error('could add pact file', error);
     }
   };
   const onSave = async () => {
     const data = { ...orchestrationData, contracts };
     const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
+      type: 'application/json',
     });
     window.open(URL.createObjectURL(blob));
   };
@@ -122,12 +122,12 @@ export default function DeployPage() {
     if (!orchestrationData) return;
     for (const step of orchestrationData.steps) {
       const signer = orchestrationData.signers[step.sender];
-      const pubKey = step.pubKey || signer?.publicKey || "";
+      const pubKey = step.pubKey || signer?.publicKey || '';
       const tx = await asyncPipe(
         composePactCommand(
           execution(getCode(contracts, step.code, step.codeFile)),
           setMeta({
-            chainId: "14",
+            chainId: '14',
             gasLimit: 100000,
             senderAccount: step.sender, // c:account
           }),
@@ -140,7 +140,7 @@ export default function DeployPage() {
             // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
             {
               pubKey,
-              scheme: !step.cid ? "ED25519" : "WebAuthn",
+              scheme: !step.cid ? 'ED25519' : 'WebAuthn',
             },
             Array.isArray(step.caps)
               ? (withCap) =>
@@ -150,13 +150,13 @@ export default function DeployPage() {
                       name,
                       ...args.map((resValue: any) => {
                         if (isNaN(resValue)) return resValue;
-                        if (resValue.includes(".")) return Number(resValue);
+                        if (resValue.includes('.')) return Number(resValue);
                         return { int: Number(resValue) };
-                      })
+                      }),
                     );
                   })
-              : undefined
-          )
+              : undefined,
+          ),
         ),
         createTransaction,
         !step.cid
@@ -169,7 +169,7 @@ export default function DeployPage() {
                 challenge: tx.hash,
                 rpId: window.location.hostname,
                 allowCredentials: step.cid
-                  ? [{ id: step.cid, type: "public-key" }]
+                  ? [{ id: step.cid, type: 'public-key' }]
                   : undefined,
               });
               tx.sigs = [tx.sigs[0], getSig(res.response)];
@@ -180,7 +180,7 @@ export default function DeployPage() {
           return tx;
         },
         l1Client.submit,
-        l1Client.listen
+        l1Client.listen,
       )({});
       setResults((results) => {
         return [...results.slice(0, results.length - 1), tx];
@@ -188,7 +188,7 @@ export default function DeployPage() {
     }
   };
   useEffect(() => {
-    setTheme("dark");
+    setTheme('dark');
   }, []);
   return (
     <Stack direction="column">
@@ -197,7 +197,7 @@ export default function DeployPage() {
         <Input
           id="orchestrationFile"
           type="file"
-          {...register("orchestrationFile", {
+          {...register('orchestrationFile', {
             onChange: onChangeFile,
           })}
         />
@@ -207,7 +207,7 @@ export default function DeployPage() {
           id="pactFiles"
           type="file"
           multiple
-          {...register("pactFiles", {
+          {...register('pactFiles', {
             onChange: onChangePactFiles,
           })}
         />
@@ -238,20 +238,20 @@ const Profiles = ({ profiles }: { profiles?: Profiles }) => {
             icon="PactLanguage"
             labelValues={[
               {
-                label: "Profile",
+                label: 'Profile',
                 value: name,
               },
               {
-                label: "Host",
+                label: 'Host',
                 value: profile.host,
               },
               {
-                label: "Network ID",
+                label: 'Network ID',
                 value: profile.networkId,
               },
               {
-                label: "Chains",
-                value: profile.chains.join(", "),
+                label: 'Chains',
+                value: profile.chains.join(', '),
               },
             ]}
           />
@@ -264,10 +264,10 @@ const Profiles = ({ profiles }: { profiles?: Profiles }) => {
 const getCode = (
   contracts: PactContracts | null,
   code?: string,
-  codeFile?: string
+  codeFile?: string,
 ) => {
   if (code) return code;
-  if (!codeFile) return "no code or code file";
+  if (!codeFile) return 'no code or code file';
   if (!contracts) return `code file ${codeFile} not found`;
   return contracts[codeFile] || `code file ${codeFile} not found`;
 };
@@ -297,24 +297,24 @@ const DeploySteps = ({
               icon="PactLanguage"
               labelValues={[
                 {
-                  label: "Profile",
+                  label: 'Profile',
                   value: step.profile,
                 },
                 {
-                  label: "Sender",
+                  label: 'Sender',
                   value: step.sender,
                 },
                 {
-                  label: "Code",
+                  label: 'Code',
                   value: getCode(contracts, step.code, step.codeFile),
                 },
                 {
-                  label: "Data",
-                  value: JSON.stringify(step.data) || "No data",
+                  label: 'Data',
+                  value: JSON.stringify(step.data) || 'No data',
                 },
                 {
-                  label: "Caps",
-                  value: JSON.stringify(step.caps) || "unrestricted",
+                  label: 'Caps',
+                  value: JSON.stringify(step.caps) || 'unrestricted',
                 },
               ]}
             />

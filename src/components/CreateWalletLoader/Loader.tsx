@@ -1,5 +1,5 @@
-import { Text } from "@kadena/react-ui";
-import "./createwallet.css";
+import { Text } from '@kadena/react-ui';
+import './createwallet.css';
 
 export const Loader = () => (
   <div className="loader">

@@ -1,6 +1,8 @@
-"use client";
+'use client';
 
-import { useReturnUrl } from "@/hooks/useReturnUrl";
+import { Account } from '@/components/Account';
+import { useReturnUrl } from '@/hooks/useReturnUrl';
+import { decodeAccount } from '@/utils/decodeAccount';
 import {
   Box,
   Button,
@@ -11,15 +13,13 @@ import {
   Heading,
   Stack,
   Text,
-} from "@kadena/react-ui";
-import { useTheme } from "next-themes";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
-import cookieImg from "./chocolate-chip-cookie.jpg";
-import { createOrder } from "./order";
-import { Account } from "@/components/Account";
-import { decodeAccount } from "@/utils/decodeAccount";
+} from '@kadena/react-ui';
+import { useTheme } from 'next-themes';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect } from 'react';
+import cookieImg from './chocolate-chip-cookie.jpg';
+import { createOrder } from './order';
 
 type WebshopProps = {
   searchParams: {
@@ -33,14 +33,14 @@ export default function Webshop({ searchParams }: WebshopProps) {
   const cookies = [
     {
       price: 6.55,
-      name: "Tripple Chocolate chip",
-      description: "More chocolate!",
+      name: 'Tripple Chocolate chip',
+      description: 'More chocolate!',
       image: cookieImg,
     },
     {
       price: 5.55,
-      name: "Chocolate chip",
-      description: "Cookies and chocolate!",
+      name: 'Chocolate chip',
+      description: 'Cookies and chocolate!',
       image: cookieImg,
     },
   ];
@@ -58,18 +58,18 @@ export default function Webshop({ searchParams }: WebshopProps) {
         });
         router.push(
           `${process.env.WALLET_URL}/sign?payload=${Buffer.from(
-            JSON.stringify(order)
-          ).toString("base64")}&cid=${account.cid}&returnUrl=${getReturnUrl(
-            "/example/webshop/submit"
-          )}`
+            JSON.stringify(order),
+          ).toString('base64')}&cid=${account.cid}&returnUrl=${getReturnUrl(
+            '/example/webshop/submit',
+          )}`,
         );
       },
-    [response]
+    [response],
   );
 
   const { setTheme } = useTheme();
   useEffect(() => {
-    setTheme("light");
+    setTheme('light');
   }, []);
 
   return (
@@ -98,9 +98,9 @@ export default function Webshop({ searchParams }: WebshopProps) {
                   height={200}
                   sizes="100vw"
                   style={{
-                    width: "100%",
-                    height: "auto",
-                    borderRadius: "1rem",
+                    width: '100%',
+                    height: 'auto',
+                    borderRadius: '1rem',
                   }}
                 />
                 <Box marginY="$5">

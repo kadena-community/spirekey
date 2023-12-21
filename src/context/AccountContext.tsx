@@ -1,17 +1,17 @@
-import { ReactNode, createContext, useEffect, useState } from "react";
+import { ReactNode, createContext, useEffect, useState } from 'react';
 
-import { getAccount, getAccountFrom } from "@/utils/account";
-import { IClient } from "@kadena/client";
-import { startAuthentication } from "@simplewebauthn/browser";
-import { useNetwork } from "./NetworkContext";
+import { getAccount, getAccountFrom } from '@/utils/account';
+import { IClient } from '@kadena/client';
+import { startAuthentication } from '@simplewebauthn/browser';
+import { useNetwork } from './NetworkContext';
 
 export type Device = {
   name: string;
   domain: string;
-  ["credential-id"]: string;
+  ['credential-id']: string;
   guard: {
     keys: string[];
-    pred: "keys-any";
+    pred: 'keys-any';
   };
 };
 
@@ -42,7 +42,7 @@ interface AccountContext {
 }
 
 export const AccountContext = createContext<AccountContext>(
-  {} as AccountContext
+  {} as AccountContext,
 );
 
 interface Props {
@@ -67,9 +67,9 @@ export function AccountsProvider({ client, children }: Props) {
         account: await getAccountFrom({
           caccount: account,
           networkId: network,
-          namespace: process.env.NAMESPACE ?? "",
+          namespace: process.env.NAMESPACE ?? '',
         }),
-      }))
+      })),
     );
     return accs
       .map(({ name, account }) => ({
@@ -82,7 +82,7 @@ export function AccountsProvider({ client, children }: Props) {
   };
 
   const getAccountDetails = async () => {
-    const storedAccounts = JSON.parse(localStorage.getItem("accounts") ?? "[]");
+    const storedAccounts = JSON.parse(localStorage.getItem('accounts') ?? '[]');
     if (!storedAccounts.length) return;
 
     const accounts = await getAccountDetailsFor(storedAccounts);
@@ -91,7 +91,7 @@ export function AccountsProvider({ client, children }: Props) {
     // if we have an active account, update it's data
     if (activeAccount) {
       const account = accounts.find(
-        (acc) => acc.account === activeAccount.account
+        (acc) => acc.account === activeAccount.account,
       );
       setActiveAccount(account ?? accounts[0]);
       return;
@@ -113,7 +113,7 @@ export function AccountsProvider({ client, children }: Props) {
 
   const setDevice = (cid: string) => {
     const device = activeAccount?.devices.find(
-      (device) => device["credential-id"] === cid
+      (device) => device['credential-id'] === cid,
     );
     if (!device) return;
 
@@ -121,10 +121,10 @@ export function AccountsProvider({ client, children }: Props) {
   };
 
   const storeAccount = async (caccount: string) => {
-    const storedAccounts = JSON.parse(localStorage.getItem("accounts") || "[]");
+    const storedAccounts = JSON.parse(localStorage.getItem('accounts') || '[]');
 
     const newAccounts = Array.from(new Set([...storedAccounts, caccount]));
-    localStorage.setItem("accounts", JSON.stringify(newAccounts));
+    localStorage.setItem('accounts', JSON.stringify(newAccounts));
     setAccounts(newAccounts);
     const details = await getAccountDetailsFor(newAccounts);
     const newAccount = details.find((acc) => acc.account === caccount);
@@ -143,39 +143,39 @@ export function AccountsProvider({ client, children }: Props) {
     networkId: string;
     namespace: string;
   }): Promise<void> => {
-    if (!caccount) throw new Error("Please enter an account name");
+    if (!caccount) throw new Error('Please enter an account name');
 
     const account = await getAccountFrom({
       caccount,
       networkId: network,
       namespace,
     });
-    if (!account) throw new Error("Account not found");
+    if (!account) throw new Error('Account not found');
 
     const response = await startAuthentication({
-      challenge: "somethingrandom",
+      challenge: 'somethingrandom',
       rpId: window.location.hostname,
       allowCredentials: account.devices.map(
-        ({ ["credential-id"]: cid }: Device) => ({
+        ({ ['credential-id']: cid }: Device) => ({
           id: cid,
-          type: "public-key",
-        })
+          type: 'public-key',
+        }),
       ),
     });
 
     if (
       !account.devices.some(
-        ({ ["credential-id"]: cid }: Device) => cid === response.id
+        ({ ['credential-id']: cid }: Device) => cid === response.id,
       )
     ) {
-      throw new Error("Please authenticate using one of your devices");
+      throw new Error('Please authenticate using one of your devices');
     }
 
-    const storedAccounts = JSON.parse(localStorage.getItem("accounts") || "[]");
+    const storedAccounts = JSON.parse(localStorage.getItem('accounts') || '[]');
 
     localStorage.setItem(
-      "accounts",
-      JSON.stringify(Array.from(new Set([...storedAccounts, caccount])))
+      'accounts',
+      JSON.stringify(Array.from(new Set([...storedAccounts, caccount]))),
     );
 
     getAccountDetails();

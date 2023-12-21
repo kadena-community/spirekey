@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
-import Providers from "./providers";
+import type { Metadata } from 'next';
+import Providers from './providers';
 
 export const metadata: Metadata = {
-  title: "WebAuthn Wallet",
-  description: "Conviniently secure your internet",
+  title: 'WebAuthn Wallet',
+  description: 'Conviniently secure your internet',
 };
 
 export default function RootLayout({

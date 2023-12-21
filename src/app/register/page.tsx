@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import { AccountSelector } from "@/components/AccountSelector";
-import { AddDevice } from "@/components/AddDevice";
-import { Loader } from "@/components/CreateWalletLoader/Loader";
-import { type Device, type Account } from "@/context/AccountContext";
-import { useAccounts } from "@/hooks/useAccounts";
-import { useSign } from "@/hooks/useSign";
-import { ContentHeader, Stack, Text } from "@kadena/react-ui";
-import { useState } from "react";
-import { addDevice } from "./addDevice";
-import { registerAccount } from "@/utils/register";
-import { FundAccount } from "@/components/FundAccount";
+import { AccountSelector } from '@/components/AccountSelector';
+import { AddDevice } from '@/components/AddDevice';
+import { Loader } from '@/components/CreateWalletLoader/Loader';
+import { FundAccount } from '@/components/FundAccount';
+import { type Account, type Device } from '@/context/AccountContext';
+import { useAccounts } from '@/hooks/useAccounts';
+import { useSign } from '@/hooks/useSign';
+import { registerAccount } from '@/utils/register';
+import { ContentHeader, Stack, Text } from '@kadena/react-ui';
+import { useState } from 'react';
+import { addDevice } from './addDevice';
 
 const registerOrAddDevice = async (
   signingDevice: Device | null,
   device: Device,
-  account: Account | null
+  account: Account | null,
 ) => {
   if (!account || !signingDevice)
     return registerAccount({
       displayName: device.name,
-      credentialId: device["credential-id"],
+      credentialId: device['credential-id'],
       credentialPubkey: device.guard.keys[0],
       domain: device.domain,
     });
@@ -39,7 +39,7 @@ export default function Account() {
     const caccount = await registerOrAddDevice(
       activeDevice ?? null,
       newDevice,
-      activeAccount ?? null
+      activeAccount ?? null,
     );
 
     setLoading(false);
@@ -56,7 +56,7 @@ export default function Account() {
 
     // navigate to sign page of "original device"
     // for now we just go to this wallet's sign page
-    sign(result, activeDevice, "/pact/submit");
+    sign(result, activeDevice, '/pact/submit');
   };
 
   if (isLoading) {

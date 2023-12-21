@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useAccounts } from "@/hooks/useAccounts";
+import { useAccounts } from '@/hooks/useAccounts';
 import {
   Button,
   Card,
@@ -9,21 +9,21 @@ import {
   SelectField,
   Stack,
   TextField,
-} from "@kadena/react-ui";
-import { useForm } from "react-hook-form";
+} from '@kadena/react-ui';
+import { useForm } from 'react-hook-form';
 
 const FORM_DEFAULT = {
-  caccount: "",
-  networkId: "fast-development",
-  fromNetworkId: "fast-development",
-  namespace: process.env.NAMESPACE || "",
+  caccount: '',
+  networkId: 'fast-development',
+  fromNetworkId: 'fast-development',
+  namespace: process.env.NAMESPACE || '',
 };
 export type RestoreFormValues = typeof FORM_DEFAULT;
 
 export default function RestorePage() {
   const { register, getValues, setError, formState } = useForm({
     defaultValues: FORM_DEFAULT,
-    reValidateMode: "onBlur",
+    reValidateMode: 'onBlur',
   });
 
   const { handleRestoreAccount } = useAccounts();
@@ -38,10 +38,10 @@ export default function RestorePage() {
       });
     } catch (error) {
       if (error instanceof Error) {
-        return setError("caccount", { message: error.message });
+        return setError('caccount', { message: error.message });
       }
 
-      return setError("caccount", { message: "Unknown error" });
+      return setError('caccount', { message: 'Unknown error' });
     }
   };
 
@@ -57,9 +57,9 @@ export default function RestorePage() {
         <SelectField
           label="Network"
           selectProps={{
-            id: "networkId",
-            ariaLabel: "network",
-            ...register("networkId"),
+            id: 'networkId',
+            ariaLabel: 'network',
+            ...register('networkId'),
           }}
         >
           <option value="mainnet01">mainnet01</option>
@@ -77,20 +77,20 @@ export default function RestorePage() {
 
         <TextField
           label="account"
-          inputProps={{ id: "caccount", ...register("caccount") }}
-          status={formState.errors.caccount ? "negative" : undefined}
+          inputProps={{ id: 'caccount', ...register('caccount') }}
+          status={formState.errors.caccount ? 'negative' : undefined}
           helperText={
             formState.errors.caccount?.message ||
-            "Enter the account name you want to restore, this should look like c:account"
+            'Enter the account name you want to restore, this should look like c:account'
           }
         />
 
         <SelectField
           label="From Network"
           selectProps={{
-            id: "fromNetworkId",
-            ariaLabel: "from network",
-            ...register("fromNetworkId"),
+            id: 'fromNetworkId',
+            ariaLabel: 'from network',
+            ...register('fromNetworkId'),
           }}
           helperText="Select the network you want to restore from"
         >
@@ -101,9 +101,9 @@ export default function RestorePage() {
 
         <TextField
           label="account"
-          inputProps={{ id: "namespace", ...register("namespace") }}
+          inputProps={{ id: 'namespace', ...register('namespace') }}
           helperText={
-            "Enter the namespace of the account you want to restore, this should look like n_hash"
+            'Enter the namespace of the account you want to restore, this should look like n_hash'
           }
         />
 

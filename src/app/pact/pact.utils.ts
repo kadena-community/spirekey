@@ -4,11 +4,11 @@ import {
   execution,
   setMeta,
   setNetworkId,
-} from "@kadena/client/fp";
+} from '@kadena/client/fp';
 
 export const readFile = async (file?: File | null): Promise<string> => {
   return new Promise((resolve, reject) => {
-    if (!file) return resolve("");
+    if (!file) return resolve('');
     const reader = new FileReader();
     reader.onload = (event) => {
       resolve(String(event.target?.result));
@@ -40,7 +40,7 @@ export const uploadModuleTransaction = ({
   composePactCommand(
     execution(moduleFile),
     setMeta({
-      chainId: chainId as "0",
+      chainId: chainId as '0',
       gasLimit: 100000,
       gasPrice: 0.00000001,
       senderAccount,
@@ -50,32 +50,32 @@ export const uploadModuleTransaction = ({
       // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
       {
         pubKey: publicKey,
-        scheme: "WebAuthn",
+        scheme: 'WebAuthn',
       },
       (withCap) =>
         capabilities.map((cap: string) => {
-          const [name, ...args] = cap.replace(/^\(|\)$/g, "").split(" ");
+          const [name, ...args] = cap.replace(/^\(|\)$/g, '').split(' ');
           return withCap(
             name,
             ...args.map((v) => {
               const resValue = JSON.parse(v);
               if (isNaN(resValue)) return resValue;
-              if (v.includes(".")) return resValue;
+              if (v.includes('.')) return resValue;
               return { int: resValue };
-            })
+            }),
           );
-        })
+        }),
     ),
     (cmd) => {
       cmd.payload.exec.data = data;
       return cmd;
-    }
+    },
   );
 
 export const validateJson = (value: string) => {
   try {
     return (
-      Object.prototype.toString.call(JSON.parse(value)) === "[object Object]"
+      Object.prototype.toString.call(JSON.parse(value)) === '[object Object]'
     );
   } catch (_error) {
     return false;
@@ -93,15 +93,15 @@ export const parseContractData = (contract: string) => {
     ...contract.matchAll(keysetLiteralRegex),
   ];
   const defaultByType = {
-    msg: "",
-    keyset: { keys: [], pred: "keys-all" },
+    msg: '',
+    keyset: { keys: [], pred: 'keys-all' },
     integer: 0,
-    string: "",
+    string: '',
     decimal: 0.0,
   } as Record<string, unknown>;
 
   return readmatches.map((match) => {
     const [, type, key] = match;
-    return { key, default: defaultByType[type] ?? "" };
+    return { key, default: defaultByType[type] ?? '' };
   });
 };

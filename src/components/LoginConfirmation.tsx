@@ -1,5 +1,5 @@
-import { useAccounts } from "@/hooks/useAccounts";
-import { Button, Stack } from "@kadena/react-ui";
+import { useAccounts } from '@/hooks/useAccounts';
+import { Button, Stack } from '@kadena/react-ui';
 
 export const LoginConfirmation = ({ returnUrl }: { returnUrl: string }) => {
   const { activeAccount, activeDevice } = useAccounts();
@@ -18,10 +18,10 @@ export const LoginConfirmation = ({ returnUrl }: { returnUrl: string }) => {
             name: activeDevice.name,
             waccount: activeAccount.name,
             caccount: activeAccount.account,
-            cid: activeDevice["credential-id"],
+            cid: activeDevice['credential-id'],
             publicKey: activeDevice.guard.keys[0],
-          })
-        ).toString("base64")}`}
+          }),
+        ).toString('base64')}`}
       >
         Login
       </Button>

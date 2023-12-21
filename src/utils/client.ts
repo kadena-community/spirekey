@@ -1,13 +1,13 @@
-import { createClient } from "@kadena/client";
+import { createClient } from '@kadena/client';
 
 export const l1Client = createClient(({ chainId, networkId }) => {
-  if (networkId === "mainnet01")
+  if (networkId === 'mainnet01')
     return `https://api.chainweb.com/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
-  if (networkId === "testnet04")
+  if (networkId === 'testnet04')
     return `https://api.testnet.chainweb.com/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
-  if (networkId === "l1")
+  if (networkId === 'l1')
     return `http://localhost:8080/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
-  if (networkId === "l2")
+  if (networkId === 'l2')
     return `http://localhost:8081/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
   return `http://localhost:8080/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
 });

@@ -1,17 +1,17 @@
-import { useAccounts } from "@/hooks/useAccounts";
-import { fundAccount } from "@/utils/fund";
-import { Button, Text } from "@kadena/react-ui";
-import { useState } from "react";
+import { useAccounts } from '@/hooks/useAccounts';
+import { fundAccount } from '@/utils/fund';
+import { Button } from '@kadena/react-ui';
+import { useState } from 'react';
 
 export const FundAccount = () => {
   const { activeAccount, getAccountDetails } = useAccounts();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
 
   const handleFundAccount = async () => {
     try {
       setLoading(true);
-      if (!activeAccount) throw new Error("No account selected");
+      if (!activeAccount) throw new Error('No account selected');
 
       await fundAccount(activeAccount);
       getAccountDetails();
@@ -27,9 +27,9 @@ export const FundAccount = () => {
   return (
     <>
       <Button onClick={handleFundAccount}>
-        {loading ? "Loading..." : "Fund account"}
+        {loading ? 'Loading...' : 'Fund account'}
       </Button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </>
   );
 };

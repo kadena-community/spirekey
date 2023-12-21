@@ -1,29 +1,29 @@
-import { type Device } from "@/context/AccountContext";
-import { CredentialPair, usePubkeys } from "@/hooks/usePubkeys";
-import { Button, SelectField, Stack, TextField } from "@kadena/react-ui";
+import { type Device } from '@/context/AccountContext';
+import { CredentialPair, usePubkeys } from '@/hooks/usePubkeys';
+import { Button, SelectField, Stack, TextField } from '@kadena/react-ui';
 import {
   base64URLStringToBuffer,
   bufferToBase64URLString,
   startRegistration,
-} from "@simplewebauthn/browser";
-import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
-import cbor from "cbor";
-import { useState } from "react";
+} from '@simplewebauthn/browser';
+import { RegistrationResponseJSON } from '@simplewebauthn/typescript-types';
+import cbor from 'cbor';
+import { useState } from 'react';
 
 const getPublicKey = async (res: RegistrationResponseJSON) => {
   const { authData } = cbor.decode(
-    base64URLStringToBuffer(res.response.attestationObject)
+    base64URLStringToBuffer(res.response.attestationObject),
   );
 
   const dataView = new DataView(new ArrayBuffer(2));
   const idLenBytes = authData.slice(53, 55);
   idLenBytes.forEach((value: number, index: number) =>
-    dataView.setUint8(index, value)
+    dataView.setUint8(index, value),
   );
   const credentialIdLength = dataView.getUint16(0);
   const publicKeyBytes = authData.slice(55 + credentialIdLength);
 
-  return Buffer.from(publicKeyBytes).toString("hex");
+  return Buffer.from(publicKeyBytes).toString('hex');
 };
 
 export const AddDevice = ({
@@ -31,7 +31,7 @@ export const AddDevice = ({
 }: {
   onAddDevice: (device: Device) => void;
 }) => {
-  const [deviceName, setDeviceName] = useState<string>("");
+  const [deviceName, setDeviceName] = useState<string>('');
   const [cPair, setCPair] = useState<CredentialPair>();
   const { pubkeys } = usePubkeys();
   const onDeviceNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -44,31 +44,31 @@ export const AddDevice = ({
       return onAddDevice({
         domain: window.location.hostname,
         name: deviceName,
-        ["credential-id"]: cPair.cid,
+        ['credential-id']: cPair.cid,
         guard: {
           keys: [cPair.pubkey],
-          pred: "keys-any",
+          pred: 'keys-any',
         },
       });
     }
 
     const res = await startRegistration({
-      challenge: bufferToBase64URLString(Buffer.from("some-random-string")),
+      challenge: bufferToBase64URLString(Buffer.from('some-random-string')),
       rp: {
-        name: "Kadena WebAuthN Wallet",
+        name: 'Kadena WebAuthN Wallet',
         id: window.location.hostname,
       },
       pubKeyCredParams: [
         {
           alg: -7,
-          type: "public-key",
+          type: 'public-key',
         },
       ],
       authenticatorSelection: {
         requireResidentKey: true,
-        userVerification: "preferred",
+        userVerification: 'preferred',
       },
-      attestation: "direct",
+      attestation: 'direct',
       user: {
         id: deviceName + Date.now(),
         displayName: deviceName,
@@ -77,16 +77,16 @@ export const AddDevice = ({
       timeout: 60000,
     });
     if (!res.response.publicKey)
-      throw new Error("No public key returned from webauthn");
+      throw new Error('No public key returned from webauthn');
 
     const pubKey = await getPublicKey(res);
     onAddDevice({
       domain: window.location.hostname,
       name: deviceName,
-      ["credential-id"]: res.id,
+      ['credential-id']: res.id,
       guard: {
         keys: [pubKey],
-        pred: "keys-any",
+        pred: 'keys-any',
       },
     });
   };
@@ -95,7 +95,7 @@ export const AddDevice = ({
       <TextField
         label="device name"
         inputProps={{
-          id: "device-name",
+          id: 'device-name',
           value: deviceName,
           onChange: onDeviceNameChange,
         }}
@@ -104,9 +104,9 @@ export const AddDevice = ({
       <SelectField
         label="credential id"
         selectProps={{
-          id: "credential-id",
+          id: 'credential-id',
           onChange: onCidChange,
-          ariaLabel: "credential id",
+          ariaLabel: 'credential id',
         }}
         helperText="Enter the credential id of your previously registered device (optional)"
       >

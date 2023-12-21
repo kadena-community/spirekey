@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useReturnUrl } from "@/hooks/useReturnUrl";
-import { Box, Button, Stack, Text } from "@kadena/react-ui";
-import { useRouter } from "next/navigation";
-import { FC } from "react";
-import { PreviewFormValues } from "./PreviewForm";
+import { useReturnUrl } from '@/hooks/useReturnUrl';
+import { Box, Button, Stack, Text } from '@kadena/react-ui';
+import { useRouter } from 'next/navigation';
+import { FC } from 'react';
+import { PreviewFormValues } from './PreviewForm';
 
 type PreviewFormProps = {
   values: PreviewFormValues;
@@ -19,7 +19,7 @@ export const SubmitForm: FC<PreviewFormProps> = ({ values, onCancel }) => {
     router.push(
       `${process.env.WALLET_URL}/sign?payload=${values.payload}&cid=${
         values.cid
-      }&returnUrl=${getReturnUrl("/pact/submit")}`
+      }&returnUrl=${getReturnUrl('/pact/submit')}`,
     );
   };
 
@@ -44,9 +44,9 @@ export const SubmitForm: FC<PreviewFormProps> = ({ values, onCancel }) => {
         <textarea
           id="contractData"
           style={{
-            width: "100%",
-            minHeight: "120px",
-            resize: "vertical",
+            width: '100%',
+            minHeight: '120px',
+            resize: 'vertical',
           }}
           defaultValue={values.contractData}
         />

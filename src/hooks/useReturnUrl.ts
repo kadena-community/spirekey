@@ -1,16 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
 export const useReturnUrl = () => {
-  const [host, setHost] = useState("");
+  const [host, setHost] = useState('');
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
     setHost(window.location.origin);
   }, []);
   const getReturnUrl = useCallback(
     (path: string) => {
       return host + path;
     },
-    [host]
+    [host],
   );
   return {
     getReturnUrl,
