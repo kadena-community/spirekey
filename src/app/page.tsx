@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { Loader } from "@/components/CreateWalletLoader/Loader";
-import { NetworkSelector } from "@/components/NetworkSelector";
-import { useNetwork } from "@/context/NetworkContext";
-import { useAccounts } from "@/hooks/useAccounts";
-import { registerAccount } from "@/utils/register";
-import { getNewWebauthnKey } from "@/utils/webauthnKey";
+import { Loader } from '@/components/CreateWalletLoader/Loader';
+import { NetworkSelector } from '@/components/NetworkSelector';
+import { useNetwork } from '@/context/NetworkContext';
+import { useAccounts } from '@/hooks/useAccounts';
+import { registerAccount } from '@/utils/register';
+import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import {
   Button,
   Card,
@@ -16,11 +16,11 @@ import {
   Text,
   TextField,
   TrackerCard,
-} from "@kadena/react-ui";
-import Link from "next/link";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import useSWR from "swr";
+} from '@kadena/react-ui';
+import Link from 'next/link';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import useSWR from 'swr';
 
 type Transaction = {
   fromAccount: string;
@@ -31,19 +31,19 @@ type Transaction = {
 };
 
 const FORM_DEFAULT = {
-  displayName: "",
+  displayName: '',
 };
 const Register = () => {
   const { register, getValues } = useForm({
     defaultValues: FORM_DEFAULT,
-    reValidateMode: "onBlur",
+    reValidateMode: 'onBlur',
   });
   const { storeAccount } = useAccounts();
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState("");
+  const [result, setResult] = useState('');
   const onRegister = async () => {
     const { displayName } = getValues();
-    if (!displayName) throw new Error("Display name is required");
+    if (!displayName) throw new Error('Display name is required');
     setIsLoading(true);
 
     const { credentialId, publicKey } = await getNewWebauthnKey(displayName);
@@ -94,8 +94,8 @@ const Register = () => {
         <TextField
           label="Display Name"
           inputProps={{
-            id: "display-name",
-            ...register("displayName", { required: true }),
+            id: 'display-name',
+            ...register('displayName', { required: true }),
           }}
           info="This name is only for your convienience to recognize your device."
           helperText="This name will be stored on the blockchain, don't use any sensitive information."
@@ -129,7 +129,7 @@ export default function Home() {
     async (url: string) => {
       if (!activeAccount) return [];
       return await fetch(url).then((res) => res.json());
-    }
+    },
   );
 
   if (activeAccount) {
@@ -147,12 +147,12 @@ export default function Home() {
               icon="ManageKda"
               labelValues={[
                 {
-                  label: "Account",
+                  label: 'Account',
                   value: activeAccount.account,
                   isAccount: true,
                 },
                 {
-                  label: "Balance",
+                  label: 'Balance',
                   value: `${activeAccount.balance} KDA`,
                 },
               ]}
@@ -180,8 +180,8 @@ export default function Home() {
                         style={{
                           color:
                             tx.fromAccount === activeAccount.account
-                              ? "red"
-                              : "green",
+                              ? 'red'
+                              : 'green',
                         }}
                       >
                         {tx.amount}

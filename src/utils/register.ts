@@ -1,4 +1,12 @@
-import { createTransaction } from "@kadena/client";
+import { asyncPipe } from '@/utils/asyncPipe';
+import { l1Client } from '@/utils/client';
+import {
+  gasStation,
+  genesisPrivateKey,
+  genesisPubKey,
+} from '@/utils/constants';
+import { signWithKeyPair } from '@/utils/signSubmitListen';
+import { createTransaction } from '@kadena/client';
 import {
   addData,
   addSigner,
@@ -6,15 +14,7 @@ import {
   execution,
   setMeta,
   setNetworkId,
-} from "@kadena/client/fp";
-import { asyncPipe } from "@/utils/asyncPipe";
-import { l1Client } from "@/utils/client";
-import {
-  gasStation,
-  genesisPrivateKey,
-  genesisPubKey,
-} from "@/utils/constants";
-import { signWithKeyPair } from "@/utils/signSubmitListen";
+} from '@kadena/client/fp';
 
 export const getAccountName = async (publicKey: string) =>
   asyncPipe(
@@ -27,22 +27,22 @@ export const getAccountName = async (publicKey: string) =>
 )
 `),
       setMeta({
-        chainId: "14",
+        chainId: '14',
         gasLimit: 1000,
         gasPrice: 0.0000001,
         ttl: 60000,
       }),
-      addData("ks", {
+      addData('ks', {
         keys: [getWebAuthnPubkeyFormat(publicKey)],
-        pred: "keys-any",
+        pred: 'keys-any',
       }),
-      setNetworkId(process.env.NETWORK_ID || "fast-development")
+      setNetworkId(process.env.NETWORK_ID || 'fast-development'),
     ),
     createTransaction,
     (tx) =>
       // TODO: use preflight
       l1Client.local(tx, { preflight: false, signatureVerification: false }),
-    (tx) => tx.result.data
+    (tx) => tx.result.data,
   )({});
 
 export const registerAccount = async ({
@@ -70,7 +70,7 @@ export const registerAccount = async ({
     signWithKeyPair({ publicKey: genesisPubKey, secretKey: genesisPrivateKey }),
     l1Client.submit,
     l1Client.listen,
-    () => caccount
+    () => caccount,
   )({});
 };
 
@@ -104,27 +104,27 @@ const registerAccountCommand = ({
             , 'guard         : (read-keyset 'ks)
           }]
         )
-      `.trim()
+      `.trim(),
     ),
     addSigner(genesisPubKey, (withCap) => [
-      withCap("coin.GAS"),
+      withCap('coin.GAS'),
       withCap(
         `${process.env.NAMESPACE}.gas-station.GAS_PAYER`,
         caccount,
         { int: 1 },
-        1
+        1,
       ),
     ]),
-    addData("ks", {
+    addData('ks', {
       keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
-      pred: "keys-any",
+      pred: 'keys-any',
     }),
     setMeta({
-      chainId: "14",
+      chainId: '14',
       gasLimit: 2000,
       gasPrice: 0.0000001,
       ttl: 60000,
       senderAccount: gasStation,
     }),
-    setNetworkId(process.env.NETWORK_ID || "fast-development")
+    setNetworkId(process.env.NETWORK_ID || 'fast-development'),
   );

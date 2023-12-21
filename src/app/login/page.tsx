@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { AccountSelector } from "@/components/AccountSelector";
-import { LoginConfirmation } from "@/components/LoginConfirmation";
-import { Box, ContentHeader, Stack } from "@kadena/react-ui";
+import { AccountSelector } from '@/components/AccountSelector';
+import { LoginConfirmation } from '@/components/LoginConfirmation';
+import { Box, ContentHeader, Stack } from '@kadena/react-ui';
 
 type LoginProps = {
   searchParams: {

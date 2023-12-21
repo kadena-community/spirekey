@@ -1,5 +1,5 @@
-import { TrackerCard } from "@kadena/react-ui";
-import { SubmitStatus } from "@/hooks/useSubmit";
+import { SubmitStatus } from '@/hooks/useSubmit';
+import { TrackerCard } from '@kadena/react-ui';
 
 interface Props {
   result: any;
@@ -16,14 +16,14 @@ export const SubmitResult = ({ result, status }: Props) => {
       icon="Chainweb"
       labelValues={[
         {
-          label: "Status",
-          value: result?.result?.status || "Failed",
+          label: 'Status',
+          value: result?.result?.status || 'Failed',
         },
         {
-          label: "Data",
+          label: 'Data',
           value:
             JSON.stringify(result?.result?.data, null, 2) ||
-            "Something went wrong...",
+            'Something went wrong...',
         },
       ]}
     />

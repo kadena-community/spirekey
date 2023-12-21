@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { usePreview } from "@/hooks/usePreview";
-import { useSubmit } from "@/hooks/useSubmit";
+import { SubmitResult } from '@/components/SubmitResult';
+import { usePreview } from '@/hooks/usePreview';
+import { useSubmit } from '@/hooks/useSubmit';
 import {
   Box,
   Button,
   ContentHeader,
   Heading,
   Stack,
-  Text,
   SystemIcon,
-} from "@kadena/react-ui";
-import { SubmitResult } from "@/components/SubmitResult";
+  Text,
+} from '@kadena/react-ui';
 
 type SearchParams = {
   searchParams: {
@@ -43,7 +43,7 @@ export default function Submit({ searchParams }: SearchParams) {
             <Stack direction="column" gap="$sm">
               <Heading variant="h6">Estimated transaction costs:</Heading>
               <Text>
-                {estimatedGasIsLoading ? "Loading..." : `${estimatedGas} KDA`}
+                {estimatedGasIsLoading ? 'Loading...' : `${estimatedGas} KDA`}
               </Text>
               <Heading variant="h6">Paid by:</Heading>
               <Text>{gasPayer}</Text>
@@ -61,11 +61,11 @@ export default function Submit({ searchParams }: SearchParams) {
 
             <Button onClick={doSubmit} disabled={status !== SubmitStatus.IDLE}>
               {status === SubmitStatus.LOADING
-                ? "Loading..."
-                : "Submit transaction"}
+                ? 'Loading...'
+                : 'Submit transaction'}
             </Button>
           </Stack>
-        )}{" "}
+        )}{' '}
         {isSuccessful === false && (
           <>
             <Stack direction="row" alignItems="center" gap="$3">

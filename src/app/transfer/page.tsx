@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { NetworkSelector } from "@/components/NetworkSelector";
-import { useNetwork } from "@/context/NetworkContext";
-import { useAccounts } from "@/hooks/useAccounts";
-import { useSign } from "@/hooks/useSign";
-import { SubmitStatus, useSubmit } from "@/hooks/useSubmit";
-import { transfer } from "@/utils/transfer";
+import { NetworkSelector } from '@/components/NetworkSelector';
+import { useNetwork } from '@/context/NetworkContext';
+import { useAccounts } from '@/hooks/useAccounts';
+import { useSign } from '@/hooks/useSign';
+import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
+import { transfer } from '@/utils/transfer';
 import {
   Button,
   Card,
@@ -15,13 +15,13 @@ import {
   Notification,
   Stack,
   TextField,
-} from "@kadena/react-ui";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+} from '@kadena/react-ui';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 const FORM_DEFAULTS = {
-  amount: "0",
-  receiver: "",
+  amount: '0',
+  receiver: '',
 };
 
 type Props = {
@@ -36,14 +36,14 @@ export default function Page({ searchParams }: Props) {
   const { network } = useNetwork();
   const { getValues, register } = useForm({
     defaultValues: FORM_DEFAULTS,
-    reValidateMode: "onBlur",
+    reValidateMode: 'onBlur',
   });
   const onSign = async () => {
-    const amount = getValues("amount");
-    const receiver = getValues("receiver");
-    if (!activeAccount) throw new Error("No active account");
-    if (!activeDevice) throw new Error("No active device");
-    if (!amount || !receiver) throw new Error("Invalid form");
+    const amount = getValues('amount');
+    const receiver = getValues('receiver');
+    if (!activeAccount) throw new Error('No active account');
+    if (!activeDevice) throw new Error('No active device');
+    if (!amount || !receiver) throw new Error('Invalid form');
     const tx = await transfer({
       amount: parseFloat(amount),
       sender: activeAccount.account,
@@ -52,7 +52,7 @@ export default function Page({ searchParams }: Props) {
       networkId: network,
       publicKey: activeDevice.guard.keys[0],
     });
-    sign(tx, activeDevice, "/transfer");
+    sign(tx, activeDevice, '/transfer');
   };
   const { doSubmit, status } = useSubmit(searchParams);
   useEffect(() => {
@@ -88,9 +88,9 @@ export default function Page({ searchParams }: Props) {
               <TextField
                 label="to"
                 inputProps={{
-                  id: "receiver",
-                  type: "text",
-                  ...register("receiver"),
+                  id: 'receiver',
+                  type: 'text',
+                  ...register('receiver'),
                 }}
               />
             </GridItem>
@@ -98,11 +98,11 @@ export default function Page({ searchParams }: Props) {
               <TextField
                 label="amount"
                 inputProps={{
-                  id: "amount",
-                  type: "number",
-                  step: "0.001",
-                  min: "0",
-                  ...register("amount"),
+                  id: 'amount',
+                  type: 'number',
+                  step: '0.001',
+                  min: '0',
+                  ...register('amount'),
                 }}
               />
             </GridItem>

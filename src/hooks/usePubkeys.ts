@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export type CredentialPair = {
   cid: string;
@@ -17,14 +17,14 @@ export const usePubkeys = () => {
   const [pubkeys, setPubkeys] = useState<CredentialPair[]>([]);
   const [newPubkey, setNewPubkey] = useState<CredentialPair>();
   useEffect(() => {
-    const pubkeys = localStorage.getItem("publicKeys");
+    const pubkeys = localStorage.getItem('publicKeys');
     if (pubkeys) setPubkeys(JSON.parse(pubkeys));
   }, []);
   useEffect(() => {
     if (!newPubkey) return;
     const newPubkeys = getUniquePairs([...pubkeys, newPubkey]); // get unique pairs
     setPubkeys(newPubkeys);
-    localStorage.setItem("publicKeys", JSON.stringify(newPubkeys));
+    localStorage.setItem('publicKeys', JSON.stringify(newPubkeys));
   }, [newPubkey]);
 
   return { pubkeys, addPubkey: setNewPubkey };

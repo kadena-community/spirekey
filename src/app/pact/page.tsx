@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Box, ContentHeader, Heading, Stack } from "@kadena/react-ui";
-import { useState } from "react";
-import { PreviewForm, PreviewFormValues } from "./PreviewForm";
-import { SubmitForm } from "./SubmitForm";
+import { Box, ContentHeader, Heading, Stack } from '@kadena/react-ui';
+import { useState } from 'react';
+import { PreviewForm, PreviewFormValues } from './PreviewForm';
+import { SubmitForm } from './SubmitForm';
 
 type PactProps = {
   searchParams: {
@@ -13,7 +13,7 @@ type PactProps = {
 export default function Pact({ searchParams }: PactProps) {
   const [cancelled, setCancelled] = useState<boolean>(false);
   const [previewData, setPreviewData] = useState<PreviewFormValues | null>(
-    null
+    null,
   );
 
   const onSubmitPreview = (values: PreviewFormValues) => {

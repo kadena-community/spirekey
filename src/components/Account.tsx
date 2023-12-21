@@ -1,7 +1,7 @@
-import { useReturnUrl } from "@/hooks/useReturnUrl";
-import { Button, Text } from "@kadena/react-ui";
-import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useReturnUrl } from '@/hooks/useReturnUrl';
+import { Button, Text } from '@kadena/react-ui';
+import { useRouter } from 'next/navigation';
+import { useCallback } from 'react';
 
 export type Account = {
   name: string;
@@ -23,7 +23,7 @@ export const Account = ({
 
   const onLogin = useCallback(() => {
     router.push(
-      `${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(returnPath)}`
+      `${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(returnPath)}`,
     );
   }, [getReturnUrl, returnPath]);
   if (!account)

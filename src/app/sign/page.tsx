@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
+import { ICap } from '@kadena/client';
 import {
   Box,
   Button,
@@ -8,13 +8,13 @@ import {
   ProductIcon,
   Select,
   Stack,
+  SystemIcon,
   Text,
   Tooltip,
-  SystemIcon,
-} from "@kadena/react-ui";
-import { startAuthentication } from "@simplewebauthn/browser";
-import { useRouter } from "next/navigation";
-import { ICap } from "@kadena/client";
+} from '@kadena/react-ui';
+import { startAuthentication } from '@simplewebauthn/browser';
+import { useRouter } from 'next/navigation';
+import { useCallback, useState } from 'react';
 
 type SignProps = {
   searchParams: {
@@ -27,27 +27,27 @@ type SignProps = {
 /* valueLabels to be used to explain cmd.code */
 const capTranslations: Record<string, any> = {
   [`${process.env.NAMESPACE}.webauthn-wallet.TRANSFER`]: {
-    default: "nl",
+    default: 'nl',
     en: {
-      title: "Transfer",
-      description: "Transfer {{2}} KDA from {{0}} to {{1}}",
-      valueLabels: ["From", "To", "Amount"],
+      title: 'Transfer',
+      description: 'Transfer {{2}} KDA from {{0}} to {{1}}',
+      valueLabels: ['From', 'To', 'Amount'],
     },
     nl: {
-      title: "Transfer",
-      description: "Transfer {{2}} KDA van {{0}} naar {{1}}",
-      valueLabels: ["Van", "Naar", "Hoeveelheid"],
+      title: 'Transfer',
+      description: 'Transfer {{2}} KDA van {{0}} naar {{1}}',
+      valueLabels: ['Van', 'Naar', 'Hoeveelheid'],
     },
   },
   [`${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`]: {
-    default: "nl",
+    default: 'nl',
     en: {
-      title: "Gas payer",
-      description: "You will pay for the transaction costs",
+      title: 'Gas payer',
+      description: 'You will pay for the transaction costs',
     },
     nl: {
-      title: "Gas payer",
-      description: "Jij betaalt de transactiekosten",
+      title: 'Gas payer',
+      description: 'Jij betaalt de transactiekosten',
     },
   },
 };
@@ -63,7 +63,7 @@ const getDescription = (key: string, args: any, language: string) => {
     title: translation.title,
     description: translation.description.replace(
       /\{\{(\w+)\}\}/g,
-      (match: string, index: string) => args[parseInt(index, 10)] || match
+      (match: string, index: string) => args[parseInt(index, 10)] || match,
     ),
   };
 };
@@ -76,7 +76,7 @@ const getLabels = (signers: any[], language: string) =>
       ? signer.clist.flatMap((c: ICap) => {
           const { title, description } =
             getDescription(c.name, c.args, language) || {};
-          const valuesString = c.args.map(getArgValue).join(", ");
+          const valuesString = c.args.map(getArgValue).join(', ');
 
           return [
             title
@@ -89,28 +89,28 @@ const getLabels = (signers: any[], language: string) =>
               : { raw: c, label: c.name, values: valuesString },
           ];
         })
-      : []
+      : [],
   );
 
 export default function Sign(req: SignProps) {
   const { payload, returnUrl, cid } = req.searchParams;
   const router = useRouter();
-  const data = payload ? Buffer.from(payload, "base64").toString() : null;
-  const tx = JSON.parse(data ?? "{}");
-  const txData = JSON.parse(tx.cmd || "{}");
+  const data = payload ? Buffer.from(payload, 'base64').toString() : null;
+  const tx = JSON.parse(data ?? '{}');
+  const txData = JSON.parse(tx.cmd || '{}');
 
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState('en');
 
   const sign = useCallback(async () => {
     const res = await startAuthentication({
       challenge: tx.hash,
       rpId: window.location.hostname,
-      allowCredentials: cid ? [{ id: cid, type: "public-key" }] : undefined,
+      allowCredentials: cid ? [{ id: cid, type: 'public-key' }] : undefined,
     });
     router.push(
       `${returnUrl}?payload=${payload}&response=${Buffer.from(
-        JSON.stringify(res)
-      ).toString("base64")}`
+        JSON.stringify(res),
+      ).toString('base64')}`,
     );
   }, [data, router, startAuthentication]);
 
@@ -140,7 +140,7 @@ export default function Sign(req: SignProps) {
         <Box key={x.label} width="100%">
           <Heading variant="h6">{x.label}</Heading>
           <Stack alignItems="center" gap="$1">
-            <Text>{x.description ?? "No description available"}</Text>
+            <Text>{x.description ?? 'No description available'}</Text>
             {!x.description && (
               <Tooltip
                 content="The owner of this smart contract hasn't provided a description for
@@ -156,14 +156,14 @@ export default function Sign(req: SignProps) {
                 <summary>View raw capability</summary>
                 <Text bold size="md">
                   Capability:
-                </Text>{" "}
+                </Text>{' '}
                 {x.raw.name}
                 <br />
                 {x.valuesString && (
                   <>
                     <Text bold size="md">
                       Values:
-                    </Text>{" "}
+                    </Text>{' '}
                     {x.valuesString}
                   </>
                 )}

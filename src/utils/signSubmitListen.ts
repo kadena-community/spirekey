@@ -1,23 +1,23 @@
+import { asyncPipe } from '@/utils/asyncPipe';
 import {
   IClient,
   IUnsignedCommand,
   createTransaction,
   signWithChainweaver,
-} from "@kadena/client";
-import { sign } from "@kadena/cryptography-utils";
-import { isSignedCommand } from "@kadena/pactjs";
-import { asyncPipe } from "@/utils/asyncPipe";
+} from '@kadena/client';
+import { sign } from '@kadena/cryptography-utils';
+import { isSignedCommand } from '@kadena/pactjs';
 
 export const signSubmitListen = (client: IClient) => {
   return asyncPipe(
     createTransaction,
     signWithChainweaver,
-    (tx) => (isSignedCommand(tx) ? tx : Promise.reject("TX_NOT_SIGNED")),
+    (tx) => (isSignedCommand(tx) ? tx : Promise.reject('TX_NOT_SIGNED')),
     // do local first to check if everything is ok without paying gas
     (tx) => client.local(tx).then((res) => [tx, res]),
-    ([tx, res]) => (res.result.status === "success" ? tx : Promise.reject(res)),
+    ([tx, res]) => (res.result.status === 'success' ? tx : Promise.reject(res)),
     (tx) => client.submit(tx),
-    (tx) => client.listen(tx)
+    (tx) => client.listen(tx),
   );
 };
 
@@ -33,21 +33,21 @@ export const signWithKeyPair =
 
 export const signKeyPairSubmitListen = (
   client: IClient,
-  keyPair: { publicKey: string; secretKey: string }
+  keyPair: { publicKey: string; secretKey: string },
 ) => {
   return asyncPipe(
     createTransaction,
     signWithKeyPair(keyPair),
     (tx) => client.local(tx).then((res) => [tx, res]),
-    ([tx, res]) => (res.result.status === "success" ? tx : Promise.reject(res)),
+    ([tx, res]) => (res.result.status === 'success' ? tx : Promise.reject(res)),
     (tx) => client.submit(tx),
-    (tx) => client.listen(tx)
+    (tx) => client.listen(tx),
   );
 };
 
 export const signKeyPairLocal = (
   client: IClient,
-  keyPair: { publicKey: string; secretKey: string }
+  keyPair: { publicKey: string; secretKey: string },
 ) => {
   return asyncPipe(createTransaction, signWithKeyPair(keyPair), client.local);
 };

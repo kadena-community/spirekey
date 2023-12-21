@@ -1,8 +1,11 @@
-"use client";
+'use client';
 
-import { usePubkeys } from "@/hooks/usePubkeys";
-import { useReturnUrl } from "@/hooks/useReturnUrl";
-import { createTransaction } from "@kadena/client";
+import { usePubkeys } from '@/hooks/usePubkeys';
+import { useReturnUrl } from '@/hooks/useReturnUrl';
+import { asyncPipe } from '@/utils/asyncPipe';
+import { l1Client } from '@/utils/client';
+import { decodeAccount } from '@/utils/decodeAccount';
+import { createTransaction } from '@kadena/client';
 import {
   Button,
   Card,
@@ -12,33 +15,30 @@ import {
   Stack,
   Text,
   TrackerCard,
-} from "@kadena/react-ui";
-import { FC, useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { asyncPipe } from "@/utils/asyncPipe";
-import { l1Client } from "@/utils/client";
+} from '@kadena/react-ui';
+import { FC, useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import {
   parseContractData,
   readFile,
   uploadModuleTransaction,
   validateJson,
-} from "./pact.utils";
-import { decodeAccount } from "@/utils/decodeAccount";
+} from './pact.utils';
 
 const FORM_DEFAULT = {
-  chainId: "14",
-  networkdId: process.env.NETWORK_ID || "fast-development",
-  code: "",
+  chainId: '14',
+  networkdId: process.env.NETWORK_ID || 'fast-development',
+  code: '',
   file: null as FileList | null,
   contractData: JSON.stringify({}),
-  publicKey: "",
+  publicKey: '',
   publicKeyList: [],
-  alias: "",
-  capabilities: "",
-  senderAccount: "",
-  result: "",
-  payload: "",
-  cid: "",
+  alias: '',
+  capabilities: '',
+  senderAccount: '',
+  result: '',
+  payload: '',
+  cid: '',
 };
 export type PreviewFormValues = typeof FORM_DEFAULT;
 
@@ -67,7 +67,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
     control,
   } = useForm({
     defaultValues: defaults ?? FORM_DEFAULT,
-    reValidateMode: "onBlur",
+    reValidateMode: 'onBlur',
   });
 
   const { response } = searchParams;
@@ -78,12 +78,12 @@ export const PreviewForm: FC<PreviewFormProps> = ({
     try {
       const content = await readFile(event.target.files?.item(0));
       const reads = parseContractData(content);
-      const data = JSON.parse(getValues("contractData"));
+      const data = JSON.parse(getValues('contractData'));
       reads.forEach((value) => {
         if (!data[value.key]) data[value.key] = value.default;
       });
-      setValue("contractData", JSON.stringify(data, null, 2));
-      setValue("code", content);
+      setValue('contractData', JSON.stringify(data, null, 2));
+      setValue('code', content);
     } catch (error) {
       // do nothing
     }
@@ -93,22 +93,22 @@ export const PreviewForm: FC<PreviewFormProps> = ({
 
   useEffect(() => {
     if (!account) return;
-    setValue("publicKey", account.publicKey);
-    setValue("senderAccount", account.caccount);
-    setValue("cid", account.cid);
+    setValue('publicKey', account.publicKey);
+    setValue('senderAccount', account.caccount);
+    setValue('cid', account.cid);
     addPubkey({ pubkey: account.publicKey, cid: account.cid });
   }, [account?.cid, account?.caccount, account?.publicKey]);
 
   const onCodeChange = async (
-    event: React.ChangeEvent<HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     try {
       const reads = parseContractData(event.target.value);
-      const data = JSON.parse(getValues("contractData"));
+      const data = JSON.parse(getValues('contractData'));
       reads.forEach((value) => {
         if (!data[value.key]) data[value.key] = value.default;
       });
-      setValue("contractData", JSON.stringify(data, null, 2));
+      setValue('contractData', JSON.stringify(data, null, 2));
     } catch (error) {
       //do nothing
     }
@@ -118,17 +118,17 @@ export const PreviewForm: FC<PreviewFormProps> = ({
     const pubkey = event.target.value;
     const pk = pubkeys.find((pk) => pk.pubkey === pubkey);
     if (!pk) return;
-    setValue("publicKey", pk.pubkey);
-    setValue("cid", pk.cid);
+    setValue('publicKey', pk.pubkey);
+    setValue('cid', pk.cid);
   };
 
   const formatContractData = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const value = event.target.value;
     try {
       const json = JSON.parse(value);
-      setValue("contractData", JSON.stringify(json, null, 2));
+      setValue('contractData', JSON.stringify(json, null, 2));
     } catch (error) {
       // do nothing
     }
@@ -137,7 +137,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
   const onSubmit = async (data: PreviewFormValues) => {
     const pk = data.publicKey;
 
-    if (!pk) return console.log("keypair not found");
+    if (!pk) return console.log('keypair not found');
 
     const result = await asyncPipe(
       uploadModuleTransaction({
@@ -148,23 +148,23 @@ export const PreviewForm: FC<PreviewFormProps> = ({
         publicKey: pk,
         senderAccount: data.senderAccount,
         capabilities: data.capabilities
-          .replace(/\r/g, "")
+          .replace(/\r/g, '')
           .split(/\n/g)
           .filter(Boolean),
       }),
       createTransaction,
       (tx) => {
-        data.payload = Buffer.from(JSON.stringify(tx)).toString("base64");
+        data.payload = Buffer.from(JSON.stringify(tx)).toString('base64');
         return { ...tx, sigs: [] };
       },
       (tx) =>
-        l1Client.local(tx, { preflight: false, signatureVerification: false })
+        l1Client.local(tx, { preflight: false, signatureVerification: false }),
     )({});
 
     const error = ((result as any)?.result?.error?.message as string) || null;
-    const success = result?.result?.status === "success";
+    const success = result?.result?.status === 'success';
     if (error || !success) {
-      setError("root", { message: error ?? "Something went wrong" });
+      setError('root', { message: error ?? 'Something went wrong' });
       return;
     }
 
@@ -182,7 +182,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
         as="a"
         variant="alternative"
         href={`${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(
-          "/pact"
+          '/pact',
         )}`}
       >
         Select account
@@ -192,24 +192,24 @@ export const PreviewForm: FC<PreviewFormProps> = ({
           icon="ManageKda"
           labelValues={[
             {
-              label: "Account",
+              label: 'Account',
               value: account.caccount,
               isAccount: true,
             },
             {
-              label: "Display Name",
+              label: 'Display Name',
               value: account.name,
             },
             {
-              label: "Device",
+              label: 'Device',
               value: account.cid,
             },
             {
-              label: "Account ID",
+              label: 'Account ID',
               value: account.waccount,
             },
             {
-              label: "Public key",
+              label: 'Public key',
               value: account.publicKey,
             },
           ]}
@@ -227,7 +227,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
                 id="public-key"
                 ariaLabel="Public Key"
                 {...field}
-                {...register("publicKey", {
+                {...register('publicKey', {
                   onChange: onPublicKeyChange,
                 })}
               >
@@ -244,7 +244,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
           <Input
             id="senderAccount"
             type="text"
-            {...register("senderAccount")}
+            {...register('senderAccount')}
           />
         </FormFieldWrapper>
         <FormFieldWrapper htmlFor="chainId" label="Chain ID">
@@ -270,7 +270,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
             rules={{ required: true }}
             render={({ field }) => (
               <Select id="select-network-id" ariaLabel="Network ID" {...field}>
-                {["fast-development", "testnet04", "mainnet01"].map((i) => (
+                {['fast-development', 'testnet04', 'mainnet01'].map((i) => (
                   <option key={i} value={i}>
                     {i}
                   </option>
@@ -283,7 +283,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
           <Input
             id="file"
             type="file"
-            {...register("file", {
+            {...register('file', {
               onChange: onChangeFile,
             })}
           />
@@ -294,16 +294,16 @@ export const PreviewForm: FC<PreviewFormProps> = ({
           <textarea
             id="code"
             style={{
-              width: "100%",
-              minHeight: "120px",
-              resize: "vertical",
+              width: '100%',
+              minHeight: '120px',
+              resize: 'vertical',
               border: formState.touchedFields.code
                 ? formState.errors.code
-                  ? "1px solid #d52020"
-                  : "1px solid #38ac38"
-                : "1px solid #cccccc",
+                  ? '1px solid #d52020'
+                  : '1px solid #38ac38'
+                : '1px solid #cccccc',
             }}
-            {...register("code", {
+            {...register('code', {
               onChange: onCodeChange,
             })}
           />
@@ -312,16 +312,16 @@ export const PreviewForm: FC<PreviewFormProps> = ({
           <textarea
             id="contractData"
             style={{
-              width: "100%",
-              minHeight: "120px",
-              resize: "vertical",
+              width: '100%',
+              minHeight: '120px',
+              resize: 'vertical',
               border: formState.touchedFields.contractData
                 ? formState.errors.contractData
-                  ? "1px solid #d52020"
-                  : "1px solid #38ac38"
-                : "1px solid #cccccc",
+                  ? '1px solid #d52020'
+                  : '1px solid #38ac38'
+                : '1px solid #cccccc',
             }}
-            {...register("contractData", {
+            {...register('contractData', {
               onBlur: formatContractData,
               validate: validateJson,
             })}
@@ -331,22 +331,22 @@ export const PreviewForm: FC<PreviewFormProps> = ({
           <textarea
             id="capabilities"
             style={{
-              width: "100%",
-              minHeight: "120px",
-              resize: "vertical",
+              width: '100%',
+              minHeight: '120px',
+              resize: 'vertical',
               border: formState.touchedFields.capabilities
                 ? formState.errors.capabilities
-                  ? "1px solid #d52020"
-                  : "1px solid #38ac38"
-                : "1px solid #cccccc",
+                  ? '1px solid #d52020'
+                  : '1px solid #38ac38'
+                : '1px solid #cccccc',
             }}
-            {...register("capabilities")}
+            {...register('capabilities')}
           />
         </FormFieldWrapper>
       </Stack>
       <Stack direction="column" margin="$md" justifyContent="flex-start">
         {formState.errors.root && (
-          <div style={{ marginBottom: "0.5rem" }}>
+          <div style={{ marginBottom: '0.5rem' }}>
             <b>Error: </b>
             <Text>{formState.errors.root.message}</Text>
           </div>
