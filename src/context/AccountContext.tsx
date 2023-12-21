@@ -46,11 +46,10 @@ export const AccountContext = createContext<AccountContext>(
 );
 
 interface Props {
-  client: IClient;
   children: ReactNode;
 }
 
-export function AccountsProvider({ client, children }: Props) {
+export function AccountsProvider({ children }: Props) {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [activeAccount, setActiveAccount] = useState<Account | null>(null);
   const [activeDevice, setActiveDevice] = useState<Device | null>(null);
@@ -67,7 +66,6 @@ export function AccountsProvider({ client, children }: Props) {
         account: await getAccountFrom({
           caccount: account,
           networkId: network,
-          namespace: process.env.NAMESPACE ?? '',
         }),
       })),
     );

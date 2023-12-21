@@ -11,10 +11,13 @@ export const NetworkSelector = () => {
     },
     reValidateMode: 'onBlur',
   });
+
   const onNetworkChange = () => setNetwork(getValues('network'));
+
   useEffect(() => {
     setValue('network', network);
   }, [network]);
+
   return (
     <SelectField
       label="Network"
