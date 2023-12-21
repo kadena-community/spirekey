@@ -1,6 +1,7 @@
 'use client';
 
 import { Loader } from '@/components/CreateWalletLoader/Loader';
+import { FundAccount } from '@/components/FundAccount';
 import { NetworkSelector } from '@/components/NetworkSelector';
 import { useNetwork } from '@/context/NetworkContext';
 import { useAccounts } from '@/hooks/useAccounts';
@@ -194,6 +195,16 @@ export default function Home() {
                 ))}
               </Table.Body>
             </Table.Root>
+          </Stack>
+        </Card>
+        <Card fullWidth>
+          <Stack direction="column" gap="$md" margin="$md">
+            <ContentHeader
+              heading="Fund account"
+              description="Add some funds to your account (Only works on Devnet or Testnet)"
+              icon="Account"
+            />
+            <FundAccount />
           </Stack>
         </Card>
       </Stack>
