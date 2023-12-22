@@ -107,6 +107,21 @@ const Register = () => {
   );
 };
 
+const AddWallet = () => {
+  return (
+    <Card fullWidth>
+      <Stack direction="column" gap="$md" margin="$md">
+        <ContentHeader
+          heading="WebAuthn Wallet"
+          description="Add this wallet to an existing account"
+          icon="Account"
+        />
+        <Link href="/add-wallet">Add</Link>
+      </Stack>
+    </Card>
+  );
+};
+
 const Restore = () => {
   return (
     <Card fullWidth>
@@ -214,6 +229,7 @@ export default function Home() {
   return (
     <Stack direction="column" gap="$md" margin="$md">
       <Register />
+      <AddWallet />
       <Restore />
     </Stack>
   );

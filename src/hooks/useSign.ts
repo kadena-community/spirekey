@@ -22,7 +22,9 @@ export const useSign = (walletUrl: string) => {
       router.push(
         `${walletUrl}/sign?payload=${toBase64(tx)}&cid=${
           device['credential-id']
-        }&returnUrl=${getReturnUrl(returnPath)}&signers=${toBase64(signers)}`,
+        }&returnUrl=${getReturnUrl(returnPath)}&signers=${toBase64(
+          signers || [],
+        )}`,
       );
     },
   };

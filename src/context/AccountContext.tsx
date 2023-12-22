@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useEffect, useState } from 'react';
 
 import { usePubkeys } from '@/hooks/usePubkeys';
 import { getAccountFrom } from '@/utils/account';
@@ -146,7 +146,6 @@ export function AccountsProvider({ children }: Props) {
 
   const handleRestoreAccount = async ({
     caccount,
-    networkId,
     namespace,
   }: {
     caccount: string;

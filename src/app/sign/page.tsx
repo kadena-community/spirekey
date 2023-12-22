@@ -110,7 +110,7 @@ export default function Sign(req: SignProps) {
     req.searchParams;
   const router = useRouter();
   const data = payload ? Buffer.from(payload, 'base64').toString() : null;
-  const singersData = signers
+  const signersData = signers
     ? Buffer.from(signers, 'base64').toString()
     : null;
   const tx = JSON.parse(data ?? '{}');
@@ -139,7 +139,7 @@ export default function Sign(req: SignProps) {
       const payload: IPactCommand = JSON.parse(signedTx.cmd);
       const nextSigner: any = payload.signers[unsignedSigIndex];
       console.log('Next signer', nextSigner);
-      const s = JSON.parse(singersData!);
+      const s = JSON.parse(signersData!);
       console.log('Signers', s);
       const params = getSignParams(signedTx, s[0].devices[0]);
       console.log('Params', params);
@@ -154,9 +154,9 @@ export default function Sign(req: SignProps) {
         ).toString('base64')}`,
       );
     router.push(
-      `${returnUrl}?payload=${payload}&response=${Buffer.from(
-        JSON.stringify(res),
-      ).toString('base64')}`,
+      `${returnUrl}?payload=${Buffer.from(JSON.stringify(signedTx)).toString(
+        'base64',
+      )}`,
     );
   };
 
