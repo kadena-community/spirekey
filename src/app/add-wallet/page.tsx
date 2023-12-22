@@ -2,6 +2,7 @@
 import { NetworkSelector } from '@/components/NetworkSelector';
 import { Device } from '@/context/AccountContext';
 import { useNetwork } from '@/context/NetworkContext';
+import { useAccounts } from '@/hooks/useAccounts';
 import { useSign } from '@/hooks/useSign';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
 import { getAccountFrom } from '@/utils/account';
@@ -96,17 +97,18 @@ export default function AddWallet({ searchParams }: Props) {
   const { network } = useNetwork();
   const { doSubmit, status } = useSubmit(searchParams);
   const { sign } = useSign('http://localhost:1337');
+  const { storeAccount } = useAccounts();
   const onAddDevice = async () => {
     const { account, displayName } = getValues();
-    const newDevice = await getNewDevice(displayName);
 
     const acc = await getAccountFrom({
       caccount: account,
       networkId: network,
       namespace: process.env.NAMESPACE!,
     });
+    const newDevice = await getNewDevice(displayName);
     const tx = await addDevice(acc.devices[0], acc, newDevice);
-    console.log(tx);
+    storeAccount(account);
     sign(tx, acc.devices[0], '/add-wallet');
   };
 

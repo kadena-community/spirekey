@@ -154,9 +154,9 @@ export default function Sign(req: SignProps) {
         ).toString('base64')}`,
       );
     router.push(
-      `${returnUrl}?payload=${payload}&response=${Buffer.from(
-        JSON.stringify(res),
-      ).toString('base64')}`,
+      `${returnUrl}?payload=${Buffer.from(JSON.stringify(signedTx)).toString(
+        'base64',
+      )}`,
     );
   };
 
