@@ -100,7 +100,7 @@ export default function RestorePage() {
         </SelectField>
 
         <TextField
-          label="account"
+          label="Namespace"
           inputProps={{ id: 'namespace', ...register('namespace') }}
           helperText={
             'Enter the namespace of the account you want to restore, this should look like n_hash'
