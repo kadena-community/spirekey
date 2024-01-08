@@ -25,21 +25,12 @@ const renderQr = async (url: string, canvasRef: any) => {
   const reader = stream.getReader();
   timer.start();
   while (true) {
-    // read the next packet
     const { value: packet, done } = await reader.read();
     if (done) {
       break;
     }
 
-    // display the packet as a qr-code for scanning
     await display({ packet });
-
-    // manage your frame rate
-    // Note: `timer` internally uses `requestAnimationFrame`, if available, to
-    // prevent the promise returned from `nextFrame` from resolving until
-    // `requestAnimationFrame` runs, preventing changes while the user is
-    // not viewing the appropriate window/tab and preventing changes that
-    // are faster than the browser itself can render
     await timer.nextFrame();
   }
 };

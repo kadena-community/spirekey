@@ -3,6 +3,7 @@
 import { Loader } from '@/components/CreateWalletLoader/Loader';
 import { FundAccount } from '@/components/FundAccount';
 import { NetworkSelector } from '@/components/NetworkSelector';
+import { Scan } from '@/components/Scan';
 import { useNetwork } from '@/context/NetworkContext';
 import { useAccounts } from '@/hooks/useAccounts';
 import { registerAccount } from '@/utils/register';
@@ -231,6 +232,7 @@ export default function Home() {
       <Register />
       <AddWallet />
       <Restore />
+      <Scan />
     </Stack>
   );
 }
