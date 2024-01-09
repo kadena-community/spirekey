@@ -35,7 +35,7 @@ const NetworkProvider = ({ defaultNetwork, children }: Props) => {
   );
 
   useEffect(() => {
-    setNetworkById(localStorage.getItem('network') || 'testnet04');
+    setNetworkById(localStorage.getItem('network') || defaultNetwork);
   }, []);
 
   const setNetworkById = (network: string) => {
