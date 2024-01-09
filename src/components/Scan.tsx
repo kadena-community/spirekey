@@ -1,7 +1,15 @@
 import { Card } from '@kadena/react-ui';
+import * as base64url from 'base64url-universal';
+import jsQr from 'jsqr';
+import QRScanner from 'qr-scanner';
+import { Decoder, decoder, getImageData } from 'qram';
 import { useEffect, useRef, useState } from 'react';
 
-const setupCamera = (video: HTMLVideoElement, canvas: HTMLCanvasElement) => {
+const setupCamera = (
+  video: HTMLVideoElement,
+  canvas: HTMLCanvasElement,
+  setResult: any,
+) => {
   const streamPromise = navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
@@ -11,7 +19,7 @@ const setupCamera = (video: HTMLVideoElement, canvas: HTMLCanvasElement) => {
     },
   });
 
-  initCamera(video, canvas, streamPromise);
+  initCamera(video, canvas, streamPromise, setResult);
 
   return function unloadCamera() {
     streamPromise.then((stream) => {
@@ -32,6 +40,7 @@ const initCamera = async (
   video: HTMLVideoElement,
   canvas: HTMLCanvasElement,
   streamPromise: Promise<MediaStream>,
+  setResult: any,
 ) => {
   // Request the front-facing camera of the device
   const stream = await streamPromise;
@@ -48,22 +57,72 @@ const initCamera = async (
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
   canvas.getContext('2d');
+
+  parseQRCode(video, canvas, setResult);
+};
+
+const parseQRCode = async (
+  video: HTMLVideoElement,
+  canvas: HTMLCanvasElement,
+  setResult: any,
+) => {
+  const decoder = new Decoder();
+
+  const scanner = new QRScanner(
+    video,
+    (result) => {
+      if (result) {
+        decoder
+          .enqueue(base64url.decode(result.data))
+          .then((progress: any) => {
+            // show progress, e.g. `progress.receivedBlocks / progress.totalBlocks`,
+            // to user somehow ...
+
+            console.log('prog', progress);
+
+            if (progress.done) {
+              scanner.stop();
+            }
+          })
+          .catch((e: any) => {
+            if (e.name === 'AbortError') {
+              scanner.stop();
+            }
+          });
+      }
+    },
+    { highlightScanRegion: true },
+  );
+
+  try {
+    // result found
+    scanner.start();
+    const { data } = await decoder.decode();
+    const textDecoder = new TextDecoder();
+    setResult(textDecoder.decode(data));
+  } catch (e) {
+    // failure to decode
+    console.error(e);
+  }
 };
 
 export const Scan = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [shouldLoad, setShouldLoad] = useState(false);
+  const [result, setResult] = useState('');
+  const toggleLoad = () => setShouldLoad(!shouldLoad);
   useEffect(() => {
     if (!shouldLoad) return;
     const video = videoRef.current;
     const canvas = canvasRef.current;
     if (!video || !canvas) return;
-    return setupCamera(video, canvas);
+    return setupCamera(video, canvas, setResult);
   }, [shouldLoad]);
   return (
     <Card fullWidth>
-      <button onClick={() => setShouldLoad(true)}>Start</button>
+      <button onClick={toggleLoad}>{shouldLoad ? 'Scan' : 'Stop'}</button>
+      {result && <p>{result}</p>}
       <canvas ref={canvasRef} />
       <video ref={videoRef} />
     </Card>

@@ -13,9 +13,9 @@ const renderQr = async (url: string, canvasRef: any) => {
   const data = Buffer.from(url);
   const encoder = new Encoder({
     data,
-    blockSize: 1024,
+    blockSize: 256,
   });
-  const timer = encoder.createTimer({ fps: 30 });
+  const timer = encoder.createTimer({ fps: 15 });
   const stream = await encoder.createReadableStream();
 
   const display = ({ packet }: any) => {
