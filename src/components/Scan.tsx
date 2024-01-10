@@ -1,8 +1,9 @@
 import { Card } from '@kadena/react-ui';
+import { sprinkles } from '@kadena/react-ui/theme';
 import * as base64url from 'base64url-universal';
-import jsQr from 'jsqr';
+import { useRouter } from 'next/navigation';
 import QRScanner from 'qr-scanner';
-import { Decoder, decoder, getImageData } from 'qram';
+import { Decoder } from 'qram';
 import { useEffect, useRef, useState } from 'react';
 
 const setupCamera = (
@@ -58,14 +59,10 @@ const initCamera = async (
   canvas.height = video.videoHeight;
   canvas.getContext('2d');
 
-  parseQRCode(video, canvas, setResult);
+  parseQRCode(video, setResult);
 };
 
-const parseQRCode = async (
-  video: HTMLVideoElement,
-  canvas: HTMLCanvasElement,
-  setResult: any,
-) => {
+const parseQRCode = async (video: HTMLVideoElement, setResult: any) => {
   const decoder = new Decoder();
 
   const scanner = new QRScanner(
@@ -75,19 +72,10 @@ const parseQRCode = async (
         decoder
           .enqueue(base64url.decode(result.data))
           .then((progress: any) => {
-            // show progress, e.g. `progress.receivedBlocks / progress.totalBlocks`,
-            // to user somehow ...
-
-            console.log('prog', progress);
-
-            if (progress.done) {
-              scanner.stop();
-            }
+            if (progress.done) scanner.stop();
           })
           .catch((e: any) => {
-            if (e.name === 'AbortError') {
-              scanner.stop();
-            }
+            if (e.name === 'AbortError') scanner.stop();
           });
       }
     },
@@ -112,6 +100,27 @@ export const Scan = () => {
   const [shouldLoad, setShouldLoad] = useState(false);
   const [result, setResult] = useState('');
   const toggleLoad = () => setShouldLoad(!shouldLoad);
+  const router = useRouter();
+const decoder = new Decoder();
+
+  const scanner = new QRScanner(
+    videoRef.current,
+    (result) => {
+      if (result) {
+        decoder
+          .enqueue(base64url.decode(result.data))
+          .then((progress: any) => {
+            if (progress.done) scanner.stop();
+          })
+          .catch((e: any) => {
+            if (e.name === 'AbortError') scanner.stop();
+          });
+      }
+    },
+    { highlightScanRegion: true },
+  );
+
+
   useEffect(() => {
     if (!shouldLoad) return;
     const video = videoRef.current;
@@ -119,12 +128,27 @@ export const Scan = () => {
     if (!video || !canvas) return;
     return setupCamera(video, canvas, setResult);
   }, [shouldLoad]);
+  useEffect(() => {
+    if (!result) return;
+    router.push(result);
+  }, [result]);
   return (
     <Card fullWidth>
-      <button onClick={toggleLoad}>{shouldLoad ? 'Scan' : 'Stop'}</button>
+      <button onClick={toggleLoad}>{!shouldLoad ? 'Scan' : 'Stop'}</button>
       {result && <p>{result}</p>}
-      <canvas ref={canvasRef} />
-      <video ref={videoRef} />
+      <video
+        ref={videoRef}
+        className={sprinkles({
+          display: shouldLoad ? 'block' : 'none',
+        })}
+      />
+      <canvas
+        ref={canvasRef}
+        className={sprinkles({
+          position: 'absolute',
+          display: shouldLoad ? 'block' : 'none',
+        })}
+      />
     </Card>
   );
 };

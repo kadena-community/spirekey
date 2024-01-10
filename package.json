@@ -23,7 +23,6 @@
     "base64url-universal": "^2.0.0",
     "cbor": "^9.0.1",
     "encoding": "^0.1.13",
-    "jsqr": "^1.4.0",
     "next": "14.0.3",
     "next-themes": "^0.2.1",
     "parse-cosekey": "^1.0.2",
