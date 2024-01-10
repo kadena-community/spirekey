@@ -10,7 +10,6 @@ import {
   Stack,
   Table,
   Text,
-  TrackerCard,
 } from '@kadena/react-ui';
 
 type AccountOverviewProps = {
@@ -64,21 +63,6 @@ const AccountOverview = ({ account }: AccountOverviewProps) => {
         </Table.Root>
       </Stack>
     </Card>
-  );
-  return (
-    <TrackerCard
-      icon="ManageKda"
-      labelValues={[
-        { label: 'Account', value: account.account, isAccount: true },
-        { label: 'Balance', value: account.balance },
-        ...account.devices.map((d) => {
-          return {
-            label: d.name,
-            value: `${d.domain} - ${d['credential-id']}`,
-          };
-        }),
-      ]}
-    />
   );
 };
 
