@@ -6,6 +6,7 @@ import {
   Box,
   Card,
   Heading,
+  Link,
   ProductIcon,
   Stack,
   Table,
@@ -41,7 +42,10 @@ const AccountOverview = ({ account }: AccountOverviewProps) => {
         <Text>{account.balance}</Text>
       </Stack>
       <Stack direction="column" gap="$md" margin="$md">
-        <Text bold>Devices</Text>
+        <Stack direction="row" gap="$md" margin="$md" justifyContent="space-between">
+          <Text bold>Devices</Text>
+          <Link href={`/accounts/${encodeURIComponent(account.account)}/add-device`}>Add Device</Link>
+        </Stack>
         <Table.Root striped>
           <Table.Head>
             <Table.Tr>
@@ -51,7 +55,7 @@ const AccountOverview = ({ account }: AccountOverviewProps) => {
             </Table.Tr>
           </Table.Head>
           <Table.Body>
-            {account.devices.map((d) => {
+            {(account.devices || []).map((d) => {
               return (
                 <Table.Tr>
                   <Table.Td>{d.name}</Table.Td>
