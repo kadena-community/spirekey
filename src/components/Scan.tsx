@@ -101,25 +101,6 @@ export const Scan = () => {
   const [result, setResult] = useState('');
   const toggleLoad = () => setShouldLoad(!shouldLoad);
   const router = useRouter();
-const decoder = new Decoder();
-
-  const scanner = new QRScanner(
-    videoRef.current,
-    (result) => {
-      if (result) {
-        decoder
-          .enqueue(base64url.decode(result.data))
-          .then((progress: any) => {
-            if (progress.done) scanner.stop();
-          })
-          .catch((e: any) => {
-            if (e.name === 'AbortError') scanner.stop();
-          });
-      }
-    },
-    { highlightScanRegion: true },
-  );
-
 
   useEffect(() => {
     if (!shouldLoad) return;
@@ -136,19 +117,17 @@ const decoder = new Decoder();
     <Card fullWidth>
       <button onClick={toggleLoad}>{!shouldLoad ? 'Scan' : 'Stop'}</button>
       {result && <p>{result}</p>}
-      <video
-        ref={videoRef}
-        className={sprinkles({
-          display: shouldLoad ? 'block' : 'none',
-        })}
-      />
-      <canvas
-        ref={canvasRef}
-        className={sprinkles({
-          position: 'absolute',
-          display: shouldLoad ? 'block' : 'none',
-        })}
-      />
+      {shouldLoad && (
+        <div>
+          <video ref={videoRef} />
+          <canvas
+            ref={canvasRef}
+            className={sprinkles({
+              position: 'absolute',
+            })}
+          />
+        </div>
+      )}
     </Card>
   );
 };

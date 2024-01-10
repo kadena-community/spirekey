@@ -1,3 +1,4 @@
+import { sprinkles } from '@kadena/react-ui/theme';
 import * as base64url from 'base64url-universal';
 import { Encoder } from 'qram';
 import { toCanvas } from 'qrcode';
@@ -5,8 +6,6 @@ import { useEffect, useRef } from 'react';
 
 type QRCodeProps = {
   url: string;
-  width: number;
-  height: number;
 };
 
 const renderQr = async (url: string, canvasRef: any) => {
@@ -19,7 +18,9 @@ const renderQr = async (url: string, canvasRef: any) => {
   const stream = await encoder.createReadableStream();
 
   const display = ({ packet }: any) => {
-    return toCanvas(canvasRef.current, base64url.encode(packet.data));
+    return toCanvas(canvasRef.current, base64url.encode(packet.data), {
+      width: 500,
+    });
   };
 
   const reader = stream.getReader();
@@ -34,11 +35,18 @@ const renderQr = async (url: string, canvasRef: any) => {
     await timer.nextFrame();
   }
 };
-export const QRCode = ({ url, width, height }: QRCodeProps) => {
+export const QRCode = ({ url }: QRCodeProps) => {
   const canvasRef = useRef(null);
   useEffect(() => {
     renderQr(url, canvasRef);
   }, [url]);
 
-  return <canvas ref={canvasRef} width={width} height={height} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className={sprinkles({
+        width: '100%',
+      })}
+    />
+  );
 };

@@ -232,7 +232,7 @@ export default function Sign(req: SignProps) {
       {!signUrl && <Button onClick={onSign}>Sign</Button>}
       {signUrl && (
         <Stack direction="column" gap="$md" margin="$md">
-          <QRCode url={signUrl} height={100} width={100} />
+          <QRCode url={signUrl} />
           <TextField
             inputProps={{ id: 'signUrl', value: signUrl, readOnly: true }}
           />
