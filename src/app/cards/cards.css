@@ -6,9 +6,16 @@
   transition:
     order 2s ease-in-out,
     height 0.3s ease-in-out;
+  z-index: 1;
 }
 
 .cards .card.active {
   height: 8rem;
   order: -1;
+}
+
+.placeholder {
+  height: calc(100vh - 8rem - 9rem);
+  background-color: purple;
+  z-index: -1;
 }
