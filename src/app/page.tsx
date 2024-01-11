@@ -1,8 +1,11 @@
 'use client';
 
+import { AddWallet } from '@/components/AddWallet';
 import { Loader } from '@/components/CreateWalletLoader/Loader';
 import { FundAccount } from '@/components/FundAccount';
 import { NetworkSelector } from '@/components/NetworkSelector';
+import { Restore } from '@/components/RestoreWallet';
+import { Scan } from '@/components/Scan';
 import { useNetwork } from '@/context/NetworkContext';
 import { useAccounts } from '@/hooks/useAccounts';
 import { registerAccount } from '@/utils/register';
@@ -18,7 +21,6 @@ import {
   TextField,
   TrackerCard,
 } from '@kadena/react-ui';
-import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import useSWR from 'swr';
@@ -102,36 +104,6 @@ const Register = () => {
           helperText="This name will be stored on the blockchain, don't use any sensitive information."
         />
         <Button onClick={onRegister}>Register</Button>
-      </Stack>
-    </Card>
-  );
-};
-
-const AddWallet = () => {
-  return (
-    <Card fullWidth>
-      <Stack direction="column" gap="$md" margin="$md">
-        <ContentHeader
-          heading="WebAuthn Wallet"
-          description="Add this wallet to an existing account"
-          icon="Account"
-        />
-        <Link href="/add-wallet">Add</Link>
-      </Stack>
-    </Card>
-  );
-};
-
-const Restore = () => {
-  return (
-    <Card fullWidth>
-      <Stack direction="column" gap="$md" margin="$md">
-        <ContentHeader
-          heading="WebAuthn Wallet"
-          description="Restore an account using WebAuthn"
-          icon="Account"
-        />
-        <Link href="/restore">Restore</Link>
       </Stack>
     </Card>
   );
@@ -231,6 +203,7 @@ export default function Home() {
       <Register />
       <AddWallet />
       <Restore />
+      <Scan />
     </Stack>
   );
 }

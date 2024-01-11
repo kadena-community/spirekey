@@ -1,16 +1,10 @@
 'use client';
 
-import { Device } from '@/context/AccountContext';
+import { QRCode } from '@/components/QRCode';
 import { usePubkeys } from '@/hooks/usePubkeys';
 import { useSign } from '@/hooks/useSign';
 import { getSig } from '@/utils/getSig';
-import {
-  addSignatures,
-  ICap,
-  IExecutionPayloadObject,
-  IPactCommand,
-  IUnsignedQuicksignTransaction,
-} from '@kadena/client';
+import { addSignatures, ICap, IPactCommand } from '@kadena/client';
 import {
   Box,
   Button,
@@ -25,7 +19,7 @@ import {
 } from '@kadena/react-ui';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 type SignProps = {
   searchParams: {
@@ -120,6 +114,7 @@ export default function Sign(req: SignProps) {
 
   const [language, setLanguage] = useState('en');
   const [signUrl, setSignUrl] = useState<string | null>(null);
+  const [signPath, setSignPath] = useState<string | null>(null);
 
   const onSign = async () => {
     const pubKey = pubkeys.find((x) => x.cid === cid);
@@ -143,9 +138,9 @@ export default function Sign(req: SignProps) {
       console.log('Signers', s);
       const params = getSignParams(signedTx, s[0].devices[0]);
       console.log('Params', params);
-      return setSignUrl(
-        `${process.env.WALLET_URL}/sign?payload=${params.payload}&cid=${params.cid}&signers=${signers}&originReturnUrl=${returnUrl}`,
-      );
+      const signPath = `/sign?payload=${params.payload}&cid=${params.cid}&signers=${signers}&originReturnUrl=${returnUrl}`;
+      setSignPath(signPath);
+      return setSignUrl(`${process.env.WALLET_URL}${signPath}`);
     }
     if (originReturnUrl)
       return setSignUrl(
@@ -229,10 +224,13 @@ export default function Sign(req: SignProps) {
       </Box>
 
       {!signUrl && <Button onClick={onSign}>Sign</Button>}
-      {signUrl && (
-        <TextField
-          inputProps={{ id: 'signUrl', value: signUrl, readOnly: true }}
-        />
+      {signUrl && signPath && (
+        <Stack direction="column" gap="$md" margin="$md">
+          <QRCode url={signPath} />
+          <TextField
+            inputProps={{ id: 'signUrl', value: signUrl, readOnly: true }}
+          />
+        </Stack>
       )}
     </Stack>
   );
