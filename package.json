@@ -22,6 +22,7 @@
     "@vanilla-extract/next-plugin": "^2.3.2",
     "base64url-universal": "^2.0.0",
     "cbor": "^9.0.1",
+    "classnames": "^2.5.1",
     "encoding": "^0.1.13",
     "next": "14.0.3",
     "next-themes": "^0.2.1",
