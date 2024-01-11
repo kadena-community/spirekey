@@ -1,6 +1,6 @@
-import { Text } from '../../Typography/Text/Text';
 import React from 'react';
-import { colorVariant, elementVariant, fontVariant, sizeVariant, transformVariant, } from './Text.css';
+import { colorVariants, transformVariants } from '../typography.css';
+import { Text } from './Text';
 const meta = {
     title: 'Typography/Text',
     component: Text,
@@ -17,26 +17,18 @@ const meta = {
             control: { type: 'select' },
         },
         variant: {
-            options: Object.keys(elementVariant),
+            options: ['small', 'smallest', 'base'],
             control: { type: 'select' },
-        },
-        size: {
-            options: Object.keys(sizeVariant),
-            control: { type: 'radio' },
-        },
-        font: {
-            options: Object.keys(fontVariant),
-            control: { type: 'radio' },
         },
         bold: {
             control: { type: 'boolean' },
         },
         color: {
-            options: Object.keys(colorVariant),
+            options: Object.keys(colorVariants),
             control: { type: 'select' },
         },
         transform: {
-            options: Object.keys(transformVariant),
+            options: Object.keys(transformVariants),
             control: { type: 'radio' },
         },
     },
@@ -48,12 +40,10 @@ export const Primary = {
         children: 'text',
         as: 'span',
         variant: undefined,
-        size: undefined,
-        font: undefined,
         bold: undefined,
         color: undefined,
         transform: undefined,
     },
-    render: ({ font, bold, size, as, variant, transform, children, color }) => (React.createElement(Text, { font: font, bold: bold, size: size, as: as, variant: variant, transform: transform, color: color }, children)),
+    render: ({ bold, as, variant, transform, children, color }) => (React.createElement(Text, { bold: bold, as: as, variant: variant, transform: transform, color: color }, children)),
 };
 //# sourceMappingURL=Text.stories.js.map

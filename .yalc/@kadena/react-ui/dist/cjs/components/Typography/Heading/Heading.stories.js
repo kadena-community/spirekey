@@ -4,10 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Primary = void 0;
-const Heading_1 = require("../../Typography/Heading/Heading");
 const react_1 = __importDefault(require("react"));
 const typography_css_1 = require("../typography.css");
-const Heading_css_1 = require("./Heading.css");
+const Heading_1 = require("./Heading");
 const meta = {
     title: 'Typography/Heading',
     component: Heading_1.Heading,
@@ -21,18 +20,15 @@ const meta = {
             control: { type: 'text' },
         },
         as: {
+            options: Heading_1.HEADING_ELEMENTS,
             control: { type: 'select' },
         },
         variant: {
-            options: Object.keys(Heading_css_1.elementVariants),
+            options: Heading_1.HEADING_ELEMENTS,
             control: { type: 'select' },
         },
-        font: {
-            options: Object.keys(typography_css_1.fontVariants),
-            control: { type: 'radio' },
-        },
         bold: {
-            options: Object.keys(Heading_css_1.boldVariants),
+            options: Heading_1.HEADING_ELEMENTS,
             control: { type: 'boolean' },
         },
         color: {
@@ -49,14 +45,13 @@ exports.default = meta;
 exports.Primary = {
     name: 'Heading',
     args: {
-        children: 'heading',
         as: 'h1',
+        children: 'heading',
         variant: undefined,
-        font: undefined,
         bold: undefined,
         color: undefined,
         transform: undefined,
     },
-    render: ({ font, bold, as, variant, transform, children, color }) => (react_1.default.createElement(Heading_1.Heading, { as: as, variant: variant, font: font, bold: bold, color: color, transform: transform }, children)),
+    render: ({ as, bold, variant, transform, children, color }) => (react_1.default.createElement(Heading_1.Heading, { as: as, variant: variant, bold: bold, color: color, transform: transform }, children)),
 };
 //# sourceMappingURL=Heading.stories.js.map

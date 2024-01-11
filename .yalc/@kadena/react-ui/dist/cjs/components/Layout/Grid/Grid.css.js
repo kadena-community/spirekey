@@ -3,8 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.itemColumnVariants = exports.containerColumnVariants = exports.rowSpanVariants = exports.gapVariants = exports.gridItemClass = exports.gridContainerClass = void 0;
-const sprinkles_css_1 = require("../../../styles/sprinkles.css");
+exports.itemColumnVariants = exports.containerColumnVariants = exports.rowSpanVariants = exports.gridItemClass = exports.gridContainerClass = void 0;
 const themeUtils_1 = require("../../../styles/themeUtils");
 const css_1 = require("@vanilla-extract/css");
 const lodash_mapvalues_1 = __importDefault(require("lodash.mapvalues"));
@@ -18,16 +17,6 @@ exports.gridItemClass = (0, css_1.style)([
         gridColumnStart: 'auto',
     },
 ]);
-exports.gapVariants = (0, css_1.styleVariants)({
-    $2xs: [(0, sprinkles_css_1.sprinkles)({ gridGap: '$2xs' })],
-    $xs: [(0, sprinkles_css_1.sprinkles)({ gridGap: '$xs' })],
-    $sm: [(0, sprinkles_css_1.sprinkles)({ gridGap: '$sm' })],
-    $md: [(0, sprinkles_css_1.sprinkles)({ gridGap: '$md' })],
-    $lg: [(0, sprinkles_css_1.sprinkles)({ gridGap: '$lg' })],
-    $xl: [(0, sprinkles_css_1.sprinkles)({ gridGap: '$xl' })],
-    $2xl: [(0, sprinkles_css_1.sprinkles)({ gridGap: '$2xl' })],
-    $3xl: [(0, sprinkles_css_1.sprinkles)({ gridGap: '$3xl' })],
-});
 const columnCount = {
     1: 1,
     2: 2,

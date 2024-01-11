@@ -1,8 +1,10 @@
 import React from 'react';
+import { onLayer2, withContentWidth } from '../../../../storyDecorators';
 import { TextareaCopy } from './TextareaCopy';
 const meta = {
     title: 'Form/Textarea/TextareaCopy',
     component: TextareaCopy,
+    decorators: [withContentWidth, onLayer2],
     parameters: {
         docs: {
             description: {
@@ -28,7 +30,7 @@ export const TextareaCopyStory = {
     name: 'TextareaCopy',
     args: {
         disabled: false,
-        fontFamily: '$mono',
+        fontFamily: 'codeFont',
         outlined: false,
     },
     render: (props) => {

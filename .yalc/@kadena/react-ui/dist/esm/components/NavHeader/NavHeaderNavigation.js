@@ -8,13 +8,14 @@ export const NavHeaderNavigation = ({ children, activeHref, }) => {
     const [_activeHref, setActiveHref] = useState(activeHref);
     const { glowX, animationDuration, glowRef, navRef, setGlowPosition } = useGlow();
     useEffect(() => {
-        if (activeHref !== _activeHref)
+        if (activeHref !== _activeHref) {
             setActiveHref(activeHref);
+        }
     }, [activeHref]);
     return (React.createElement(NavHeaderNavigationContext.Provider, { value: { setGlowPosition, activeHref: _activeHref, setActiveHref } },
         React.createElement("nav", { className: navWrapperClass, ref: navRef, "aria-label": "main", dir: "ltr" },
             React.createElement("div", { role: "none", className: glowClass, ref: glowRef, style: {
-                    opacity: glowX ? 1 : 0,
+                    opacity: 1,
                     transform: `translateX(${glowX}px)`,
                     transitionDuration: `${animationDuration}ms`,
                 } },

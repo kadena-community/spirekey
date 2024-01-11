@@ -25,16 +25,18 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Dynamic = void 0;
 const Icon_1 = require("../../Icon");
+const _storyDecorators_1 = require("../../../storyDecorators");
 const react_1 = __importStar(require("react"));
 const Select_1 = require("./Select");
 const meta = {
     title: 'Form/Select',
     component: Select_1.Select,
+    decorators: [_storyDecorators_1.withContentWidth, _storyDecorators_1.onLayer2],
     parameters: {
         status: { type: 'inDevelopment' },
         docs: {
             description: {
-                component: 'The Select component renders a select element with options. The select element can be disabled with the `disabled` prop. The icon of the select element can be set with the `icon` prop.',
+                component: 'The Select component renders a select element with options. The select element can be disabled with the `disabled` prop. The startIcon of the select element can be set with the `startIcon` prop.',
             },
         },
     },
@@ -50,11 +52,8 @@ const meta = {
                 defaultValue: { summary: 'false' },
             },
         },
-        icon: {
-            options: [
-                ...['-'],
-                ...Object.keys(Icon_1.SystemIcon),
-            ],
+        startIcon: {
+            options: ['-', ...Object.keys(Icon_1.SystemIcon)],
             control: {
                 type: 'select',
             },
@@ -65,11 +64,14 @@ exports.default = meta;
 exports.Dynamic = {
     name: 'Select',
     args: {
-        icon: undefined,
+        startIcon: undefined,
     },
-    render: ({ icon, disabled, outlined }) => {
+    render: ({ startIcon, disabled, outlined }) => {
         const [value, setValue] = (0, react_1.useState)('1');
-        return (react_1.default.createElement(Select_1.Select, { id: "select-story", ariaLabel: 'select', icon: icon, onChange: (e) => {
+        const IconComponent = startIcon !== '-'
+            ? Icon_1.SystemIcon[startIcon]
+            : undefined;
+        return (react_1.default.createElement(Select_1.Select, { id: "select-story", ariaLabel: 'select', startIcon: IconComponent && react_1.default.createElement(IconComponent, null), onChange: (e) => {
                 console.log('clicked on', e.target.value);
                 setValue(e.target.value);
             }, disabled: Boolean(disabled), outlined: Boolean(outlined), value: value },

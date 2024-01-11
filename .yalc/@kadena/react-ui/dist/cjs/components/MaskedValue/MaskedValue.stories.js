@@ -4,10 +4,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Primary = void 0;
+const _storyDecorators_1 = require("../../storyDecorators");
 const react_1 = __importDefault(require("react"));
 const MaskedValue_1 = require("./MaskedValue");
 const meta = {
     title: 'Patterns/MaskedValue',
+    decorators: [_storyDecorators_1.withContentWidth],
     parameters: {
         status: {
             type: ['experimental'],

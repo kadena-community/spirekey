@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.contentClass = exports.footerClass = exports.titleWrapperClass = exports.closeButtonClass = exports.overlayClass = exports.openModal = void 0;
-const sprinkles_css_1 = require("../../styles/sprinkles.css");
+const atoms_css_1 = require("../../styles/atoms.css");
+const index_1 = require("../../styles/index");
 const themeUtils_1 = require("../../styles/themeUtils");
-const vars_css_1 = require("../../styles/vars.css");
 const css_1 = require("@vanilla-extract/css");
+const css_utils_1 = require("@vanilla-extract/css-utils");
 const Card_css_1 = require("../Card/Card.css");
 exports.openModal = (0, css_1.style)([
     {
@@ -14,9 +15,8 @@ exports.openModal = (0, css_1.style)([
 ]);
 exports.overlayClass = (0, css_1.style)([
     Card_css_1.containerClass,
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         position: 'relative',
-        pointerEvents: 'initial',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -27,43 +27,48 @@ exports.overlayClass = (0, css_1.style)([
             maxWidth: '100vw',
             inset: 0,
         },
+        sm: {
+            minWidth: index_1.tokens.kda.foundation.layout.content.minWidth,
+        },
         md: {
-            maxWidth: vars_css_1.vars.contentWidth.$maxContentWidth,
+            maxWidth: index_1.tokens.kda.foundation.layout.content.maxWidth,
             maxHeight: '75vh',
         },
     }),
 ]);
 exports.closeButtonClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         position: 'absolute',
-        top: '$xs',
-        right: '$xs',
         display: 'flex',
         alignItems: 'center',
         background: 'none',
         border: 'none',
-        padding: '$xs',
+        padding: 'xs',
         cursor: 'pointer',
-        color: 'inherit',
+        color: 'icon.base.default',
     }),
+    {
+        top: index_1.tokens.kda.foundation.spacing.md,
+        right: index_1.tokens.kda.foundation.spacing.md,
+    },
 ]);
 exports.titleWrapperClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        marginBottom: '$4',
-        marginRight: '$20',
+    (0, atoms_css_1.atoms)({
+        marginBlockEnd: 'md',
+        marginInlineEnd: 'xxl',
         flexShrink: 0,
     }),
 ]);
-exports.footerClass = (0, css_1.style)([(0, sprinkles_css_1.sprinkles)({ flexShrink: 0 })]);
+exports.footerClass = (0, css_1.style)([(0, atoms_css_1.atoms)({ flexShrink: 0 })]);
 exports.contentClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         flex: 1,
-        paddingX: '$10',
+        paddingInline: 'xxxl',
         overflowY: 'auto',
     }),
     {
-        marginLeft: `-2.5rem`,
-        marginRight: `-2.5rem`,
+        marginLeft: (0, css_utils_1.calc)(index_1.tokens.kda.foundation.spacing.xxl).negate().toString(),
+        marginRight: (0, css_utils_1.calc)(index_1.tokens.kda.foundation.spacing.xxl).negate().toString(),
     },
 ]);
 //# sourceMappingURL=Dialog.css.js.map

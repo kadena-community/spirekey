@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Primary = void 0;
-const Text_1 = require("../../Typography/Text/Text");
 const react_1 = __importDefault(require("react"));
-const Text_css_1 = require("./Text.css");
+const typography_css_1 = require("../typography.css");
+const Text_1 = require("./Text");
 const meta = {
     title: 'Typography/Text',
     component: Text_1.Text,
@@ -23,26 +23,18 @@ const meta = {
             control: { type: 'select' },
         },
         variant: {
-            options: Object.keys(Text_css_1.elementVariant),
+            options: ['small', 'smallest', 'base'],
             control: { type: 'select' },
-        },
-        size: {
-            options: Object.keys(Text_css_1.sizeVariant),
-            control: { type: 'radio' },
-        },
-        font: {
-            options: Object.keys(Text_css_1.fontVariant),
-            control: { type: 'radio' },
         },
         bold: {
             control: { type: 'boolean' },
         },
         color: {
-            options: Object.keys(Text_css_1.colorVariant),
+            options: Object.keys(typography_css_1.colorVariants),
             control: { type: 'select' },
         },
         transform: {
-            options: Object.keys(Text_css_1.transformVariant),
+            options: Object.keys(typography_css_1.transformVariants),
             control: { type: 'radio' },
         },
     },
@@ -54,12 +46,10 @@ exports.Primary = {
         children: 'text',
         as: 'span',
         variant: undefined,
-        size: undefined,
-        font: undefined,
         bold: undefined,
         color: undefined,
         transform: undefined,
     },
-    render: ({ font, bold, size, as, variant, transform, children, color }) => (react_1.default.createElement(Text_1.Text, { font: font, bold: bold, size: size, as: as, variant: variant, transform: transform, color: color }, children)),
+    render: ({ bold, as, variant, transform, children, color }) => (react_1.default.createElement(Text_1.Text, { bold: bold, as: as, variant: variant, transform: transform, color: color }, children)),
 };
 //# sourceMappingURL=Text.stories.js.map

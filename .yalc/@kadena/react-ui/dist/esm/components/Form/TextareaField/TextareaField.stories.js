@@ -1,8 +1,10 @@
 import { TextareaField } from '../../Form';
+import { onLayer2, withContentWidth } from '../../../storyDecorators';
 import React, { useState } from 'react';
 const meta = {
     title: 'Form/TextareaField',
     component: TextareaField,
+    decorators: [withContentWidth, onLayer2],
     parameters: {
         status: { type: 'inDevelopment' },
         docs: {
@@ -22,16 +24,6 @@ const meta = {
                 defaultValue: { summary: 'false' },
             },
         },
-        textAreaProps: {
-            description: 'Props for the textarea element.',
-            control: {
-                type: 'object',
-            },
-            table: {
-                type: { summary: 'object' },
-                defaultValue: { summary: 'false' },
-            },
-        },
     },
 };
 export default meta;
@@ -43,21 +35,15 @@ export const TextFieldStory = {
         helperText: 'This is helper text',
         info: '(optional)',
         label: 'Label',
-        textAreaProps: {
-            id: 'TextFieldStory',
-            fontFamily: '$mono',
-            placeholder: 'This is a placeholder',
-            value: '',
-            onChange: () => { },
-        },
+        id: 'TextFieldStory',
+        fontFamily: 'codeFont',
+        placeholder: 'This is a placeholder',
+        value: '',
+        onChange: () => { },
     },
-    render: ({ disabled, textAreaProps, ...rest }) => {
+    render: ({ disabled, ...rest }) => {
         const [value, setValue] = useState('');
-        return (React.createElement(TextareaField, { disabled: disabled, textAreaProps: {
-                ...textAreaProps,
-                value,
-                onChange: ({ target }) => setValue(target.value),
-            }, ...rest }));
+        return (React.createElement(TextareaField, { disabled: disabled, ...rest, value: value, onChange: ({ target }) => setValue(target.value) }));
     },
 };
 //# sourceMappingURL=TextareaField.stories.js.map

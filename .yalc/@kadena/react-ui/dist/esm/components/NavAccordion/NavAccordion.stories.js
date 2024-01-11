@@ -1,3 +1,4 @@
+import { atoms } from '../../styles/atoms.css';
 import React from 'react';
 import { NavAccordion } from './';
 const meta = {
@@ -42,18 +43,19 @@ export const Dynamic = {
         darkMode: false,
     },
     render: ({ linked, darkMode }) => {
-        return (React.createElement(NavAccordion.Root, { linked: linked, darkMode: darkMode },
-            React.createElement(NavAccordion.Section, { title: "Developers", onClose: () => console.log('optional section onClose handler example'), onOpen: () => console.log('optional section onOpen handler example') },
-                React.createElement(NavAccordion.Group, { title: "Guides", onClose: () => console.log('optional group onClose handler example'), onOpen: () => console.log('optional group onOpen handler example') },
-                    React.createElement(NavAccordion.Link, { href: "#pact" }, "Pact Smart Contract"),
-                    React.createElement(NavAccordion.Link, { href: "#marmalade" }, "Marmalade Tutorial"),
-                    React.createElement(NavAccordion.Link, { href: "#dapp-tutorial" }, "Voting dApp Tutorial")),
-                React.createElement(NavAccordion.Link, { href: "#get-involved" }, "Getting Involved")),
-            React.createElement(NavAccordion.Section, { title: "Support" },
-                React.createElement(NavAccordion.Link, { href: "#developer-program" }, "Developer Program"),
-                React.createElement(NavAccordion.Link, { asChild: true },
-                    React.createElement("a", { href: "https://kadena.io/", rel: "noreferrer", target: "_blank" }, "Kadena.io (asChild)"))),
-            React.createElement(NavAccordion.Link, { href: "https://docs.kadena.io/" }, "Documentation")));
+        return (React.createElement("div", { className: atoms({ width: '100%' }) },
+            React.createElement(NavAccordion.Root, { linked: linked, darkMode: darkMode },
+                React.createElement(NavAccordion.Section, { title: "Developers", onClose: () => console.log('optional section onClose handler example'), onOpen: () => console.log('optional section onOpen handler example') },
+                    React.createElement(NavAccordion.Group, { title: "Guides", onClose: () => console.log('optional group onClose handler example'), onOpen: () => console.log('optional group onOpen handler example') },
+                        React.createElement(NavAccordion.Link, { href: "#pact" }, "Pact Smart Contract"),
+                        React.createElement(NavAccordion.Link, { href: "#marmalade" }, "Marmalade Tutorial"),
+                        React.createElement(NavAccordion.Link, { href: "#dapp-tutorial" }, "Voting dApp Tutorial")),
+                    React.createElement(NavAccordion.Link, { href: "#get-involved" }, "Getting Involved")),
+                React.createElement(NavAccordion.Section, { title: "Support" },
+                    React.createElement(NavAccordion.Link, { href: "#developer-program" }, "Developer Program"),
+                    React.createElement(NavAccordion.Link, { asChild: true },
+                        React.createElement("a", { href: "https://kadena.io/", rel: "noreferrer", target: "_blank" }, "Kadena.io (asChild)"))),
+                React.createElement(NavAccordion.Link, { href: "https://docs.kadena.io/" }, "Documentation"))));
     },
 };
 export default meta;

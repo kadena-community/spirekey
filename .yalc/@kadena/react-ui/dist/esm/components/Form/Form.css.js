@@ -1,42 +1,30 @@
-import { colorPalette } from '../../styles/colors';
-import { sprinkles } from '../../styles/sprinkles.css';
-import { darkThemeClass, vars } from '../../styles/vars.css';
+import { atoms } from '../../styles/atoms.css';
+import { tokens } from '../../styles/tokens/contract.css';
 import { createVar, fallbackVar, style } from '@vanilla-extract/css';
 export const statusColor = createVar();
 export const statusOutlineColor = createVar();
 export const baseOutlinedClass = style([
     {
-        outline: `2px solid ${fallbackVar(statusOutlineColor, vars.colors.$gray30)}`,
-        selectors: {
-            [`${darkThemeClass} &`]: {
-                outline: `2px solid ${fallbackVar(statusOutlineColor, vars.colors.$gray60)}`,
-            },
-        },
+        outline: `2px solid ${fallbackVar(statusOutlineColor, tokens.kda.foundation.color.border.base.default)}`,
     },
 ]);
 export const baseContainerClass = style([
-    sprinkles({
+    atoms({
         alignItems: 'stretch',
-        borderRadius: '$sm',
+        borderRadius: 'sm',
         display: 'flex',
-        color: '$foreground',
+        color: 'text.base.default',
         overflow: 'hidden',
-        lineHeight: '$lg',
-        bg: {
-            lightMode: '$white',
-            darkMode: '$gray100',
-        },
+        lineHeight: 'lg',
+        backgroundColor: 'layer-3.default',
+        position: 'relative',
     }),
     {
-        position: 'relative',
-        boxShadow: `0px 1px 0 0 ${colorPalette.$gray30}`,
+        boxShadow: `0px 1px 0 0 ${tokens.kda.foundation.color.border.base.default}`,
         outlineOffset: '2px',
         selectors: {
-            [`${darkThemeClass} &`]: {
-                boxShadow: `0px 1px 0 0 ${colorPalette.$gray60}`,
-            },
             '&:focus-within': {
-                outline: `2px solid ${fallbackVar(statusColor, vars.colors.$blue60)}`,
+                outline: `2px solid ${fallbackVar(statusColor, tokens.kda.foundation.color.border.semantic.info['@focus'])}`,
                 outlineOffset: '2px',
             },
         },

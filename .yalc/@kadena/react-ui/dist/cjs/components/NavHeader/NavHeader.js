@@ -36,7 +36,7 @@ const NavHeaderContainer = ({ brand = BrandLogo_1.logoVariants[0], children, }) 
         BrandLogo_1.logoVariants.includes(brand) && (react_1.default.createElement("div", { className: NavHeader_css_1.logoClass },
             react_1.default.createElement(Link_1.Link, { href: "/", target: "_self" },
                 react_1.default.createElement(BrandLogo_1.default, { variant: brand })))),
-        children));
+        react_1.default.createElement("div", { className: NavHeader_css_1.itemsContainerClass }, children)));
 };
 exports.NavHeaderContainer = NavHeaderContainer;
 //# sourceMappingURL=NavHeader.js.map

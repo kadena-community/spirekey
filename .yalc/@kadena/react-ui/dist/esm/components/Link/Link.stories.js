@@ -64,7 +64,7 @@ export const Primary = {
     },
     render: ({ href, target, icon, iconAlign }) => {
         return (React.createElement(React.Fragment, null,
-            React.createElement(Stack, { direction: "row", gap: "$2" },
+            React.createElement(Stack, { flexDirection: "row", gap: "xs" },
                 React.createElement(Link, { href: href, target: target, asChild: true }, "Link without icon"),
                 React.createElement(Link, { href: `${href}?${Date.now()}`, target: target, iconAlign: iconAlign, icon: icon }, "Non-visited"),
                 React.createElement(Link, { href: href, target: target, icon: icon }, "Kadena.io"),

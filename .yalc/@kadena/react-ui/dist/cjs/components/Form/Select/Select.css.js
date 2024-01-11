@@ -1,58 +1,41 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.chevronIconClass = exports.selectClass = exports.iconClass = exports.containerClassDisabled = exports.containerClass = void 0;
-const sprinkles_css_1 = require("../../../styles/sprinkles.css");
-const vars_css_1 = require("../../../styles/vars.css");
+const atoms_css_1 = require("../../../styles/atoms.css");
+const index_1 = require("../../../styles/index");
 const css_1 = require("@vanilla-extract/css");
 const Form_css_1 = require("../Form.css");
 exports.containerClass = (0, css_1.style)([
     Form_css_1.baseContainerClass,
-    (0, sprinkles_css_1.sprinkles)({
-        backgroundColor: {
-            lightMode: '$white',
-            darkMode: '$background',
-        },
-        flexGrow: 1,
-        gap: '$2',
-        paddingLeft: '$4',
-        paddingRight: '$2',
+    (0, atoms_css_1.atoms)({
+        backgroundColor: 'layer-3.default',
+        gap: 'sm',
+        paddingInline: 'md',
     }),
 ]);
 exports.containerClassDisabled = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         pointerEvents: 'none',
-        backgroundColor: {
-            lightMode: '$gray20',
-            darkMode: '$gray60',
-        },
-        color: {
-            lightMode: '$foreground',
-        },
+        color: 'text.base.inverse.default',
+        backgroundColor: 'layer-3.inverse.default',
     }),
-    {
-        selectors: {
-            [`${vars_css_1.darkThemeClass} &`]: {
-                backgroundColor: vars_css_1.vars.colors.$gray60,
-            },
-        },
-    },
 ]);
 exports.iconClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         alignItems: 'center',
         display: 'flex',
     }),
 ]);
 exports.selectClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         background: 'none',
         border: 'none',
-        color: '$foreground',
+        color: 'text.base.default',
         flexGrow: 1,
         outline: 'none',
-        paddingRight: '$2',
-        paddingY: '$2',
-        fontSize: '$base',
+        paddingInlineEnd: 'lg',
+        paddingBlock: 'sm',
+        fontSize: 'base',
     }),
     {
         backgroundColor: 'inherit',
@@ -61,22 +44,22 @@ exports.selectClass = (0, css_1.style)([
     },
 ]);
 exports.chevronIconClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         display: 'inline-flex',
         alignItems: 'center',
-        marginRight: '$2',
+        marginInlineEnd: 'sm',
         position: 'absolute',
         top: 0,
         bottom: 0,
-        right: '$1',
-        color: '$gray40',
+        right: 0,
+        color: 'icon.base.default',
     }),
     {
         pointerEvents: 'none',
         zIndex: 10,
         selectors: {
             '&:active': {
-                color: vars_css_1.vars.colors.$gray40,
+                color: index_1.tokens.kda.foundation.color.icon.base.default,
             },
         },
     },

@@ -1,10 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Text = exports.Label = exports.Heading = exports.GradientText = exports.Tree = exports.TrackerCard = exports.Tooltip = exports.Tag = exports.Tabs = exports.Table = exports.ProgressBar = exports.ProfileSummary = exports.Pagination = exports.NotificationHeading = exports.NotificationFooter = exports.NotificationButton = exports.Notification = exports.NavHeader = exports.NavFooter = exports.Modal = exports.maskValue = exports.MaskedValue = exports.Link = exports.Stack = exports.GridItem = exports.Grid = exports.Box = exports.IconButton = exports.SystemIcon = exports.ProductIcon = exports.TextareaField = exports.TextareaCopy = exports.Textarea = exports.TextField = exports.SelectField = exports.Select = exports.InputCopy = exports.Input = exports.FormFieldWrapper = exports.Divider = exports.useDialog = exports.DialogHeader = exports.DialogFooter = exports.DialogContent = exports.Dialog = exports.ContentHeader = exports.Card = exports.Button = exports.Breadcrumbs = exports.Accordion = void 0;
+exports.GradientText = exports.Tree = exports.TrackerCard = exports.Tooltip = exports.TagItem = exports.TagGroup = exports.Tag = exports.Tabs = exports.TabItem = exports.Table = exports.ProfileSummary = exports.Pagination = exports.NotificationHeading = exports.NotificationFooter = exports.NotificationButton = exports.Notification = exports.NavHeader = exports.NavFooter = exports.Modal = exports.maskValue = exports.MaskedValue = exports.Link = exports.Stack = exports.GridItem = exports.Grid = exports.Box = exports.IconButton = exports.SystemIcon = exports.ProductIcon = exports.TextareaField = exports.TextareaCopy = exports.Textarea = exports.TextField = exports.SelectField = exports.Select = exports.InputCopy = exports.Input = exports.FormFieldWrapper = exports.Divider = exports.useDialog = exports.DialogHeader = exports.DialogFooter = exports.DialogContent = exports.Dialog = exports.ContentHeader = exports.Card = exports.Button = exports.BreadcrumbsItem = exports.Breadcrumbs = exports.Accordion = void 0;
+exports.Text = exports.Heading = void 0;
 var Accordion_1 = require("./Accordion");
 Object.defineProperty(exports, "Accordion", { enumerable: true, get: function () { return Accordion_1.Accordion; } });
 var Breadcrumbs_1 = require("./Breadcrumbs");
 Object.defineProperty(exports, "Breadcrumbs", { enumerable: true, get: function () { return Breadcrumbs_1.Breadcrumbs; } });
+Object.defineProperty(exports, "BreadcrumbsItem", { enumerable: true, get: function () { return Breadcrumbs_1.BreadcrumbsItem; } });
 var Button_1 = require("./Button");
 Object.defineProperty(exports, "Button", { enumerable: true, get: function () { return Button_1.Button; } });
 var Card_1 = require("./Card");
@@ -60,14 +62,15 @@ var Pagination_1 = require("./Pagination");
 Object.defineProperty(exports, "Pagination", { enumerable: true, get: function () { return Pagination_1.Pagination; } });
 var ProfileSummary_1 = require("./ProfileSummary");
 Object.defineProperty(exports, "ProfileSummary", { enumerable: true, get: function () { return ProfileSummary_1.ProfileSummary; } });
-var ProgressBar_1 = require("./ProgressBar");
-Object.defineProperty(exports, "ProgressBar", { enumerable: true, get: function () { return ProgressBar_1.ProgressBar; } });
 var Table_1 = require("./Table");
 Object.defineProperty(exports, "Table", { enumerable: true, get: function () { return Table_1.Table; } });
 var Tabs_1 = require("./Tabs");
+Object.defineProperty(exports, "TabItem", { enumerable: true, get: function () { return Tabs_1.TabItem; } });
 Object.defineProperty(exports, "Tabs", { enumerable: true, get: function () { return Tabs_1.Tabs; } });
 var Tag_1 = require("./Tag");
 Object.defineProperty(exports, "Tag", { enumerable: true, get: function () { return Tag_1.Tag; } });
+Object.defineProperty(exports, "TagGroup", { enumerable: true, get: function () { return Tag_1.TagGroup; } });
+Object.defineProperty(exports, "TagItem", { enumerable: true, get: function () { return Tag_1.TagItem; } });
 var Tooltip_1 = require("./Tooltip");
 Object.defineProperty(exports, "Tooltip", { enumerable: true, get: function () { return Tooltip_1.Tooltip; } });
 var TrackerCard_1 = require("./TrackerCard/TrackerCard");
@@ -77,6 +80,5 @@ Object.defineProperty(exports, "Tree", { enumerable: true, get: function () { re
 var Typography_1 = require("./Typography");
 Object.defineProperty(exports, "GradientText", { enumerable: true, get: function () { return Typography_1.GradientText; } });
 Object.defineProperty(exports, "Heading", { enumerable: true, get: function () { return Typography_1.Heading; } });
-Object.defineProperty(exports, "Label", { enumerable: true, get: function () { return Typography_1.Label; } });
 Object.defineProperty(exports, "Text", { enumerable: true, get: function () { return Typography_1.Text; } });
 //# sourceMappingURL=index.js.map

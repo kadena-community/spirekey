@@ -15,7 +15,7 @@ const FormFieldWrapper = ({ status, disabled, children, label, leadingTextWidth 
     return (react_1.default.createElement(FormFieldWrapper_context_1.FormFieldWrapperContext.Provider, { value: { status, leadingTextWidth } },
         react_1.default.createElement("div", { className: statusVal ? FormFieldWrapper_css_1.statusVariant[statusVal] : undefined },
             label !== undefined && (react_1.default.createElement(FormFieldHeader_1.FormFieldHeader, { htmlFor: htmlFor, label: label, tag: tag, info: info })),
-            react_1.default.createElement(Layout_1.Stack, { gap: "$2", direction: "column" }, children),
+            react_1.default.createElement(Layout_1.Stack, { gap: "xs", flexDirection: "column" }, children),
             Boolean(helperText) && react_1.default.createElement(FormFieldHelper_1.FormFieldHelper, null, helperText))));
 };
 exports.FormFieldWrapper = FormFieldWrapper;

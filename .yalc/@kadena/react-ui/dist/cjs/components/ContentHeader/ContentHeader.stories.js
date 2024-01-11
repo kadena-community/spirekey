@@ -6,9 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Primary = void 0;
 const ContentHeader_1 = require("../ContentHeader");
 const Icon_1 = require("../Icon");
+const _storyDecorators_1 = require("../../storyDecorators");
 const react_1 = __importDefault(require("react"));
 const meta = {
     title: 'Patterns/ContentHeader',
+    decorators: [_storyDecorators_1.withContentWidth],
     parameters: {
         status: { type: 'experimental' },
     },

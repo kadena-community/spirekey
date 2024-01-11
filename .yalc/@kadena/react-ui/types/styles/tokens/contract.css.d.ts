@@ -72,109 +72,221 @@ export declare const tokens: {
                 xxl: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                 xxxl: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
             };
+            zIndex: {
+                deepdive: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                dialog: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                surface: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                dropdown: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                modal: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                overlay: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                popup: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                spinner: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                sticky: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                toast: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+            };
             color: {
+                accent: {
+                    blue: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    indigo: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    lime: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    magenta: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    purple: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    red: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    yellow: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    brand: {
+                        primary: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        secondary: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    };
+                    semantic: {
+                        info: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        warning: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        positive: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        negative: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    };
+                };
                 background: {
                     base: {
                         default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        '@disabled': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        inverse: {
+                            default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        };
                     };
                     'layer-1': {
                         default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        inverse: {
+                            default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        };
                     };
                     'layer-2': {
                         default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        inverse: {
+                            default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        };
                     };
                     'layer-3': {
                         default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        inverse: {
+                            default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        };
                     };
                     brand: {
                         primary: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         secondary: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                     };
                     semantic: {
                         positive: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         negative: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         warning: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         info: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                     };
                 };
                 border: {
                     base: {
                         default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@bold': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@boldest': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        bold: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        boldest: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        'high-contrast': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         '@disabled': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        inverse: {
+                            default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        };
                     };
                     brand: {
-                        primary: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        secondary: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        primary: {
+                            default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            subtle: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
+                        };
+                        secondary: {
+                            default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            subtle: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
+                        };
                     };
                     semantic: {
                         positive: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@subtle': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            subtle: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@disabled': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         negative: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@subtle': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            subtle: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@disabled': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         warning: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@subtle': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            subtle: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@disabled': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         info: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@subtle': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            subtle: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@disabled': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                     };
                 };
@@ -217,46 +329,82 @@ export declare const tokens: {
                 icon: {
                     base: {
                         default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@bold': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        bold: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         '@disabled': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        inverse: {
+                            default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        };
                     };
                     brand: {
                         primary: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@bold': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            bold: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@disabled': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         secondary: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@bold': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            bold: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@disabled': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                             '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                     };
                     semantic: {
                         positive: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         negative: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         warning: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         info: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                     };
                 };
@@ -310,6 +458,7 @@ export declare const tokens: {
                 };
                 neutral: {
                     n0: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    n1: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                     n5: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                     n10: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                     n20: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
@@ -321,57 +470,105 @@ export declare const tokens: {
                     n80: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                     n90: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                     n95: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    n99: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                     n100: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    'n100@alpha5': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    'n100@alpha10': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    'n100@alpha20': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                 };
                 text: {
                     base: {
                         default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         '@disabled': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         '@selected': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        inverse: {
+                            default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        };
                     };
                     gray: {
                         default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@lighter': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@bolder': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        lighter: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        bolder: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        inverse: {
+                            default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        };
                     };
                     subtle: {
                         default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        inverse: {
+                            default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        };
                     };
                     subtlest: {
                         default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        inverse: {
+                            default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        };
                     };
                     brand: {
                         primary: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         secondary: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                     };
                     semantic: {
                         positive: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         negative: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         warning: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                         info: {
                             default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                            '@inverse': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            inverse: {
+                                default: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@hover': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                                '@focus': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                            };
                         };
                     };
                 };
@@ -608,6 +805,23 @@ export declare const tokens: {
                     level3: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                 };
             };
+            icon: {
+                size: {
+                    xxs: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    xs: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    sm: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    base: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    lg: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    xl: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    xxl: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                };
+            };
+            layout: {
+                content: {
+                    minWidth: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    maxWidth: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                };
+            };
             typography: {
                 family: {
                     primaryFont: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
@@ -635,21 +849,26 @@ export declare const tokens: {
                     '12xl': `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                 };
                 lineHeight: {
-                    normal: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                     base: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                     lg: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                 };
                 weight: {
                     headingFont: {
-                        light: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        normal: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        regular: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         medium: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         bold: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        black: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                     };
                     bodyFont: {
-                        light: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
-                        normal: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        regular: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         medium: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        bold: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        black: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                    };
+                    monoFont: {
+                        regular: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        medium: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
+                        semiBold: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                         bold: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;
                     };
                 };

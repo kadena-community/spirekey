@@ -1,115 +1,137 @@
-import { sprinkles } from '../../styles/sprinkles.css';
-import { vars } from '../../styles/vars.css';
+import { atoms } from '../../styles/atoms.css';
+import { tokens } from '../../styles/tokens/contract.css';
 import { createVar, style, styleVariants } from '@vanilla-extract/css';
-const accentVar = createVar();
-export const containerClass = style([
-    sprinkles({
-        display: 'flex',
-        alignItems: 'flex-start',
-        padding: '$sm',
-        gap: '$sm',
-        width: '100%',
+import { recipe } from '@vanilla-extract/recipes';
+const iconColorVar = createVar();
+const semanticColors = ['info', 'positive', 'warning', 'negative'];
+export const notificationRecipe = recipe({
+    base: [
+        atoms({
+            display: 'flex',
+            alignItems: 'flex-start',
+            padding: 'md',
+            gap: 'sm',
+            width: '100%',
+        }),
+    ],
+    variants: {
+        intent: semanticColors.reduce((acc, color) => {
+            var _a;
+            acc[color] = [
+                atoms({
+                    backgroundColor: `semantic.${color}.default`,
+                    borderColor: `semantic.${color}.default`,
+                    color: `text.semantic.${color}.default`,
+                }),
+                {
+                    vars: {
+                        [iconColorVar]: (_a = tokens.kda.foundation.color.icon.semantic[color]) === null || _a === void 0 ? void 0 : _a.default,
+                    },
+                },
+            ];
+            return acc;
+        }, {}),
+        displayStyle: {
+            bordered: [
+                atoms({
+                    borderStyle: 'solid',
+                    borderWidth: 'hairline',
+                    borderRadius: 'sm',
+                }),
+                {
+                    borderLeftWidth: tokens.kda.foundation.border.width.thick,
+                },
+            ],
+            borderless: [],
+        },
+    },
+    defaultVariants: {
+        intent: 'info',
+        displayStyle: 'bordered',
+    },
+});
+export const closeButtonClass = style([
+    atoms({
+        marginInlineStart: 'auto',
+        padding: 'no',
+        border: 'none',
+        backgroundColor: 'transparent',
+        cursor: 'pointer',
+    }),
+    {
+        color: iconColorVar,
+    },
+]);
+export const contentClass = style([
+    atoms({
+        fontSize: 'base',
+        gap: 'xs',
+        maxWidth: 'content.maxWidth',
+        marginBlockStart: 'xxs',
     }),
 ]);
-export const colorVariants = {
-    info: 'info',
-    positive: 'positive',
-    warning: 'warning',
-    negative: 'negative',
-};
-export const cardColorVariants = styleVariants(colorVariants, (color) => {
+export const titleClass = style([
+    atoms({
+        fontSize: 'base',
+        fontWeight: 'bodyFont.bold',
+        marginBlockEnd: 'xs',
+    }),
+]);
+export const iconClass = style([
+    atoms({
+        flexShrink: 0,
+    }),
+    {
+        color: iconColorVar,
+        width: tokens.kda.foundation.icon.size.base,
+        height: tokens.kda.foundation.icon.size.base,
+    },
+]);
+export const actionsContainerClass = style([
+    atoms({
+        marginBlockStart: 'md',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        gap: 'xl',
+    }),
+]);
+const actionIconVar = createVar();
+const actionButtonBase = atoms({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    border: 'none',
+    margin: 'no',
+    padding: 'no',
+    fontSize: 'base',
+    fontWeight: 'bodyFont.bold',
+    cursor: 'pointer',
+});
+const actionButtonColors = semanticColors.reduce((acc, color) => {
+    acc[color] = color;
+    return acc;
+}, {});
+export const actionButtonIntentVariants = styleVariants(actionButtonColors, (color) => {
+    var _a;
     return [
-        sprinkles({
-            backgroundColor: `$${color}SurfaceInverted`,
-            borderColor: `$${color}ContrastInverted`,
-            color: `$${color}ContrastInverted`,
+        actionButtonBase,
+        atoms({
+            color: `text.semantic.${color}.default`,
         }),
         {
             vars: {
-                [accentVar]: vars.colors[`$${color}ContrastInverted`],
+                [actionIconVar]: (_a = tokens.kda.foundation.color.icon.semantic[color]) === null || _a === void 0 ? void 0 : _a.default,
             },
         },
     ];
 });
-export const displayVariants = styleVariants({
-    bordered: [
-        sprinkles({
-            borderStyle: 'solid',
-            borderWidth: '$sm',
-            borderRadius: '$sm',
-        }),
-        {
-            borderLeftWidth: vars.sizes.$1,
-        },
-    ],
-    borderless: [],
-});
-export const closeButtonClass = style([
-    sprinkles({
-        marginLeft: 'auto',
-        padding: 0,
-        border: 'none',
-        backgroundColor: 'transparent',
-        cursor: 'pointer',
-        color: 'inherit',
-    }),
-]);
-export const contentClass = style([
-    sprinkles({
-        color: '$neutral6',
-        fontSize: '$base',
-        gap: '$xs',
-        maxWidth: '$maxContentWidth',
+export const actionButtonIconClass = style([
+    atoms({
+        marginInlineStart: 'sm',
     }),
     {
-        marginTop: 2,
+        color: actionIconVar,
     },
-]);
-export const titleClass = style([
-    sprinkles({
-        fontSize: '$base',
-        fontWeight: '$bold',
-        marginBottom: '$xs',
-    }),
-    {
-        color: accentVar,
-    },
-]);
-export const actionsContainerClass = style([
-    sprinkles({
-        marginTop: '$md',
-        display: 'flex',
-        justifyContent: 'flex-start',
-        gap: '$xl',
-    }),
-]);
-const actionButtonClass = style([
-    sprinkles({
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'transparent',
-        border: 'none',
-        margin: 0,
-        padding: 0,
-        gap: '$3',
-        fontSize: '$base',
-        fontWeight: '$bold',
-        cursor: 'pointer',
-    }),
-]);
-export const actionButtonColorVariants = styleVariants(colorVariants, (color) => {
-    return [
-        actionButtonClass,
-        sprinkles({
-            color: `$${color}ContrastInverted`,
-        }),
-    ];
-});
-export const iconClass = style([
-    sprinkles({
-        color: 'inherit',
-        size: '$6',
-    }),
 ]);
 //# sourceMappingURL=Notification.css.js.map

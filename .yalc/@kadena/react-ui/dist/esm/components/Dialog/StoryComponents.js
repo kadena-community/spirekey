@@ -3,7 +3,7 @@ import { Link } from '../Link';
 import { Text } from '../Typography';
 import React from 'react';
 export const ModalContent = () => {
-    return (React.createElement(Stack, { direction: "column", gap: "$4" },
+    return (React.createElement(Stack, { flexDirection: "column", gap: "sm" },
         React.createElement(Text, null, "When tabbing through links in a modal, the focus should stay in the modal and not go to the links on the page itself."),
         React.createElement("ul", null,
             React.createElement("li", null,

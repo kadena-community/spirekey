@@ -8,7 +8,7 @@ const Button_1 = require("../../Button");
 const Form_1 = require("../../Form");
 const Icon_1 = require("../../Icon");
 const Stack_1 = require("../../Layout/Stack");
-const vars_css_1 = require("../../../styles/vars.css");
+const _storyDecorators_1 = require("../../../storyDecorators");
 const react_1 = __importDefault(require("react"));
 const HTMLInputTypes = [
     'button',
@@ -37,6 +37,7 @@ const HTMLInputTypes = [
 const meta = {
     title: 'Form/Input/Input',
     component: Form_1.Input,
+    decorators: [_storyDecorators_1.withContentWidth, _storyDecorators_1.onLayer2],
     parameters: {
         status: { type: 'inDevelopment' },
         docs: {
@@ -60,12 +61,9 @@ const meta = {
                 defaultValue: { summary: 'false' },
             },
         },
-        icon: {
+        startIcon: {
             description: 'Icon rendered inside the input to the left of the input text.',
-            options: [
-                '-',
-                ...Object.keys(Icon_1.SystemIcon),
-            ],
+            options: ['-', ...Object.keys(Icon_1.SystemIcon)],
             control: {
                 type: 'select',
             },
@@ -75,16 +73,6 @@ const meta = {
             control: {
                 type: 'text',
             },
-        },
-        leadingTextWidth: {
-            description: 'Width of the leading text. Defaults to the size of the text itself.',
-            control: {
-                type: 'select',
-            },
-            options: [
-                '- Omit this property to auto-size the leading text',
-                ...Object.keys(vars_css_1.vars.sizes).map((key) => key),
-            ],
         },
         outlined: {
             description: 'Option to render the input with an outline.',
@@ -102,22 +90,31 @@ exports.default = meta;
 exports.Dynamic = {
     name: 'Input',
     args: {
-        icon: undefined,
+        startIcon: undefined,
         type: 'text',
-        leadingTextWidth: undefined,
         leadingText: '',
         outlined: false,
     },
-    render: ({ icon, outlined, leadingText, leadingTextWidth, onChange, disabled, type, }) => (react_1.default.createElement(Form_1.Input, { id: "inlineInputStory", icon: icon, onChange: onChange, placeholder: "This is a placeholder", leadingTextWidth: leadingTextWidth, leadingText: leadingText, outlined: outlined, disabled: disabled, type: type })),
+    render: ({ startIcon, outlined, leadingText, onChange, disabled, type }) => {
+        const IconComponent = startIcon !== '-'
+            ? Icon_1.SystemIcon[startIcon]
+            : undefined;
+        return (react_1.default.createElement(Form_1.Input, { id: "inlineInputStory", startIcon: IconComponent && react_1.default.createElement(IconComponent, null), onChange: onChange, placeholder: "This is a placeholder", leadingText: leadingText, outlined: outlined, disabled: disabled, type: type }));
+    },
 };
 exports.InlineWithButton = {
     name: 'Inline with button',
     args: {
-        icon: undefined,
+        startIcon: undefined,
         type: 'text',
     },
-    render: ({ icon, onChange, type }) => (react_1.default.createElement(Stack_1.Stack, { gap: "$xs", alignItems: "stretch" },
-        react_1.default.createElement(Form_1.Input, { id: "inlineInputStory", icon: icon, onChange: onChange, placeholder: "This is a placeholder", outlined: true, type: type }),
-        react_1.default.createElement(Button_1.Button, { title: "Submit", onClick: () => { } }, "Submit"))),
+    render: ({ startIcon, onChange, type }) => {
+        const IconComponent = startIcon !== '-'
+            ? Icon_1.SystemIcon[startIcon]
+            : undefined;
+        return (react_1.default.createElement(Stack_1.Stack, { gap: "xs", alignItems: "stretch" },
+            react_1.default.createElement(Form_1.Input, { id: "inlineInputStory", startIcon: IconComponent && react_1.default.createElement(IconComponent, null), onChange: onChange, placeholder: "This is a placeholder", outlined: true, type: type }),
+            react_1.default.createElement(Button_1.Button, { title: "Submit", onClick: () => { } }, "Submit")));
+    },
 };
 //# sourceMappingURL=Input.stories.js.map

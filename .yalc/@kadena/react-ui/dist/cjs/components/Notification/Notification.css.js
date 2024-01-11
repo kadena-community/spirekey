@@ -1,118 +1,140 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.iconClass = exports.actionButtonColorVariants = exports.actionsContainerClass = exports.titleClass = exports.contentClass = exports.closeButtonClass = exports.displayVariants = exports.cardColorVariants = exports.colorVariants = exports.containerClass = void 0;
-const sprinkles_css_1 = require("../../styles/sprinkles.css");
-const vars_css_1 = require("../../styles/vars.css");
+exports.actionButtonIconClass = exports.actionButtonIntentVariants = exports.actionsContainerClass = exports.iconClass = exports.titleClass = exports.contentClass = exports.closeButtonClass = exports.notificationRecipe = void 0;
+const atoms_css_1 = require("../../styles/atoms.css");
+const contract_css_1 = require("../../styles/tokens/contract.css");
 const css_1 = require("@vanilla-extract/css");
-const accentVar = (0, css_1.createVar)();
-exports.containerClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        display: 'flex',
-        alignItems: 'flex-start',
-        padding: '$sm',
-        gap: '$sm',
-        width: '100%',
+const recipes_1 = require("@vanilla-extract/recipes");
+const iconColorVar = (0, css_1.createVar)();
+const semanticColors = ['info', 'positive', 'warning', 'negative'];
+exports.notificationRecipe = (0, recipes_1.recipe)({
+    base: [
+        (0, atoms_css_1.atoms)({
+            display: 'flex',
+            alignItems: 'flex-start',
+            padding: 'md',
+            gap: 'sm',
+            width: '100%',
+        }),
+    ],
+    variants: {
+        intent: semanticColors.reduce((acc, color) => {
+            var _a;
+            acc[color] = [
+                (0, atoms_css_1.atoms)({
+                    backgroundColor: `semantic.${color}.default`,
+                    borderColor: `semantic.${color}.default`,
+                    color: `text.semantic.${color}.default`,
+                }),
+                {
+                    vars: {
+                        [iconColorVar]: (_a = contract_css_1.tokens.kda.foundation.color.icon.semantic[color]) === null || _a === void 0 ? void 0 : _a.default,
+                    },
+                },
+            ];
+            return acc;
+        }, {}),
+        displayStyle: {
+            bordered: [
+                (0, atoms_css_1.atoms)({
+                    borderStyle: 'solid',
+                    borderWidth: 'hairline',
+                    borderRadius: 'sm',
+                }),
+                {
+                    borderLeftWidth: contract_css_1.tokens.kda.foundation.border.width.thick,
+                },
+            ],
+            borderless: [],
+        },
+    },
+    defaultVariants: {
+        intent: 'info',
+        displayStyle: 'bordered',
+    },
+});
+exports.closeButtonClass = (0, css_1.style)([
+    (0, atoms_css_1.atoms)({
+        marginInlineStart: 'auto',
+        padding: 'no',
+        border: 'none',
+        backgroundColor: 'transparent',
+        cursor: 'pointer',
+    }),
+    {
+        color: iconColorVar,
+    },
+]);
+exports.contentClass = (0, css_1.style)([
+    (0, atoms_css_1.atoms)({
+        fontSize: 'base',
+        gap: 'xs',
+        maxWidth: 'content.maxWidth',
+        marginBlockStart: 'xxs',
     }),
 ]);
-exports.colorVariants = {
-    info: 'info',
-    positive: 'positive',
-    warning: 'warning',
-    negative: 'negative',
-};
-exports.cardColorVariants = (0, css_1.styleVariants)(exports.colorVariants, (color) => {
+exports.titleClass = (0, css_1.style)([
+    (0, atoms_css_1.atoms)({
+        fontSize: 'base',
+        fontWeight: 'bodyFont.bold',
+        marginBlockEnd: 'xs',
+    }),
+]);
+exports.iconClass = (0, css_1.style)([
+    (0, atoms_css_1.atoms)({
+        flexShrink: 0,
+    }),
+    {
+        color: iconColorVar,
+        width: contract_css_1.tokens.kda.foundation.icon.size.base,
+        height: contract_css_1.tokens.kda.foundation.icon.size.base,
+    },
+]);
+exports.actionsContainerClass = (0, css_1.style)([
+    (0, atoms_css_1.atoms)({
+        marginBlockStart: 'md',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        gap: 'xl',
+    }),
+]);
+const actionIconVar = (0, css_1.createVar)();
+const actionButtonBase = (0, atoms_css_1.atoms)({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    border: 'none',
+    margin: 'no',
+    padding: 'no',
+    fontSize: 'base',
+    fontWeight: 'bodyFont.bold',
+    cursor: 'pointer',
+});
+const actionButtonColors = semanticColors.reduce((acc, color) => {
+    acc[color] = color;
+    return acc;
+}, {});
+exports.actionButtonIntentVariants = (0, css_1.styleVariants)(actionButtonColors, (color) => {
+    var _a;
     return [
-        (0, sprinkles_css_1.sprinkles)({
-            backgroundColor: `$${color}SurfaceInverted`,
-            borderColor: `$${color}ContrastInverted`,
-            color: `$${color}ContrastInverted`,
+        actionButtonBase,
+        (0, atoms_css_1.atoms)({
+            color: `text.semantic.${color}.default`,
         }),
         {
             vars: {
-                [accentVar]: vars_css_1.vars.colors[`$${color}ContrastInverted`],
+                [actionIconVar]: (_a = contract_css_1.tokens.kda.foundation.color.icon.semantic[color]) === null || _a === void 0 ? void 0 : _a.default,
             },
         },
     ];
 });
-exports.displayVariants = (0, css_1.styleVariants)({
-    bordered: [
-        (0, sprinkles_css_1.sprinkles)({
-            borderStyle: 'solid',
-            borderWidth: '$sm',
-            borderRadius: '$sm',
-        }),
-        {
-            borderLeftWidth: vars_css_1.vars.sizes.$1,
-        },
-    ],
-    borderless: [],
-});
-exports.closeButtonClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        marginLeft: 'auto',
-        padding: 0,
-        border: 'none',
-        backgroundColor: 'transparent',
-        cursor: 'pointer',
-        color: 'inherit',
-    }),
-]);
-exports.contentClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        color: '$neutral6',
-        fontSize: '$base',
-        gap: '$xs',
-        maxWidth: '$maxContentWidth',
+exports.actionButtonIconClass = (0, css_1.style)([
+    (0, atoms_css_1.atoms)({
+        marginInlineStart: 'sm',
     }),
     {
-        marginTop: 2,
+        color: actionIconVar,
     },
-]);
-exports.titleClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        fontSize: '$base',
-        fontWeight: '$bold',
-        marginBottom: '$xs',
-    }),
-    {
-        color: accentVar,
-    },
-]);
-exports.actionsContainerClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        marginTop: '$md',
-        display: 'flex',
-        justifyContent: 'flex-start',
-        gap: '$xl',
-    }),
-]);
-const actionButtonClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'transparent',
-        border: 'none',
-        margin: 0,
-        padding: 0,
-        gap: '$3',
-        fontSize: '$base',
-        fontWeight: '$bold',
-        cursor: 'pointer',
-    }),
-]);
-exports.actionButtonColorVariants = (0, css_1.styleVariants)(exports.colorVariants, (color) => {
-    return [
-        actionButtonClass,
-        (0, sprinkles_css_1.sprinkles)({
-            color: `$${color}ContrastInverted`,
-        }),
-    ];
-});
-exports.iconClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        color: 'inherit',
-        size: '$6',
-    }),
 ]);
 //# sourceMappingURL=Notification.css.js.map

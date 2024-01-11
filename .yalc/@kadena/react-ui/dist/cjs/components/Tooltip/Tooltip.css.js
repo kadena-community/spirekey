@@ -1,29 +1,29 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tooltipPositionVariants = exports.base = void 0;
-const sprinkles_css_1 = require("../../styles/sprinkles.css");
-const vars_css_1 = require("../../styles/vars.css");
+const atoms_css_1 = require("../../styles/atoms.css");
+const index_1 = require("../../styles/index");
 const css_1 = require("@vanilla-extract/css");
 exports.base = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         position: 'absolute',
-        backgroundColor: '$neutral6',
-        fontSize: '$sm',
-        paddingY: '$xs',
-        paddingX: '$sm',
-        borderRadius: '$md',
-        color: '$neutral1',
+        backgroundColor: 'layer-3.default',
+        fontSize: 'sm',
+        paddingBlock: 'sm',
+        paddingInline: 'md',
+        borderRadius: 'md',
+        color: 'text.base.default',
         pointerEvents: 'none',
-        width: 'max-content',
-        maxWidth: '$maxContentWidth',
+        maxWidth: 'content.maxWidth',
     }),
     {
+        width: 'max-content',
         ':before': {
             content: '',
             position: 'absolute',
             borderTop: '6px solid transparent',
             borderRight: '6px solid transparent',
-            borderBottom: `6px solid ${vars_css_1.vars.colors.$neutral6}`,
+            borderBottom: `6px solid ${index_1.tokens.kda.foundation.color.background['layer-3'].default}`,
             borderLeft: '6px solid transparent',
         },
     },
@@ -32,7 +32,7 @@ exports.tooltipPositionVariants = (0, css_1.styleVariants)({
     bottom: [
         exports.base,
         {
-            marginTop: vars_css_1.vars.sizes.$sm,
+            marginTop: index_1.tokens.kda.foundation.spacing.md,
             top: '100%',
             left: '50%',
             transform: 'translateX(-50%)',
@@ -46,7 +46,7 @@ exports.tooltipPositionVariants = (0, css_1.styleVariants)({
     top: [
         exports.base,
         {
-            marginBottom: vars_css_1.vars.sizes.$sm,
+            marginBottom: index_1.tokens.kda.foundation.spacing.md,
             bottom: '100%',
             left: '50%',
             transform: 'translateX(-50%)',
@@ -60,7 +60,7 @@ exports.tooltipPositionVariants = (0, css_1.styleVariants)({
     right: [
         exports.base,
         {
-            marginLeft: vars_css_1.vars.sizes.$sm,
+            marginLeft: index_1.tokens.kda.foundation.spacing.md,
             left: '100%',
             top: '50%',
             transform: 'translateY(-50%)',
@@ -74,7 +74,7 @@ exports.tooltipPositionVariants = (0, css_1.styleVariants)({
     left: [
         exports.base,
         {
-            marginRight: vars_css_1.vars.sizes.$sm,
+            marginRight: index_1.tokens.kda.foundation.spacing.md,
             right: '100%',
             top: '50%',
             transform: 'translateY(-50%)',

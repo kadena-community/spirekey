@@ -3,19 +3,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const css_1 = require("@vanilla-extract/css");
 const themeUtils_1 = require("./themeUtils");
 const vars_css_1 = require("./vars.css");
-(0, css_1.globalFontFace)('Haas Grotesk Display', {
+(0, css_1.globalFontFace)(vars_css_1.primaryFont, {
     fontWeight: 300,
     src: "url(https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7W0Q5nw.woff2) format('woff2')",
 });
-(0, css_1.globalFontFace)('Haas Grotesk Display', {
+(0, css_1.globalFontFace)(vars_css_1.primaryFont, {
     fontWeight: 400,
     src: "url(https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7W0Q5nw.woff2) format('woff2')",
 });
-(0, css_1.globalFontFace)('Haas Grotesk Display', {
+(0, css_1.globalFontFace)(vars_css_1.primaryFont, {
     fontWeight: 700,
     src: "url(https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7W0Q5nw.woff2) format('woff2')",
 });
-(0, css_1.globalFontFace)('Haas Grotesk Display', {
+(0, css_1.globalFontFace)(vars_css_1.primaryFont, {
     fontWeight: 900,
     src: "url(https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7W0Q5nw.woff2) format('woff2')",
 });

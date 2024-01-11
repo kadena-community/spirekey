@@ -1,5 +1,5 @@
 export { Accordion } from './Accordion';
-export { Breadcrumbs } from './Breadcrumbs';
+export { Breadcrumbs, BreadcrumbsItem } from './Breadcrumbs';
 export { Button } from './Button';
 export { Card } from './Card';
 export { ContentHeader } from './ContentHeader';
@@ -18,12 +18,11 @@ export { NavHeader } from './NavHeader';
 export { Notification, NotificationButton, NotificationFooter, NotificationHeading, } from './Notification';
 export { Pagination } from './Pagination';
 export { ProfileSummary } from './ProfileSummary';
-export { ProgressBar } from './ProgressBar';
 export { Table } from './Table';
-export { Tabs } from './Tabs';
-export { Tag } from './Tag';
+export { TabItem, Tabs } from './Tabs';
+export { Tag, TagGroup, TagItem } from './Tag';
 export { Tooltip } from './Tooltip';
 export { TrackerCard } from './TrackerCard/TrackerCard';
 export { Tree } from './Tree';
-export { GradientText, Heading, Label, Text } from './Typography';
+export { GradientText, Heading, Text } from './Typography';
 //# sourceMappingURL=index.js.map

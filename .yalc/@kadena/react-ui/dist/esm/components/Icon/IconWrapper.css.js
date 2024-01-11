@@ -1,10 +1,13 @@
 import { sprinkles } from '../../styles/sprinkles.css';
-import { style, styleVariants } from '@vanilla-extract/css';
+import { createVar, style, styleVariants } from '@vanilla-extract/css';
+export const iconFill = createVar();
 export const iconContainer = style([
     sprinkles({
         display: 'block',
     }),
     {
+        fill: iconFill,
+        color: iconFill,
         transform: 'translate3d(0,0,0)',
     },
 ]);

@@ -1,9 +1,11 @@
+import { withContentWidth } from '../../storyDecorators';
 import React from 'react';
 import { ProductIcon } from '../Icon';
 import { TrackerCard } from './TrackerCard';
 import { layoutVariant } from './TrackerCard.css';
 const meta = {
     title: 'Patterns/TrackerCard',
+    decorators: [withContentWidth],
     parameters: {
         status: {
             type: ['experimental'],

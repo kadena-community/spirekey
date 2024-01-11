@@ -3,15 +3,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mapToProperty = exports.responsiveStyle = exports.breakpoints = void 0;
+exports.token = exports.flattenTokens = exports.mapToProperty = exports.responsiveStyle = exports.breakpoints = void 0;
+const css_1 = require("@vanilla-extract/css");
+const lodash_get_1 = __importDefault(require("lodash.get"));
 const lodash_omit_1 = __importDefault(require("lodash.omit"));
+const is_1 = require("../utils/is");
+const object_1 = require("../utils/object");
+const contract_css_1 = require("./tokens/contract.css");
 exports.breakpoints = {
     xs: '',
-    sm: `screen and (min-width: ${640 / 16}rem)`,
-    md: `screen and (min-width: ${768 / 16}rem)`,
-    lg: `screen and (min-width: ${1024 / 16}rem)`,
-    xl: `screen and (min-width: ${1280 / 16}rem)`,
-    xxl: `screen and (min-width: ${1536 / 16}rem)`,
+    sm: 'screen and (min-width: 40rem)',
+    md: 'screen and (min-width: 48rem)',
+    lg: 'screen and (min-width: 64rem)',
+    xl: 'screen and (min-width: 80rem)',
+    xxl: 'screen and (min-width: 96rem)',
 };
 const makeMediaQuery = (breakpoint) => (styles) => Object.keys(styles).length === 0
     ? {}
@@ -47,4 +52,17 @@ const mapToProperty = (property, breakpoint) => (value) => {
         : styleRule;
 };
 exports.mapToProperty = mapToProperty;
+const ignoredTokens = ['@hover', '@focus', '@disabled'];
+function flattenTokens(tokens) {
+    return (0, object_1.flattenObject)(tokens, ignoredTokens);
+}
+exports.flattenTokens = flattenTokens;
+function token(path, fallback) {
+    const v = (0, lodash_get_1.default)(contract_css_1.tokens.kda.foundation, path);
+    if (!(0, is_1.isNullOrUndefined)(fallback)) {
+        return (0, css_1.fallbackVar)(v, fallback);
+    }
+    return v;
+}
+exports.token = token;
 //# sourceMappingURL=themeUtils.js.map

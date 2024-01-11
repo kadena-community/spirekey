@@ -1,9 +1,11 @@
 import { FormFieldWrapper, Input } from '../../Form';
+import { onLayer2, withContentWidth } from '../../../storyDecorators';
 import { vars } from '../../../styles/vars.css';
 import React from 'react';
 import { statusVariant } from './FormFieldWrapper.css';
 const meta = {
     title: 'Form/FormFieldWrapper',
+    decorators: [withContentWidth, onLayer2],
     parameters: {
         status: { type: 'stable' },
         docs: {

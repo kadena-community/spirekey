@@ -22,27 +22,24 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Notification = void 0;
 const SystemIcon_1 = require("../Icon/System/SystemIcon");
-const Layout_1 = require("../Layout");
-const classnames_1 = __importDefault(require("classnames"));
 const react_1 = __importStar(require("react"));
 const Notification_css_1 = require("./Notification.css");
-const Notification = ({ children, hasCloseButton = false, color = 'info', styleVariant = 'bordered', onClose, icon, role, }) => {
-    const [isClosed, setIsClosed] = (0, react_1.useState)(false);
-    const classList = (0, classnames_1.default)(Notification_css_1.containerClass, Notification_css_1.cardColorVariants[color], Notification_css_1.displayVariants[styleVariant]);
-    if (isClosed)
+const Notification = ({ children, isDismissable = false, intent, displayStyle, onDismiss, icon, role, }) => {
+    const [isDismissed, setIsDismissed] = (0, react_1.useState)(false);
+    if (isDismissed)
         return null;
-    return (react_1.default.createElement("div", { className: classList, role: role },
-        react_1.default.createElement(Layout_1.Box, { flexShrink: 0 }, icon ? (react_1.default.createElement("span", { className: Notification_css_1.iconClass }, icon)) : (react_1.default.createElement(SystemIcon_1.Information, { size: "md" }))),
+    return (react_1.default.createElement("div", { className: (0, Notification_css_1.notificationRecipe)({
+            intent,
+            displayStyle,
+        }), role: role },
+        react_1.default.createElement("span", { className: Notification_css_1.iconClass }, icon ? icon : react_1.default.createElement(SystemIcon_1.Information, { size: "md" })),
         react_1.default.createElement("div", { className: Notification_css_1.contentClass }, children),
-        hasCloseButton && (react_1.default.createElement("button", { className: Notification_css_1.closeButtonClass, onClick: () => {
-                setIsClosed(true);
-                onClose === null || onClose === void 0 ? void 0 : onClose();
+        isDismissable && (react_1.default.createElement("button", { className: Notification_css_1.closeButtonClass, onClick: () => {
+                setIsDismissed(true);
+                onDismiss === null || onDismiss === void 0 ? void 0 : onDismiss();
             }, "aria-label": "Close Notification" },
             react_1.default.createElement(SystemIcon_1.Close, { size: "md" })))));
 };

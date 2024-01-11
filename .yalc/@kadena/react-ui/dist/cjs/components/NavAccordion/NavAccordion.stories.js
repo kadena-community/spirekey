@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Dynamic = void 0;
+const atoms_css_1 = require("../../styles/atoms.css");
 const react_1 = __importDefault(require("react"));
 const _1 = require("./");
 const meta = {
@@ -48,18 +49,19 @@ exports.Dynamic = {
         darkMode: false,
     },
     render: ({ linked, darkMode }) => {
-        return (react_1.default.createElement(_1.NavAccordion.Root, { linked: linked, darkMode: darkMode },
-            react_1.default.createElement(_1.NavAccordion.Section, { title: "Developers", onClose: () => console.log('optional section onClose handler example'), onOpen: () => console.log('optional section onOpen handler example') },
-                react_1.default.createElement(_1.NavAccordion.Group, { title: "Guides", onClose: () => console.log('optional group onClose handler example'), onOpen: () => console.log('optional group onOpen handler example') },
-                    react_1.default.createElement(_1.NavAccordion.Link, { href: "#pact" }, "Pact Smart Contract"),
-                    react_1.default.createElement(_1.NavAccordion.Link, { href: "#marmalade" }, "Marmalade Tutorial"),
-                    react_1.default.createElement(_1.NavAccordion.Link, { href: "#dapp-tutorial" }, "Voting dApp Tutorial")),
-                react_1.default.createElement(_1.NavAccordion.Link, { href: "#get-involved" }, "Getting Involved")),
-            react_1.default.createElement(_1.NavAccordion.Section, { title: "Support" },
-                react_1.default.createElement(_1.NavAccordion.Link, { href: "#developer-program" }, "Developer Program"),
-                react_1.default.createElement(_1.NavAccordion.Link, { asChild: true },
-                    react_1.default.createElement("a", { href: "https://kadena.io/", rel: "noreferrer", target: "_blank" }, "Kadena.io (asChild)"))),
-            react_1.default.createElement(_1.NavAccordion.Link, { href: "https://docs.kadena.io/" }, "Documentation")));
+        return (react_1.default.createElement("div", { className: (0, atoms_css_1.atoms)({ width: '100%' }) },
+            react_1.default.createElement(_1.NavAccordion.Root, { linked: linked, darkMode: darkMode },
+                react_1.default.createElement(_1.NavAccordion.Section, { title: "Developers", onClose: () => console.log('optional section onClose handler example'), onOpen: () => console.log('optional section onOpen handler example') },
+                    react_1.default.createElement(_1.NavAccordion.Group, { title: "Guides", onClose: () => console.log('optional group onClose handler example'), onOpen: () => console.log('optional group onOpen handler example') },
+                        react_1.default.createElement(_1.NavAccordion.Link, { href: "#pact" }, "Pact Smart Contract"),
+                        react_1.default.createElement(_1.NavAccordion.Link, { href: "#marmalade" }, "Marmalade Tutorial"),
+                        react_1.default.createElement(_1.NavAccordion.Link, { href: "#dapp-tutorial" }, "Voting dApp Tutorial")),
+                    react_1.default.createElement(_1.NavAccordion.Link, { href: "#get-involved" }, "Getting Involved")),
+                react_1.default.createElement(_1.NavAccordion.Section, { title: "Support" },
+                    react_1.default.createElement(_1.NavAccordion.Link, { href: "#developer-program" }, "Developer Program"),
+                    react_1.default.createElement(_1.NavAccordion.Link, { asChild: true },
+                        react_1.default.createElement("a", { href: "https://kadena.io/", rel: "noreferrer", target: "_blank" }, "Kadena.io (asChild)"))),
+                react_1.default.createElement(_1.NavAccordion.Link, { href: "https://docs.kadena.io/" }, "Documentation"))));
     },
 };
 exports.default = meta;

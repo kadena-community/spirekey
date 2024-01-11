@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useDialog = exports.maskValue = exports.Tree = exports.TrackerCard = exports.Tooltip = exports.TextareaField = exports.TextareaCopy = exports.Textarea = exports.TextField = exports.Text = exports.Tag = exports.Tabs = exports.Table = exports.SystemIcon = exports.Stack = exports.SelectField = exports.Select = exports.ProgressBar = exports.ProfileSummary = exports.ProductIcon = exports.Pagination = exports.NotificationHeading = exports.NotificationFooter = exports.NotificationButton = exports.Notification = exports.NavHeader = exports.NavFooter = exports.MaskedValue = exports.Link = exports.Label = exports.InputCopy = exports.Input = exports.IconButton = exports.Heading = exports.GridItem = exports.Grid = exports.GradientText = exports.FormFieldWrapper = exports.Divider = exports.DialogHeader = exports.DialogFooter = exports.DialogContent = exports.Dialog = exports.ContentHeader = exports.Card = exports.Button = exports.Breadcrumbs = exports.Box = exports.Accordion = void 0;
+exports.maskValue = exports.Tree = exports.TrackerCard = exports.Tooltip = exports.TextareaField = exports.TextareaCopy = exports.Textarea = exports.TextField = exports.Text = exports.TagItem = exports.TagGroup = exports.Tag = exports.Tabs = exports.Table = exports.TabItem = exports.SystemIcon = exports.Stack = exports.SelectField = exports.Select = exports.ProfileSummary = exports.ProductIcon = exports.Pagination = exports.NotificationHeading = exports.NotificationFooter = exports.NotificationButton = exports.Notification = exports.NavHeader = exports.NavFooter = exports.MaskedValue = exports.Link = exports.InputCopy = exports.Input = exports.IconButton = exports.Heading = exports.GridItem = exports.Grid = exports.GradientText = exports.FormFieldWrapper = exports.Divider = exports.DialogHeader = exports.DialogFooter = exports.DialogContent = exports.Dialog = exports.ContentHeader = exports.Card = exports.Button = exports.BreadcrumbsItem = exports.Breadcrumbs = exports.Box = exports.Accordion = void 0;
+exports.RouterProvider = exports.useDialog = void 0;
 const fonts_1 = require("@kadena/fonts");
 require("./styles/global.css");
 (0, fonts_1.KodeMono)();
@@ -8,6 +9,7 @@ var components_1 = require("./components");
 Object.defineProperty(exports, "Accordion", { enumerable: true, get: function () { return components_1.Accordion; } });
 Object.defineProperty(exports, "Box", { enumerable: true, get: function () { return components_1.Box; } });
 Object.defineProperty(exports, "Breadcrumbs", { enumerable: true, get: function () { return components_1.Breadcrumbs; } });
+Object.defineProperty(exports, "BreadcrumbsItem", { enumerable: true, get: function () { return components_1.BreadcrumbsItem; } });
 Object.defineProperty(exports, "Button", { enumerable: true, get: function () { return components_1.Button; } });
 Object.defineProperty(exports, "Card", { enumerable: true, get: function () { return components_1.Card; } });
 Object.defineProperty(exports, "ContentHeader", { enumerable: true, get: function () { return components_1.ContentHeader; } });
@@ -24,7 +26,6 @@ Object.defineProperty(exports, "Heading", { enumerable: true, get: function () {
 Object.defineProperty(exports, "IconButton", { enumerable: true, get: function () { return components_1.IconButton; } });
 Object.defineProperty(exports, "Input", { enumerable: true, get: function () { return components_1.Input; } });
 Object.defineProperty(exports, "InputCopy", { enumerable: true, get: function () { return components_1.InputCopy; } });
-Object.defineProperty(exports, "Label", { enumerable: true, get: function () { return components_1.Label; } });
 Object.defineProperty(exports, "Link", { enumerable: true, get: function () { return components_1.Link; } });
 Object.defineProperty(exports, "MaskedValue", { enumerable: true, get: function () { return components_1.MaskedValue; } });
 Object.defineProperty(exports, "NavFooter", { enumerable: true, get: function () { return components_1.NavFooter; } });
@@ -36,14 +37,16 @@ Object.defineProperty(exports, "NotificationHeading", { enumerable: true, get: f
 Object.defineProperty(exports, "Pagination", { enumerable: true, get: function () { return components_1.Pagination; } });
 Object.defineProperty(exports, "ProductIcon", { enumerable: true, get: function () { return components_1.ProductIcon; } });
 Object.defineProperty(exports, "ProfileSummary", { enumerable: true, get: function () { return components_1.ProfileSummary; } });
-Object.defineProperty(exports, "ProgressBar", { enumerable: true, get: function () { return components_1.ProgressBar; } });
 Object.defineProperty(exports, "Select", { enumerable: true, get: function () { return components_1.Select; } });
 Object.defineProperty(exports, "SelectField", { enumerable: true, get: function () { return components_1.SelectField; } });
 Object.defineProperty(exports, "Stack", { enumerable: true, get: function () { return components_1.Stack; } });
 Object.defineProperty(exports, "SystemIcon", { enumerable: true, get: function () { return components_1.SystemIcon; } });
+Object.defineProperty(exports, "TabItem", { enumerable: true, get: function () { return components_1.TabItem; } });
 Object.defineProperty(exports, "Table", { enumerable: true, get: function () { return components_1.Table; } });
 Object.defineProperty(exports, "Tabs", { enumerable: true, get: function () { return components_1.Tabs; } });
 Object.defineProperty(exports, "Tag", { enumerable: true, get: function () { return components_1.Tag; } });
+Object.defineProperty(exports, "TagGroup", { enumerable: true, get: function () { return components_1.TagGroup; } });
+Object.defineProperty(exports, "TagItem", { enumerable: true, get: function () { return components_1.TagItem; } });
 Object.defineProperty(exports, "Text", { enumerable: true, get: function () { return components_1.Text; } });
 Object.defineProperty(exports, "TextField", { enumerable: true, get: function () { return components_1.TextField; } });
 Object.defineProperty(exports, "Textarea", { enumerable: true, get: function () { return components_1.Textarea; } });
@@ -54,4 +57,6 @@ Object.defineProperty(exports, "TrackerCard", { enumerable: true, get: function 
 Object.defineProperty(exports, "Tree", { enumerable: true, get: function () { return components_1.Tree; } });
 Object.defineProperty(exports, "maskValue", { enumerable: true, get: function () { return components_1.maskValue; } });
 Object.defineProperty(exports, "useDialog", { enumerable: true, get: function () { return components_1.useDialog; } });
+var react_aria_1 = require("react-aria");
+Object.defineProperty(exports, "RouterProvider", { enumerable: true, get: function () { return react_aria_1.RouterProvider; } });
 //# sourceMappingURL=index.js.map

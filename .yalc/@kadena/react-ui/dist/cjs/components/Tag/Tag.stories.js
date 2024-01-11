@@ -23,48 +23,101 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Primary = void 0;
-const Button_1 = require("../Button");
+exports.TagComponent = exports.AsChild = exports.Disabled = exports.Removable = exports.Group = void 0;
 const Tag_1 = require("../Tag");
 const react_1 = __importStar(require("react"));
+const __1 = require("..");
 const meta = {
-    title: 'Components/Tag',
+    title: 'Components/TagGroup',
+    component: Tag_1.TagGroup,
     parameters: {
         status: {
             type: ['inDevelopment'],
         },
         docs: {
             description: {
-                component: 'The Tag component renders a tag with a text. This tag can be dismissed by the user by clicking the X icon when the optional `onClose` prop is provided.',
+                component: 'The `TagGroup` component is an implementation of [useTabGroup from react-aria](https://react-spectrum.adobe.com/react-aria/useTagGroup.html). Currently we have enabled options to close or disable tags, but we have disabled features like selection since there has not yet been a need for them.\n\nThe compound component is composed of the exposed `TagGroup` and `TagItem` components, check the examples below to see how to use them.\n\n*Note: In most cases, you should use the `TagGroup` and `TagItem` component composition to ensure that the tags are accessible, however if you need only the tag component styles, you can use the `Tag` component to compose your own custom component.*',
             },
         },
     },
-    component: Tag_1.Tag,
     argTypes: {
-        text: {
+        label: {
+            description: 'Label for the group. Accepts a string or a ReactNode.',
             control: {
                 type: 'text',
             },
         },
-        hasClose: {
+        onRemove: {
+            description: 'Callback when a tag is removed',
             control: {
-                type: 'boolean',
+                type: null,
+            },
+        },
+        disabledKeys: {
+            description: 'Keys of tags that are disabled',
+            control: {
+                type: null,
+            },
+        },
+        className: {
+            description: "Optional classnames to add to the tag's container",
+            control: {
+                type: null,
             },
         },
     },
 };
 exports.default = meta;
-exports.Primary = {
-    name: 'Tag',
+const tags = [
+    { id: '1', name: 'News' },
+    { id: '2', name: 'Travel' },
+    { id: '3', name: 'Gaming' },
+    { id: '4', name: 'Shopping' },
+];
+exports.Group = {
+    name: 'Group of tags',
     args: {
-        text: 'Chain:1',
-        hasClose: true,
+        label: undefined,
     },
-    render: ({ text, hasClose }) => {
-        const [closed, setClosed] = (0, react_1.useState)(false);
-        if (closed)
-            return react_1.default.createElement(Button_1.Button, { onClick: () => setClosed(false) }, "Reset");
-        return (react_1.default.createElement(Tag_1.Tag, { onClose: hasClose ? () => setClosed(true) : undefined }, text));
+    render: ({ label }) => {
+        return (react_1.default.createElement(Tag_1.TagGroup, { label: label }, tags.map((item) => (react_1.default.createElement(Tag_1.TagItem, { key: item.id }, item.name)))));
+    },
+};
+exports.Removable = {
+    name: 'Removable tags',
+    render: () => {
+        const [list, setList] = (0, react_1.useState)(tags);
+        return (react_1.default.createElement(Tag_1.TagGroup, { label: "Filter Categories", onRemove: (keys) => {
+                setList(list.filter((item) => !keys.has(item.id)));
+            } }, list.map((item) => (react_1.default.createElement(Tag_1.TagItem, { key: item.id }, item.name)))));
+    },
+};
+exports.Disabled = {
+    name: 'Disabled tag',
+    render: () => {
+        const [list, setList] = (0, react_1.useState)(tags);
+        return (react_1.default.createElement(Tag_1.TagGroup, { label: "Filter Categories", onRemove: (keys) => {
+                setList(list.filter((item) => !keys.has(item.id)));
+            }, disabledKeys: ['2'] }, list.map((item) => (react_1.default.createElement(Tag_1.TagItem, { key: item.id }, item.name)))));
+    },
+};
+exports.AsChild = {
+    name: 'Tag styles and props set on their child',
+    render: () => {
+        return (react_1.default.createElement(Tag_1.TagGroup, { label: "Kadena Resources", tagAsChild: true },
+            react_1.default.createElement(Tag_1.TagItem, { key: "docs" },
+                react_1.default.createElement("a", { href: "https://docs.kadena.io/" }, "Kadena Docs")),
+            react_1.default.createElement(Tag_1.TagItem, { key: "tools" },
+                react_1.default.createElement("a", { href: "https://tools.kadena.io/" }, "Tools Website"))));
+    },
+};
+exports.TagComponent = {
+    name: 'Tag Styles Component',
+    render: () => {
+        return (react_1.default.createElement(Tag_1.Tag, null,
+            react_1.default.createElement(__1.Stack, { gap: "xs", alignItems: "center" },
+                "Tag Styles",
+                react_1.default.createElement(__1.SystemIcon.Edit, { size: "sm" }))));
     },
 };
 //# sourceMappingURL=Tag.stories.js.map

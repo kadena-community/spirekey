@@ -3,21 +3,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Text = void 0;
+exports.Text = exports.TEXT_ELEMENTS = void 0;
 const classnames_1 = __importDefault(require("classnames"));
 const react_1 = __importDefault(require("react"));
-const Text_css_1 = require("./Text.css");
-const Text = ({ as = 'span', variant = as, font = variant === 'code' ? 'mono' : 'main', bold = false, size = 'lg', color = 'default', transform = 'none', children, }) => {
-    const classList = (0, classnames_1.default)(Text_css_1.elementVariant[variant], Text_css_1.fontVariant[font], Text_css_1.sizeVariant[size], Text_css_1.colorVariant[color], Text_css_1.transformVariant[transform], { [Text_css_1.boldClass]: bold });
-    switch (as) {
-        case 'p':
-            return react_1.default.createElement("p", { className: classList }, children);
-        case 'code':
-            return react_1.default.createElement("code", { className: classList }, children);
-        case 'span':
-        default:
-            return react_1.default.createElement("span", { className: classList }, children);
+const styles_1 = require("../../../styles");
+const typography_css_1 = require("../typography.css");
+exports.TEXT_ELEMENTS = ['p', 'span', 'code'];
+function getFontClass(variant, isBold, type) {
+    if (type === 'code' && variant === 'smallest') {
+        return isBold ? styles_1.codeSmallestBold : styles_1.codeSmallestRegular;
     }
+    if (type === 'code' && variant === 'small') {
+        return isBold ? styles_1.codeSmallBold : styles_1.codeSmallRegular;
+    }
+    if (type === 'code' && variant === 'base') {
+        return isBold ? styles_1.codeBaseBold : styles_1.codeBaseRegular;
+    }
+    if (variant === 'smallest') {
+        return isBold ? styles_1.bodySmallestBold : styles_1.bodySmallestRegular;
+    }
+    if (variant === 'small') {
+        return isBold ? styles_1.bodySmallBold : styles_1.bodySmallRegular;
+    }
+    return isBold ? styles_1.bodyBaseBold : styles_1.bodyBaseRegular;
+}
+const Text = ({ as = 'span', variant = 'base', bold = false, color = 'default', transform = 'none', children, className, ...props }) => {
+    const classList = (0, classnames_1.default)(getFontClass(variant, bold, as), typography_css_1.colorVariants[color], typography_css_1.transformVariants[transform], className);
+    const Element = exports.TEXT_ELEMENTS.includes(as) ? as : 'span';
+    return (react_1.default.createElement(Element, { className: classList, ...props }, children));
 };
 exports.Text = Text;
 //# sourceMappingURL=Text.js.map

@@ -89,7 +89,7 @@ exports.Controlled = {
         currentPage: 2,
     },
     render: ({ totalPages, label, visiblePageLimit, initialSelectedPage, currentPage, }) => {
-        return (react_1.default.createElement(Stack_1.Stack, { direction: "column", gap: "$4" },
+        return (react_1.default.createElement(Stack_1.Stack, { flexDirection: "column", gap: "sm" },
             react_1.default.createElement(Pagination_1.Pagination, { totalPages: totalPages, currentPage: currentPage, label: label, visiblePageLimit: visiblePageLimit, initialSelectedPage: initialSelectedPage, onPageChange: () => console.log('Updating Page') })));
     },
 };

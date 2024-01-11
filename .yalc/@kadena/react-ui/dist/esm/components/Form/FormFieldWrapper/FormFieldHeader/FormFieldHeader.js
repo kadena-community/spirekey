@@ -1,5 +1,5 @@
 import { SystemIcon } from '../../../Icon';
-import { Label } from '../../../Typography';
+import { Label } from '../../../Typography/Label/Label';
 import React from 'react';
 import { headerClass, infoClass, tagClass } from './FormFieldHeader.css';
 export const FormFieldHeader = ({ label, htmlFor, tag, info, }) => {

@@ -1,8 +1,8 @@
-import type { FC } from 'react';
+import type { DOMAttributes, FC } from 'react';
 import React from 'react';
-export interface ITagProps {
+export interface ITagProps extends DOMAttributes<HTMLSpanElement> {
     children: React.ReactNode;
-    onClose?: () => void;
+    className?: string;
 }
 export declare const Tag: FC<ITagProps>;
 //# sourceMappingURL=Tag.d.ts.map

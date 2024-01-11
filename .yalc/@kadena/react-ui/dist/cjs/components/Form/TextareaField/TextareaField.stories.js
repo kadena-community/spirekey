@@ -25,10 +25,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TextFieldStory = void 0;
 const Form_1 = require("../../Form");
+const _storyDecorators_1 = require("../../../storyDecorators");
 const react_1 = __importStar(require("react"));
 const meta = {
     title: 'Form/TextareaField',
     component: Form_1.TextareaField,
+    decorators: [_storyDecorators_1.withContentWidth, _storyDecorators_1.onLayer2],
     parameters: {
         status: { type: 'inDevelopment' },
         docs: {
@@ -48,16 +50,6 @@ const meta = {
                 defaultValue: { summary: 'false' },
             },
         },
-        textAreaProps: {
-            description: 'Props for the textarea element.',
-            control: {
-                type: 'object',
-            },
-            table: {
-                type: { summary: 'object' },
-                defaultValue: { summary: 'false' },
-            },
-        },
     },
 };
 exports.default = meta;
@@ -69,21 +61,15 @@ exports.TextFieldStory = {
         helperText: 'This is helper text',
         info: '(optional)',
         label: 'Label',
-        textAreaProps: {
-            id: 'TextFieldStory',
-            fontFamily: '$mono',
-            placeholder: 'This is a placeholder',
-            value: '',
-            onChange: () => { },
-        },
+        id: 'TextFieldStory',
+        fontFamily: 'codeFont',
+        placeholder: 'This is a placeholder',
+        value: '',
+        onChange: () => { },
     },
-    render: ({ disabled, textAreaProps, ...rest }) => {
+    render: ({ disabled, ...rest }) => {
         const [value, setValue] = (0, react_1.useState)('');
-        return (react_1.default.createElement(Form_1.TextareaField, { disabled: disabled, textAreaProps: {
-                ...textAreaProps,
-                value,
-                onChange: ({ target }) => setValue(target.value),
-            }, ...rest }));
+        return (react_1.default.createElement(Form_1.TextareaField, { disabled: disabled, ...rest, value: value, onChange: ({ target }) => setValue(target.value) }));
     },
 };
 //# sourceMappingURL=TextareaField.stories.js.map

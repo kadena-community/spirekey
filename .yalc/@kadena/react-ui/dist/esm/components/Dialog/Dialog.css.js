@@ -1,7 +1,8 @@
-import { sprinkles } from '../../styles/sprinkles.css';
+import { atoms } from '../../styles/atoms.css';
+import { tokens } from '../../styles/index';
 import { responsiveStyle } from '../../styles/themeUtils';
-import { vars } from '../../styles/vars.css';
 import { style } from '@vanilla-extract/css';
+import { calc } from '@vanilla-extract/css-utils';
 import { containerClass as cardContainerClass } from '../Card/Card.css';
 export const openModal = style([
     {
@@ -11,9 +12,8 @@ export const openModal = style([
 ]);
 export const overlayClass = style([
     cardContainerClass,
-    sprinkles({
+    atoms({
         position: 'relative',
-        pointerEvents: 'initial',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -24,43 +24,48 @@ export const overlayClass = style([
             maxWidth: '100vw',
             inset: 0,
         },
+        sm: {
+            minWidth: tokens.kda.foundation.layout.content.minWidth,
+        },
         md: {
-            maxWidth: vars.contentWidth.$maxContentWidth,
+            maxWidth: tokens.kda.foundation.layout.content.maxWidth,
             maxHeight: '75vh',
         },
     }),
 ]);
 export const closeButtonClass = style([
-    sprinkles({
+    atoms({
         position: 'absolute',
-        top: '$xs',
-        right: '$xs',
         display: 'flex',
         alignItems: 'center',
         background: 'none',
         border: 'none',
-        padding: '$xs',
+        padding: 'xs',
         cursor: 'pointer',
-        color: 'inherit',
+        color: 'icon.base.default',
     }),
+    {
+        top: tokens.kda.foundation.spacing.md,
+        right: tokens.kda.foundation.spacing.md,
+    },
 ]);
 export const titleWrapperClass = style([
-    sprinkles({
-        marginBottom: '$4',
-        marginRight: '$20',
+    atoms({
+        marginBlockEnd: 'md',
+        marginInlineEnd: 'xxl',
         flexShrink: 0,
     }),
 ]);
-export const footerClass = style([sprinkles({ flexShrink: 0 })]);
+export const footerClass = style([atoms({ flexShrink: 0 })]);
 export const contentClass = style([
-    sprinkles({
+    atoms({
         flex: 1,
-        paddingX: '$10',
+        paddingInline: 'xxxl',
         overflowY: 'auto',
     }),
     {
-        marginLeft: `-2.5rem`,
-        marginRight: `-2.5rem`,
+        marginLeft: calc(tokens.kda.foundation.spacing.xxl).negate().toString(),
+        marginRight: calc(tokens.kda.foundation.spacing.xxl).negate().toString(),
     },
 ]);
 //# sourceMappingURL=Dialog.css.js.map

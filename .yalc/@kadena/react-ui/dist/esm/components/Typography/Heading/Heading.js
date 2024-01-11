@@ -1,27 +1,28 @@
+import classNames from 'classnames';
 import React from 'react';
-import { heading } from './Heading.css';
-export const Heading = ({ as = 'h1', variant = as, font = 'main', bold = true, color = 'emphasize', transform = 'none', children, ...props }) => {
-    const classList = heading({
-        variant,
-        font,
-        bold,
-        color,
-        transform,
-    });
-    switch (as) {
+import { fontH1Bold, fontH1Regular, fontH2Bold, fontH2Regular, fontH3Bold, fontH3Regular, fontH4Bold, fontH4Regular, fontH5Bold, fontH5Regular, fontH6Bold, fontH6Regular, } from '../../../styles';
+import { colorVariants, transformVariants } from '../typography.css';
+export const HEADING_ELEMENTS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+function getHeadingClass(variant, isBold) {
+    switch (variant) {
         case 'h2':
-            return (React.createElement("h2", { className: classList, ...props }, children));
+            return isBold ? fontH2Bold : fontH2Regular;
         case 'h3':
-            return (React.createElement("h3", { className: classList, ...props }, children));
+            return isBold ? fontH3Bold : fontH3Regular;
         case 'h4':
-            return (React.createElement("h4", { className: classList, ...props }, children));
+            return isBold ? fontH4Bold : fontH4Regular;
         case 'h5':
-            return (React.createElement("h5", { className: classList, ...props }, children));
+            return isBold ? fontH5Bold : fontH5Regular;
         case 'h6':
-            return (React.createElement("h6", { className: classList, ...props }, children));
+            return isBold ? fontH6Bold : fontH6Regular;
         case 'h1':
         default:
-            return (React.createElement("h1", { className: classList, ...props }, children));
+            return isBold ? fontH1Bold : fontH1Regular;
     }
+}
+export const Heading = ({ as = 'h1', variant = as, color = 'emphasize', transform = 'none', bold = true, children, className, ...props }) => {
+    const classList = classNames(getHeadingClass(variant, bold), colorVariants[color], transformVariants[transform], className);
+    const Element = HEADING_ELEMENTS.includes(as) ? as : 'h1';
+    return (React.createElement(Element, { className: classList, ...props }, children));
 };
 //# sourceMappingURL=Heading.js.map

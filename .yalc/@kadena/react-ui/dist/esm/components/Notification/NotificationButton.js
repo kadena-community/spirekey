@@ -1,6 +1,8 @@
 import React from 'react';
-import { actionButtonColorVariants } from './Notification.css';
-export const NotificationButton = ({ color, onClick, children, }) => {
-    return (React.createElement("button", { onClick: onClick, className: actionButtonColorVariants[color] }, children));
+import { actionButtonIconClass, actionButtonIntentVariants, } from './Notification.css';
+export const NotificationButton = ({ intent, onClick, children, icon, }) => {
+    return (React.createElement("button", { onClick: onClick, className: actionButtonIntentVariants[intent] },
+        children,
+        React.createElement("span", { className: actionButtonIconClass }, icon)));
 };
 //# sourceMappingURL=NotificationButton.js.map

@@ -5,10 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TextareaCopyStory = void 0;
 const react_1 = __importDefault(require("react"));
+const _storyDecorators_1 = require("../../../../storyDecorators");
 const TextareaCopy_1 = require("./TextareaCopy");
 const meta = {
     title: 'Form/Textarea/TextareaCopy',
     component: TextareaCopy_1.TextareaCopy,
+    decorators: [_storyDecorators_1.withContentWidth, _storyDecorators_1.onLayer2],
     parameters: {
         docs: {
             description: {
@@ -34,7 +36,7 @@ exports.TextareaCopyStory = {
     name: 'TextareaCopy',
     args: {
         disabled: false,
-        fontFamily: '$mono',
+        fontFamily: 'codeFont',
         outlined: false,
     },
     render: (props) => {

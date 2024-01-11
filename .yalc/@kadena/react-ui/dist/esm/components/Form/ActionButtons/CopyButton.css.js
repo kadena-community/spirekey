@@ -1,37 +1,30 @@
-import { colorPalette } from '../../../styles/colors';
-import { sprinkles } from '../../../styles/sprinkles.css';
-import { darkThemeClass } from '../../../styles/vars.css';
+import { atoms } from '../../../styles/atoms.css';
+import { tokens } from '../../../styles/tokens/contract.css';
 import { style } from '@vanilla-extract/css';
 export const buttonClass = style([
-    sprinkles({
+    atoms({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: '$md',
+        borderRadius: 'md',
         cursor: 'pointer',
         border: 'none',
-        width: '$8',
-        height: '$8',
+        backgroundColor: 'base.default',
+        color: 'text.base.default',
     }),
     {
+        width: '32px',
+        height: '32px',
         selectors: {
-            [`${darkThemeClass} &`]: {
-                backgroundColor: `${colorPalette.$gray80}`,
-                color: `${colorPalette.$gray30}`,
-            },
-            [`${darkThemeClass} &:hover`]: {
-                backgroundColor: `${colorPalette.$gray20}`,
-                color: `${colorPalette.$gray100}`,
-            },
             [`&:hover`]: {
-                backgroundColor: `${colorPalette.$gray80}`,
-                color: `${colorPalette.$gray20}`,
+                backgroundColor: tokens.kda.foundation.color.background.base['@hover'],
+                color: tokens.kda.foundation.color.background.base.default,
             },
         },
         ':disabled': {
             opacity: 0.7,
-            backgroundColor: colorPalette.$gray60,
-            color: colorPalette.$gray10,
+            backgroundColor: tokens.kda.foundation.color.icon.base['@disabled'],
+            color: tokens.kda.foundation.color.text.base['@disabled'],
             cursor: 'not-allowed',
             pointerEvents: 'none',
         },

@@ -1,16 +1,16 @@
-import { sprinkles } from '../../styles/sprinkles.css';
+import { atoms } from '../../styles/atoms.css';
 export const fontVariants = {
-    main: [sprinkles({ fontFamily: '$main' })],
-    mono: [sprinkles({ fontFamily: '$mono' })],
+    main: [atoms({ fontFamily: 'primaryFont' })],
+    mono: [atoms({ fontFamily: 'codeFont' })],
 };
 export const transformVariants = {
-    uppercase: [sprinkles({ textTransform: 'uppercase' })],
-    lowercase: [sprinkles({ textTransform: 'lowercase' })],
-    capitalize: [sprinkles({ textTransform: 'capitalize' })],
-    none: [sprinkles({ textTransform: 'none' })],
+    uppercase: [atoms({ textTransform: 'uppercase' })],
+    lowercase: [atoms({ textTransform: 'lowercase' })],
+    capitalize: [atoms({ textTransform: 'capitalize' })],
+    none: [atoms({ textTransform: 'none' })],
 };
 export const colorVariants = {
-    default: [sprinkles({ color: '$neutral4' })],
-    emphasize: [sprinkles({ color: '$neutral6' })],
+    default: [atoms({ color: 'text.subtlest.default' })],
+    emphasize: [atoms({ color: 'text.base.default' })],
 };
 //# sourceMappingURL=typography.css.js.map

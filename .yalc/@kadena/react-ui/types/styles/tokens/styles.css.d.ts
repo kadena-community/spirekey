@@ -1,3 +1,9 @@
+export declare const codeSmallRegular: string;
+export declare const codeSmallBold: string;
+export declare const codeSmallestRegular: string;
+export declare const codeSmallestBold: string;
+export declare const codeBaseRegular: string;
+export declare const codeBaseBold: string;
 export declare const fontH1Regular: string;
 export declare const fontH1Bold: string;
 export declare const fontH2Regular: string;
@@ -10,10 +16,10 @@ export declare const fontH5Regular: string;
 export declare const fontH5Bold: string;
 export declare const fontH6Regular: string;
 export declare const fontH6Bold: string;
-export declare const fontSmallRegular: string;
-export declare const fontSmallBold: string;
-export declare const fontSmallestRegular: string;
-export declare const fontSmallestBold: string;
-export declare const fontBaseRegular: string;
-export declare const fontBaseBold: string;
+export declare const bodySmallRegular: string;
+export declare const bodySmallBold: string;
+export declare const bodySmallestRegular: string;
+export declare const bodySmallestBold: string;
+export declare const bodyBaseRegular: string;
+export declare const bodyBaseBold: string;
 //# sourceMappingURL=styles.css.d.ts.map

@@ -1,3 +1,2 @@
-import type { FormFieldStatus } from '../Form.css';
-export declare const statusVariant: Record<FormFieldStatus, string>;
+export declare const statusVariant: Record<"warning" | "positive" | "negative" | "disabled", string>;
 //# sourceMappingURL=FormFieldWrapper.css.d.ts.map

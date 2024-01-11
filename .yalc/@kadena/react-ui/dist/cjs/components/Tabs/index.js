@@ -1,12 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Tabs = void 0;
-const Tab_1 = require("./Tab");
-const TabContent_1 = require("./TabContent");
-const TabsContainer_1 = require("./TabsContainer");
-exports.Tabs = {
-    Root: TabsContainer_1.TabsContainer,
-    Tab: Tab_1.Tab,
-    Content: TabContent_1.TabContent,
-};
+exports.Tabs = exports.TabItem = void 0;
+var Tabs_1 = require("./Tabs");
+Object.defineProperty(exports, "TabItem", { enumerable: true, get: function () { return Tabs_1.TabItem; } });
+Object.defineProperty(exports, "Tabs", { enumerable: true, get: function () { return Tabs_1.Tabs; } });
 //# sourceMappingURL=index.js.map

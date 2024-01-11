@@ -9,7 +9,7 @@ const Link_1 = require("../Link");
 const Typography_1 = require("../Typography");
 const react_1 = __importDefault(require("react"));
 const ModalContent = () => {
-    return (react_1.default.createElement(Layout_1.Stack, { direction: "column", gap: "$4" },
+    return (react_1.default.createElement(Layout_1.Stack, { flexDirection: "column", gap: "sm" },
         react_1.default.createElement(Typography_1.Text, null, "When tabbing through links in a modal, the focus should stay in the modal and not go to the links on the page itself."),
         react_1.default.createElement("ul", null,
             react_1.default.createElement("li", null,

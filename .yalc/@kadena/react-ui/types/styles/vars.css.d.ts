@@ -1,3 +1,4 @@
+export declare const primaryFont: string;
 export declare const vars: {
     fonts: {
         $main: `var(--${string})` | `var(--${string}, ${string})` | `var(--${string}, ${number})`;

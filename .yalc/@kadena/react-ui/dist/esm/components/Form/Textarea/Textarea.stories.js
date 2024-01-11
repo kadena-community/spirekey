@@ -1,8 +1,10 @@
 import { Textarea } from '../../Form';
+import { onLayer2, withContentWidth } from '../../../storyDecorators';
 import React, { useState } from 'react';
 const meta = {
     title: 'Form/Textarea/Textarea',
     component: Textarea,
+    decorators: [withContentWidth, onLayer2],
     parameters: {
         status: { type: 'inDevelopment' },
         docs: {
@@ -29,7 +31,7 @@ export const TextareaStory = {
     name: 'Textarea',
     args: {
         disabled: false,
-        fontFamily: '$mono',
+        fontFamily: 'codeFont',
         outlined: false,
     },
     render: (props) => {

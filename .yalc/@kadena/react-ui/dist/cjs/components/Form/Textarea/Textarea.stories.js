@@ -25,10 +25,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TextareaStory = void 0;
 const Form_1 = require("../../Form");
+const _storyDecorators_1 = require("../../../storyDecorators");
 const react_1 = __importStar(require("react"));
 const meta = {
     title: 'Form/Textarea/Textarea',
     component: Form_1.Textarea,
+    decorators: [_storyDecorators_1.withContentWidth, _storyDecorators_1.onLayer2],
     parameters: {
         status: { type: 'inDevelopment' },
         docs: {
@@ -55,7 +57,7 @@ exports.TextareaStory = {
     name: 'Textarea',
     args: {
         disabled: false,
-        fontFamily: '$mono',
+        fontFamily: 'codeFont',
         outlined: false,
     },
     render: (props) => {
