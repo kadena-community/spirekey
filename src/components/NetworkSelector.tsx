@@ -18,7 +18,7 @@ export const NetworkSelector = () => {
   return (
     <SelectField
       label="Network"
-      selectProps={{
+      {...{
         id: 'network',
         ariaLabel: 'Network',
         ...register('network', {

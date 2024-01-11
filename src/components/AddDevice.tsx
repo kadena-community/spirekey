@@ -1,4 +1,4 @@
-import { type Device } from '@/context/AccountContext';
+import type { Device } from '@/context/AccountContext';
 import { CredentialPair, usePubkeys } from '@/hooks/usePubkeys';
 import { Button, SelectField, Stack, TextField } from '@kadena/react-ui';
 import {
@@ -91,10 +91,10 @@ export const AddDevice = ({
     });
   };
   return (
-    <Stack direction="column">
+    <Stack flexDirection="column">
       <TextField
         label="device name"
-        inputProps={{
+        {...{
           id: 'device-name',
           value: deviceName,
           onChange: onDeviceNameChange,
@@ -103,7 +103,7 @@ export const AddDevice = ({
       />
       <SelectField
         label="credential id"
-        selectProps={{
+        {...{
           id: 'credential-id',
           onChange: onCidChange,
           ariaLabel: 'credential id',
