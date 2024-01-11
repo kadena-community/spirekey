@@ -7,6 +7,7 @@ import { Box, Heading, MaskedValue, Stack, Text } from '@kadena/react-ui';
 import { sprinkles } from '@kadena/react-ui/theme';
 import classNames from 'classnames';
 import { useState } from 'react';
+import FlipMove from 'react-flip-move';
 
 import './cards.css';
 
@@ -15,8 +16,22 @@ export default function Cards() {
   const [activeAccount, setActiveAccount] = useState<Account>();
   const { accounts } = useAccounts();
   const { network } = useNetwork();
+  const sortedAccounts = !isCollapsed
+    ? accounts
+    : [...accounts].sort((a, b) => {
+        if (
+          a.accountName === activeAccount?.accountName &&
+          a.network === activeAccount.network
+        )
+          return -1;
+        if (
+          b.accountName === activeAccount?.accountName &&
+          b.network === activeAccount.network
+        )
+          return 1;
+        return 0;
+      });
   const onCardClick = (account: Account) => () => {
-    console.log('clicked', accounts, account, isCollapsed);
     if (!isCollapsed) setActiveAccount(account);
     setIsCollapsed(!isCollapsed);
   };
@@ -34,47 +49,56 @@ export default function Cards() {
         })}
         flexDirection="column"
       >
-        {accounts.map((account) => (
-          <Box
-            key={account.accountName + account.network}
-            className={classNames(
-              sprinkles({
-                position: 'relative',
-              }),
-              'card',
-              {
-                active:
-                  activeAccount?.accountName === account.accountName &&
-                  activeAccount.network === account.network,
-              },
-            )}
-            style={{
-              width: '20rem',
-            }}
-            onClick={onCardClick(account)}
-          >
-            <Box
-              borderStyle="solid"
-              borderWidth="hairline"
-              borderRadius="md"
-              borderColor="brand.primary.default"
-              padding="md"
-              className={sprinkles({
-                backgroundColor: '$primarySurface',
-                position: 'absolute',
-                width: '100%',
-              })}
-            >
-              <Heading variant="h5" as="h2">
-                {account.devices.map((d) => d.identifier).join(', ')}
-              </Heading>
+        <FlipMove
+          duration={500}
+          delay={0}
+          easing="cubic-bezier(0.39, 0, 0.45, 1.4)"
+          staggerDurationBy={22}
+          staggerDelayBy={0}
+        >
+          {sortedAccounts.map((account) => (
+            <div key={account.accountName + account.network}>
+              <Box
+                className={classNames(
+                  sprinkles({
+                    position: 'relative',
+                  }),
+                  'card',
+                  {
+                    active:
+                      activeAccount?.accountName === account.accountName &&
+                      activeAccount.network === account.network,
+                  },
+                )}
+                style={{
+                  width: '20rem',
+                }}
+                onClick={onCardClick(account)}
+              >
+                <Box
+                  borderStyle="solid"
+                  borderWidth="hairline"
+                  borderRadius="md"
+                  borderColor="brand.primary.default"
+                  padding="md"
+                  className={sprinkles({
+                    backgroundColor: '$primarySurface',
+                    position: 'absolute',
+                    width: '100%',
+                  })}
+                >
+                  <Heading variant="h5" as="h2">
+                    {account.devices.map((d) => d.identifier).join(', ')}
+                  </Heading>
 
-              <MaskedValue value={account.accountName} />
+                  <MaskedValue value={account.accountName} />
 
-              <Text>{network}</Text>
-            </Box>
-          </Box>
-        ))}
+                  <Text>{network}</Text>
+                </Box>
+              </Box>
+            </div>
+          ))}
+        </FlipMove>
       </Stack>
     </Stack>
   );

@@ -3,6 +3,9 @@
 }
 .cards .card {
   height: 8rem;
+  transition:
+    order 2s ease-in-out,
+    height 0.3s ease-in-out;
 }
 
 .cards .card.active {
