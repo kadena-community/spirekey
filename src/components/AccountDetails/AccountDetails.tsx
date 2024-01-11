@@ -1,15 +1,14 @@
 import { Account } from '@/context/AccountsContext';
 import { getChainwebDataUrl } from '@/context/NetworkContext';
 import { Box, Text } from '@kadena/react-ui';
-import { forwardRef } from 'react';
 import useSWR from 'swr';
 import { details } from './AccountDetails.css';
 
-interface DetailsProps {
+interface AccountDetailsProps {
   account: Account;
 }
 
-function BaseDetails({ account }: DetailsProps) {
+export function AccountDetails({ account }: AccountDetailsProps) {
   const domain = getChainwebDataUrl(account.network || '');
   const { data, error, isLoading } = useSWR(
     `${domain}/txs/account/${account.accountName}`,
@@ -38,5 +37,3 @@ function BaseDetails({ account }: DetailsProps) {
     </div>
   );
 }
-
-export const AccountDetails = forwardRef(BaseDetails);

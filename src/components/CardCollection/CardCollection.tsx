@@ -1,5 +1,3 @@
-'use client';
-
 import { atoms } from '@kadena/react-ui/theme';
 import FlipMove from 'react-flip-move';
 
