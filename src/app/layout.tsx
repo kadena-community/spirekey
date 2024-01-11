@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Providers from './providers';
 
+import './global.css';
+
 export const metadata: Metadata = {
   title: 'WebAuthn Wallet',
   description: 'Conviniently secure your internet',

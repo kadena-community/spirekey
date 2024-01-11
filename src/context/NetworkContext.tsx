@@ -19,7 +19,7 @@ type Props = {
   children: ReactNode;
 };
 
-const getChainwebDataUrl = (network: string) => {
+export const getChainwebDataUrl = (network: string) => {
   if (network === 'mainnet01')
     throw new Error('mainnet01 is not supported yet');
   if (network === 'fast-development') return 'http://localhost:8080';

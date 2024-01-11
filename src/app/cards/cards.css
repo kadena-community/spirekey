@@ -15,7 +15,9 @@
 }
 
 .placeholder {
-  height: calc(100vh - 8rem - 9rem);
+  height: calc(100vh - 8rem - 9rem - 6rem);
   background-color: purple;
   z-index: -1;
+  word-break: break-all;
+  width: 20rem;
 }

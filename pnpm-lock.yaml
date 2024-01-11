@@ -23,6 +23,9 @@ dependencies:
   '@simplewebauthn/browser':
     specifier: ^8.3.4
     version: 8.3.4
+  '@vanilla-extract/css':
+    specifier: ^1.14.0
+    version: 1.14.0
   '@vanilla-extract/next-plugin':
     specifier: ^2.3.2
     version: 2.3.2(@types/node@20.10.3)(next@14.0.3)(webpack@5.89.0)
