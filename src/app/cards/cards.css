@@ -1,0 +1,11 @@
+.cards.collapsed .card {
+  height: 3rem;
+}
+.cards .card {
+  height: 8rem;
+}
+
+.cards .card.active {
+  height: 8rem;
+  order: -1;
+}

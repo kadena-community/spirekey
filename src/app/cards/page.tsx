@@ -1,16 +1,25 @@
 'use client';
 
+import { Account } from '@/context/AccountsContext';
 import { useNetwork } from '@/context/NetworkContext';
 import { useAccounts } from '@/hooks/useProfiles';
 import { Box, Heading, MaskedValue, Stack, Text } from '@kadena/react-ui';
 import { sprinkles } from '@kadena/react-ui/theme';
 import classNames from 'classnames';
+import { useState } from 'react';
 
 import './cards.css';
 
 export default function Cards() {
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [activeAccount, setActiveAccount] = useState<Account>();
   const { accounts } = useAccounts();
   const { network } = useNetwork();
+  const onCardClick = (account: Account) => () => {
+    console.log('clicked', accounts, account, isCollapsed);
+    if (!isCollapsed) setActiveAccount(account);
+    setIsCollapsed(!isCollapsed);
+  };
   if (!accounts) return <div>loading...</div>;
   return (
     <Stack gap="md" flexDirection="column" alignItems="center">
@@ -19,7 +28,12 @@ export default function Cards() {
           Cards
         </Heading>
       </Box>
-      <Stack className="cards" flexDirection="column">
+      <Stack
+        className={classNames('cards', {
+          collapsed: isCollapsed,
+        })}
+        flexDirection="column"
+      >
         {accounts.map((account) => (
           <Box
             key={account.accountName + account.network}
@@ -28,10 +42,16 @@ export default function Cards() {
                 position: 'relative',
               }),
               'card',
+              {
+                active:
+                  activeAccount?.accountName === account.accountName &&
+                  activeAccount.network === account.network,
+              },
             )}
             style={{
               width: '20rem',
             }}
+            onClick={onCardClick(account)}
           >
             <Box
               borderStyle="solid"
