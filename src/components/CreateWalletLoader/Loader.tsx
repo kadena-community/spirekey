@@ -22,7 +22,7 @@ export const Loader = () => (
       </div>
       <div className="sword"></div>
       <div className="anvil">
-        <Text bold variant="code">
+        <Text bold as="code">
           Kadena
         </Text>
       </div>
