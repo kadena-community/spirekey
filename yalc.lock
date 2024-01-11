@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "@kadena/react-ui": {
-      "signature": "7cc8a9660a3e81174bdbb9dee4256af5",
+      "signature": "85bc4deac0098320df3b01fa92696845",
       "file": true
     }
   }

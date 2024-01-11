@@ -1,63 +1,52 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.buttonContainerClass = exports.textAreaClass = exports.textAreaContainerClass = exports.disabledClass = void 0;
-const sprinkles_css_1 = require("../../../styles/sprinkles.css");
-const vars_css_1 = require("../../../styles/vars.css");
+const atoms_css_1 = require("../../../styles/atoms.css");
+const contract_css_1 = require("../../../styles/tokens/contract.css");
 const css_1 = require("@vanilla-extract/css");
 exports.disabledClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         pointerEvents: 'none',
-        bg: {
-            darkMode: '$gray60',
-            lightMode: '$gray20',
-        },
+        backgroundColor: 'layer-3.default',
     }),
-    {
-        selectors: {
-            [`${vars_css_1.darkThemeClass} &`]: {
-                backgroundColor: vars_css_1.vars.colors.$gray60,
-            },
-        },
-    },
 ]);
 exports.textAreaContainerClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         position: 'relative',
         alignItems: 'center',
         display: 'flex',
         flexGrow: 1,
-        gap: '$2',
-        lineHeight: '$lg',
-        paddingLeft: '$4',
-        paddingRight: '$2',
+        gap: 'xs',
+        lineHeight: 'lg',
+        paddingInlineStart: 'sm',
+        paddingInlineEnd: 'xs',
     }),
 ]);
 exports.textAreaClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         alignItems: 'center',
         background: 'none',
         border: 'none',
-        color: '$foreground',
+        color: 'text.base.default',
         outline: 'none',
         flexGrow: 1,
-        paddingY: '$2',
-        fontSize: '$base',
+        paddingBlock: 'sm',
+        fontSize: 'base',
     }),
     {
-        minHeight: vars_css_1.vars.sizes.$20,
+        minHeight: contract_css_1.tokens.kda.foundation.size.n20,
         resize: 'none',
         '::placeholder': {
-            color: vars_css_1.vars.colors.$gray40,
-        },
-        [`${vars_css_1.darkThemeClass} &::placeholder`]: {
-            color: vars_css_1.vars.colors.$gray50,
+            color: contract_css_1.tokens.kda.foundation.color.text.subtlest.default,
         },
     },
 ]);
 exports.buttonContainerClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        top: '$2',
+    (0, atoms_css_1.atoms)({
         position: 'relative',
     }),
+    {
+        top: '4px',
+    },
 ]);
 //# sourceMappingURL=Textarea.css.js.map

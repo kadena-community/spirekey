@@ -1,81 +1,67 @@
-import { sprinkles } from '../../../styles/sprinkles.css';
-import { darkThemeClass, vars } from '../../../styles/vars.css';
+import { atoms } from '../../../styles/atoms.css';
+import { tokens } from '../../../styles/tokens/contract.css';
+import { vars } from '../../../styles/vars.css';
 import { style, styleVariants } from '@vanilla-extract/css';
+import { calc } from '@vanilla-extract/css-utils';
 export const disabledClass = style([
-    sprinkles({
+    atoms({
         pointerEvents: 'none',
-        bg: {
-            darkMode: '$gray60',
-            lightMode: '$gray20',
-        },
+        backgroundColor: 'layer-3.default',
     }),
-    {
-        selectors: {
-            [`${darkThemeClass} &`]: {
-                backgroundColor: vars.colors.$gray60,
-            },
-        },
-    },
 ]);
 export const inputContainerClass = style([
-    sprinkles({
+    atoms({
         alignItems: 'center',
         display: 'flex',
         flexGrow: 1,
-        gap: '$2',
-        lineHeight: '$lg',
-        paddingLeft: '$4',
-        paddingRight: '$2',
+        gap: 'xs',
+        lineHeight: 'lg',
+        paddingInlineStart: 'sm',
+        paddingInlineEnd: 'xs',
     }),
 ]);
 export const inputClass = style([
-    sprinkles({
+    atoms({
         alignItems: 'center',
         background: 'none',
         border: 'none',
-        color: '$foreground',
+        color: 'text.base.default',
         outline: 'none',
         flexGrow: 1,
-        paddingY: '$2',
-        fontSize: '$base',
+        paddingBlock: 'sm',
+        fontSize: 'base',
     }),
     {
         '::placeholder': {
-            color: vars.colors.$gray40,
-        },
-        [`${darkThemeClass} &::placeholder`]: {
-            color: vars.colors.$gray50,
+            color: tokens.kda.foundation.color.text.subtlest.default,
         },
     },
 ]);
 export const leadingTextClass = style([
-    sprinkles({
+    atoms({
         overflow: 'hidden',
         display: 'inline-block',
         alignItems: 'center',
-        paddingX: '$4',
+        paddingInline: 'sm',
+        whiteSpace: 'nowrap',
     }),
     {
         textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
     },
 ]);
 export const leadingTextWrapperClass = style([
-    sprinkles({
-        backgroundColor: {
-            lightMode: '$gray20',
-            darkMode: '$gray60',
-        },
+    atoms({
+        backgroundColor: 'base.default',
         display: 'flex',
         alignItems: 'center',
     }),
 ]);
 export const inputChildrenClass = style([
+    atoms({
+        padding: 'xxs',
+    }),
     {
-        marginRight: '-0.5rem',
-        paddingTop: '0.125rem',
-        paddingBottom: '0.125rem',
-        paddingRight: '0.125rem',
+        marginRight: calc(tokens.kda.foundation.spacing.xs).negate().toString(),
     },
 ]);
 export const leadingTextWidthVariant = styleVariants(vars.sizes, (size) => {

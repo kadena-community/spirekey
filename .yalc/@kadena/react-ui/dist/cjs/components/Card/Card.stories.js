@@ -8,9 +8,11 @@ const Button_1 = require("../Button");
 const Card_1 = require("../Card");
 const Layout_1 = require("../Layout");
 const Typography_1 = require("../Typography");
+const _storyDecorators_1 = require("../../storyDecorators");
 const react_1 = __importDefault(require("react"));
 const meta = {
     title: 'Layout/Card',
+    decorators: [_storyDecorators_1.withContentWidth, _storyDecorators_1.withCenteredStory],
     parameters: {
         status: {
             type: ['needsRevision'],
@@ -55,7 +57,7 @@ exports.Primary = {
     render: ({ fullWidth, disabled }) => {
         return (react_1.default.createElement(react_1.default.Fragment, null,
             react_1.default.createElement(Card_1.Card, { fullWidth: fullWidth, disabled: disabled },
-                react_1.default.createElement(Layout_1.Stack, { direction: "column", gap: "$2", alignItems: "flex-start", marginBottom: "$6", maxWidth: "$maxContentWidth" },
+                react_1.default.createElement(Layout_1.Stack, { flexDirection: "column", gap: "xs", alignItems: "flex-start", marginBlockEnd: "md", maxWidth: "content.maxWidth" },
                     react_1.default.createElement(Typography_1.Heading, { as: "h5" }, "Intro to Kadena"),
                     react_1.default.createElement(Typography_1.Text, null, "Kadena is the only platform offering a complete decentralized infrastructure for builders. Combining a revolutionary chain architecture with the tools needed for widespread adoption, your teams get the full capabilities of blockchain with the ability to go from concept to launch in days vs. months by not having to build from scratch. Learn about our core concepts.")),
                 react_1.default.createElement(Button_1.Button, { title: 'Button' }, "Kadena Docs"))));

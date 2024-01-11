@@ -2,14 +2,19 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a, _b, _c, _d;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Primary = void 0;
 const Notification_1 = require("../Notification");
+const _storyDecorators_1 = require("../../storyDecorators");
 const react_1 = __importDefault(require("react"));
 const __1 = require("..");
 const Notification_css_1 = require("./Notification.css");
+const intentVariants = Object.keys((_b = (_a = Notification_css_1.notificationRecipe.classNames) === null || _a === void 0 ? void 0 : _a.variants) === null || _b === void 0 ? void 0 : _b.intent);
+const displayStyleVariant = Object.keys((_d = (_c = Notification_css_1.notificationRecipe.classNames) === null || _c === void 0 ? void 0 : _c.variants) === null || _d === void 0 ? void 0 : _d.displayStyle);
 const meta = {
     title: 'Components/Notification',
+    decorators: [_storyDecorators_1.withContentWidth],
     parameters: {
         status: {
             type: ['inDevelopment'],
@@ -21,23 +26,29 @@ const meta = {
         },
     },
     argTypes: {
-        styleVariant: {
+        displayStyle: {
+            options: displayStyleVariant,
+            control: {
+                type: 'select',
+            },
             description: 'The Notification component has bordered and borderless variants. The borderless variant is used for notifications that located within a card or content body, while the bordered variant can be used in all other cases. ',
-            options: Object.keys(Notification_css_1.displayVariants),
-            control: {
-                type: 'select',
-            },
             table: {
-                defaultValue: { summary: 'bordered' },
+                type: { summary: displayStyleVariant.join(' | ') },
+                defaultValue: { summary: 'default' },
             },
         },
-        color: {
-            options: Object.keys(Notification_css_1.colorVariants),
+        intent: {
+            options: intentVariants,
             control: {
                 type: 'select',
             },
+            description: 'Notification intent color',
+            table: {
+                type: { summary: intentVariants.join(' | ') },
+                defaultValue: { summary: 'default' },
+            },
         },
-        hasCloseButton: {
+        isDismissable: {
             control: {
                 type: 'boolean',
             },
@@ -64,24 +75,20 @@ exports.Primary = {
     name: 'Notification',
     args: {
         heading: 'Notification Heading',
-        hasCloseButton: true,
-        color: undefined,
+        isDismissable: true,
+        intent: undefined,
         children: 'Notification children to inform users about the event that occurred!',
-        styleVariant: 'bordered',
+        displayStyle: 'bordered',
     },
-    render: ({ heading, hasCloseButton, color, children, styleVariant }) => {
-        return (react_1.default.createElement(Notification_1.Notification, { color: color, hasCloseButton: hasCloseButton, onClose: () => {
+    render: ({ heading, isDismissable, intent, children, displayStyle }) => {
+        return (react_1.default.createElement(Notification_1.Notification, { intent: intent, isDismissable: isDismissable, onDismiss: () => {
                 alert('Close button clicked');
-            }, styleVariant: styleVariant, role: "none" },
+            }, displayStyle: displayStyle, role: "none" },
             react_1.default.createElement(Notification_1.NotificationHeading, null, heading),
             children,
             react_1.default.createElement(Notification_1.NotificationFooter, null,
-                react_1.default.createElement(Notification_1.NotificationButton, { color: "positive" },
-                    "Accept",
-                    react_1.default.createElement(__1.SystemIcon.Check, null)),
-                react_1.default.createElement(Notification_1.NotificationButton, { color: "negative" },
-                    "Reject",
-                    react_1.default.createElement(__1.SystemIcon.Close, null)))));
+                react_1.default.createElement(Notification_1.NotificationButton, { intent: "positive", icon: react_1.default.createElement(__1.SystemIcon.Check, null) }, "Accept"),
+                react_1.default.createElement(Notification_1.NotificationButton, { intent: "negative", icon: react_1.default.createElement(__1.SystemIcon.Close, null) }, "Reject"))));
     },
 };
 //# sourceMappingURL=Notification.stories.js.map

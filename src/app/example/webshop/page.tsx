@@ -73,7 +73,12 @@ export default function Webshop({ searchParams }: WebshopProps) {
   }, []);
 
   return (
-    <Stack direction="column" alignItems="center" paddingY="$lg" gap="$md">
+    <Stack
+      flexDirection="column"
+      alignItems="center"
+      paddingBlock="lg"
+      gap="md"
+    >
       <Box>
         <ContentHeader
           description="We sell the best cookies in town!"
@@ -86,7 +91,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
         <Account account={account} returnPath="/example/webshop" />
       </Box>
       {account && (
-        <Grid columns={{ sm: 1, md: 2, lg: 2 }} gap="$lg" margin="$lg">
+        <Grid columns={{ sm: 1, md: 2, lg: 2 }} gap="lg" margin="lg">
           {cookies.map(({ description, name, image, price }) => (
             <GridItem key={name}>
               <Card fullWidth>
@@ -103,23 +108,17 @@ export default function Webshop({ searchParams }: WebshopProps) {
                     borderRadius: '1rem',
                   }}
                 />
-                <Box marginY="$5">
+                <Box marginBlock="md">
                   <Heading as="h3">{name}</Heading>
                   <Text>{description}</Text>
                   <Stack
-                    direction="row"
-                    gap="$md"
+                    flexDirection="row"
+                    gap="md"
                     justifyContent="space-between"
                     alignItems="center"
-                    marginTop="$4"
+                    marginBlockStart="md"
                   >
-                    <Text
-                      as="span"
-                      bold
-                      font="mono"
-                      size="lg"
-                      color="emphasize"
-                    >
+                    <Text as="code" bold variant="base" color="emphasize">
                       {price.toFixed(2)} KDA
                     </Text>
                     <Button

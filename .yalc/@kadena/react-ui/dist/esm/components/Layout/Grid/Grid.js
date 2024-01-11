@@ -1,7 +1,7 @@
-import { sprinkles } from '../../../styles/sprinkles.css';
 import classNames from 'classnames';
 import React from 'react';
-import { containerColumnVariants, gapVariants, gridContainerClass, } from './Grid.css';
+import { Box } from '../Box';
+import { containerColumnVariants, gridContainerClass } from './Grid.css';
 const assembleColumnVariants = (columns) => {
     if (typeof columns === 'number') {
         return containerColumnVariants.xs[columns];
@@ -10,30 +10,8 @@ const assembleColumnVariants = (columns) => {
         return containerColumnVariants[key][value];
     });
 };
-export const Grid = ({ className, children, columns, gap = '$md', height, margin, marginBottom, marginLeft, marginRight, marginTop, marginX, marginY, maxHeight, maxWidth, minHeight, minWidth, overflow, padding, paddingBottom, paddingLeft, paddingRight, paddingTop, paddingX, paddingY, width, }) => {
-    const classList = classNames(gapVariants[gap], gridContainerClass, columns && assembleColumnVariants(columns), sprinkles({
-        height,
-        margin,
-        marginBottom,
-        marginLeft,
-        marginRight,
-        marginTop,
-        marginX,
-        marginY,
-        maxHeight,
-        maxWidth,
-        minHeight,
-        minWidth,
-        overflow,
-        padding,
-        paddingBottom,
-        paddingLeft,
-        paddingRight,
-        paddingTop,
-        paddingX,
-        paddingY,
-        width,
-    }), className);
-    return React.createElement("div", { className: classList }, children);
+export const Grid = ({ className, children, columns, ...props }) => {
+    const classList = classNames(gridContainerClass, columns && assembleColumnVariants(columns), className);
+    return (React.createElement(Box, { className: classList, ...props }, children));
 };
 //# sourceMappingURL=Grid.js.map

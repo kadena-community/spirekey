@@ -23,10 +23,10 @@ export default function Pact({ searchParams }: PactProps) {
 
   return (
     <main>
-      <Stack direction="column" gap="$md" margin="$md">
+      <Stack flexDirection="column" gap="md" margin="md">
         <Heading as="h3">Execute pact</Heading>
-        <Stack direction="row" margin="$md" justifyContent="space-between">
-          <Box margin="$md">
+        <Stack flexDirection="row" margin="md" justifyContent="space-between">
+          <Box margin="md">
             <ContentHeader
               heading="Execute pact"
               icon="KeyIconFilled"

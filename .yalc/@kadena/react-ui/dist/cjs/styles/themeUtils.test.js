@@ -39,4 +39,32 @@ const themeUtils_1 = require("./themeUtils");
         });
     });
 });
+(0, vitest_1.describe)('flattenTokens function', () => {
+    (0, vitest_1.test)('creates a flattened object with concatenated token names', () => {
+        const border = {
+            width: {
+                hairline: '1px',
+                normal: '2px',
+                thick: '4px',
+                other: {
+                    test: '5px',
+                },
+            },
+            hairline: '1px solid black',
+            normal: '2px solid black',
+            thick: '3px solid black',
+            '@hover': '1px solid black',
+        };
+        const flattenedBorder = {
+            'width.hairline': '1px',
+            'width.normal': '2px',
+            'width.thick': '4px',
+            'width.other.test': '5px',
+            hairline: '1px solid black',
+            normal: '2px solid black',
+            thick: '3px solid black',
+        };
+        (0, vitest_1.expect)((0, themeUtils_1.flattenTokens)(border)).toEqual(flattenedBorder);
+    });
+});
 //# sourceMappingURL=themeUtils.test.js.map

@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Dynamic = void 0;
+const atoms_css_1 = require("../../styles/atoms.css");
 const react_1 = __importDefault(require("react"));
 const _1 = require("./");
 const generateSection = (i) => ({
@@ -54,7 +55,8 @@ exports.Dynamic = {
     },
     render: ({ linked }) => {
         const sections = sampleSections;
-        return (react_1.default.createElement(_1.Accordion.Root, { linked: linked }, sections.map(({ title, children, onOpen, onClose }, index) => (react_1.default.createElement(_1.Accordion.Section, { onOpen: onOpen, onClose: onClose, title: title, key: index }, children)))));
+        return (react_1.default.createElement("div", { className: (0, atoms_css_1.atoms)({ width: '100%' }) },
+            react_1.default.createElement(_1.Accordion.Root, { linked: linked }, sections.map(({ title, children, onOpen, onClose }, index) => (react_1.default.createElement(_1.Accordion.Section, { onOpen: onOpen, onClose: onClose, title: title, key: index }, children))))));
     },
 };
 exports.default = meta;

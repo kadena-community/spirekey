@@ -7,9 +7,12 @@ exports.Group = void 0;
 const Form_1 = require("../../Form");
 const FormFieldWrapper_css_1 = require("../../Form/FormFieldWrapper/FormFieldWrapper.css");
 const Icon_1 = require("../../Icon");
+const _storyDecorators_1 = require("../../../storyDecorators");
 const react_1 = __importDefault(require("react"));
 const meta = {
     title: 'Form/SelectField',
+    component: Form_1.SelectField,
+    decorators: [_storyDecorators_1.withContentWidth, _storyDecorators_1.onLayer2],
     parameters: {
         status: { type: 'inDevelopment' },
         docs: {
@@ -63,13 +66,6 @@ const meta = {
                 defaultValue: { summary: 'false' },
             },
         },
-        icon: {
-            description: 'Icon rendered inside the select to the left of the text.',
-            options: Object.keys(Icon_1.SystemIcon),
-            control: {
-                type: 'select',
-            },
-        },
     },
 };
 exports.Group = {
@@ -81,15 +77,10 @@ exports.Group = {
         label: 'Label',
         disabled: false,
         status: undefined,
-        icon: 'Account',
+        startIcon: react_1.default.createElement(Icon_1.SystemIcon.Account, null),
     },
-    render: ({ icon, disabled, status, tag, helperText, info, label }) => {
-        return (react_1.default.createElement(Form_1.SelectField, { tag: tag, info: info, label: label, status: status, disabled: disabled, helperText: helperText, selectProps: {
-                ariaLabel: 'Select Story',
-                id: 'inputStory',
-                icon,
-                placeholder: 'This is a placeholder',
-            } },
+    render: ({ startIcon, disabled, status, tag, helperText, info, label }) => {
+        return (react_1.default.createElement(Form_1.SelectField, { tag: tag, info: info, label: label, status: status, disabled: disabled, helperText: helperText, ariaLabel: "Select Story", id: "inputStory", startIcon: startIcon, placeholder: "This is a placeholder" },
             react_1.default.createElement("option", { value: "1" }, "Option 1"),
             react_1.default.createElement("option", { value: "2" }, "Option 2")));
     },

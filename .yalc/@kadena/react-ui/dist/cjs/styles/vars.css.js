@@ -1,11 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.darkThemeClass = exports.vars = void 0;
+exports.darkThemeClass = exports.vars = exports.primaryFont = void 0;
 const colors_1 = require("./colors");
 const css_1 = require("@vanilla-extract/css");
-exports.vars = (0, css_1.createGlobalTheme)(':root', {
+const contract_css_1 = require("./tokens/contract.css");
+const dark_css_1 = require("./tokens/dark.css");
+const light_css_1 = require("./tokens/light.css");
+exports.primaryFont = light_css_1.lightThemeValues.kda.foundation.typography.family.primaryFont;
+const oldThemeValues = {
     fonts: {
-        $main: "'Haas Grotesk Display', -apple-system, sans-serif",
+        $main: `${exports.primaryFont}, -apple-system, sans-serif`,
         $mono: "'Kode Mono', Menlo, monospace",
     },
     fontSizes: {
@@ -37,7 +41,7 @@ exports.vars = (0, css_1.createGlobalTheme)(':root', {
         $light: '300',
         $normal: '400',
         $medium: '500',
-        $semiBold: '700',
+        $semiBold: '600',
         $bold: '700',
     },
     radii: {
@@ -168,8 +172,17 @@ exports.vars = (0, css_1.createGlobalTheme)(':root', {
         $neutral5: colors_1.colorPalette.$gray90,
         $neutral6: colors_1.colorPalette.$gray100,
     },
+};
+exports.vars = (0, css_1.createThemeContract)(oldThemeValues);
+const lightContract = {
+    ...exports.vars,
+    ...contract_css_1.tokens,
+};
+(0, css_1.createGlobalTheme)(':root', lightContract, {
+    ...oldThemeValues,
+    ...light_css_1.lightThemeValues,
 });
-exports.darkThemeClass = (0, css_1.createTheme)(exports.vars.colors, {
+const oldDarkThemeColors = {
     ...colors_1.colorPalette,
     ...colors_1.gradients,
     $primarySurface: colors_1.colorPalette.$blue40,
@@ -238,5 +251,13 @@ exports.darkThemeClass = (0, css_1.createTheme)(exports.vars.colors, {
     $neutral4: colors_1.colorPalette.$gray40,
     $neutral5: colors_1.colorPalette.$gray20,
     $neutral6: colors_1.colorPalette.$gray10,
-});
+};
+const darkContract = {
+    new: contract_css_1.tokens.kda.foundation.color,
+    old: exports.vars.colors,
+};
+exports.darkThemeClass = (0, css_1.createTheme)(darkContract, {
+    new: dark_css_1.darkThemeValues.kda.foundation.color,
+    old: oldDarkThemeColors,
+}, 'dark');
 //# sourceMappingURL=vars.css.js.map

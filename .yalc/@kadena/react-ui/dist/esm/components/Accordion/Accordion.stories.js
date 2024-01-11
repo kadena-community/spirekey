@@ -1,3 +1,4 @@
+import { atoms } from '../../styles/atoms.css';
 import React from 'react';
 import { Accordion } from './';
 const generateSection = (i) => ({
@@ -48,7 +49,8 @@ export const Dynamic = {
     },
     render: ({ linked }) => {
         const sections = sampleSections;
-        return (React.createElement(Accordion.Root, { linked: linked }, sections.map(({ title, children, onOpen, onClose }, index) => (React.createElement(Accordion.Section, { onOpen: onOpen, onClose: onClose, title: title, key: index }, children)))));
+        return (React.createElement("div", { className: atoms({ width: '100%' }) },
+            React.createElement(Accordion.Root, { linked: linked }, sections.map(({ title, children, onOpen, onClose }, index) => (React.createElement(Accordion.Section, { onOpen: onOpen, onClose: onClose, title: title, key: index }, children))))));
     },
 };
 export default meta;

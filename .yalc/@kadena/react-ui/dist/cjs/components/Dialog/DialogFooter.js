@@ -9,7 +9,7 @@ const classnames_1 = __importDefault(require("classnames"));
 const react_1 = __importDefault(require("react"));
 const Dialog_css_1 = require("./Dialog.css");
 const DialogFooter = ({ children, className, }) => {
-    return (react_1.default.createElement(Layout_1.Stack, { gap: "$md", justifyContent: "flex-end", alignItems: "center", marginTop: "$xl", className: (0, classnames_1.default)(Dialog_css_1.footerClass, className) }, children));
+    return (react_1.default.createElement(Layout_1.Stack, { gap: "md", justifyContent: "flex-end", alignItems: "center", marginBlockStart: "xl", className: (0, classnames_1.default)(Dialog_css_1.footerClass, className) }, children));
 };
 exports.DialogFooter = DialogFooter;
 //# sourceMappingURL=DialogFooter.js.map

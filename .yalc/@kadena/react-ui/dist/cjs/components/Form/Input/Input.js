@@ -27,25 +27,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Input = void 0;
-const Icon_1 = require("../../Icon");
 const classnames_1 = __importDefault(require("classnames"));
 const react_1 = __importStar(require("react"));
 const Form_css_1 = require("../Form.css");
-const FormFieldWrapper_context_1 = require("../FormFieldWrapper/FormFieldWrapper.context");
+const atoms_css_1 = require("../../../styles/atoms.css");
 const Input_css_1 = require("./Input.css");
-exports.Input = (0, react_1.forwardRef)(function Input({ outlined, leadingText, icon, leadingTextWidth: propLeadingTextWidth, disabled = false, children, ...rest }, ref) {
-    const { status, leadingTextWidth: wrapperLeadingTextWidth } = (0, react_1.useContext)(FormFieldWrapper_context_1.FormFieldWrapperContext);
-    const leadingTextWidth = propLeadingTextWidth || wrapperLeadingTextWidth;
-    const Icon = icon && Icon_1.SystemIcon[icon];
+exports.Input = (0, react_1.forwardRef)(function Input({ outlined, leadingText, startIcon, disabled = false, children, status, className, fontFamily = 'primaryFont', ...rest }, ref) {
     return (react_1.default.createElement("div", { className: (0, classnames_1.default)(Form_css_1.baseContainerClass, {
             [Form_css_1.baseOutlinedClass]: outlined || status,
             [Input_css_1.disabledClass]: disabled,
-        }) },
-        Boolean(leadingText) && (react_1.default.createElement("div", { className: (0, classnames_1.default)(Input_css_1.leadingTextWrapperClass, leadingTextWidth && Input_css_1.leadingTextWidthVariant[leadingTextWidth]) },
+        }, className) },
+        Boolean(leadingText) && (react_1.default.createElement("div", { className: (0, classnames_1.default)(Input_css_1.leadingTextWrapperClass) },
             react_1.default.createElement("span", { className: Input_css_1.leadingTextClass }, leadingText))),
         react_1.default.createElement("div", { className: Input_css_1.inputContainerClass },
-            Icon && react_1.default.createElement(Icon, { size: "md" }),
-            react_1.default.createElement("input", { ref: ref, className: Input_css_1.inputClass, disabled: disabled, ...rest }),
+            startIcon,
+            react_1.default.createElement("input", { ref: ref, className: (0, classnames_1.default)(Input_css_1.inputClass, (0, atoms_css_1.atoms)({ fontFamily })), disabled: disabled, ...rest }),
             children && react_1.default.createElement("div", { className: Input_css_1.inputChildrenClass }, children))));
 });
 //# sourceMappingURL=Input.js.map

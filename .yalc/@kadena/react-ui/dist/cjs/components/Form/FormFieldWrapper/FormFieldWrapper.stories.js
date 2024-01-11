@@ -5,11 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Group = void 0;
 const Form_1 = require("../../Form");
+const _storyDecorators_1 = require("../../../storyDecorators");
 const vars_css_1 = require("../../../styles/vars.css");
 const react_1 = __importDefault(require("react"));
 const FormFieldWrapper_css_1 = require("./FormFieldWrapper.css");
 const meta = {
     title: 'Form/FormFieldWrapper',
+    decorators: [_storyDecorators_1.withContentWidth, _storyDecorators_1.onLayer2],
     parameters: {
         status: { type: 'stable' },
         docs: {

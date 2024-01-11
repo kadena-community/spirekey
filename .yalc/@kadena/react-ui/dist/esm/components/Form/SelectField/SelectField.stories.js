@@ -1,9 +1,12 @@
 import { SelectField } from '../../Form';
 import { statusVariant } from '../../Form/FormFieldWrapper/FormFieldWrapper.css';
 import { SystemIcon } from '../../Icon';
+import { onLayer2, withContentWidth } from '../../../storyDecorators';
 import React from 'react';
 const meta = {
     title: 'Form/SelectField',
+    component: SelectField,
+    decorators: [withContentWidth, onLayer2],
     parameters: {
         status: { type: 'inDevelopment' },
         docs: {
@@ -57,13 +60,6 @@ const meta = {
                 defaultValue: { summary: 'false' },
             },
         },
-        icon: {
-            description: 'Icon rendered inside the select to the left of the text.',
-            options: Object.keys(SystemIcon),
-            control: {
-                type: 'select',
-            },
-        },
     },
 };
 export const Group = {
@@ -75,15 +71,10 @@ export const Group = {
         label: 'Label',
         disabled: false,
         status: undefined,
-        icon: 'Account',
+        startIcon: React.createElement(SystemIcon.Account, null),
     },
-    render: ({ icon, disabled, status, tag, helperText, info, label }) => {
-        return (React.createElement(SelectField, { tag: tag, info: info, label: label, status: status, disabled: disabled, helperText: helperText, selectProps: {
-                ariaLabel: 'Select Story',
-                id: 'inputStory',
-                icon,
-                placeholder: 'This is a placeholder',
-            } },
+    render: ({ startIcon, disabled, status, tag, helperText, info, label }) => {
+        return (React.createElement(SelectField, { tag: tag, info: info, label: label, status: status, disabled: disabled, helperText: helperText, ariaLabel: "Select Story", id: "inputStory", startIcon: startIcon, placeholder: "This is a placeholder" },
             React.createElement("option", { value: "1" }, "Option 1"),
             React.createElement("option", { value: "2" }, "Option 2")));
     },

@@ -1,9 +1,14 @@
+var _a, _b, _c, _d;
 import { Notification, NotificationButton, NotificationFooter, NotificationHeading, } from '../Notification';
+import { withContentWidth } from '../../storyDecorators';
 import React from 'react';
 import { SystemIcon } from '..';
-import { colorVariants, displayVariants } from './Notification.css';
+import { notificationRecipe } from './Notification.css';
+const intentVariants = Object.keys((_b = (_a = notificationRecipe.classNames) === null || _a === void 0 ? void 0 : _a.variants) === null || _b === void 0 ? void 0 : _b.intent);
+const displayStyleVariant = Object.keys((_d = (_c = notificationRecipe.classNames) === null || _c === void 0 ? void 0 : _c.variants) === null || _d === void 0 ? void 0 : _d.displayStyle);
 const meta = {
     title: 'Components/Notification',
+    decorators: [withContentWidth],
     parameters: {
         status: {
             type: ['inDevelopment'],
@@ -15,23 +20,29 @@ const meta = {
         },
     },
     argTypes: {
-        styleVariant: {
+        displayStyle: {
+            options: displayStyleVariant,
+            control: {
+                type: 'select',
+            },
             description: 'The Notification component has bordered and borderless variants. The borderless variant is used for notifications that located within a card or content body, while the bordered variant can be used in all other cases. ',
-            options: Object.keys(displayVariants),
-            control: {
-                type: 'select',
-            },
             table: {
-                defaultValue: { summary: 'bordered' },
+                type: { summary: displayStyleVariant.join(' | ') },
+                defaultValue: { summary: 'default' },
             },
         },
-        color: {
-            options: Object.keys(colorVariants),
+        intent: {
+            options: intentVariants,
             control: {
                 type: 'select',
             },
+            description: 'Notification intent color',
+            table: {
+                type: { summary: intentVariants.join(' | ') },
+                defaultValue: { summary: 'default' },
+            },
         },
-        hasCloseButton: {
+        isDismissable: {
             control: {
                 type: 'boolean',
             },
@@ -58,24 +69,20 @@ export const Primary = {
     name: 'Notification',
     args: {
         heading: 'Notification Heading',
-        hasCloseButton: true,
-        color: undefined,
+        isDismissable: true,
+        intent: undefined,
         children: 'Notification children to inform users about the event that occurred!',
-        styleVariant: 'bordered',
+        displayStyle: 'bordered',
     },
-    render: ({ heading, hasCloseButton, color, children, styleVariant }) => {
-        return (React.createElement(Notification, { color: color, hasCloseButton: hasCloseButton, onClose: () => {
+    render: ({ heading, isDismissable, intent, children, displayStyle }) => {
+        return (React.createElement(Notification, { intent: intent, isDismissable: isDismissable, onDismiss: () => {
                 alert('Close button clicked');
-            }, styleVariant: styleVariant, role: "none" },
+            }, displayStyle: displayStyle, role: "none" },
             React.createElement(NotificationHeading, null, heading),
             children,
             React.createElement(NotificationFooter, null,
-                React.createElement(NotificationButton, { color: "positive" },
-                    "Accept",
-                    React.createElement(SystemIcon.Check, null)),
-                React.createElement(NotificationButton, { color: "negative" },
-                    "Reject",
-                    React.createElement(SystemIcon.Close, null)))));
+                React.createElement(NotificationButton, { intent: "positive", icon: React.createElement(SystemIcon.Check, null) }, "Accept"),
+                React.createElement(NotificationButton, { intent: "negative", icon: React.createElement(SystemIcon.Close, null) }, "Reject"))));
     },
 };
 //# sourceMappingURL=Notification.stories.js.map

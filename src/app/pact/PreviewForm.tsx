@@ -289,7 +289,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
           />
         </FormFieldWrapper>
       </Card>
-      <Stack margin="$md" direction="column">
+      <Stack margin="md" flexDirection="column">
         <FormFieldWrapper htmlFor="code" label="pact code">
           <textarea
             id="code"
@@ -344,7 +344,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
           />
         </FormFieldWrapper>
       </Stack>
-      <Stack direction="column" margin="$md" justifyContent="flex-start">
+      <Stack flexDirection="column" margin="md" justifyContent="flex-start">
         {formState.errors.root && (
           <div style={{ marginBottom: '0.5rem' }}>
             <b>Error: </b>
@@ -352,7 +352,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
           </div>
         )}
       </Stack>
-      <Stack direction="row" margin="$md" justifyContent="flex-start">
+      <Stack flexDirection="row" margin="md" justifyContent="flex-start">
         <Button type="submit">Preview</Button>
       </Stack>
     </form>

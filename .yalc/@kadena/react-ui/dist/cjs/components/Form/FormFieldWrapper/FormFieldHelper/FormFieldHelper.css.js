@@ -1,24 +1,23 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.helperIconClass = exports.helperClass = exports.helperTextColor = exports.helperIconColor = void 0;
-const sprinkles_css_1 = require("../../../../styles/sprinkles.css");
-const vars_css_1 = require("../../../../styles/vars.css");
+const atoms_css_1 = require("../../../../styles/atoms.css");
+const contract_css_1 = require("../../../../styles/tokens/contract.css");
 const css_1 = require("@vanilla-extract/css");
 exports.helperIconColor = (0, css_1.createVar)(), exports.helperTextColor = (0, css_1.createVar)();
 exports.helperClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         display: 'flex',
         alignItems: 'center',
-        gap: '$1',
-        fontSize: '$xs',
-        marginY: '$3',
-        color: '$foreground',
+        gap: 'xxs',
+        fontSize: 'xs',
+        marginBlock: 'sm',
     }),
     {
-        color: (0, css_1.fallbackVar)(exports.helperTextColor, vars_css_1.vars.colors.$primaryContrastInverted),
+        color: (0, css_1.fallbackVar)(exports.helperTextColor, contract_css_1.tokens.kda.foundation.color.text.semantic.info.default),
     },
 ]);
 exports.helperIconClass = (0, css_1.style)({
-    color: (0, css_1.fallbackVar)(exports.helperIconColor, vars_css_1.vars.colors.$primaryAccent),
+    color: (0, css_1.fallbackVar)(exports.helperIconColor, contract_css_1.tokens.kda.foundation.color.icon.semantic.info.default),
 });
 //# sourceMappingURL=FormFieldHelper.css.js.map

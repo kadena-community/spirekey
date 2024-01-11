@@ -11,7 +11,6 @@ import {
   Stack,
   SystemIcon,
   Text,
-  TrackerCard,
 } from '@kadena/react-ui';
 
 type SearchParams = {
@@ -31,17 +30,17 @@ export default function Submit({ searchParams }: SearchParams) {
   } = usePreview(searchParams);
 
   return (
-    <Stack direction="column" gap="$md" alignItems="center" margin="$xl">
+    <Stack flexDirection="column" gap="md" alignItems="center" margin="xl">
       <ContentHeader
         heading="Submit Transaction"
         description="Your transaction will be submitted to the network."
         icon="Earth"
       />
 
-      <Stack direction="column">
+      <Stack flexDirection="column">
         {isPreviewSuccesfull === true && (
-          <Stack direction="column" gap="$md">
-            <Stack direction="column" gap="$sm">
+          <Stack flexDirection="column" gap="md">
+            <Stack flexDirection="column" gap="sm">
               <Heading variant="h6">Estimated transaction costs:</Heading>
               <Text>
                 {estimatedGasIsLoading ? 'Loading...' : `${estimatedGas} KDA`}
@@ -51,10 +50,10 @@ export default function Submit({ searchParams }: SearchParams) {
             </Stack>
 
             <Stack
-              direction="row"
+              flexDirection="row"
               alignItems="center"
-              gap="$3"
-              marginBottom="$md"
+              gap="sm"
+              marginBlockEnd="md"
             >
               <SystemIcon.CheckDecagramOutline color="#4bb543" />
               <Text>Transaction can be submitted</Text>
@@ -70,18 +69,18 @@ export default function Submit({ searchParams }: SearchParams) {
 
         {isPreviewSuccesfull === false && (
           <>
-            <Stack direction="row" alignItems="center" gap="$3">
+            <Stack flexDirection="row" alignItems="center" gap="sm">
               <SystemIcon.Close color="#ff0000" />
               <Text>Transaction can not be submitted</Text>
             </Stack>
-            <Box marginTop="$md">
-              <Text font="mono">
+            <Box marginBlockStart="md">
+              <Text as="code">
                 <pre>{error}</pre>
               </Text>
             </Box>
           </>
         )}
-        <Box marginTop="$lg">
+        <Box marginBlockStart="lg">
           <SubmitResult result={result} status={status} />
         </Box>
       </Stack>

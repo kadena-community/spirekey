@@ -1,1 +1,1 @@
-{"version":3,"file":"IconWrapper.css.d.ts","sourceRoot":"","sources":["../../../src/components/Icon/IconWrapper.css.ts"],"names":[],"mappings":"AAGA,eAAO,MAAM,aAAa,QAUxB,CAAC;AAEH,eAAO,MAAM,YAAY,iEAOvB,CAAC"}
+{"version":3,"file":"IconWrapper.css.d.ts","sourceRoot":"","sources":["../../../src/components/Icon/IconWrapper.css.ts"],"names":[],"mappings":"AAGA,eAAO,MAAM,QAAQ,oFAAc,CAAC;AACpC,eAAO,MAAM,aAAa,QAaxB,CAAC;AAEH,eAAO,MAAM,YAAY,iEAOvB,CAAC"}

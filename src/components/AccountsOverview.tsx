@@ -19,7 +19,7 @@ type AccountOverviewProps = {
 const AccountOverview = ({ account }: AccountOverviewProps) => {
   return (
     <Card fullWidth>
-      <Stack direction="row" gap="$md" margin="$md">
+      <Stack flexDirection="row" gap="md" margin="md">
         <Box flexShrink={0}>
           <ProductIcon.ManageKda />
         </Box>
@@ -35,11 +35,11 @@ const AccountOverview = ({ account }: AccountOverviewProps) => {
         </Heading>
       </Stack>
 
-      <Stack direction="row" gap="$md" margin="$md">
+      <Stack flexDirection="row" gap="md" margin="md">
         <Text bold>Balance</Text>
         <Text>{account.balance}</Text>
       </Stack>
-      <Stack direction="column" gap="$md" margin="$md">
+      <Stack flexDirection="column" gap="md" margin="md">
         <Text bold>Devices</Text>
         <Table.Root striped>
           <Table.Head>
@@ -68,5 +68,11 @@ const AccountOverview = ({ account }: AccountOverviewProps) => {
 
 export const AccountsOverview = () => {
   const { accounts } = useAccounts();
-  return accounts.map((a) => <AccountOverview key={a.account} account={a} />);
+  return (
+    <>
+      {accounts.map((a) => (
+        <AccountOverview key={a.account} account={a} />
+      ))}
+    </>
+  );
 };

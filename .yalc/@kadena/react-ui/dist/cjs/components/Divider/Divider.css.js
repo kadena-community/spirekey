@@ -1,18 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.dividerClass = void 0;
-const sprinkles_css_1 = require("../../styles/sprinkles.css");
-const vars_css_1 = require("../../styles/vars.css");
+const atoms_css_1 = require("../../styles/atoms.css");
+const index_1 = require("../../styles/index");
 const css_1 = require("@vanilla-extract/css");
 exports.dividerClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        backgroundColor: '$borderDefault',
+    (0, atoms_css_1.atoms)({
         width: '100%',
-        marginY: '$10',
+        marginBlock: 'lg',
         border: 'none',
     }),
     {
-        height: vars_css_1.vars.borderWidths.$sm,
+        backgroundColor: index_1.tokens.kda.foundation.color.border.base.bold,
+        height: index_1.tokens.kda.foundation.border.width.hairline,
     },
 ]);
 //# sourceMappingURL=Divider.css.js.map

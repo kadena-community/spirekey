@@ -1,71 +1,101 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tabsContainerWrapper = exports.selectorLine = exports.selectedClass = exports.tabClass = exports.tabsContainer = void 0;
-const sprinkles_css_1 = require("../../styles/sprinkles.css");
-const vars_css_1 = require("../../styles/vars.css");
+exports.tabContentClass = exports.selectorLine = exports.tabItemClass = exports.tabListClass = exports.tabListWrapperClass = exports.tabsContainerClass = void 0;
+const atoms_css_1 = require("../../styles/atoms.css");
+const contract_css_1 = require("../../styles/tokens/contract.css");
 const css_1 = require("@vanilla-extract/css");
-exports.tabsContainer = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        position: 'relative',
+exports.tabsContainerClass = (0, css_1.style)([
+    (0, atoms_css_1.atoms)({
         display: 'flex',
-        alignItems: 'center',
-        flexGrow: 1,
-        marginBottom: '$4',
+        flexDirection: 'column',
+        width: '100%',
+    }),
+]);
+exports.tabListWrapperClass = (0, css_1.style)([
+    (0, atoms_css_1.atoms)({
+        overflowX: 'auto',
     }),
     {
-        borderBottom: `${vars_css_1.vars.sizes.$0} solid ${vars_css_1.vars.colors.$neutral2}`,
+        maxWidth: '100%',
+        paddingLeft: '2px',
+        paddingTop: '2px',
+    },
+]);
+exports.tabListClass = (0, css_1.style)([
+    (0, atoms_css_1.atoms)({
+        display: 'inline-flex',
+        flexDirection: 'row',
+        position: 'relative',
+    }),
+    {
+        minWidth: '100%',
         selectors: {
-            [`${vars_css_1.darkThemeClass} &`]: {
-                borderBottom: `${vars_css_1.vars.sizes.$0} solid ${vars_css_1.vars.colors.$neutral3}`,
+            '&::before': {
+                position: 'absolute',
+                display: 'block',
+                content: '',
+                bottom: '0',
+                left: '0',
+                right: '0',
+                height: contract_css_1.tokens.kda.foundation.border.width.normal,
+                backgroundColor: contract_css_1.tokens.kda.foundation.color.border.base.default,
             },
         },
     },
 ]);
-exports.tabClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+exports.tabItemClass = (0, css_1.style)([
+    (0, atoms_css_1.atoms)({
         border: 'none',
         cursor: 'pointer',
-        paddingY: '$2',
-        fontSize: '$md',
+        paddingBlock: 'xs',
+        paddingInline: 'sm',
+        fontSize: 'md',
+        fontWeight: 'bodyFont.bold',
         backgroundColor: 'transparent',
-        color: '$neutral4',
+        color: 'text.base.default',
+        outline: 'none',
+        zIndex: 1,
     }),
     {
+        opacity: '.6',
         whiteSpace: 'nowrap',
-    },
-]);
-exports.selectedClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        fontWeight: '$bold',
-    }),
-    {
-        color: vars_css_1.vars.colors.$primaryContrastInverted,
+        selectors: {
+            '&[data-selected="true"]': {
+                opacity: '1',
+                color: contract_css_1.tokens.kda.foundation.color.text.brand.primary.default,
+            },
+            '.focusVisible &:focus-visible': {
+                borderTopLeftRadius: contract_css_1.tokens.kda.foundation.radius.sm,
+                borderTopRightRadius: contract_css_1.tokens.kda.foundation.radius.sm,
+                outline: `2px solid ${contract_css_1.tokens.kda.foundation.color.accent.brand.primary}`,
+            },
+        },
     },
 ]);
 exports.selectorLine = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         position: 'absolute',
         display: 'block',
-        backgroundColor: {
-            darkMode: '$neutral6',
-            lightMode: '$primaryAccent',
-        },
-        width: 0,
-        height: '$0',
+        height: '100%',
+        bottom: 0,
+        borderStyle: 'solid',
     }),
     {
-        bottom: '-2px',
+        width: 0,
+        borderWidth: 0,
+        borderBottomWidth: contract_css_1.tokens.kda.foundation.border.width.normal,
+        borderColor: contract_css_1.tokens.kda.foundation.color.accent.brand.primary,
         transition: 'transform .4s ease, width .4s ease',
         transform: `translateX(0)`,
     },
 ]);
-exports.tabsContainerWrapper = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        display: 'flex',
-        width: '100%',
+exports.tabContentClass = (0, css_1.style)([
+    (0, atoms_css_1.atoms)({
+        marginBlock: 'md',
+        fontSize: 'base',
+        color: 'text.base.default',
+        flex: 1,
+        overflowY: 'auto',
     }),
-    {
-        overflowY: 'scroll',
-    },
 ]);
 //# sourceMappingURL=Tabs.css.js.map

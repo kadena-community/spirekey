@@ -1,4 +1,5 @@
 export declare const containerClass: string;
+export declare const itemsContainerClass: string;
 export declare const logoClass: string;
 export declare const navWrapperClass: string;
 export declare const navListClass: string;

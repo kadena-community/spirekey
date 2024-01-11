@@ -1,8 +1,10 @@
 import { ContentHeader } from '../ContentHeader';
 import { SystemIcon } from '../Icon';
+import { withContentWidth } from '../../storyDecorators';
 import React from 'react';
 const meta = {
     title: 'Patterns/ContentHeader',
+    decorators: [withContentWidth],
     parameters: {
         status: { type: 'experimental' },
     },

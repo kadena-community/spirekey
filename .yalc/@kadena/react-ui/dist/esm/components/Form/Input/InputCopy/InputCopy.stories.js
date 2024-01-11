@@ -1,8 +1,10 @@
 import { InputCopy } from '../../../Form';
+import { onLayer2, withContentWidth } from '../../../../storyDecorators';
 import React from 'react';
 const meta = {
     title: 'Form/Input/InputCopy',
     component: InputCopy,
+    decorators: [withContentWidth, onLayer2],
     parameters: {
         docs: {
             description: {
@@ -15,9 +17,7 @@ export default meta;
 export const InputCopyStory = {
     name: 'InputCopy',
     args: {
-        icon: undefined,
         type: 'text',
-        leadingTextWidth: undefined,
         leadingText: '',
         outlined: false,
     },

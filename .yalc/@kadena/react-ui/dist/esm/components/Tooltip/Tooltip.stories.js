@@ -1,13 +1,14 @@
 import { Button } from '../Button';
 import { SystemIcon } from '../Icon';
-import { Box, Stack } from '../Layout';
+import { Stack } from '../Layout';
 import { Tooltip } from '../Tooltip';
-import { withCenteredStory } from '../../utils/withCenteredStory';
+import { onLayer1 } from '../../storyDecorators';
+import { atoms } from '../../styles/atoms.css';
 import React from 'react';
 const meta = {
     title: 'Overlays/Tooltip',
     component: Tooltip,
-    decorators: [withCenteredStory],
+    decorators: [onLayer1],
     parameters: {
         status: {
             type: ['releaseCandidate'],
@@ -74,9 +75,8 @@ export const Dynamic = {
         closeDelay: 300,
     },
     render: ({ content, position, isDisabled, delay, closeDelay }) => {
-        return (React.createElement(Box, { margin: "$25" },
-            React.createElement(Tooltip, { content: content, position: position, isDisabled: isDisabled, delay: delay, closeDelay: closeDelay },
-                React.createElement(Button, null, "Trigger"))));
+        return (React.createElement(Tooltip, { content: content, position: position, isDisabled: isDisabled, delay: delay, closeDelay: closeDelay },
+            React.createElement(Button, null, "Trigger")));
     },
 };
 export const TooltipReactNode = {
@@ -88,11 +88,10 @@ export const TooltipReactNode = {
         closeDelay: 300,
     },
     render: ({ position, isDisabled, delay, closeDelay }) => {
-        return (React.createElement(Box, { margin: "$25" },
-            React.createElement(Tooltip, { position: position, isDisabled: isDisabled, delay: delay, closeDelay: closeDelay, content: React.createElement(Stack, { direction: "row", gap: "$xs", alignItems: "center" },
-                    React.createElement(SystemIcon.AlertBox, null),
-                    React.createElement("code", null, "I have an icon!")) },
-                React.createElement(Button, null, "Trigger"))));
+        return (React.createElement(Tooltip, { position: position, isDisabled: isDisabled, delay: delay, closeDelay: closeDelay, content: React.createElement(Stack, { flexDirection: "row", gap: "xs", alignItems: "center" },
+                React.createElement(SystemIcon.AlertBox, null),
+                React.createElement("code", null, "I have an icon!")) },
+            React.createElement(Button, null, "Trigger")));
     },
 };
 export const DefaultOpen = {
@@ -105,9 +104,8 @@ export const DefaultOpen = {
         closeDelay: 300,
     },
     render: ({ content, position, isDisabled, delay, closeDelay }) => {
-        return (React.createElement(Box, { margin: "$25" },
-            React.createElement(Tooltip, { content: content, position: position, isDisabled: isDisabled, delay: delay, closeDelay: closeDelay, defaultOpen: true },
-                React.createElement(Button, null, "Trigger"))));
+        return (React.createElement(Tooltip, { content: content, position: position, isDisabled: isDisabled, delay: delay, closeDelay: closeDelay, defaultOpen: true },
+            React.createElement(Button, null, "Trigger")));
     },
 };
 export const Controlled = {
@@ -121,11 +119,11 @@ export const Controlled = {
     },
     render: ({ content, position, isDisabled, delay, closeDelay }) => {
         const [isOpen, setIsOpen] = React.useState(false);
-        return (React.createElement(Box, { display: "flex", flexDirection: "column", alignItems: "center" },
-            React.createElement(Button, { onClick: () => setIsOpen(!isOpen) }, isOpen ? 'Hide Tooltip' : 'Show Tooltip'),
-            React.createElement(Box, { margin: "$25" },
-                React.createElement(Tooltip, { content: content, position: position, isDisabled: isDisabled, delay: delay, closeDelay: closeDelay, isOpen: isOpen },
-                    React.createElement(SystemIcon.AlertBox, null)))));
+        return (React.createElement(React.Fragment, null,
+            React.createElement("div", { className: atoms({ marginBlockEnd: 'xxxl' }) },
+                React.createElement(Button, { onClick: () => setIsOpen(!isOpen) }, isOpen ? 'Hide Tooltip' : 'Show Tooltip')),
+            React.createElement(Tooltip, { content: content, position: position, isDisabled: isDisabled, delay: delay, closeDelay: closeDelay, isOpen: isOpen },
+                React.createElement(SystemIcon.AlertBox, null))));
     },
 };
 //# sourceMappingURL=Tooltip.stories.js.map

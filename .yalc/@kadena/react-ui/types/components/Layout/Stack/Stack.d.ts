@@ -1,12 +1,7 @@
-import type { Sprinkles } from '../../../styles/sprinkles.css';
-import type React from 'react';
-import type { ElementType } from 'react';
-export interface IStackProps extends Pick<Sprinkles, 'alignItems' | 'gap' | 'justifyContent' | 'height' | 'margin' | 'marginBottom' | 'marginLeft' | 'marginRight' | 'marginTop' | 'marginX' | 'marginY' | 'maxHeight' | 'maxWidth' | 'minHeight' | 'minWidth' | 'overflow' | 'padding' | 'paddingBottom' | 'paddingLeft' | 'paddingRight' | 'paddingTop' | 'paddingX' | 'paddingY' | 'width'> {
-    className?: string;
-    direction?: Sprinkles['flexDirection'];
-    wrap?: Sprinkles['flexWrap'];
-    as?: ElementType;
-    children?: React.ReactNode;
+import type { FC } from 'react';
+import type { IBoxProps } from '../Box';
+export interface IStackProps extends IBoxProps {
+    display?: 'flex' | 'inline-flex';
 }
-export declare const Stack: ({ className, children, alignItems, as, direction, gap, justifyContent, height, margin, marginBottom, marginLeft, marginRight, marginTop, marginX, marginY, maxHeight, maxWidth, minHeight, minWidth, overflow, padding, paddingBottom, paddingLeft, paddingRight, paddingTop, paddingX, paddingY, width, wrap, }: IStackProps) => React.ReactElement;
+export declare const Stack: FC<IStackProps>;
 //# sourceMappingURL=Stack.d.ts.map

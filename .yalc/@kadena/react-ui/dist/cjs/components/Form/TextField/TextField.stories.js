@@ -7,10 +7,12 @@ exports.Group = void 0;
 const Form_1 = require("../../Form");
 const FormFieldWrapper_css_1 = require("../../Form/FormFieldWrapper/FormFieldWrapper.css");
 const Icon_1 = require("../../Icon");
-const vars_css_1 = require("../../../styles/vars.css");
+const _storyDecorators_1 = require("../../../storyDecorators");
 const react_1 = __importDefault(require("react"));
 const meta = {
     title: 'Form/TextField',
+    component: Form_1.TextField,
+    decorators: [_storyDecorators_1.withContentWidth, _storyDecorators_1.onLayer2],
     parameters: {
         status: { type: 'inDevelopment' },
         docs: {
@@ -50,15 +52,8 @@ const meta = {
                 type: 'text',
             },
         },
-        leadingTextWidth: {
-            description: 'Width of the leading text. Defaults to the size of the text itself.',
-            control: {
-                type: 'select',
-            },
-            options: [
-                undefined,
-                ...Object.keys(vars_css_1.vars.sizes).map((key) => key),
-            ],
+        startIcon: {
+            description: 'Initial icon that can be passed as a prop.',
         },
         status: {
             options: [
@@ -80,13 +75,6 @@ const meta = {
                 defaultValue: { summary: 'false' },
             },
         },
-        icon: {
-            description: 'Icon rendered inside the input to the left of the input text.',
-            options: Object.keys(Icon_1.SystemIcon),
-            control: {
-                type: 'select',
-            },
-        },
     },
 };
 exports.Group = {
@@ -98,17 +86,11 @@ exports.Group = {
         label: 'Label',
         disabled: false,
         status: undefined,
-        icon: 'Account',
+        startIcon: react_1.default.createElement(Icon_1.SystemIcon.Account, null),
         leadingText: 'Leading',
-        leadingTextWidth: undefined,
     },
-    render: ({ leadingText, icon, disabled, status, tag, helperText, info, label, leadingTextWidth, }) => {
-        return (react_1.default.createElement(Form_1.TextField, { tag: tag, info: info, label: label, status: status, disabled: disabled, helperText: helperText, leadingTextWidth: leadingTextWidth, inputProps: {
-                id: 'inputStory',
-                leadingText,
-                icon,
-                placeholder: 'This is a placeholder',
-            } }));
+    render: ({ leadingText, startIcon, disabled, status, tag, helperText, info, label, }) => {
+        return (react_1.default.createElement(Form_1.TextField, { tag: tag, info: info, label: label, status: status, disabled: disabled, helperText: helperText, id: "inputStory", leadingText: leadingText, startIcon: startIcon, placeholder: "This is a placeholder" }));
     },
 };
 exports.default = meta;

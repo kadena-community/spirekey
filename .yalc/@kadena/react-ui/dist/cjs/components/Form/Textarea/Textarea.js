@@ -27,7 +27,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Textarea = void 0;
-const sprinkles_css_1 = require("../../../styles/sprinkles.css");
+const atoms_css_1 = require("../../../styles/atoms.css");
 const classnames_1 = __importDefault(require("classnames"));
 const react_1 = __importStar(require("react"));
 const Form_css_1 = require("../Form.css");
@@ -39,7 +39,7 @@ exports.Textarea = (0, react_1.forwardRef)(function TextArea({ outlined = false,
             [Form_css_1.baseOutlinedClass]: outlined || status,
             [Textarea_css_1.disabledClass]: disabled,
         }) },
-        react_1.default.createElement("textarea", { ref: ref, className: (0, classnames_1.default)(Textarea_css_1.textAreaClass, (0, sprinkles_css_1.sprinkles)({ fontFamily })), disabled: disabled, ...rest }),
+        react_1.default.createElement("textarea", { ref: ref, className: (0, classnames_1.default)(Textarea_css_1.textAreaClass, (0, atoms_css_1.atoms)({ fontFamily })), disabled: disabled, ...rest }),
         children && react_1.default.createElement("div", { className: Textarea_css_1.buttonContainerClass }, children)));
 });
 //# sourceMappingURL=Textarea.js.map

@@ -9,7 +9,7 @@ export const FormFieldWrapper = ({ status, disabled, children, label, leadingTex
     return (React.createElement(FormFieldWrapperContext.Provider, { value: { status, leadingTextWidth } },
         React.createElement("div", { className: statusVal ? statusVariant[statusVal] : undefined },
             label !== undefined && (React.createElement(FormFieldHeader, { htmlFor: htmlFor, label: label, tag: tag, info: info })),
-            React.createElement(Stack, { gap: "$2", direction: "column" }, children),
+            React.createElement(Stack, { gap: "xs", flexDirection: "column" }, children),
             Boolean(helperText) && React.createElement(FormFieldHelper, null, helperText))));
 };
 //# sourceMappingURL=FormFieldWrapper.js.map

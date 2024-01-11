@@ -1,9 +1,9 @@
-import { sprinkles } from '../../../styles/sprinkles.css';
+import { atoms } from '../../../styles/atoms.css';
 import classnames from 'classnames';
 import { createElement } from 'react';
-export const Box = ({ as = 'div', children, className, alignItems, backgroundColor, borderColor, borderRadius, borderStyle, borderWidth, bottom, cursor, display = 'block', flexDirection, flexGrow, flexShrink, flexWrap, height, inset, justifyContent, left, margin, marginBottom, marginLeft, marginRight, marginTop, marginX, marginY, maxHeight, maxWidth, minHeight, minWidth, opacity, overflow, padding, paddingBottom, paddingLeft, paddingRight, paddingTop, paddingX, paddingY, position, right, textAlign, top, width, zIndex, }) => {
+export const Box = ({ as = 'div', alignItems, backgroundColor, borderColor, borderRadius, borderStyle, borderWidth, bottom, children, className, cursor, display = 'block', flex, flexDirection, flexGrow, flexShrink, flexWrap, gap, height, inset, justifyContent, left, margin, marginBlock, marginBlockEnd, marginBlockStart, marginInline, marginInlineEnd, marginInlineStart, maxWidth, minWidth, opacity, overflow, padding, paddingBlock, paddingBlockEnd, paddingBlockStart, paddingInline, paddingInlineEnd, paddingInlineStart, position, right, textAlign, top, width, zIndex, ...props }) => {
     return createElement(as, {
-        className: classnames(sprinkles({
+        className: classnames(atoms({
             alignItems,
             backgroundColor,
             borderColor,
@@ -13,34 +13,34 @@ export const Box = ({ as = 'div', children, className, alignItems, backgroundCol
             bottom,
             cursor,
             display,
+            flex,
             flexDirection,
             flexGrow,
             flexShrink,
             flexWrap,
+            gap,
             height,
             inset,
             justifyContent,
             left,
             margin,
-            marginBottom,
-            marginLeft,
-            marginRight,
-            marginTop,
-            marginX,
-            marginY,
-            maxHeight,
+            marginBlock,
+            marginBlockEnd,
+            marginBlockStart,
+            marginInline,
+            marginInlineEnd,
+            marginInlineStart,
             maxWidth,
-            minHeight,
             minWidth,
             opacity,
             overflow,
             padding,
-            paddingBottom,
-            paddingLeft,
-            paddingRight,
-            paddingTop,
-            paddingX,
-            paddingY,
+            paddingBlock,
+            paddingBlockEnd,
+            paddingBlockStart,
+            paddingInline,
+            paddingInlineEnd,
+            paddingInlineStart,
             position,
             right,
             textAlign,
@@ -48,6 +48,7 @@ export const Box = ({ as = 'div', children, className, alignItems, backgroundCol
             width,
             zIndex,
         }), className),
+        ...props,
     }, children);
 };
 //# sourceMappingURL=Box.js.map

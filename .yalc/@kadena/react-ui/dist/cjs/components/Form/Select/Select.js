@@ -33,16 +33,14 @@ const react_1 = __importStar(require("react"));
 const Form_css_1 = require("../Form.css");
 const FormFieldWrapper_context_1 = require("../FormFieldWrapper/FormFieldWrapper.context");
 const Select_css_1 = require("./Select.css");
-exports.Select = (0, react_1.forwardRef)(function Select({ ariaLabel, children, disabled = false, outlined = false, icon, ...rest }, ref) {
+exports.Select = (0, react_1.forwardRef)(function Select({ ariaLabel, children, disabled = false, outlined = false, startIcon, ...rest }, ref) {
     const { status } = (0, react_1.useContext)(FormFieldWrapper_context_1.FormFieldWrapperContext);
-    const Icon = icon && Icon_1.SystemIcon[icon];
     const ChevronDown = Icon_1.SystemIcon.ChevronDown;
     return (react_1.default.createElement("div", { className: (0, classnames_1.default)(Select_css_1.containerClass, {
             [Select_css_1.containerClassDisabled]: disabled,
             [Form_css_1.baseOutlinedClass]: outlined || status,
         }), "data-testid": "kda-select" },
-        Icon && (react_1.default.createElement("span", { className: Select_css_1.iconClass },
-            react_1.default.createElement(Icon, { size: "md" }))),
+        startIcon && react_1.default.createElement("span", { className: Select_css_1.iconClass }, startIcon),
         react_1.default.createElement("select", { "aria-label": ariaLabel, className: Select_css_1.selectClass, disabled: disabled, ref: ref, ...rest }, children),
         react_1.default.createElement("span", { className: Select_css_1.chevronIconClass },
             react_1.default.createElement(ChevronDown, { size: "md" }))));

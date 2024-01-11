@@ -1,15 +1,17 @@
-import type { FC } from 'react';
+import type { ComponentPropsWithRef, FC } from 'react';
 import React from 'react';
-import { colorVariant, elementVariant, fontVariant, sizeVariant, transformVariant } from './Text.css';
-export interface ITextProps {
-    as?: keyof typeof elementVariant;
-    variant?: keyof typeof elementVariant;
-    font?: keyof typeof fontVariant;
+import { colorVariants, transformVariants } from '../typography.css';
+export declare const TEXT_ELEMENTS: readonly ["p", "span", "code"];
+export type TextElementType = (typeof TEXT_ELEMENTS)[number];
+type TextVariant = 'small' | 'smallest' | 'base';
+export interface ITextProps extends ComponentPropsWithRef<'p'> {
+    as?: TextElementType;
+    variant?: TextVariant;
     bold?: boolean;
-    color?: keyof typeof colorVariant;
-    transform?: keyof typeof transformVariant;
-    size?: keyof typeof sizeVariant;
+    color?: keyof typeof colorVariants;
+    transform?: keyof typeof transformVariants;
     children: React.ReactNode;
 }
 export declare const Text: FC<ITextProps>;
+export {};
 //# sourceMappingURL=Text.d.ts.map

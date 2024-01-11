@@ -1,8 +1,12 @@
 import { colorPalette, gradients, hexToRgba } from './colors';
-import { createGlobalTheme, createTheme } from '@vanilla-extract/css';
-export const vars = createGlobalTheme(':root', {
+import { createGlobalTheme, createTheme, createThemeContract, } from '@vanilla-extract/css';
+import { tokens } from './tokens/contract.css';
+import { darkThemeValues } from './tokens/dark.css';
+import { lightThemeValues } from './tokens/light.css';
+export const primaryFont = lightThemeValues.kda.foundation.typography.family.primaryFont;
+const oldThemeValues = {
     fonts: {
-        $main: "'Haas Grotesk Display', -apple-system, sans-serif",
+        $main: `${primaryFont}, -apple-system, sans-serif`,
         $mono: "'Kode Mono', Menlo, monospace",
     },
     fontSizes: {
@@ -34,7 +38,7 @@ export const vars = createGlobalTheme(':root', {
         $light: '300',
         $normal: '400',
         $medium: '500',
-        $semiBold: '700',
+        $semiBold: '600',
         $bold: '700',
     },
     radii: {
@@ -165,8 +169,17 @@ export const vars = createGlobalTheme(':root', {
         $neutral5: colorPalette.$gray90,
         $neutral6: colorPalette.$gray100,
     },
+};
+export const vars = createThemeContract(oldThemeValues);
+const lightContract = {
+    ...vars,
+    ...tokens,
+};
+createGlobalTheme(':root', lightContract, {
+    ...oldThemeValues,
+    ...lightThemeValues,
 });
-export const darkThemeClass = createTheme(vars.colors, {
+const oldDarkThemeColors = {
     ...colorPalette,
     ...gradients,
     $primarySurface: colorPalette.$blue40,
@@ -235,5 +248,13 @@ export const darkThemeClass = createTheme(vars.colors, {
     $neutral4: colorPalette.$gray40,
     $neutral5: colorPalette.$gray20,
     $neutral6: colorPalette.$gray10,
-});
+};
+const darkContract = {
+    new: tokens.kda.foundation.color,
+    old: vars.colors,
+};
+export const darkThemeClass = createTheme(darkContract, {
+    new: darkThemeValues.kda.foundation.color,
+    old: oldDarkThemeColors,
+}, 'dark');
 //# sourceMappingURL=vars.css.js.map

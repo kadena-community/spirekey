@@ -5,14 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Dynamic = void 0;
 const Icon_1 = require("../Icon");
-const withCenteredStory_1 = require("../../utils/withCenteredStory");
+const _storyDecorators_1 = require("../../storyDecorators");
 const react_1 = __importDefault(require("react"));
 const Button_1 = require("./Button");
 const Button_css_1 = require("./Button.css");
 const meta = {
     title: 'Components/Button',
     component: Button_1.Button,
-    decorators: [withCenteredStory_1.withCenteredStory],
+    decorators: [_storyDecorators_1.withCenteredStory],
     parameters: {
         status: { type: 'inDevelopment' },
         controls: {

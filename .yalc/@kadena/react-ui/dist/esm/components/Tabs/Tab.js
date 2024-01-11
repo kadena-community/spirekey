@@ -1,9 +1,10 @@
-import classNames from 'classnames';
-import React from 'react';
-import { selectedClass, tabClass } from './Tabs.css';
-export const Tab = ({ children, selected = false, handleClick, id, }) => {
-    if (handleClick === undefined || id === undefined)
-        return null;
-    return (React.createElement("button", { className: classNames(tabClass, { [selectedClass]: selected }), "data-selected": selected, "data-tab": id, onClick: () => handleClick(id) }, children));
+import React, { useRef } from 'react';
+import { useTab } from 'react-aria';
+import { tabItemClass } from './Tabs.css';
+export const Tab = ({ item, state }) => {
+    const { key, rendered } = item;
+    const ref = useRef(null);
+    const { tabProps } = useTab({ key }, state, ref);
+    return (React.createElement("div", { className: tabItemClass, ...tabProps, ref: ref, role: "tab", "data-selected": state.selectedKey === key }, rendered));
 };
 //# sourceMappingURL=Tab.js.map

@@ -1,7 +1,6 @@
 import { breakpoints } from '../../../styles/themeUtils';
 export declare const gridContainerClass: string;
 export declare const gridItemClass: string;
-export declare const gapVariants: Record<"$xs" | "$sm" | "$md" | "$lg" | "$xl" | "$2xl" | "$3xl" | "$2xs", string>;
 declare const columnCount: Record<number, number>;
 export declare const rowSpanVariants: Record<number, string>;
 export declare const containerColumnVariants: {

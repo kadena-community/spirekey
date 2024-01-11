@@ -1,7 +1,9 @@
+import { withContentWidth } from '../../storyDecorators';
 import React from 'react';
 import { MaskedValue } from './MaskedValue';
 const meta = {
     title: 'Patterns/MaskedValue',
+    decorators: [withContentWidth],
     parameters: {
         status: {
             type: ['experimental'],

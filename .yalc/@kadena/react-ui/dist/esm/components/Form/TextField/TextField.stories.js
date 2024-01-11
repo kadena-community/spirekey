@@ -1,10 +1,12 @@
 import { TextField } from '../../Form';
 import { statusVariant } from '../../Form/FormFieldWrapper/FormFieldWrapper.css';
 import { SystemIcon } from '../../Icon';
-import { vars } from '../../../styles/vars.css';
+import { onLayer2, withContentWidth } from '../../../storyDecorators';
 import React from 'react';
 const meta = {
     title: 'Form/TextField',
+    component: TextField,
+    decorators: [withContentWidth, onLayer2],
     parameters: {
         status: { type: 'inDevelopment' },
         docs: {
@@ -44,15 +46,8 @@ const meta = {
                 type: 'text',
             },
         },
-        leadingTextWidth: {
-            description: 'Width of the leading text. Defaults to the size of the text itself.',
-            control: {
-                type: 'select',
-            },
-            options: [
-                undefined,
-                ...Object.keys(vars.sizes).map((key) => key),
-            ],
+        startIcon: {
+            description: 'Initial icon that can be passed as a prop.',
         },
         status: {
             options: [
@@ -74,13 +69,6 @@ const meta = {
                 defaultValue: { summary: 'false' },
             },
         },
-        icon: {
-            description: 'Icon rendered inside the input to the left of the input text.',
-            options: Object.keys(SystemIcon),
-            control: {
-                type: 'select',
-            },
-        },
     },
 };
 export const Group = {
@@ -92,17 +80,11 @@ export const Group = {
         label: 'Label',
         disabled: false,
         status: undefined,
-        icon: 'Account',
+        startIcon: React.createElement(SystemIcon.Account, null),
         leadingText: 'Leading',
-        leadingTextWidth: undefined,
     },
-    render: ({ leadingText, icon, disabled, status, tag, helperText, info, label, leadingTextWidth, }) => {
-        return (React.createElement(TextField, { tag: tag, info: info, label: label, status: status, disabled: disabled, helperText: helperText, leadingTextWidth: leadingTextWidth, inputProps: {
-                id: 'inputStory',
-                leadingText,
-                icon,
-                placeholder: 'This is a placeholder',
-            } }));
+    render: ({ leadingText, startIcon, disabled, status, tag, helperText, info, label, }) => {
+        return (React.createElement(TextField, { tag: tag, info: info, label: label, status: status, disabled: disabled, helperText: helperText, id: "inputStory", leadingText: leadingText, startIcon: startIcon, placeholder: "This is a placeholder" }));
     },
 };
 export default meta;

@@ -2570,6 +2570,10 @@ packages:
       - supports-color
     dev: false
 
+  /@vanilla-extract/css-utils@0.1.3:
+    resolution: {integrity: sha512-PZAcHROlgtCUGI2y0JntdNwvPwCNyeVnkQu6KTYKdmxBbK3w72XJUmLFYapfaFfgami4I9CTLnrJTPdtmS3gpw==}
+    dev: false
+
   /@vanilla-extract/css@1.14.0:
     resolution: {integrity: sha512-rYfm7JciWZ8PFzBM/HDiE2GLnKI3xJ6/vdmVJ5BSgcCZ5CxRlM9Cjqclni9lGzF3eMOijnUhCd/KV8TOzyzbMA==}
     dependencies:
@@ -4125,6 +4129,10 @@ packages:
   /lodash.defaults@4.2.0:
     resolution: {integrity: sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ==}
 
+  /lodash.get@4.4.2:
+    resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
+    dev: false
+
   /lodash.isarguments@3.1.0:
     resolution: {integrity: sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg==}
 
@@ -5634,11 +5642,13 @@ packages:
       '@kadena/fonts': 0.0.1
       '@react-aria/utils': 3.22.0(react@18.2.0)
       '@vanilla-extract/css': 1.14.0
+      '@vanilla-extract/css-utils': 0.1.3
       '@vanilla-extract/recipes': 0.5.1(@vanilla-extract/css@1.14.0)
       '@vanilla-extract/sprinkles': 1.6.1(@vanilla-extract/css@1.14.0)
       classnames: 2.3.2
       css-loader: 6.8.1(webpack@5.89.0)
       focus-trap-react: 10.2.3(prop-types@15.8.1)(react-dom@18.2.0)(react@18.2.0)
+      lodash.get: 4.4.2
       lodash.mapvalues: 4.6.0
       lodash.omit: 4.5.0
       react: 18.2.0

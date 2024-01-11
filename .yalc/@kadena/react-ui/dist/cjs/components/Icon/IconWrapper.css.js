@@ -1,13 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sizeVariants = exports.iconContainer = void 0;
+exports.sizeVariants = exports.iconContainer = exports.iconFill = void 0;
 const sprinkles_css_1 = require("../../styles/sprinkles.css");
 const css_1 = require("@vanilla-extract/css");
+exports.iconFill = (0, css_1.createVar)();
 exports.iconContainer = (0, css_1.style)([
     (0, sprinkles_css_1.sprinkles)({
         display: 'block',
     }),
     {
+        fill: exports.iconFill,
+        color: exports.iconFill,
         transform: 'translate3d(0,0,0)',
     },
 ]);

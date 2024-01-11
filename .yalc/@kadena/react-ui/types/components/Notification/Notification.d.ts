@@ -1,14 +1,15 @@
+import type { RecipeVariants } from '@vanilla-extract/recipes';
 import type { FC } from 'react';
 import React from 'react';
-import { cardColorVariants, displayVariants } from './Notification.css';
-export interface INotificationProps {
+import { notificationRecipe } from './Notification.css';
+type Variants = NonNullable<RecipeVariants<typeof notificationRecipe>>;
+export interface INotificationProps extends Variants {
     children?: React.ReactNode;
-    color?: keyof typeof cardColorVariants;
-    styleVariant?: keyof typeof displayVariants;
-    hasCloseButton?: boolean;
-    onClose?: () => void;
+    isDismissable?: boolean;
+    onDismiss?: () => void;
     icon?: React.ReactNode;
     role: 'alert' | 'status' | 'none';
 }
 export declare const Notification: FC<INotificationProps>;
+export {};
 //# sourceMappingURL=Notification.d.ts.map

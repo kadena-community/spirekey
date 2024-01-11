@@ -1,15 +1,15 @@
-import { sprinkles } from '../../styles/sprinkles.css';
-import { vars } from '../../styles/vars.css';
+import { atoms } from '../../styles/atoms.css';
+import { tokens } from '../../styles/index';
 import { style } from '@vanilla-extract/css';
 export const dividerClass = style([
-    sprinkles({
-        backgroundColor: '$borderDefault',
+    atoms({
         width: '100%',
-        marginY: '$10',
+        marginBlock: 'lg',
         border: 'none',
     }),
     {
-        height: vars.borderWidths.$sm,
+        backgroundColor: tokens.kda.foundation.color.border.base.bold,
+        height: tokens.kda.foundation.border.width.hairline,
     },
 ]);
 //# sourceMappingURL=Divider.css.js.map

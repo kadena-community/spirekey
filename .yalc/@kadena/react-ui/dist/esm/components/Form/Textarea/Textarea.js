@@ -1,4 +1,4 @@
-import { sprinkles } from '../../../styles/sprinkles.css';
+import { atoms } from '../../../styles/atoms.css';
 import classNames from 'classnames';
 import React, { forwardRef, useContext } from 'react';
 import { baseContainerClass, baseOutlinedClass } from '../Form.css';
@@ -10,7 +10,7 @@ export const Textarea = forwardRef(function TextArea({ outlined = false, disable
             [baseOutlinedClass]: outlined || status,
             [disabledClass]: disabled,
         }) },
-        React.createElement("textarea", { ref: ref, className: classNames(textAreaClass, sprinkles({ fontFamily })), disabled: disabled, ...rest }),
+        React.createElement("textarea", { ref: ref, className: classNames(textAreaClass, atoms({ fontFamily })), disabled: disabled, ...rest }),
         children && React.createElement("div", { className: buttonContainerClass }, children)));
 });
 //# sourceMappingURL=Textarea.js.map

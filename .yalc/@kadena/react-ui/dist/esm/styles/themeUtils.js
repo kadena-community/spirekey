@@ -1,11 +1,16 @@
+import { fallbackVar } from '@vanilla-extract/css';
+import get from 'lodash.get';
 import omit from 'lodash.omit';
+import { isNullOrUndefined } from '../utils/is';
+import { flattenObject } from '../utils/object';
+import { tokens } from './tokens/contract.css';
 export const breakpoints = {
     xs: '',
-    sm: `screen and (min-width: ${640 / 16}rem)`,
-    md: `screen and (min-width: ${768 / 16}rem)`,
-    lg: `screen and (min-width: ${1024 / 16}rem)`,
-    xl: `screen and (min-width: ${1280 / 16}rem)`,
-    xxl: `screen and (min-width: ${1536 / 16}rem)`,
+    sm: 'screen and (min-width: 40rem)',
+    md: 'screen and (min-width: 48rem)',
+    lg: 'screen and (min-width: 64rem)',
+    xl: 'screen and (min-width: 80rem)',
+    xxl: 'screen and (min-width: 96rem)',
 };
 const makeMediaQuery = (breakpoint) => (styles) => Object.keys(styles).length === 0
     ? {}
@@ -39,4 +44,15 @@ export const mapToProperty = (property, breakpoint) => (value) => {
         ? responsiveStyle({ [breakpoint]: styleRule })
         : styleRule;
 };
+const ignoredTokens = ['@hover', '@focus', '@disabled'];
+export function flattenTokens(tokens) {
+    return flattenObject(tokens, ignoredTokens);
+}
+export function token(path, fallback) {
+    const v = get(tokens.kda.foundation, path);
+    if (!isNullOrUndefined(fallback)) {
+        return fallbackVar(v, fallback);
+    }
+    return v;
+}
 //# sourceMappingURL=themeUtils.js.map

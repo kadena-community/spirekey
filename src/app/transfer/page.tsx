@@ -65,22 +65,22 @@ export default function Page({ searchParams }: Props) {
     if (status === SubmitStatus.SUBMITABLE) doSubmit();
   }, [status, doSubmit]);
   return (
-    <Stack direction="column" gap="$md" margin="$md">
+    <Stack flexDirection="column" gap="md" margin="md">
       <NetworkSelector />
       <Card fullWidth>
-        <Stack direction="column" gap="$md" margin="$md">
+        <Stack flexDirection="column" gap="md" margin="md">
           <ContentHeader
             heading="Transfer"
             description="Send KDA to another account"
             icon="BadgeAccount"
           />
           {status === SubmitStatus.LOADING && (
-            <Notification role="status" color="info" hasCloseButton>
+            <Notification role="status" intent="info" isDismissable>
               Transfer in progress
             </Notification>
           )}
           {status === SubmitStatus.SUCCESS && (
-            <Notification role="status" color="positive" hasCloseButton>
+            <Notification role="status" intent="positive" isDismissable>
               Transfer successful
             </Notification>
           )}
@@ -89,12 +89,12 @@ export default function Page({ searchParams }: Props) {
               columns={{
                 xs: 3,
               }}
-              gap="$xs"
+              gap="xs"
             >
               <GridItem columnSpan={2}>
                 <TextField
                   label="to"
-                  inputProps={{
+                  {...{
                     id: 'receiver',
                     type: 'text',
                     ...register('receiver'),
@@ -104,7 +104,7 @@ export default function Page({ searchParams }: Props) {
               <GridItem>
                 <TextField
                   label="amount"
-                  inputProps={{
+                  {...{
                     id: 'amount',
                     type: 'number',
                     step: '0.001',

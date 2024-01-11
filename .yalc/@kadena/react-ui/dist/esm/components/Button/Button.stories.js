@@ -1,5 +1,5 @@
 import { SystemIcon } from '../Icon';
-import { withCenteredStory } from '../../utils/withCenteredStory';
+import { withCenteredStory } from '../../storyDecorators';
 import React from 'react';
 import { Button } from './Button';
 import { colorVariants, typeVariants } from './Button.css';

@@ -1,0 +1,1 @@
+{"version":3,"file":"TagItem.js","sourceRoot":"","sources":["../../../../src/components/Tag/TagItem.tsx"],"names":[],"mappings":";;;AAAA,iDAAqC;AAExB,QAAA,OAAO,GAAG,oBAAI,CAAC","sourcesContent":["import { Item } from 'react-stately';\n\nexport const TagItem = Item;\nexport type ITagItemProps = React.ComponentProps<typeof TagItem>;\n"]}

@@ -26,21 +26,21 @@ export const SubmitForm: FC<PreviewFormProps> = ({ values, onCancel }) => {
   return (
     <div>
       <Stack
-        direction="row"
-        margin="$md"
+        flexDirection="row"
+        margin="md"
         justifyContent="flex-start"
         alignItems="center"
       >
-        <Box marginRight="$2">pact module file</Box>
+        <Box marginInlineEnd="md">pact module file</Box>
         {values.file?.item(0)?.name}
       </Stack>
       <Stack
-        direction="row"
-        margin="$md"
+        flexDirection="row"
+        margin="md"
         justifyContent="flex-start"
         alignItems="center"
       >
-        <Box marginRight="$2">module data json</Box>
+        <Box marginInlineEnd="md">module data json</Box>
         <textarea
           id="contractData"
           style={{
@@ -52,38 +52,36 @@ export const SubmitForm: FC<PreviewFormProps> = ({ values, onCancel }) => {
         />
       </Stack>
       <Stack
-        direction="row"
-        margin="$md"
+        flexDirection="row"
+        margin="md"
         justifyContent="flex-start"
         alignItems="center"
       >
-        <Box marginRight="$2">Chain ID</Box>
+        <Box marginInlineEnd="md">Chain ID</Box>
         {values.chainId}
       </Stack>
       <Stack
-        direction="row"
-        margin="$md"
+        flexDirection="row"
+        margin="md"
         justifyContent="flex-start"
         alignItems="center"
       >
-        <Box marginRight="$2">Network ID</Box>
+        <Box marginInlineEnd="md">Network ID</Box>
         {values.networkdId}
       </Stack>
       <Stack
-        direction="row"
-        margin="$md"
+        flexDirection="row"
+        margin="md"
         justifyContent="flex-start"
         alignItems="center"
       >
-        <Box marginRight="$2">Public Key</Box>
+        <Box marginInlineEnd="md">Public Key</Box>
         {values.publicKey}
       </Stack>
-      <Stack direction="column" margin="$md" justifyContent="flex-start">
-        <Text as="code" variant="code">
-          {values.result}
-        </Text>
+      <Stack flexDirection="column" margin="md" justifyContent="flex-start">
+        <Text as="code">{values.result}</Text>
       </Stack>
-      <Stack direction="row" margin="$md" justifyContent="flex-start">
+      <Stack flexDirection="row" margin="md" justifyContent="flex-start">
         <Button onClick={onSign}>Sign</Button>
         <Button onClick={onCancel}>Back</Button>
       </Stack>

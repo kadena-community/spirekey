@@ -1,31 +1,38 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.componentClass = exports.containerClass = exports.itemClass = void 0;
-const sprinkles_css_1 = require("../../styles/sprinkles.css");
+const atoms_css_1 = require("../../styles/atoms.css");
 const css_1 = require("@vanilla-extract/css");
 exports.itemClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        backgroundColor: '$primaryContrast',
-        color: '$primarySurface',
-        padding: '$6',
+    (0, atoms_css_1.atoms)({
+        backgroundColor: 'semantic.info.default',
+        color: 'text.semantic.info.default',
+        fontWeight: 'bodyFont.medium',
+        padding: 'sm',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        borderColor: 'base.boldest',
+        borderStyle: 'solid',
+        borderWidth: 'hairline',
     }),
 ]);
 exports.containerClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        backgroundColor: 'transparent',
-        borderColor: '$primaryAccent',
+    (0, atoms_css_1.atoms)({
+        backgroundColor: 'semantic.warning.default',
+        borderColor: 'base.boldest',
         borderStyle: 'solid',
-        borderWidth: '$sm',
+        borderWidth: 'hairline',
         width: '100%',
     }),
 ]);
 exports.componentClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        backgroundColor: '$primarySurface',
-        color: '$primaryContrast',
+    (0, atoms_css_1.atoms)({
+        backgroundColor: 'semantic.positive.default',
+        color: 'text.semantic.positive.default',
+        borderColor: 'base.boldest',
+        borderStyle: 'solid',
+        borderWidth: 'hairline',
     }),
 ]);
 //# sourceMappingURL=stories.css.js.map

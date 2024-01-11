@@ -1,84 +1,70 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.leadingTextWidthVariant = exports.inputChildrenClass = exports.leadingTextWrapperClass = exports.leadingTextClass = exports.inputClass = exports.inputContainerClass = exports.disabledClass = void 0;
-const sprinkles_css_1 = require("../../../styles/sprinkles.css");
+const atoms_css_1 = require("../../../styles/atoms.css");
+const contract_css_1 = require("../../../styles/tokens/contract.css");
 const vars_css_1 = require("../../../styles/vars.css");
 const css_1 = require("@vanilla-extract/css");
+const css_utils_1 = require("@vanilla-extract/css-utils");
 exports.disabledClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         pointerEvents: 'none',
-        bg: {
-            darkMode: '$gray60',
-            lightMode: '$gray20',
-        },
+        backgroundColor: 'layer-3.default',
     }),
-    {
-        selectors: {
-            [`${vars_css_1.darkThemeClass} &`]: {
-                backgroundColor: vars_css_1.vars.colors.$gray60,
-            },
-        },
-    },
 ]);
 exports.inputContainerClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         alignItems: 'center',
         display: 'flex',
         flexGrow: 1,
-        gap: '$2',
-        lineHeight: '$lg',
-        paddingLeft: '$4',
-        paddingRight: '$2',
+        gap: 'xs',
+        lineHeight: 'lg',
+        paddingInlineStart: 'sm',
+        paddingInlineEnd: 'xs',
     }),
 ]);
 exports.inputClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         alignItems: 'center',
         background: 'none',
         border: 'none',
-        color: '$foreground',
+        color: 'text.base.default',
         outline: 'none',
         flexGrow: 1,
-        paddingY: '$2',
-        fontSize: '$base',
+        paddingBlock: 'sm',
+        fontSize: 'base',
     }),
     {
         '::placeholder': {
-            color: vars_css_1.vars.colors.$gray40,
-        },
-        [`${vars_css_1.darkThemeClass} &::placeholder`]: {
-            color: vars_css_1.vars.colors.$gray50,
+            color: contract_css_1.tokens.kda.foundation.color.text.subtlest.default,
         },
     },
 ]);
 exports.leadingTextClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
+    (0, atoms_css_1.atoms)({
         overflow: 'hidden',
         display: 'inline-block',
         alignItems: 'center',
-        paddingX: '$4',
+        paddingInline: 'sm',
+        whiteSpace: 'nowrap',
     }),
     {
         textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
     },
 ]);
 exports.leadingTextWrapperClass = (0, css_1.style)([
-    (0, sprinkles_css_1.sprinkles)({
-        backgroundColor: {
-            lightMode: '$gray20',
-            darkMode: '$gray60',
-        },
+    (0, atoms_css_1.atoms)({
+        backgroundColor: 'base.default',
         display: 'flex',
         alignItems: 'center',
     }),
 ]);
 exports.inputChildrenClass = (0, css_1.style)([
+    (0, atoms_css_1.atoms)({
+        padding: 'xxs',
+    }),
     {
-        marginRight: '-0.5rem',
-        paddingTop: '0.125rem',
-        paddingBottom: '0.125rem',
-        paddingRight: '0.125rem',
+        marginRight: (0, css_utils_1.calc)(contract_css_1.tokens.kda.foundation.spacing.xs).negate().toString(),
     },
 ]);
 exports.leadingTextWidthVariant = (0, css_1.styleVariants)(vars_css_1.vars.sizes, (size) => {

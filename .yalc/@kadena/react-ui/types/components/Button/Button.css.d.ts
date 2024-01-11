@@ -6,9 +6,9 @@ export declare const typeVariants: {
     compact: 'compact';
     alternative: 'alternative';
 };
-export declare const defaultVariant: Record<"primary" | "secondary" | "positive" | "warning" | "negative", string>;
-export declare const compactVariant: Record<"primary" | "secondary" | "positive" | "warning" | "negative", string>;
-export declare const alternativeVariant: Record<"primary" | "secondary" | "positive" | "warning" | "negative", string>;
+export declare const defaultVariant: Record<"primary" | "secondary" | "warning" | "positive" | "negative", string>;
+export declare const compactVariant: Record<"primary" | "secondary" | "warning" | "positive" | "negative", string>;
+export declare const alternativeVariant: Record<"primary" | "secondary" | "warning" | "positive" | "negative", string>;
 export declare const buttonLoadingClass: string;
 export declare const iconLoadingClass: string;
 //# sourceMappingURL=Button.css.d.ts.map
