@@ -156,10 +156,10 @@ export default function Sign(req: SignProps) {
   };
 
   return (
-    <Stack direction="column" gap="$md" alignItems="center" margin="$xl">
+    <Stack flexDirection="column" gap="md" alignItems="center" margin="xl">
       <h1>Wallet</h1>
 
-      <Stack gap="$sm" alignItems="center">
+      <Stack gap="sm" alignItems="center">
         <ProductIcon.ManageKda size="lg" />
         <Heading variant="h5">Preview and sign transaction</Heading>
       </Stack>
@@ -180,7 +180,7 @@ export default function Sign(req: SignProps) {
       {getLabels(txData.signers, language).map((x) => (
         <Box key={x.label} width="100%">
           <Heading variant="h6">{x.label}</Heading>
-          <Stack alignItems="center" gap="$1">
+          <Stack alignItems="center" gap="sm">
             <Text>{x.description ?? 'No description available'}</Text>
             {!x.description && (
               <Tooltip
@@ -191,18 +191,18 @@ export default function Sign(req: SignProps) {
               </Tooltip>
             )}
           </Stack>
-          <Box marginTop="$sm">
-            <Text font="mono" size="md">
+          <Box marginBlockStart="sm">
+            <Text variant="base">
               <details>
                 <summary>View raw capability</summary>
-                <Text bold size="md">
+                <Text bold variant="base">
                   Capability:
                 </Text>{' '}
                 {x.raw.name}
                 <br />
                 {x.valuesString && (
                   <>
-                    <Text bold size="md">
+                    <Text bold variant="base">
                       Values:
                     </Text>{' '}
                     {x.valuesString}
@@ -215,7 +215,7 @@ export default function Sign(req: SignProps) {
       ))}
 
       <Box width="100%">
-        <Text font="mono" size="md">
+        <Text variant="base">
           <details>
             <summary>View raw transaction</summary>
             <pre>{JSON.stringify({ ...tx, cmd: txData }, null, 2)}</pre>
@@ -225,11 +225,9 @@ export default function Sign(req: SignProps) {
 
       {!signUrl && <Button onClick={onSign}>Sign</Button>}
       {signUrl && signPath && (
-        <Stack direction="column" gap="$md" margin="$md">
+        <Stack flexDirection="column" gap="md" margin="md">
           <QRCode url={signPath} />
-          <TextField
-            inputProps={{ id: 'signUrl', value: signUrl, readOnly: true }}
-          />
+          <TextField id="signUrl" value="signUrl" readOnly />
         </Stack>
       )}
     </Stack>
