@@ -27,10 +27,10 @@ export const AccountSelector = () => {
 
   if (!activeAccount)
     return (
-      <Stack direction="column" gap="$md">
+      <Stack flexDirection="column" gap="md">
         <TextField
           label="Restore existing account"
-          inputProps={{
+          {...{
             id: 'account',
           }}
           helperText="Enter the account name you want to restore"
@@ -57,7 +57,7 @@ export const AccountSelector = () => {
     <>
       <SelectField
         label="account"
-        selectProps={{
+        {...{
           id: 'account',
           ariaLabel: 'Select your account',
           onChange: onAccountChange,
@@ -93,7 +93,7 @@ export const AccountSelector = () => {
       {activeAccount.devices.length > 1 && (
         <SelectField
           label="device"
-          selectProps={{
+          {...{
             id: 'device',
             ariaLabel: "Select which device you'd like to use",
             onChange: onDeviceChange,

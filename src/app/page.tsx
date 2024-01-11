@@ -65,7 +65,7 @@ const Register = () => {
   if (result)
     return (
       <Card fullWidth>
-        <Stack direction="column" gap="$md" margin="$md">
+        <Stack flexDirection="column" gap="md" margin="md">
           <ContentHeader
             heading="WebAuthn Wallet"
             description="Create an account using WebAuthn"
@@ -80,7 +80,7 @@ const Register = () => {
   if (isLoading)
     return (
       <Card fullWidth>
-        <Stack direction="column" gap="$md" margin="$md">
+        <Stack flexDirection="column" gap="md" margin="md">
           <Text>Your wallet is forging...</Text>
           <Loader />
         </Stack>
@@ -88,7 +88,7 @@ const Register = () => {
     );
   return (
     <Card fullWidth>
-      <Stack direction="column" gap="$md" margin="$md">
+      <Stack flexDirection="column" gap="md" margin="md">
         <ContentHeader
           heading="WebAuthn Wallet"
           description="Create an account using WebAuthn"
@@ -96,7 +96,7 @@ const Register = () => {
         />
         <TextField
           label="Display Name"
-          inputProps={{
+          {...{
             id: 'display-name',
             ...register('displayName', { required: true }),
           }}
@@ -122,10 +122,10 @@ export default function Home() {
 
   if (activeAccount) {
     return (
-      <Stack margin="$md" direction="column">
+      <Stack margin="md" flexDirection="column" gap="md">
         <NetworkSelector />
         <Card fullWidth>
-          <Stack direction="column" gap="$md">
+          <Stack flexDirection="column" gap="md">
             <ContentHeader
               heading="WebAuthn Wallet"
               description="Manage your WebAuthn account"
@@ -185,7 +185,7 @@ export default function Home() {
           </Stack>
         </Card>
         <Card fullWidth>
-          <Stack direction="column" gap="$md" margin="$md">
+          <Stack flexDirection="column" gap="md" margin="md">
             <ContentHeader
               heading="Fund account"
               description="Add some funds to your account (Only works on Devnet or Testnet)"
@@ -199,7 +199,7 @@ export default function Home() {
   }
 
   return (
-    <Stack direction="column" gap="$md" margin="$md">
+    <Stack flexDirection="column" gap="md" margin="md">
       <Register />
       <AddWallet />
       <Restore />

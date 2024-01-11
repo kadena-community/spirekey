@@ -117,10 +117,10 @@ export default function AddWallet({ searchParams }: Props) {
   }, [status, doSubmit]);
 
   return (
-    <Stack direction="column" gap="$md" margin="$md">
+    <Stack flexDirection="column" gap="md" margin="md">
       <NetworkSelector />
       <Card fullWidth>
-        <Stack direction="column" gap="$md" margin="$md">
+        <Stack flexDirection="column" gap="md" margin="md">
           <ContentHeader
             heading="WebAuthn Wallet"
             description="Add this wallet to an existing account"
@@ -128,14 +128,14 @@ export default function AddWallet({ searchParams }: Props) {
           />
           <TextField
             label="account"
-            inputProps={{
+            {...{
               id: 'account',
               ...register('account', { required: true }),
             }}
           />
           <TextField
             label="Display Name"
-            inputProps={{
+            {...{
               id: 'displayName',
               ...register('displayName', { required: true }),
             }}

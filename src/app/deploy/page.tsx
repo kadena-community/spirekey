@@ -191,7 +191,7 @@ export default function DeployPage() {
     setTheme('dark');
   }, []);
   return (
-    <Stack direction="column">
+    <Stack flexDirection="column">
       <Heading>Deploy</Heading>
       <FormFieldWrapper htmlFor="file" label="orchestrationFile">
         <Input
@@ -320,12 +320,10 @@ const DeploySteps = ({
             />
           </GridItem>
           <GridItem>
-            <Stack margin="$md">
+            <Stack margin="md">
               {!results[index] && <Text>Ready for deployment</Text>}
               {results[index] && (
-                <Text variant="code">
-                  {JSON.stringify(results[index], null, 2)}
-                </Text>
+                <Text as="code">{JSON.stringify(results[index], null, 2)}</Text>
               )}
             </Stack>
           </GridItem>

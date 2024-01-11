@@ -6,7 +6,12 @@ export const LoginConfirmation = ({ returnUrl }: { returnUrl: string }) => {
   if (!activeAccount || !activeDevice) return null;
 
   return (
-    <Stack direction="row" gap="$xl" justifyContent="flex-end" marginY="$md">
+    <Stack
+      flexDirection="row"
+      gap="xl"
+      justifyContent="flex-end"
+      marginBlock="md"
+    >
       <Button as="a" href={returnUrl} variant="alternative">
         Cancel
       </Button>

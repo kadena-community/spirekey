@@ -6,7 +6,7 @@ import Link from 'next/link';
 export const Restore = () => {
   return (
     <Card fullWidth>
-      <Stack direction="column" gap="$md" margin="$md">
+      <Stack flexDirection="column" gap="md" margin="md">
         <ContentHeader
           heading="WebAuthn Wallet"
           description="Restore an account using WebAuthn"
