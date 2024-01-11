@@ -1,17 +1,10 @@
 'use client';
 
 import { QRCode } from '@/components/QRCode';
-import { Device } from '@/context/AccountContext';
 import { usePubkeys } from '@/hooks/usePubkeys';
 import { useSign } from '@/hooks/useSign';
 import { getSig } from '@/utils/getSig';
-import {
-  addSignatures,
-  ICap,
-  IExecutionPayloadObject,
-  IPactCommand,
-  IUnsignedQuicksignTransaction,
-} from '@kadena/client';
+import { addSignatures, ICap, IPactCommand } from '@kadena/client';
 import {
   Box,
   Button,
@@ -26,7 +19,7 @@ import {
 } from '@kadena/react-ui';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 type SignProps = {
   searchParams: {

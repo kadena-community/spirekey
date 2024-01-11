@@ -21,7 +21,6 @@ import {
   TextField,
   TrackerCard,
 } from '@kadena/react-ui';
-import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import useSWR from 'swr';
