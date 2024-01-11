@@ -5,27 +5,26 @@ import { ThemeProvider } from 'next-themes';
 import { ReactNode } from 'react';
 
 import { AccountsProvider } from '@/context/AccountContext';
+import { AccountsProvider as NewAccountsProvider } from '@/context/AccountsContext';
 import { NetworkProvider } from '@/context/NetworkContext';
-import Link from 'next/link';
 
 export default function Providers({ children }: { children: ReactNode }) {
   return (
     <NetworkProvider defaultNetwork={process.env.NETWORK_ID || 'testnet04'}>
       <AccountsProvider>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          value={{
-            light: 'light',
-            dark: darkThemeClass,
-          }}
-        >
-          <Link href="/">Home</Link>
-          <Link href="/transfer">Transfer</Link>
-          <Link href="/accounts">Accounts</Link>
-          <Link href="/pact">Pact</Link>
-          {children}
-        </ThemeProvider>
+        <NewAccountsProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem={false}
+            value={{
+              light: 'light',
+              dark: darkThemeClass,
+            }}
+          >
+            {children}
+          </ThemeProvider>
+        </NewAccountsProvider>
       </AccountsProvider>
     </NetworkProvider>
   );
