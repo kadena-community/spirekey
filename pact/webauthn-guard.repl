@@ -45,4 +45,81 @@
 (load "webauthn-guard.pact")
 (commit-tx)
 
+(env-data
+  { 'ks     :
+    { 'keys : ["WEBAUTHN-alice-phone"]
+    , 'pred : "keys-any"
+    } 
+  }
+)
+(env-sigs [])
+(begin-tx "Create alice webauthn guard")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.register
+  1
+  1
+  [
+    { 'name          : "phone"
+    , 'domain        : "www.example.com"
+    , 'credential-id : 'cid-phone
+    , 'guard         : (read-keyset 'ks)
+    }
+  ]
+)
+(print (create-principal (read-keyset 'ks)))
+(commit-tx)
+(env-data {})
+
+(env-data
+  { 'ks     :
+    { 'keys : ["WEBAUTHN-alice-yubi"]
+    , 'pred : "keys-any"
+    } 
+  }
+)
+(env-sigs
+  [
+    { 'key  : "WEBAUTHN-alice-phone"
+    , 'caps : 
+      [
+        (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.ADD_DEVICE 
+          "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
+        )
+      ]
+    }
+  ]
+)
+(begin-tx "Add additional device")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.add-device
+  "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
+  { 'name          : "phone"
+  , 'domain        : "www.example.com"
+  , 'credential-id : 'cid-yubi
+  , 'guard         : (read-keyset 'ks)
+  }
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(env-sigs 
+  [
+    { 'key  : "WEBAUTHN-alice-phone"
+    , 'caps : 
+      [
+        (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.REMOVE_DEVICE 
+          "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
+        )
+      ]
+    }
+  ]
+)
+(begin-tx "Remove phone device")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.remove-device
+  "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
+  'cid-phone
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
 (verify "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard")

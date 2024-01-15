@@ -31,6 +31,7 @@
   (defschema account-schema
     @model [
       (invariant (> (length devices) 0))
+      (invariant (< (length devices) 5))
       (invariant (> min-approvals 0))
       (invariant (> min-registration-approvals 0))
       (invariant (<= min-approvals (length devices)))
@@ -110,6 +111,7 @@
       (property (is-principal account))
     ]
     (enforce (> (length devices) 0) "Must register at least one device")
+    (enforce (< (length devices) 5) "Must register less than 5 devices")
     (enforce (> min-approvals 0) "Must authenticate with at least one device")
     (enforce (> min-registration-approvals 0) "Must register at least one device")
     (enforce (<= min-approvals (length devices)) "Min approvals cannot be greater than the number of devices")
@@ -152,15 +154,15 @@
         , 'min-registration-approvals := min-registration-approvals
         }
         (let* 
-          ((new-devices:[object{device-schema}] (filter (where 'credential-id (!= credential-id)) devices))
+          ((new-devices:[object{device-schema}] (filter (where 'credential-id (= credential-id)) devices))
            (new-length (length new-devices))
           )
           (enforce (= 
             new-length
             (- (length devices) 1)
           ) "Must have exactly one fewer device after removal")
-          (enforce (> new-length min-approvals) "Must have enough devices to authenticate")
-          (enforce (> new-length min-registration-approvals) "Must have enough devices to register")
+          (enforce (>= new-length min-approvals) "Must have enough devices to authenticate")
+          (enforce (>= new-length min-registration-approvals) "Must have enough devices to register")
           (update account-table account
             { 'devices : new-devices }
           )
