@@ -21,24 +21,6 @@ export default function CardCollection({ children }: CardCollectionProps) {
       easing="cubic-bezier(0.39, 0, 0.45, 1.4)"
       staggerDurationBy={22}
       staggerDelayBy={0}
-      enterAnimation={{
-        from: {
-          transformOrigin: 'top center',
-          transform: 'rotateX(90deg) translateY(-8rem)',
-        },
-        to: {
-          transform: 'rotateX(0deg)',
-        },
-      }}
-      leaveAnimation={{
-        from: {
-          transform: '',
-        },
-        to: {
-          transformOrigin: 'top center',
-          transform: 'rotateX(90deg) translateY(-8rem)',
-        },
-      }}
     >
       {children}
     </FlipMove>
