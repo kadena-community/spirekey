@@ -179,10 +179,10 @@
     )
   )
 
-  (defpact copy-account(account:string to:string)
+  (defpact copy-account(account:string target:string)
     (step
       (with-capability (COPY_ACCOUNT account)
-        (yield (read account-table account) to)
+        (yield (read account-table account) target)
       )
     )
 

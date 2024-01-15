@@ -22,6 +22,10 @@
     true
   )
 
+  (defcap COPY_ACCOUNT(account:string)
+    true
+  )
+
   (defcap TRANSFER(sender:string receiver:string amount:decimal)
     @managed amount TRANSFER-mgr
     (with-read guard-lookup-table sender
@@ -102,6 +106,26 @@
       (with-read guard-lookup-table account
         { 'webauthn-guard-name := guard-name }
         (webauthn-guard.remove-device guard-name credential-id)
+      )
+    )
+  )
+
+  (defpact copy-account(account:string target-chain:string)
+    (step
+      (with-capability (COPY_ACCOUNT account)
+        (with-read guard-lookup-table account
+          { 'webauthn-guard-name := guard-name }
+          (webauthn-guard.copy-account guard-name target-chain)
+
+          (yield { 'guard-name : guard-name })
+        )
+      )
+    )
+
+    (step
+      (resume 
+        { 'guard-name := guard-name }
+        (continue (webauthn-guard.copy-account guard-name target-chain))
       )
     )
   )
