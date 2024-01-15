@@ -71,7 +71,15 @@
   (defcap REMOVE_DEVICE(account:string)
     (with-read account-table account
       { 'devices := devices
-      , 'min-approvals := min-approvals
+      , 'min-registration-approvals := min-registration-approvals
+      }
+      (enforce-guard-min (map (extract-guard) devices) min-registration-approvals)
+    )
+  )
+
+  (defcap COPY_ACCOUNT(account:string)
+    (with-read account-table account
+      { 'devices := devices
       , 'min-registration-approvals := min-registration-approvals
       }
       (enforce-guard-min (map (extract-guard) devices) min-registration-approvals)
@@ -154,7 +162,7 @@
         , 'min-registration-approvals := min-registration-approvals
         }
         (let* 
-          ((new-devices:[object{device-schema}] (filter (where 'credential-id (= credential-id)) devices))
+          ((new-devices:[object{device-schema}] (filter (where 'credential-id (!= credential-id)) devices))
            (new-length (length new-devices))
           )
           (enforce (= 
@@ -166,6 +174,29 @@
           (update account-table account
             { 'devices : new-devices }
           )
+        )
+      )
+    )
+  )
+
+  (defpact copy-account(account:string to:string)
+    (step
+      (with-capability (COPY_ACCOUNT account)
+        (yield (read account-table account) to)
+      )
+    )
+
+    (step
+      (resume 
+        { 'min-approvals              := min-approvals
+        , 'min-registration-approvals := min-registration-approvals
+        , 'devices                    := devices
+        }
+        (write account-table account
+          { 'min-approvals              : min-approvals
+          , 'min-registration-approvals : min-registration-approvals
+          , 'devices                    : devices
+          }
         )
       )
     )

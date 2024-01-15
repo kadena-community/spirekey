@@ -65,7 +65,26 @@
     }
   ]
 )
-(print (create-principal (read-keyset 'ks)))
+(expect "Alice to be registered"
+  (format "{}" 
+    [(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.get-account
+      "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
+    )]
+  )
+  (format "{}" 
+    [{ "devices": 
+      [
+        { "credential-id": "cid-phone"
+        , "domain": "www.example.com"
+        , "guard": (read-keyset 'ks)
+        , "name": "phone"
+        }
+      ]
+    , "min-approvals": 1
+    , "min-registration-approvals": 1
+    }]
+  )
+)
 (commit-tx)
 (env-data {})
 
@@ -91,11 +110,24 @@
 (begin-tx "Add additional device")
 (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.add-device
   "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
-  { 'name          : "phone"
+  { 'name          : "yubi"
   , 'domain        : "www.example.com"
   , 'credential-id : 'cid-yubi
   , 'guard         : (read-keyset 'ks)
   }
+)
+(expect "Alice to be registered with an additional device"
+  (map (at 'credential-id) 
+    (at 'devices 
+      (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.get-account
+        "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
+      )
+    )
+  )
+  [
+    "cid-phone"
+    "cid-yubi"
+  ]
 )
 (commit-tx)
 (env-data {})
@@ -117,6 +149,56 @@
 (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.remove-device
   "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
   'cid-phone
+)
+(expect "Alice to be registered with one device"
+  (map (at 'credential-id) 
+    (at 'devices 
+      (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.get-account
+        "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
+      )
+    )
+  )
+  [
+    "cid-yubi"
+  ]
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(env-sigs 
+  [
+    { 'key  : "WEBAUTHN-alice-yubi"
+    , 'caps : 
+      [
+        (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.COPY_ACCOUNT 
+          "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
+        )
+      ]
+    }
+  ]
+)
+(env-chain-data { 'chain-id : "1" })
+(begin-tx "Copy to new chain")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.copy-account
+  "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
+  "14"
+)
+
+(env-chain-data { 'chain-id : "14" })
+(continue-pact 1)
+
+(expect "Alice to be registered with one device"
+  (map (at 'credential-id) 
+    (at 'devices 
+      (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.get-account
+        "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
+      )
+    )
+  )
+  [
+    "cid-yubi"
+  ]
 )
 (commit-tx)
 (env-data {})
