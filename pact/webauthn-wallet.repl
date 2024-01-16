@@ -104,5 +104,27 @@
   }
 )
 (commit-tx)
+(env-data {})
+(env-sigs [])
 
-(verify "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet")
+(env-sigs
+  [
+    { 'key : "WEBAUTHN-key"
+    , 'caps : 
+      [
+        (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.COPY_ACCOUNT "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA")
+      ]
+    }
+  ]
+)
+(env-chain-data { 'chain-id : "0" })
+(begin-tx "Copy account")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.copy-account
+  "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA"
+  "14"
+)
+(env-chain-data { 'chain-id : "14" })
+(continue-pact 1)
+(commit-tx)
+
+; (verify "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet")

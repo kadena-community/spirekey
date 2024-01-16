@@ -1,5 +1,9 @@
 (namespace (read-string 'webauthn-namespace))
 
+(interface copy-interface
+  (defpact copy-account:string(account:string target:string))
+)
+
 (module webauthn-guard GOVERNANCE
   @model [
     (defproperty get-account-after(account:string)
@@ -15,6 +19,7 @@
       (at 'devices (get-account-before account))
     )
   ]
+  (implements copy-interface)
 
   (defconst GOVERNANCE_KEYSET (read-string 'webauthn-keyset-name))
 
@@ -179,10 +184,25 @@
     )
   )
 
-  (defpact copy-account(account:string target:string)
+  (defschema copy-account-schema
+    devices                    : [object{device-schema}]
+    min-approvals              : integer
+    min-registration-approvals : integer
+  )
+  (defpact copy-account:string(account:string target:string)
     (step
       (with-capability (COPY_ACCOUNT account)
-        (yield (read account-table account) target)
+        (let* (
+          (d (read account-table account))
+          (details:object{copy-account-schema}
+            { 'devices                    : (at 'devices d)
+            , 'min-approvals              : (at 'min-approvals d)
+            , 'min-registration-approvals : (at 'min-registration-approvals d)
+            }
+          )
+        )
+          (yield details target)
+        )
       )
     )
 

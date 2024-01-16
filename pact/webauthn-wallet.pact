@@ -3,6 +3,8 @@
 (module webauthn-wallet GOVERNANCE
   (defconst GOVERNANCE_KEYSET (read-string 'webauthn-keyset-name))
 
+  (implements copy-interface)
+
   (use coin)
   (use webauthn-guard)
 
@@ -110,14 +112,20 @@
     )
   )
 
-  (defpact copy-account(account:string target-chain:string)
+  (defschema copy-account-schema
+    guard-name : string
+  )
+
+  (defpact copy-account:string(account:string target:string)
     (step
       (with-capability (COPY_ACCOUNT account)
         (with-read guard-lookup-table account
           { 'webauthn-guard-name := guard-name }
-          (webauthn-guard.copy-account guard-name target-chain)
+          (webauthn-guard.copy-account guard-name target)
 
-          (yield { 'guard-name : guard-name })
+          (let ((yield-data:object{copy-account-schema} { 'guard-name : guard-name }))
+            (yield yield-data)
+          )
         )
       )
     )
@@ -125,7 +133,7 @@
     (step
       (resume 
         { 'guard-name := guard-name }
-        (continue (webauthn-guard.copy-account guard-name target-chain))
+        (continue (webauthn-guard.copy-account guard-name target))
       )
     )
   )
