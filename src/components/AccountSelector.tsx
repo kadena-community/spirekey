@@ -7,6 +7,7 @@ import {
   TextField,
   TrackerCard,
 } from '@kadena/react-ui';
+import { FormEvent } from 'react';
 import { FundAccount } from './FundAccount';
 
 export const AccountSelector = () => {
@@ -25,28 +26,31 @@ export const AccountSelector = () => {
   const onDeviceChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
     setActiveDevice(event.target.value);
 
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const value = (e.target as any).account.value ?? '';
+    return handleRestoreAccount({
+      caccount: value,
+      networkId: process.env.NETWORK_ID!,
+      namespace: process.env.NAMESPACE!,
+    });
+  };
+
   if (!activeAccount)
     return (
       <Stack flexDirection="column" gap="md">
-        <TextField
-          label="Restore existing account"
-          {...{
-            id: 'account',
-          }}
-          helperText="Enter the account name you want to restore"
-        />
-        <Button
-          onClick={(e: any) => {
-            console.log('e.target.value', e.target.value);
-            return handleRestoreAccount({
-              caccount: e.target.value,
-              networkId: process.env.NETWORK_ID!,
-              namespace: process.env.NAMESPACE!,
-            });
-          }}
-        >
-          Restore
-        </Button>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            name="account"
+            label="Restore existing account"
+            {...{
+              id: 'account',
+            }}
+            helperText="Enter the account name you want to restore"
+          />
+          <Button type="submit">Restore</Button>
+        </form>
       </Stack>
     );
 
