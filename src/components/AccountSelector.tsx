@@ -29,7 +29,11 @@ export const AccountSelector = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const value = (e.target as any).account.value ?? '';
+    const target = e.target as typeof e.target & {
+      account: { value: string };
+    };
+
+    const value = target.account.value ?? '';
     return handleRestoreAccount({
       caccount: value,
       networkId: process.env.NETWORK_ID!,
