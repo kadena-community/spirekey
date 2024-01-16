@@ -13,7 +13,7 @@ export const container = style([
     // width: '100%',
   }),
   {
-    width: '100vw',
+    // width: '100vw',
     background: 'linear-gradient(145deg, #122F4A, #0B1D2E)',
     aspectRatio: '8560 / 5398',
   },

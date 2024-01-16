@@ -1,6 +1,7 @@
 import { Account } from '@/context/AccountsContext';
 import { Heading, MaskedValue, Stack, Text } from '@kadena/react-ui';
 import { AccountDevice } from '../AccountDevice/AccountDevice';
+import { Carousel } from '../Carousel/Carousel';
 import {
   accountName,
   accountNameCollapsed,
@@ -33,7 +34,7 @@ export default function Card({
   isActive,
 }: CardProps) {
   return (
-    <Stack gap="lg">
+    <Carousel>
       {account.devices.map((d) => (
         <AccountDevice
           name={account.accountName}
@@ -43,7 +44,7 @@ export default function Card({
           color={'red'}
         />
       ))}
-    </Stack>
+    </Carousel>
   );
 
   return (
