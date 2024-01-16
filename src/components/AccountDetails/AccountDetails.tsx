@@ -1,8 +1,8 @@
 import { Account } from '@/context/AccountsContext';
 import { getChainwebDataUrl } from '@/context/NetworkContext';
-import { Box, Text } from '@kadena/react-ui';
+import { Box, Button, MaskedValue, Stack, Table, Text } from '@kadena/react-ui';
 import useSWR from 'swr';
-import { details } from './AccountDetails.css';
+import { details, transactionAddress, transactionAmount, transactions } from './AccountDetails.css';
 
 interface AccountDetailsProps {
   account: Account;
@@ -20,20 +20,35 @@ export function AccountDetails({ account }: AccountDetailsProps) {
 
   return (
     <div className={details}>
-      {data?.map((tx: any, index: number) => (
-        <Box key={tx.requestKey + index}>
-          <Text>
-            {tx.fromAccount}, {tx.toAccount}
-            <span
-              style={{
-                color: tx.fromAccount === account.accountName ? 'red' : 'green',
-              }}
-            >
-              {tx.amount}
-            </span>
-          </Text>
-        </Box>
-      ))}
+      <Stack flexDirection="column">
+        <Stack width="100%" justifyContent={'space-around'}>
+          <Button>Send</Button>
+          <Button>Receive</Button>
+          <Button>Add device</Button>
+        </Stack>
+        <Stack
+          flexDirection="column"
+          marginBlockStart="md"
+          paddingInline="md"
+          className={transactions}
+        >
+          {data?.map((tx: any, index: number) => (
+            <Stack width='100%' justifyContent="space-between">
+              <MaskedValue
+                startUnmaskedValues={16}
+                value={
+                  tx.fromAccount === account.accountName
+                    ? tx.toAccount
+                    : tx.fromAccount
+                }
+              />
+              <Text className={transactionAmount} data-transaction-type={tx.fromAccount === account.accountName ? 'debet' : 'credit'}>
+                {tx.amount}
+              </Text>
+            </Stack>
+          ))}
+        </Stack>
+      </Stack>
     </div>
   );
 }

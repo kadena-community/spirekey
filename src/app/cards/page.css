@@ -1,0 +1,32 @@
+body {
+  background-image: url('../assets/images/bg-portrait.png')!important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.card_no svg {
+  display: none;
+}
+
+[data-testid="kda-masked-value"] span {
+  display: none;
+}
+
+body [data-active="true"] button {
+  background: #4A9079;
+  color: #F5F5F5;
+}
+
+[data-collapsed="false"][data-active="false"] [data-svg-background] {
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.6));
+}
+
+[data-collapsed="true"][data-active="true"] [data-svg-background] {
+  filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.6));
+}
+
+[data-collapsed="true"][data-active="false"] [data-svg-background] {
+  filter: drop-shadow(0 -5 5px rgba(0, 0, 0, 0.6));
+}

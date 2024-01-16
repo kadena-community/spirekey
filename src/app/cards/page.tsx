@@ -1,15 +1,18 @@
 'use client';
 
-import { Card } from '@/components/Card/Card';
+import { Account } from '@/components/Account/Account';
 import CardCollection from '@/components/CardCollection/CardCollection';
-import { Account } from '@/context/AccountsContext';
+import { Account as TAccount } from '@/context/AccountsContext';
 import { useAccounts } from '@/hooks/useProfiles';
 import { Heading, Stack } from '@kadena/react-ui';
 import { useState } from 'react';
+import './page.css';
+import Image from 'next/image';
+import logo from '../assets/images/bennuKey.svg';
 
 export default function Cards() {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [activeAccount, setActiveAccount] = useState<Account>();
+  const [activeAccount, setActiveAccount] = useState<TAccount>();
   const { accounts } = useAccounts();
 
   const sortedAccounts = [...accounts].sort((a, b) => {
@@ -26,7 +29,7 @@ export default function Cards() {
     return 0;
   });
 
-  const onCardClick = (account: Account) => {
+  const onCardClick = (account: TAccount) => {
     setActiveAccount(isCollapsed ? undefined : account);
     setIsCollapsed(!isCollapsed);
   };
@@ -41,8 +44,12 @@ export default function Cards() {
       width="100%"
       style={{ height: '100svh' }}
     >
-      <Heading variant="h3" as="h1">
-        Cards
+      <Image src={logo} alt="BennuKey logo" style={{ marginTop: '2rem' }} />
+      <Heading variant="h5" as="h2" style={{ lineHeight: 0.8 }}>
+        BennuKey
+      </Heading>
+      <Heading variant="h3" as="h1" style={{ marginTop: 0, lineHeight: 0.8, marginBottom: '2rem' }}>
+        Wallet
       </Heading>
       <CardCollection>
         {sortedAccounts.map((account: any) => {
@@ -52,7 +59,7 @@ export default function Cards() {
             account.accountName === activeAccount?.accountName &&
             account.network === activeAccount?.network;
           return (
-            <Card
+            <Account
               key={account.accountName + account.network}
               account={account}
               onClick={onCardClick}

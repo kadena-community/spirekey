@@ -3,3 +3,29 @@
 *::after {
   box-sizing: border-box;
 }
+
+.hash-container {
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  font-family: monospace;
+}
+
+.hash-container::before,
+.hash-container::after {
+  content: '****';
+  position: absolute;
+}
+
+.hash-container::before {
+  left: 0;
+}
+
+.hash-container::after {
+  right: 0;
+}
+
+/* Optional: Increase specificity if needed */
+body .hash-container {
+  max-width: 100%; /* Optional: Ensure the container doesn't overflow its parent */
+}
