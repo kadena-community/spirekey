@@ -5,10 +5,10 @@ import CardCollection from '@/components/CardCollection/CardCollection';
 import { Account as TAccount } from '@/context/AccountsContext';
 import { useAccounts } from '@/hooks/useProfiles';
 import { Heading, Stack } from '@kadena/react-ui';
-import { useState } from 'react';
-import './page.css';
 import Image from 'next/image';
+import { useState } from 'react';
 import logo from '../assets/images/bennuKey.svg';
+import './page.css';
 
 export default function Cards() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -48,7 +48,11 @@ export default function Cards() {
       <Heading variant="h5" as="h2" style={{ lineHeight: 0.8 }}>
         BennuKey
       </Heading>
-      <Heading variant="h3" as="h1" style={{ marginTop: 0, lineHeight: 0.8, marginBottom: '2rem' }}>
+      <Heading
+        variant="h3"
+        as="h1"
+        style={{ marginTop: 0, lineHeight: 0.8, marginBottom: '2rem' }}
+      >
         Wallet
       </Heading>
       <CardCollection>

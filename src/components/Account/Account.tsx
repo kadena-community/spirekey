@@ -3,8 +3,9 @@ import type { ForwardedRef } from 'react';
 import { forwardRef } from 'react';
 
 import { AccountDetails } from '../AccountDetails/AccountDetails';
-import { accountPosition } from './Account.css';
 import Card from '../Card/Card';
+import { Carousel } from '../Carousel/Carousel';
+import { accountPosition } from './Account.css';
 
 interface AccountProps {
   account: TAccount;
@@ -24,13 +25,16 @@ function BaseAccount(
       data-collapsed={isCollapsed}
       data-active={isActive}
     >
-      <Card
-        account={account}
-        onClick={onClick}
-        isActive={isActive}
-        isCollapsed={isCollapsed}
-      />
-      {isActive && <AccountDetails account={account} />}
+      <Carousel>
+        {account.devices.map((d) => (
+          <Card
+            account={account}
+            onClick={onClick}
+            isActive={isActive}
+            isCollapsed={isCollapsed}
+          />
+        ))}
+      </Carousel>
     </div>
   );
 }
