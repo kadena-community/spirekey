@@ -5,13 +5,13 @@ export const card = style([
   atoms({
     border: 'hairline',
     borderRadius: 'md',
-    width: '100%',
     position: 'relative',
   }),
   {
+    margin: '0 auto',
     padding: '1rem 1.25rem',
     background: 'linear-gradient(145deg, #122F4A, #0B1D2E)',
-    aspectRatio:  '8560 / 5398',
+    aspectRatio: '8560 / 5398',
     height: 'auto',
     transformStyle: 'preserve-3d',
     transformOrigin: '50% 50%',
@@ -28,7 +28,7 @@ export const card = style([
         textShadow: '0 5px 3px rgba(0, 0, 0, 0.8)',
       },
     },
-  }
+  },
 ]);
 
 export const thickness = style([
@@ -43,7 +43,7 @@ export const thickness = style([
   {
     background: 'linear-gradient(145deg, #4684c1, #343174)',
     transform: 'translateZ(-4px)',
-    aspectRatio:  '8560 / 5398',
+    aspectRatio: '8560 / 5398',
     height: 'auto',
     selectors: {
       '&:nth-child(2)': {
@@ -53,7 +53,7 @@ export const thickness = style([
         transform: 'translateZ(-8px)',
       },
     },
-  }
+  },
 ]);
 
 export const cardBody = style([
@@ -72,7 +72,7 @@ export const logo = style([
     width: '50%',
     transform: 'translateZ(5px)',
     zIndex: 1,
-    
+
     backgroundImage: `url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMjUgMCA5MCAyNCIgZmlsbD0id2hpdGUiPgo8cGF0aCBkPSJNMjkuNzE0OSAxOS4xNDI5VjQuODU3MTRIMzEuOTAwNlYxMC44SDMyLjI0MzVDMzMuMTI5MiA5LjgxNDI5IDM0LjkwMDYgNy44NDI4NiAzNy41NTc4IDQuODU3MTRINDAuNDI5MkMzOS4zNTc4IDYuMDQyODYgMzcuMjE0OSA4LjM4NTcxIDM0LjAwMDYgMTEuODg1N0MzNS4xMTQ5IDEzLjEgMzcuMzQzNSAxNS41MTQzIDQwLjY3MiAxOS4xNDI5SDM3LjcwMDZDMzYuODAwNiAxOC4xMjg2IDM0Ljk4NjMgMTYuMTE0MyAzMi4yNDM1IDEzLjA4NTdIMzEuOTAwNlYxOS4xNDI5SDI5LjcxNDlaIiBmaWxsPSIjRjBFQUU2Ii8+CjxwYXRoIGQ9Ik00MS4yNTc4IDE5LjE0MjlDNDEuOTI5MiAxNi43NzE0IDQzLjI4NjMgMTIgNDUuMzE0OSA0Ljg1NzE0SDQ5LjIwMDZDNDkuODcyIDcuMjI4NTcgNTEuMjI5MiAxMiA1My4yNTc4IDE5LjE0MjlINTAuOTg2M0M1MC44MjkyIDE4LjU4NTcgNTAuNTE0OSAxNy40NTcxIDUwLjA0MzUgMTUuNzcxNEg0NC40NDM1QzQ0LjMwMDYgMTYuMzI4NiA0My45ODYzIDE3LjQ1NzEgNDMuNTAwNiAxOS4xNDI5SDQxLjI1NzhaTTQ1LjAyOTIgMTMuNzQyOUg0OS41MTQ5QzQ5LjE3MiAxMi40ODU3IDQ4LjQ4NjMgOS45NzE0MyA0Ny40NDM1IDYuMjI4NTdINDcuMTAwNkM0Ni43NDM1IDcuNDg1NzEgNDYuMDU3OCA5Ljk4NTcxIDQ1LjAyOTIgMTMuNzQyOVoiIGZpbGw9IiNGMEVBRTYiLz4KPHBhdGggZD0iTTU0LjY1NzggMTkuMTQyOVY0Ljg1NzE0SDYwLjM3MkM2Mi4yNzIgNC44NTcxNCA2My43MjkyIDUuMzQyODYgNjQuNzI5MiA2LjMxNDI5QzY1Ljc1NzggNy4yODU3MSA2Ni4yNTc4IDguNzQyODYgNjYuMjU3OCAxMC42NzE0VjEzLjM0MjlDNjYuMjU3OCAxNS4zIDY1Ljc0MzUgMTYuNzQyOSA2NC43MjkyIDE3LjdDNjMuNzE0OSAxOC42NTcxIDYyLjI3MiAxOS4xMjg2IDYwLjM3MiAxOS4xMjg2QzU5LjEwMDYgMTkuMTQyOSA1Ny4yMDA2IDE5LjE0MjkgNTQuNjU3OCAxOS4xNDI5Wk01Ni44ODYzIDE3LjE1NzFINjAuMzg2M0M2MS42MTQ5IDE3LjE1NzEgNjIuNTQzNSAxNi44NDI5IDYzLjEyOTIgMTYuMjE0M0M2My43MjkyIDE1LjU3MTQgNjQuMDI5MiAxNC42NDI5IDY0LjAyOTIgMTMuNFYxMC41ODU3QzY0LjAyOTIgOS4zNDI4NiA2My43MjkyIDguNDE0MjkgNjMuMTI5MiA3LjhDNjIuNTI5MiA3LjE4NTcxIDYxLjYxNDkgNi44ODU3MSA2MC4zODYzIDYuODg1NzFINTYuODg2M1YxNy4xNTcxWiIgZmlsbD0iI0YwRUFFNiIvPgo8cGF0aCBkPSJNNjguNzU3OCAxOS4xNDI5VjQuODU3MTRINzcuNzQzNVY2Ljg3MTQzSDcwLjk1NzhWMTAuOTU3MUg3Ny4xODYzVjEyLjk3MTRINzAuOTU3OFYxNy4xNTcxSDc3Ljg0MzVWMTkuMTQyOUM3Ni4zMjkyIDE5LjE0MjkgNzMuMzAwNiAxOS4xNDI5IDY4Ljc1NzggMTkuMTQyOVoiIGZpbGw9IiNGMEVBRTYiLz4KPHBhdGggZD0iTTgwLjE0MzUgMTkuMTQyOVY0Ljg1NzE0SDg0LjM4NjNDODUuMDI5MiA3IDg2LjMxNDkgMTEuMjcxNCA4OC4yNDM1IDE3LjY3MTRIODguNTg2M1Y0Ljg1NzE0SDkwLjc1NzhWMTkuMTQyOUg4Ni41MTQ5Qzg1Ljg3MiAxNyA4NC41ODYzIDEyLjcyODYgODIuNjU3OCA2LjMxNDI5SDgyLjMxNDlWMTkuMTQyOUg4MC4xNDM1WiIgZmlsbD0iI0YwRUFFNiIvPgo8cGF0aCBkPSJNOTIuNjg2MyAxOS4xNDI5QzkzLjM1NzggMTYuNzcxNCA5NC43MTQ5IDEyIDk2Ljc0MzUgNC44NTcxNEgxMDAuNjI5QzEwMS4zMDEgNy4yMjg1NyAxMDIuNjU4IDEyIDEwNC42ODYgMTkuMTQyOUgxMDIuNDE1QzEwMi4yNTggMTguNTg1NyAxMDEuOTQzIDE3LjQ1NzEgMTAxLjQ3MiAxNS43NzE0SDk1Ljg3MkM5NS43MjkyIDE2LjMyODYgOTUuNDE0OSAxNy40NTcxIDk0LjkyOTIgMTkuMTQyOUg5Mi42ODYzWk05Ni40NTc4IDEzLjc0MjlIMTAwLjk0M0MxMDAuNjAxIDEyLjQ4NTcgOTkuOTE0OSA5Ljk3MTQzIDk4Ljg3MiA2LjIyODU3SDk4LjUyOTJDOTguMTcyMSA3LjQ4NTcxIDk3LjQ4NjMgOS45ODU3MSA5Ni40NTc4IDEzLjc0MjlaIiBmaWxsPSIjRjBFQUU2Ii8+Cjwvc3ZnPg==")`,
     backgroundSize: 'contain',
     backgroundRepeat: 'no-repeat',
@@ -122,10 +122,7 @@ export const chainwebIcon = style([
   },
 ]);
 
-export const accountNameCollapsed = style([
-  atoms({
-  }),
-]);
+export const accountNameCollapsed = style([atoms({})]);
 
 export const accountName = style([
   atoms({

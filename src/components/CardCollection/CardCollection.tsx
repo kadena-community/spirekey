@@ -11,7 +11,6 @@ export default function CardCollection({ children }: CardCollectionProps) {
       className={atoms({
         height: '100%',
         width: '100%',
-        paddingInline: 'md',
         display: 'flex',
         flexDirection: 'column',
         gap: 'md',
