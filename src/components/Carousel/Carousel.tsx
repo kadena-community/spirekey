@@ -8,33 +8,38 @@ import {
 } from './Carousel.css';
 type CarouselProps = {
   children: React.ReactNode;
+  isActive: boolean;
 };
 
-export const Carousel = ({ children }: CarouselProps) => {
+import classNames from 'classnames';
+
+const showCarouselItems = (isActive: boolean, index: number) => {
+  if (isActive) return true;
+  if (index === 0) return true;
+  return false;
+};
+
+export const Carousel = ({ children, isActive }: CarouselProps) => {
   return (
     <div className={carousel}>
       <div className={carouselItems}>
-        {Children.map(children, (child) => (
-          <>
-            <div className={carouselItem}>{child}</div>
-            <div className={carouselItem}>{child}</div>
-            <div className={carouselItem}>{child}</div>
-            <div className={carouselItem}>{child}</div>
-            <div className={carouselItem}>{child}</div>
-          </>
+        {Children.map(children, (child, index) => (
+          <div className={classNames({
+              [carouselItem.default]: true,
+              [carouselItem.hidden]: !showCarouselItems(isActive, index),
+            })}
+          >
+            {child}
+          </div>
         ))}
       </div>
-      <ol className={carouselNav}>
-        {Children.map(children, (child) => (
-          <>
+      {Children.count(children) > 1 &&
+        <ol className={carouselNav[isActive ? 'default' : 'hidden']}>
+          {Children.map(children, (child) => (
             <li className={carouselNavItem}></li>
-            <li className={carouselNavItem}></li>
-            <li className={carouselNavItem}></li>
-            <li className={carouselNavItem}></li>
-            <li className={carouselNavItem}></li>
-          </>
-        ))}
-      </ol>
+          ))}
+        </ol>
+      }
     </div>
   );
 };

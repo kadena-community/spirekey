@@ -25,7 +25,7 @@ function BaseAccount(
       data-collapsed={isCollapsed}
       data-active={isActive}
     >
-      <Carousel>
+      <Carousel isActive={isActive}>
         {account.devices.map((d) => (
           <Card
             account={account}

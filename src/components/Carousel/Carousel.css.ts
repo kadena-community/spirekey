@@ -1,5 +1,5 @@
 import { atoms } from '@kadena/react-ui/theme';
-import { style } from '@vanilla-extract/css';
+import { style, styleVariants } from '@vanilla-extract/css';
 
 export const carousel = style({});
 
@@ -13,34 +13,46 @@ export const carouselItems = style({
   '::-webkit-scrollbar': { display: 'none' },
 });
 
-export const carouselItem = style({
-  scrollSnapAlign: 'center',
-  flexShrink: 0,
-  width: '80%',
-
-  selectors: {
-    '&:first-child': {
-      marginLeft: '10%',
-    },
-
-    '&:last-child': {
-      marginRight: '10%',
-    },
-  },
+export const carouselItem = styleVariants({
+  default: [
+    {
+      scrollSnapAlign: 'center',
+      flexShrink: 0,
+      width: '80%',
+      selectors: {
+        '&:first-child': {
+          marginLeft: '10%',
+        },
+        '&:last-child': {
+          marginRight: '10%',
+        },
+      },
+    }
+  ],
+  hidden: [{
+    display: 'none',
+  }],
 });
 
-export const carouselNav = style([
-  atoms({ paddingBlock: 'md' }),
-  {
-    display: 'flex',
-    gap: '0.5em',
-    justifyContent: 'center',
-    listStyle: 'none',
-    width: '80%',
-    margin: '0 auto',
-    paddingInline: 0,
-  },
-]);
+export const carouselNav = styleVariants({
+  default: [
+    atoms({
+      paddingBlock: 'md',
+    }),
+    {
+      display: 'flex',
+      gap: '0.5em',
+      justifyContent: 'center',
+      listStyle: 'none',
+      width: '80%',
+      margin: '0 auto',
+      paddingInline: 0,
+    },
+  ],
+  hidden: [{
+    display: 'none',
+  }],
+});
 
 export const carouselNavItem = style({
   borderRadius: '50%',
