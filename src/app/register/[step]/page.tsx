@@ -1,11 +1,12 @@
 'use client';
 
-import { Button } from '@kadena/react-ui';
+import { Box, Button, Stack } from '@kadena/react-ui';
 import { useParams, useRouter } from 'next/navigation';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Color } from './steps/Color';
 import { Fingerprint } from './steps/Fingerprint';
 import { Icon } from './steps/Icon';
+import Card from '@/components/Card/Card';
 
 const STEPS = ['fingerprint', 'icon', 'color'];
 const FORM_DEFAULT = {
@@ -35,13 +36,28 @@ export default function Account() {
 
   return (
     <>
-      <FormProvider {...methods}>
-        {params.step === 'fingerprint' && <Fingerprint />}
-        {params.step === 'icon' && <Icon />}
-        {params.step === 'color' && <Color />}
-      </FormProvider>
-      {prevStep && <Button onClick={goToPrevStep}>Back</Button>}
-      {nextStep && <Button onClick={goToNextStep}>Next</Button>}
+      <Stack flexDirection={'column'} gap={'md'} marginInline={'md'}>
+        <Box width={'100%'}>
+          <Card
+            account={{
+              accountName: '',
+              balance: '',
+              devices: [],
+              network: '',
+            }}
+            onClick={() => {}}
+            isActive={true}
+            isCollapsed={false}
+          />
+        </Box>
+        <FormProvider {...methods}>
+          {params.step === 'fingerprint' && <Fingerprint />}
+          {params.step === 'icon' && <Icon />}
+          {params.step === 'color' && <Color />}
+        </FormProvider>
+        {prevStep && <Button onClick={goToPrevStep}>Back</Button>}
+        {nextStep && <Button onClick={goToNextStep}>Next</Button>}
+      </Stack>
     </>
   );
 }
