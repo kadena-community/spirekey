@@ -1,5 +1,5 @@
 import { Picker, PickerItem } from '@/components/Picker/Picker';
-import { Heading } from 'react-aria-components';
+import { Button, Heading } from '@kadena/react-ui';
 
 export const Color = () => {
   return (
