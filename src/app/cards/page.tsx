@@ -6,7 +6,7 @@ import { Account as TAccount } from '@/context/AccountsContext';
 import { useAccounts } from '@/hooks/useProfiles';
 import { Heading, Stack } from '@kadena/react-ui';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import logo from '../assets/images/bennuKey.svg';
 import './page.css';
 
@@ -35,6 +35,17 @@ export default function Cards() {
   };
 
   if (!accounts) return <div>loading...</div>;
+
+  useEffect(() => {
+    if (!activeAccount) {
+      return;
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+
+  }, [activeAccount]);
 
   return (
     <Stack
