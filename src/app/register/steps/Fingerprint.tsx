@@ -1,4 +1,4 @@
-import { Button, Heading } from '@kadena/react-ui';
+import { Heading } from '@kadena/react-ui';
 import { useFormContext } from 'react-hook-form';
 
 export const Fingerprint = () => {

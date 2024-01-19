@@ -6,6 +6,7 @@ interface CardCollectionProps {
 }
 
 export default function CardCollection({ children }: CardCollectionProps) {
+  // Something we might be able to use for the scroll-enlarge-effect: https://codesandbox.io/p/sandbox/fervent-pasteur-dqs9ry?file=%2FApp.js%3A75%2C18-75%2C25
   return (
     <FlipMove
       className={atoms({
