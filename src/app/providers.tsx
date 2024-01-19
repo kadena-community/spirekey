@@ -15,9 +15,9 @@ export default function Providers({ children }: { children: ReactNode }) {
         <NewAccountsProvider>
           <ThemeProvider
             attribute="class"
-            enableSystem={true}
+            enableSystem={false}
             value={{
-              light: 'light',
+              light: 'dark',
               dark: darkThemeClass,
             }}
           >
