@@ -24,7 +24,8 @@ export const Carousel = ({ children, isActive }: CarouselProps) => {
     <div className={carousel}>
       <div className={carouselItems}>
         {Children.map(children, (child, index) => (
-          <div className={classNames({
+          <div
+            className={classNames({
               [carouselItem.default]: true,
               [carouselItem.hidden]: !showCarouselItems(isActive, index),
             })}
@@ -33,13 +34,13 @@ export const Carousel = ({ children, isActive }: CarouselProps) => {
           </div>
         ))}
       </div>
-      {Children.count(children) > 1 &&
+      {Children.count(children) > 1 && (
         <ol className={carouselNav[isActive ? 'default' : 'hidden']}>
-          {Children.map(children, (child) => (
-            <li className={carouselNavItem}></li>
+          {Children.map(children, () => (
+            <li className={carouselNavItem} />
           ))}
         </ol>
-      }
+      )}
     </div>
   );
 };

@@ -1,9 +1,19 @@
 import { Picker, PickerItem } from '@/components/Picker/Picker';
 import { Button, Heading } from '@kadena/react-ui';
+import { AnimatePresence, motion } from 'framer-motion';
+import { FC } from 'react';
+import { animationVariants } from '../animation';
 
-export const Color = () => {
+interface Props {
+  isVisible: boolean;
+}
+
+export const Color: FC<Props> = ({ isVisible }) => {
   return (
-    <div>
+    <motion.div
+      animate={isVisible ? 'visible' : 'hidden'}
+      variants={animationVariants}
+    >
       <Heading>Color</Heading>
       <Picker
         label="Color"
@@ -13,6 +23,6 @@ export const Color = () => {
         <PickerItem>Green</PickerItem>
         <PickerItem>Red</PickerItem>
       </Picker>
-    </div>
+    </motion.div>
   );
 };

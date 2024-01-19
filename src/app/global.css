@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+body {
+  background-color: #081320;
+}
+
 .hash-container {
   white-space: nowrap;
   overflow: hidden;
