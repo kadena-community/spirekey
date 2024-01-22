@@ -3,35 +3,41 @@ import { style, styleVariants } from '@vanilla-extract/css';
 
 export const carousel = style({});
 
-export const carouselItems = style({
-  display: 'flex',
-  scrollSnapType: 'x mandatory',
-  WebkitOverflowScrolling: 'touch',
-  overflowX: 'auto',
-  whiteSpace: 'nowrap',
-  columnGap: '1em',
-  '::-webkit-scrollbar': { display: 'none' },
+export const carouselItems = styleVariants({
+  default: {
+    display: 'flex',
+    scrollSnapType: 'x mandatory',
+    WebkitOverflowScrolling: 'touch',
+    overflowX: 'auto',
+    whiteSpace: 'nowrap',
+    columnGap: '1em',
+    '::-webkit-scrollbar': { display: 'none' },
+  },
+  nonScrollable: {
+    overflowX: 'hidden',
+  },
 });
 
 export const carouselItem = styleVariants({
-  default: [
-    {
-      scrollSnapAlign: 'center',
-      flexShrink: 0,
-      width: '80%',
-      selectors: {
-        '&:first-child': {
-          marginLeft: '10%',
-        },
-        '&:last-child': {
-          marginRight: '10%',
-        },
+  default: {
+    scrollSnapAlign: 'center',
+    flexShrink: 0,
+    width: '80%',
+    selectors: {
+      '&:first-child': {
+        marginLeft: '10%',
       },
-    }
-  ],
-  hidden: [{
+      '&:last-child': {
+        marginRight: '10%',
+      },
+    },
+  },
+  hidden: {
     display: 'none',
-  }],
+  },
+  nonScrollable: {
+    scrollSnapAlign: 'none',
+  },
 });
 
 export const carouselNav = styleVariants({
@@ -49,9 +55,11 @@ export const carouselNav = styleVariants({
       paddingInline: 0,
     },
   ],
-  hidden: [{
-    display: 'none',
-  }],
+  hidden: [
+    {
+      display: 'none',
+    },
+  ],
 });
 
 export const carouselNavItem = style({
