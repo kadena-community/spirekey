@@ -11,6 +11,9 @@ dependencies:
   '@kadena/cryptography-utils':
     specifier: ^0.4.2
     version: 0.4.2
+  '@kadena/fonts':
+    specifier: ^0.0.1
+    version: 0.0.1
   '@kadena/pactjs':
     specifier: ^0.4.2
     version: 0.4.2

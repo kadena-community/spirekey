@@ -15,21 +15,11 @@ body {
   font-family: monospace;
 }
 
-.hash-container::before,
-.hash-container::after {
-  content: '****';
-  position: absolute;
+.card .card__content-bottom *,
+.card .card__content-center * {
+  color: black;
 }
 
-.hash-container::before {
-  left: 0;
-}
-
-.hash-container::after {
-  right: 0;
-}
-
-/* Optional: Increase specificity if needed */
-body .hash-container {
-  max-width: 100%; /* Optional: Ensure the container doesn't overflow its parent */
+.card .card__content-center div:first-child {
+  font-size: x-large;
 }
