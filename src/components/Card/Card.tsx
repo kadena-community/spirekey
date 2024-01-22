@@ -1,7 +1,5 @@
 import { Account } from '@/context/AccountsContext';
-import { Heading, MaskedValue, Stack, Text } from '@kadena/react-ui';
-import { AccountDevice } from '../AccountDevice/AccountDevice';
-import { Carousel } from '../Carousel/Carousel';
+import { Heading, MaskedValue, Stack } from '@kadena/react-ui';
 import {
   accountName,
   accountNameCollapsed,
@@ -16,7 +14,6 @@ import {
   network,
   networkCollapsed,
   phoneIcon,
-  thickness,
   usbIcon,
 } from './Card.css';
 
@@ -41,10 +38,6 @@ export default function Card({
         data-collapsed={isCollapsed}
         data-active={isActive}
       >
-        <div className={thickness}></div>
-        <div className={thickness}></div>
-        <div className={thickness}></div>
-
         <div className={cardBody}>
           {(isActive || !isCollapsed) && (
             <div className={logo} data-svg-background></div>
@@ -87,17 +80,6 @@ export default function Card({
             </Heading>
           </Stack>
         </div>
-        {/* <div className="hash-container">
-          c:JCAmBaWvYNucn9QFzbsak0achzWMjK1fX3T2auZWM58
-        </div> */}
-
-        {/* <Heading variant="h5" as="h2">
-          {account.devices.map((d: any) => d.identifier).join(', ')}
-        </Heading>
-
-        <MaskedValue value={account.accountName} />
-
-        <Text>{account.network}</Text> */}
       </div>
     </>
   );
