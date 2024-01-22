@@ -12,7 +12,7 @@ const FORM_DEFAULTS = {
 type FormValues = typeof FORM_DEFAULTS;
 
 type SendPageProps = {
-  account:string;
+  account: string;
   cid: string;
 };
 export default function SendPage({ cid }: SendPageProps) {

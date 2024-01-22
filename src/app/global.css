@@ -6,6 +6,11 @@
 
 body {
   background-color: #081320;
+  background-image: url('../assets/images/bg-portrait.png') !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 .hash-container {

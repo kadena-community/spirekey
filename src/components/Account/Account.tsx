@@ -2,7 +2,7 @@ import { Account as TAccount } from '@/context/AccountsContext';
 import type { ForwardedRef } from 'react';
 import { forwardRef } from 'react';
 
-import { AccountDetails } from '../AccountDetails/AccountDetails';
+import Link from 'next/link';
 import Card from '../Card/Card';
 import { Carousel } from '../Carousel/Carousel';
 import { accountPosition } from './Account.css';
@@ -35,6 +35,9 @@ function BaseAccount(
           />
         ))}
       </Carousel>
+      {isActive && (
+        <Link href={`/account/${account.accountName}`}>details</Link>
+      )}
     </div>
   );
 }
