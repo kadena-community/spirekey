@@ -127,4 +127,5 @@
 (continue-pact 1)
 (commit-tx)
 
+; nested defpact causes type errors, therefor the verification is disabled
 ; (verify "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet")

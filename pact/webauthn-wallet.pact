@@ -28,6 +28,19 @@
     true
   )
 
+  (defcap TRANSFER_XCHAIN
+    ( sender:string
+      receiver:string
+      receiver-guard:guard
+      target-chain:string
+      amount:decimal
+    )  
+    (with-read guard-lookup-table sender
+      { 'webauthn-guard-name := guard-name }
+      (compose-capability (DEBIT guard-name))
+    )
+  )
+
   (defcap TRANSFER(sender:string receiver:string amount:decimal)
     @managed amount TRANSFER-mgr
     (with-read guard-lookup-table sender
@@ -135,6 +148,24 @@
         { 'guard-name := guard-name }
         (continue (webauthn-guard.copy-account guard-name target))
       )
+    )
+  )
+
+  (defpact transfer-crosschain:string
+    ( sender:string
+      receiver:string
+      receiver-guard:guard
+      target-chain:string
+      amount:decimal
+    )
+    (step 
+      (with-capability (TRANSFER_XCHAIN sender receiver receiver-guard target-chain)
+        (install-capability (coin.TRANSFER sender receiver amount))
+        (coin.transfer-crosschain sender receiver receiver-guard target-chain amount)
+      )
+    )
+    (step
+      (continue (coin.transfer-crosschain sender receiver receiver-guard target-chain amount))
     )
   )
 
