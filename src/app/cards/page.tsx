@@ -1,5 +1,6 @@
 'use client';
 
+import logo from '@/assets/images/bennuKey.svg';
 import { Account } from '@/components/Account/Account';
 import CardCollection from '@/components/CardCollection/CardCollection';
 import { Account as TAccount } from '@/context/AccountsContext';
@@ -7,8 +8,6 @@ import { useAccounts } from '@/hooks/useProfiles';
 import { Heading, Stack } from '@kadena/react-ui';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import logo from '../assets/images/bennuKey.svg';
-import './page.css';
 
 export default function Cards() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -44,7 +43,6 @@ export default function Cards() {
       top: 0,
       behavior: 'smooth',
     });
-
   }, [activeAccount]);
 
   return (
