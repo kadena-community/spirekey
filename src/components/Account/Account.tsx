@@ -37,6 +37,7 @@ function BaseAccount(
                 isActive={isActive}
                 isCollapsed={isCollapsed}
               />
+              <Link href={`/accounts/${caccount}/devices/add`}>add</Link> -
               <Link href={`/accounts/${caccount}/devices/${cid}#${cid}`}>
                 details
               </Link>

@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { Children } from 'react';
 import {
   carousel,
@@ -6,12 +7,11 @@ import {
   carouselNav,
   carouselNavItem,
 } from './Carousel.css';
+
 type CarouselProps = {
   children: React.ReactNode;
   isActive: boolean;
 };
-
-import classNames from 'classnames';
 
 const showCarouselItems = (isActive: boolean, index: number) => {
   if (isActive) return true;
@@ -22,7 +22,20 @@ const showCarouselItems = (isActive: boolean, index: number) => {
 export const Carousel = ({ children, isActive }: CarouselProps) => {
   return (
     <div className={carousel}>
-      <div className={carouselItems}>
+      <div
+        className={classNames({
+          [carouselItems.default]: true,
+          [carouselItems.nonScrollable]: !isActive,
+        })}
+      >
+        <div // REPLACE WITh ADD CARD
+          className={classNames({
+            [carouselItem.default]: true,
+            [carouselItem.nonScrollable]: !isActive,
+          })}
+        >
+          ADD
+        </div>
         {Children.map(children, (child, index) => (
           <div
             className={classNames({
