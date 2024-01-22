@@ -29,12 +29,12 @@ export default function Account() {
 
   const goToNextStep = () => {
     if (!nextStep) return;
-    push(`/register/?step=${nextStep}`, { shallow: true });
+    push(`/register/?step=${nextStep}`, { shallow: true, prefetch: true });
   };
 
   const goToPrevStep = () => {
     if (!prevStep) return;
-    push(`/register/?step=${prevStep}`, { shallow: true });
+    push(`/register/?step=${prevStep}`, { shallow: true, prefetch: true });
   };
 
   return (

@@ -11,11 +11,7 @@ const FORM_DEFAULTS = {
 };
 type FormValues = typeof FORM_DEFAULTS;
 
-type SendPageProps = {
-  account: string;
-  cid: string;
-};
-export default function SendPage({ cid }: SendPageProps) {
+export default function SendPage() {
   const { getValues, handleSubmit, register } = useForm({
     defaultValues: FORM_DEFAULTS,
     reValidateMode: 'onBlur',
