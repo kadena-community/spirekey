@@ -4,14 +4,14 @@ import Card from '@/components/Card/Card';
 import { ProgressButton } from '@/components/ProgressButton.tsx/ProgressButton';
 import { Box, Button, Stack } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { buttons, container, step, stepWrapper, wrapper } from './page.css';
 import { Color } from './steps/Color';
 import { Icon } from './steps/Icon';
 import { Network } from './steps/Network';
 
-const STEPS = ['network', 'icon', 'color'];
+const TOTAL_STEPS = 3;
 const FORM_DEFAULT = {
   network: null,
   icon: null,
@@ -19,22 +19,20 @@ const FORM_DEFAULT = {
 };
 
 export default function Account() {
-  const { push } = useRouter();
-  const params = useSearchParams();
   const methods = useForm({ defaultValues: FORM_DEFAULT });
 
-  const currentStep = Math.max(STEPS.indexOf(params.get('step') as string), 0);
-  const prevStep = STEPS[currentStep - 1];
-  const nextStep = STEPS[currentStep + 1];
+  const [currentStep, setCurrentStep] = useState(1);
+  const prevStep = currentStep > 1 ? currentStep - 1 : null;
+  const nextStep = currentStep < TOTAL_STEPS ? currentStep + 1 : null;
 
   const goToNextStep = () => {
     if (!nextStep) return;
-    push(`/register/?step=${nextStep}`, { shallow: true, prefetch: true });
+    setCurrentStep(nextStep);
   };
 
   const goToPrevStep = () => {
     if (!prevStep) return;
-    push(`/register/?step=${prevStep}`, { shallow: true, prefetch: true });
+    setCurrentStep(prevStep);
   };
 
   return (
@@ -56,23 +54,23 @@ export default function Account() {
       <FormProvider {...methods}>
         <div className={wrapper}>
           <motion.div
-            animate={{ x: `-${currentStep * 100}%` }}
+            animate={{ x: `-${(currentStep - 1) * 100}%` }}
             transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
             className={container}
           >
             <div className={stepWrapper}>
               <div className={step}>
-                <Network isVisible={currentStep === 0} />
+                <Network isVisible={currentStep === 1} />
               </div>
             </div>
             <div className={stepWrapper}>
               <div className={step}>
-                <Icon isVisible={currentStep === 1} />
+                <Icon isVisible={currentStep === 2} />
               </div>
             </div>
             <div className={stepWrapper}>
               <div className={step}>
-                <Color isVisible={currentStep === 2} />
+                <Color isVisible={currentStep === 3} />
               </div>
             </div>
           </motion.div>
@@ -85,7 +83,7 @@ export default function Account() {
 
         <ProgressButton
           onClick={goToNextStep}
-          progress={((currentStep + 1) / STEPS.length) * 100}
+          progress={(currentStep / TOTAL_STEPS) * 100}
         >
           {nextStep ? 'Next' : 'Complete'}
         </ProgressButton>
