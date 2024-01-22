@@ -2,6 +2,7 @@ import { Account as TAccount } from '@/context/AccountsContext';
 import type { ForwardedRef } from 'react';
 import { forwardRef } from 'react';
 
+import { Stack } from '@kadena/react-ui';
 import Link from 'next/link';
 import Card from '../Card/Card';
 import { Carousel } from '../Carousel/Carousel';
@@ -27,17 +28,21 @@ function BaseAccount(
     >
       <Carousel isActive={isActive}>
         {account.devices.map((d) => (
-          <Card
-            account={account}
-            onClick={onClick}
-            isActive={isActive}
-            isCollapsed={isCollapsed}
-          />
+          <div>
+            <Card
+              account={account}
+              onClick={onClick}
+              isActive={isActive}
+              isCollapsed={isCollapsed}
+            />
+            <Link
+              href={`/accounts/${account.accountName}/devices/${d['credential-id']}`}
+            >
+              details
+            </Link>
+          </div>
         ))}
       </Carousel>
-      {isActive && (
-        <Link href={`/account/${account.accountName}`}>details</Link>
-      )}
     </div>
   );
 }
