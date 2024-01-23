@@ -3,6 +3,7 @@
 import { Account } from '@/context/AccountContext';
 import { getAccountFrom } from '@/utils/account';
 import { Heading, TextField } from '@kadena/react-ui';
+import { startAuthentication } from '@simplewebauthn/browser';
 import { Button } from 'react-aria-components';
 import { useForm } from 'react-hook-form';
 
@@ -48,7 +49,15 @@ export default function Restore() {
         )
         .values(),
     );
-    console.log(uniqueDevices);
+    const authResult = await startAuthentication({
+      challenge: 'doesnotreallymatter',
+      rpId: 'localhost',
+      allowCredentials: uniqueDevices.map((d) => ({
+        id: d['credential-id'],
+        type: 'public-key',
+      })),
+    });
+    console.log(authResult); //authResult -> id
   };
 
   return (
