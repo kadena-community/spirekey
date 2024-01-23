@@ -1,12 +1,19 @@
 'use client';
 
+import { Button } from '@/components/Button/Button';
 import Card from '@/components/Card/Card';
 import { ProgressButton } from '@/components/ProgressButton.tsx/ProgressButton';
-import { Box, Button, Stack } from '@kadena/react-ui';
+import { Box, Stack } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { buttons, container, step, stepWrapper, wrapper } from './page.css';
+import {
+  buttonsContainer,
+  container,
+  step,
+  stepWrapper,
+  wrapper,
+} from './page.css';
 import { Color } from './steps/Color';
 import { Icon } from './steps/Icon';
 import { Network } from './steps/Network';
@@ -77,7 +84,7 @@ export default function Account() {
         </div>
       </FormProvider>
 
-      <div className={buttons}>
+      <div className={buttonsContainer}>
         {!prevStep && <Button onClick={() => {}}>Cancel</Button>}
         {prevStep && <Button onClick={goToPrevStep}>Previous</Button>}
 

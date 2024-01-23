@@ -1,5 +1,5 @@
 import { atoms } from '@kadena/react-ui/theme';
-import { style, styleVariants } from '@vanilla-extract/css';
+import { globalStyle, style, styleVariants } from '@vanilla-extract/css';
 
 export const wrapper = style({
   position: 'relative',
@@ -27,6 +27,7 @@ export const step = style([
   {
     height: '100%',
     background: 'rgba(147, 147, 147, 0.1)',
+    backdropFilter: 'blur(18px)',
     selectors: {
       '&:before': {
         pointerEvents: 'none',
@@ -45,7 +46,17 @@ export const step = style([
   },
 ]);
 
-export const buttons = style({
-  display: 'flex',
-  justifyContent: 'space-between',
+export const buttonsContainer = style([
+  atoms({ padding: 'lg', gap: 'xl' }),
+  {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+]);
+
+globalStyle(`${buttonsContainer} > button`, {
+  flex: 1,
 });
