@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import Providers from './providers';
 
+import '@fontsource/space-grotesk';
 import './global.css';
 
 export const metadata: Metadata = {
   title: 'WebAuthn Wallet',
-  description: 'Conviniently secure your internet',
+  description: 'Conveniently secure your internet',
 };
 
 export default function RootLayout({

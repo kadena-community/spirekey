@@ -1,6 +1,7 @@
 'use client';
 
-import { Breadcrumbs, BreadcrumbsItem, Button, TextField } from '@kadena/react-ui';
+import { Button } from '@/components/Button/Button';
+import { Breadcrumbs, BreadcrumbsItem, TextField } from '@kadena/react-ui';
 import { useParams } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -25,12 +26,12 @@ export default function ReceivePage() {
         <BreadcrumbsItem href={`/accounts/${params.caccount}`}>
           {decodeURIComponent(params.caccount.toString())}
         </BreadcrumbsItem>
-        <BreadcrumbsItem href={`/accounts/${params.caccount}/devices/${params.cid}`}>
+        <BreadcrumbsItem
+          href={`/accounts/${params.caccount}/devices/${params.cid}`}
+        >
           {decodeURIComponent(params.cid.toString())}
         </BreadcrumbsItem>
-        <BreadcrumbsItem>
-          Receive
-        </BreadcrumbsItem>
+        <BreadcrumbsItem>Receive</BreadcrumbsItem>
       </Breadcrumbs>
       <h1>Receive</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
