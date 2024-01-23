@@ -22,7 +22,7 @@ import type { RegistrationResponseJSON } from '@simplewebauthn/typescript-types'
 import cbor from 'cbor';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { addDevice } from '../register/addDevice';
+import { addDevice } from '../../register/addDevice';
 
 const getPublicKey = async (res: RegistrationResponseJSON) => {
   const { authData } = cbor.decode(

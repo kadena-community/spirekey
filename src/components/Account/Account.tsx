@@ -38,6 +38,9 @@ function BaseAccount(
                 isCollapsed={isCollapsed}
               />
               <Link href={`/accounts/${caccount}/devices/add`}>add</Link> -
+              <Link href={`/accounts/${caccount}/devices/${cid}/send`}>send</Link> -
+              <Link href={`/accounts/${caccount}/devices/${cid}/receive`}>receive</Link> -
+              <Link href={`/accounts/${caccount}/devices/${cid}/transactions`}>transactions</Link> -
               <Link href={`/accounts/${caccount}/devices/${cid}#${cid}`}>
                 details
               </Link>
