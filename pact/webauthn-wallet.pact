@@ -28,6 +28,11 @@
     true
   )
 
+  (defcap LOGIN(account:string)
+    @doc "Login to account for duration seconds"
+    (enforce-authenticated account)
+  )
+
   (defcap TRANSFER_XCHAIN
     ( sender:string
       receiver:string
@@ -122,6 +127,12 @@
         { 'webauthn-guard-name := guard-name }
         (webauthn-guard.remove-device guard-name credential-id)
       )
+    )
+  )
+
+  (defun login(account:string)
+    (with-capability (LOGIN account)
+      true
     )
   )
 

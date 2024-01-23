@@ -1,6 +1,6 @@
 ---
 KIP: '00XX'
-Title: EvoConnect
+Title: SpireConnect
 Author: Andy Tang @EnoF
 Status: Draft
 Type: Standard
@@ -64,6 +64,55 @@ When a user visits a dApp, the dApp can send the user to their wallet. When
 sending the user to their wallet the following information should be provided
 for the wallet:
 
-| param     | type   | required | comment                                                                               |
-| :-------- | :----- | :------- | :------------------------------------------------------------------------------------ |
-| returnUrl | string | - [x]    | This is the url the wallet should redirect the end user to after confirming the login |
+| param       | type     | comment                                                                               |
+| :---------- | :------- | :------------------------------------------------------------------------------------ |
+| returnUrl   | string!  | This is the url the wallet should redirect the end user to after confirming the login |
+| reason      | string?  | The dApp can provide a reason for the login request                                   |
+| email       | boolean? | This flag indicates if an email is desired by the dApp                                |
+| phoneNumber | boolean? | This flag indicates if an phone number is desired by the dApp                         |
+| address     | boolean? | This flag indicates if address info is desired by the dApp                            |
+
+The Wallet will then prepare a transaction for the end user to sign. For the
+WebAuthn Wallet account it would look like:
+
+```pact
+(n_9...c.webauthn-wallet.login "c:Ld...Gx")
+```
+
+With the capability to scope the signature:
+
+```pact
+(n_9...c.webauthn-wallet.LOGIN "c:Ld...Gx")
+```
+
+The `ttl` in the meta should be used to determine the lifetime of this token.
+The signed transaction will then be base64 encoded and can then be used by the
+dApp to perform a `/local?preflight=true` call to see if the transaction
+validates.
+
+There are several ways to remember if a user is logged in. It's up to the dApp's
+discretion how to store the information of the user. The information that will
+be send back to the dApp are:
+
+| param | type    | comment                                                                   |
+| :---- | :------ | :------------------------------------------------------------------------ |
+| token | string! | The base64 encoded signed transaction to proof authentication of the user |
+| user  | string! | The base64 encoded JSON object of describing a user                       |
+
+The JSON describing a user:
+
+| param       | type    | comment                                                                      |
+| :---------- | :------ | :--------------------------------------------------------------------------- |
+| credentials | [JSON]! | An array containing the credentials of an user                               |
+| name        | string! | The display name provided by a wallet for the user                           |
+| email       | string? | The email of the user (if the user explicitely consents for this)            |
+| phoneNumber | string? | The phone number of the user (if the user explicitely consents for this)     |
+| address     | JSON?   | The address info JSON containing: street address, postal code, city, country |
+
+The JSON describing Credentials:
+
+| param     | type    | comment                                                                                           |
+| :-------- | :------ | :------------------------------------------------------------------------------------------------ |
+| type      | string! | The type of the credential, can be "WebAuthn" or "ED25519"                                        |
+| publicKey | string! | The public key that is associated with this credential, keys are formatted as retrieved from pact |
+| id        | string? | The credential-id if the credential is a WebAuthn key                                             |
