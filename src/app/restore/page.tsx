@@ -1,9 +1,11 @@
 'use client';
 
 import { Account } from '@/context/AccountContext';
+import { useAccounts } from '@/hooks/useAccounts';
 import { getAccountFrom } from '@/utils/account';
 import { Heading, TextField } from '@kadena/react-ui';
 import { startAuthentication } from '@simplewebauthn/browser';
+import { useRouter } from 'next/navigation';
 import { Button } from 'react-aria-components';
 import { useForm } from 'react-hook-form';
 
@@ -16,6 +18,8 @@ const isAccount = (result: Account | null): result is Account => {
 };
 
 export default function Restore() {
+  const router = useRouter();
+  const { storeAccount } = useAccounts();
   const { register, handleSubmit, getValues } = useForm({
     defaultValues: FORM_DEFAULT,
     reValidateMode: 'onBlur',
@@ -57,7 +61,11 @@ export default function Restore() {
         type: 'public-key',
       })),
     });
-    console.log(authResult); //authResult -> id
+
+    await storeAccount(account);
+    const caccount = encodeURIComponent(account);
+    const cid = encodeURIComponent(authResult.id);
+    router.push(`/accounts/${caccount}/devices/${cid}`);
   };
 
   return (
