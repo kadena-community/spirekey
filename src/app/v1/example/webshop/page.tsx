@@ -57,7 +57,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
           signerPubKey: account.publicKey,
         });
         router.push(
-          `${process.env.WALLET_URL}/sign?payload=${Buffer.from(
+          `${process.env.WALLET_URL}/v1/sign?payload=${Buffer.from(
             JSON.stringify(order),
           ).toString('base64')}&cid=${account.cid}&returnUrl=${getReturnUrl(
             '/example/webshop/submit',
@@ -88,7 +88,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
       </Box>
 
       <Box>
-        <Account account={account} returnPath="/example/webshop" />
+        <Account account={account} returnPath="/v1/example/webshop" />
       </Box>
       {account && (
         <Grid columns={{ sm: 1, md: 2, lg: 2 }} gap="lg" margin="lg">

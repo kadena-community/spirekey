@@ -17,9 +17,10 @@ export default function Providers({ children }: { children: ReactNode }) {
             attribute="class"
             enableSystem={false}
             value={{
-              light: 'dark',
+              // light: 'light',
               dark: darkThemeClass,
             }}
+            defaultTheme='dark'
           >
             {children}
           </ThemeProvider>
