@@ -16,18 +16,28 @@ import { useParams, usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-const FORM_DEFAULTS = {
-  to: '',
-  amount: 0,
-};
-type FormValues = typeof FORM_DEFAULTS;
-
 const isCAccount = (account: string | string[]): account is string =>
   typeof account === 'string';
 
 export default function SendPage() {
   const params = useParams();
+  const router = useRouter();
+  const { caccount } = useParams();
   const { accounts } = useAccounts();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const FORM_DEFAULTS = {
+    sender: Array.isArray(caccount)
+      ? decodeURIComponent(caccount[0])
+      : decodeURIComponent(caccount),
+    publicKey: '',
+    receiver: '',
+    amount: 0,
+    gasPayer: '',
+    networkId: '',
+    namespace: '',
+  };
+  type FormValues = typeof FORM_DEFAULTS;
   const { handleSubmit, register } = useForm({
     defaultValues: FORM_DEFAULTS,
     reValidateMode: 'onBlur',
@@ -54,7 +64,7 @@ export default function SendPage() {
     const caccount = decodeURIComponent(params.caccount);
     const result = await transfer({
       sender: caccount,
-      receiver: data.to,
+      receiver: data.receiver,
       amount: data.amount,
       gasPayer: caccount,
       namespace: process.env.NAMESPACE,
@@ -64,6 +74,7 @@ export default function SendPage() {
 
     sign(result, device, pathname.replace(/\/send$/, 'submit'));
   };
+
   return (
     <div>
       <Breadcrumbs>
@@ -79,14 +90,27 @@ export default function SendPage() {
       </Breadcrumbs>
       <h1>Send</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField id="to" label="To" {...register('to')} />
+        <TextField id="sender" label="From" {...register('sender')} />
+        <TextField
+          id="publicKey"
+          label="Public key"
+          {...register('publicKey')}
+        />
+        <TextField id="receiver" label="To" {...register('receiver')} />
         <TextField
           id="amount"
           type="number"
           label="Amount"
           {...register('amount', { valueAsNumber: true })}
         />
-        <Button type="submit">Send</Button>
+        <TextField id="gasPayer" label="Gas payer" {...register('gasPayer')} />
+        <TextField id="networkId" label="Network" {...register('networkId')} />
+        <TextField
+          id="namespace"
+          label="Namespace"
+          {...register('namespace')}
+        />
+        <Button type="submit">{isLoading ? 'Loading' : 'Send'}</Button>
       </form>
     </div>
   );
