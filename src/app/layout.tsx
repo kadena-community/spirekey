@@ -1,6 +1,10 @@
 import type { Metadata } from 'next';
 import Providers from './providers';
 
+<<<<<<< HEAD
+=======
+// import '@fontsource/space-grotesk';
+>>>>>>> 04ff056 (feat(transactions): list transactions on transactions page)
 import './global.css';
 
 export const metadata: Metadata = {
