@@ -1,122 +1,95 @@
-import { useAccounts } from '@/hooks/useAccounts';
-import {
-  Button,
-  SelectField,
-  Stack,
-  Text,
-  TextField,
-  TrackerCard,
-} from '@kadena/react-ui';
-import { FormEvent } from 'react';
-import { FundAccount } from './FundAccount';
+'use client';
 
-export const AccountSelector = () => {
-  const {
-    accounts,
-    activeAccount,
-    activeDevice,
-    handleRestoreAccount,
-    setActiveAccount,
-    setActiveDevice,
-  } = useAccounts();
+import logo from '@/assets/images/bennuKey.svg';
+import { Account } from '@/components/Account/Account';
+import CardCollection from '@/components/CardCollection/CardCollection';
+import { Account as TAccount } from '@/context/AccountsContext';
+import { useNetwork } from '@/context/NetworkContext';
+import { useAccounts } from '@/hooks/useProfiles';
+import { Heading, Stack } from '@kadena/react-ui';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
-  const onAccountChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
-    setActiveAccount(event.target.value);
+type AccountSelectorProps = {
+  returnUrl?: string;
+};
 
-  const onDeviceChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
-    setActiveDevice(event.target.value);
+export const AccountSelector = ({ returnUrl }: AccountSelectorProps) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [activeAccount, setActiveAccount] = useState<TAccount>();
+  const { accounts } = useAccounts();
+  const { setNetwork } = useNetwork();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const sortedAccounts = [...accounts].sort((a, b) => {
+    if (
+      a.accountName === activeAccount?.accountName &&
+      a.network === activeAccount?.network
+    )
+      return -1;
+    if (
+      b.accountName === activeAccount?.accountName &&
+      b.network === activeAccount?.network
+    )
+      return 1;
+    return 0;
+  });
 
-    const target = e.target as typeof e.target & {
-      account: { value: string };
-    };
-
-    const value = target.account.value ?? '';
-    return handleRestoreAccount({
-      caccount: value,
-      networkId: process.env.NETWORK_ID!,
-      namespace: process.env.NAMESPACE!,
-    });
+  const onCardClick = (account: TAccount) => {
+    setActiveAccount(isCollapsed ? undefined : account);
+    setIsCollapsed(!isCollapsed);
+    setNetwork(account.network);
   };
 
-  if (!activeAccount)
-    return (
-      <Stack flexDirection="column" gap="md">
-        <form onSubmit={handleSubmit}>
-          <TextField
-            name="account"
-            label="Restore existing account"
-            {...{
-              id: 'account',
-            }}
-            helperText="Enter the account name you want to restore"
-          />
-          <Button type="submit">Restore</Button>
-        </form>
-      </Stack>
-    );
+  if (!accounts) return <div>loading...</div>;
 
-  if (!activeDevice)
-    return <Text>No account found, please register first.</Text>;
+  useEffect(() => {
+    if (!activeAccount) {
+      return;
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, [activeAccount]);
 
   return (
-    <>
-      <SelectField
-        label="account"
-        {...{
-          id: 'account',
-          ariaLabel: 'Select your account',
-          onChange: onAccountChange,
-        }}
+    <Stack
+      gap="md"
+      flexDirection="column"
+      alignItems="center"
+      width="100%"
+      style={{ height: '100svh' }}
+    >
+      <Image src={logo} alt="BennuKey logo" style={{ marginTop: '2rem' }} />
+      <Heading variant="h5" as="h2" style={{ lineHeight: 0.8 }}>
+        BennuKey
+      </Heading>
+      <Heading
+        variant="h3"
+        as="h1"
+        style={{ marginTop: 0, lineHeight: 0.8, marginBottom: '2rem' }}
       >
-        {accounts.map((account) => (
-          <option value={account.account} key={account.account}>
-            {account.name}
-          </option>
-        ))}
-      </SelectField>
+        Wallet
+      </Heading>
+      <CardCollection>
+        {sortedAccounts.map((account: any) => {
+          if (!account) return null;
 
-      <TrackerCard
-        icon="ManageKda"
-        labelValues={[
-          {
-            label: 'Account',
-            value: activeAccount.account,
-            isAccount: true,
-          },
-          {
-            label: 'Display Name',
-            value: activeDevice.name,
-          },
-          {
-            label: 'Balance',
-            value: activeAccount.balance,
-          },
-        ]}
-        helperText="This is the account you will use to login."
-      />
-
-      {activeAccount.devices.length > 1 && (
-        <SelectField
-          label="device"
-          {...{
-            id: 'device',
-            ariaLabel: "Select which device you'd like to use",
-            onChange: onDeviceChange,
-          }}
-        >
-          {activeAccount.devices.map((device) => (
-            <option
-              value={device['credential-id']}
-              key={device['credential-id']}
-            >
-              {device['credential-id']}
-            </option>
-          ))}
-        </SelectField>
-      )}
-    </>
+          const isActive =
+            account.accountName === activeAccount?.accountName &&
+            account.network === activeAccount?.network;
+          return (
+            <Account
+              key={account.accountName + account.network}
+              account={account}
+              onClick={onCardClick}
+              isCollapsed={isCollapsed}
+              isActive={isActive}
+              returnUrl={returnUrl}
+            />
+          );
+        })}
+      </CardCollection>
+    </Stack>
   );
 };
