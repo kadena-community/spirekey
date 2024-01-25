@@ -1,4 +1,3 @@
-import { Picker, PickerItem } from '@/components/Picker/Picker';
 import { Heading } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
