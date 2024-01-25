@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Providers from './providers';
 
-import '@fontsource/space-grotesk';
 import './global.css';
 
 export const metadata: Metadata = {

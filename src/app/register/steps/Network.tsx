@@ -26,22 +26,25 @@ export const Network: FC<Props> = ({ isVisible }) => {
 
       <div>
         <input
-          {...register('network')}
+          {...register('networkId')}
           type="radio"
           value="mainnet"
           id="network-mainnet"
         />
         <label htmlFor="network-mainnet">Mainnet</label>
+        <br />
 
         <input
-          {...register('network')}
+          {...register('networkId')}
           type="radio"
           value="testnet"
           id="network-testnet"
         />
         <label htmlFor="network-testnet">Testnet</label>
+        <br />
+
         <input
-          {...register('network')}
+          {...register('networkId')}
           type="radio"
           value="devnet"
           id="network-devnet"
