@@ -3,6 +3,8 @@
 import { Button } from '@/components/Button/Button';
 import Card from '@/components/Card/Card';
 import { ProgressButton } from '@/components/ProgressButton.tsx/ProgressButton';
+import { registerAccount } from '@/utils/register';
+import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Box, Stack } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
@@ -14,16 +16,20 @@ import {
   stepWrapper,
   wrapper,
 } from './page.css';
+import { Alias } from './steps/Alias';
 import { Color } from './steps/Color';
-import { Icon } from './steps/Icon';
+import { DeviceType } from './steps/DeviceType';
 import { Network } from './steps/Network';
 
-const TOTAL_STEPS = 3;
+const TOTAL_STEPS = 4;
 const FORM_DEFAULT = {
-  network: null,
-  icon: null,
-  color: null,
+  networkId: '',
+  alias: '',
+  icon: '',
+  color: '',
 };
+
+type FormValues = typeof FORM_DEFAULT;
 
 export default function Account() {
   const methods = useForm({ defaultValues: FORM_DEFAULT });
@@ -40,6 +46,18 @@ export default function Account() {
   const goToPrevStep = () => {
     if (!prevStep) return;
     setCurrentStep(prevStep);
+  };
+
+  const onSubmit = async (data: FormValues) => {
+    const displayName = 'placeholder'; // @TODO
+    const { credentialId, publicKey } = await getNewWebauthnKey('placeholder');
+
+    const caccount = await registerAccount({
+      credentialPubkey: publicKey,
+      credentialId: credentialId,
+      displayName,
+      domain: window.location.hostname,
+    });
   };
 
   return (
@@ -59,42 +77,58 @@ export default function Account() {
       </Box>
 
       <FormProvider {...methods}>
-        <div className={wrapper}>
-          <motion.div
-            animate={{ x: `-${(currentStep - 1) * 100}%` }}
-            transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
-            className={container}
-          >
-            <div className={stepWrapper}>
-              <div className={step}>
-                <Network isVisible={currentStep === 1} />
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+          <div className={wrapper}>
+            <motion.div
+              animate={{ x: `-${(currentStep - 1) * 100}%` }}
+              transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
+              className={container}
+            >
+              <div className={stepWrapper}>
+                <div className={step}>
+                  <Network isVisible={currentStep === 1} />
+                </div>
               </div>
-            </div>
-            <div className={stepWrapper}>
-              <div className={step}>
-                <Icon isVisible={currentStep === 2} />
+
+              <div className={stepWrapper}>
+                <div className={step}>
+                  <Alias isVisible={currentStep === 2} />
+                </div>
               </div>
-            </div>
-            <div className={stepWrapper}>
-              <div className={step}>
-                <Color isVisible={currentStep === 3} />
+
+              <div className={stepWrapper}>
+                <div className={step}>
+                  <DeviceType isVisible={currentStep === 3} />
+                </div>
               </div>
-            </div>
-          </motion.div>
-        </div>
+
+              <div className={stepWrapper}>
+                <div className={step}>
+                  <Color isVisible={currentStep === 4} />
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          <div className={buttonsContainer}>
+            {!prevStep && <Button onClick={() => {}}>Cancel</Button>}
+            {prevStep && <Button onClick={goToPrevStep}>Previous</Button>}
+
+            {/* Switching the type to 'submit' doesn't work properly, the form than already
+            submits in the second step. Switching the complete button out for now. */}
+            {!nextStep && <Button type="submit">Complete</Button>}
+            {nextStep && (
+              <ProgressButton
+                onClick={() => goToNextStep()}
+                progress={(currentStep / TOTAL_STEPS) * 100}
+                type={nextStep ? 'button' : 'submit'}
+              >
+                {nextStep ? 'Next' : 'Complete'}
+              </ProgressButton>
+            )}
+          </div>
+        </form>
       </FormProvider>
-
-      <div className={buttonsContainer}>
-        {!prevStep && <Button onClick={() => {}}>Cancel</Button>}
-        {prevStep && <Button onClick={goToPrevStep}>Previous</Button>}
-
-        <ProgressButton
-          onClick={goToNextStep}
-          progress={(currentStep / TOTAL_STEPS) * 100}
-        >
-          {nextStep ? 'Next' : 'Complete'}
-        </ProgressButton>
-      </div>
     </Stack>
   );
 }
