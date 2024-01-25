@@ -46,7 +46,7 @@ will be the following points of interest:
 In tradition OAuth applications the token issued is scoped with access rights.
 This could include not only reading resources, but also creating, updating or
 even deleting resources. For the purpose of this specification we recommend the
-login token to only be used to read incensitive information.
+login token to only be used to read insensitive information.
 
 In general information stored on the blockchain is public. So if the information
 that is displayed is stored on the blockchain, it should pose no risk. If this
