@@ -6,7 +6,7 @@ import {
   bufferToBase64URLString,
   startRegistration,
 } from '@simplewebauthn/browser';
-import { RegistrationResponseJSON } from '@simplewebauthn/typescript-types';
+import { RegistrationResponseJSON } from '@simplewebauthn/types';
 import cbor from 'cbor';
 import { useState } from 'react';
 
