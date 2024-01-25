@@ -29,6 +29,8 @@ const FORM_DEFAULT = {
   color: '',
 };
 
+type FormValues = typeof FORM_DEFAULT;
+
 export default function Account() {
   const methods = useForm({ defaultValues: FORM_DEFAULT });
 
@@ -46,7 +48,7 @@ export default function Account() {
     setCurrentStep(prevStep);
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FormValues) => {
     const displayName = 'placeholder'; // @TODO
     const { credentialId, publicKey } = await getNewWebauthnKey('placeholder');
 
