@@ -1,5 +1,5 @@
 import { useNetwork } from '@/context/NetworkContext';
-import { SelectField } from '@kadena/react-ui';
+import { Select } from '@kadena/react-ui';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -16,7 +16,7 @@ export const NetworkSelector = () => {
     setValue('network', network);
   }, [network]);
   return (
-    <SelectField
+    <Select
       label="Network"
       {...{
         id: 'network',
@@ -29,6 +29,6 @@ export const NetworkSelector = () => {
     >
       <option value="testnet04">Testnet04</option>
       <option value="fast-development">Fast Development</option>
-    </SelectField>
+    </Select>
   );
 };

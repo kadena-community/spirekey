@@ -1,8 +1,0 @@
-import type { Atoms } from '../../../styles/atoms.css';
-import type React from 'react';
-import type { ComponentPropsWithRef, ElementType } from 'react';
-export interface IBoxProps extends ComponentPropsWithRef<'div'>, Partial<Pick<Atoms, 'alignItems' | 'backgroundColor' | 'borderColor' | 'borderRadius' | 'borderStyle' | 'borderWidth' | 'bottom' | 'cursor' | 'display' | 'flex' | 'flexDirection' | 'flexGrow' | 'flexShrink' | 'flexWrap' | 'gap' | 'height' | 'inset' | 'justifyContent' | 'left' | 'margin' | 'marginBlock' | 'marginBlockEnd' | 'marginBlockStart' | 'marginInline' | 'marginInlineEnd' | 'marginInlineStart' | 'maxWidth' | 'minWidth' | 'opacity' | 'overflow' | 'padding' | 'paddingBlock' | 'paddingBlockEnd' | 'paddingBlockStart' | 'paddingInline' | 'paddingInlineEnd' | 'paddingInlineStart' | 'position' | 'right' | 'textAlign' | 'top' | 'width' | 'zIndex'>> {
-    as?: ElementType;
-}
-export declare const Box: ({ as, alignItems, backgroundColor, borderColor, borderRadius, borderStyle, borderWidth, bottom, children, className, cursor, display, flex, flexDirection, flexGrow, flexShrink, flexWrap, gap, height, inset, justifyContent, left, margin, marginBlock, marginBlockEnd, marginBlockStart, marginInline, marginInlineEnd, marginInlineStart, maxWidth, minWidth, opacity, overflow, padding, paddingBlock, paddingBlockEnd, paddingBlockStart, paddingInline, paddingInlineEnd, paddingInlineStart, position, right, textAlign, top, width, zIndex, ...props }: IBoxProps) => React.ReactElement;
-//# sourceMappingURL=Box.d.ts.map

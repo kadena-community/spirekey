@@ -1,4 +1,4 @@
-import { atoms } from '@kadena/react-ui/theme';
+import { atoms } from '@kadena/react-ui/styles';
 import { style, styleVariants } from '@vanilla-extract/css';
 
 export const carousel = style({});

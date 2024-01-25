@@ -1,1 +1,0 @@
-{"version":3,"file":"Stack.d.ts","sourceRoot":"","sources":["../../../../src/components/Layout/Stack/Stack.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,EAAE,EAAE,MAAM,OAAO,CAAC;AAEhC,OAAO,KAAK,EAAE,SAAS,EAAE,MAAM,QAAQ,CAAC;AAGxC,MAAM,WAAW,WAAY,SAAQ,SAAS;IAC5C,OAAO,CAAC,EAAE,MAAM,GAAG,aAAa,CAAC;CAClC;AAED,eAAO,MAAM,KAAK,EAAE,EAAE,CAAC,WAAW,CAWjC,CAAC"}

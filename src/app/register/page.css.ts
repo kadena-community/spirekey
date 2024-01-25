@@ -1,5 +1,5 @@
-import { atoms } from '@kadena/react-ui/theme';
-import { globalStyle, style, styleVariants } from '@vanilla-extract/css';
+import { atoms } from '@kadena/react-ui/styles';
+import { globalStyle, style } from '@vanilla-extract/css';
 
 export const wrapper = style({
   position: 'relative',

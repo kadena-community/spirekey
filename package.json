@@ -17,7 +17,7 @@
     "@kadena/cryptography-utils": "^0.4.2",
     "@kadena/fonts": "^0.0.1",
     "@kadena/pactjs": "^0.4.2",
-    "@kadena/react-ui": "file:.yalc/@kadena/react-ui",
+    "@kadena/react-ui": "^0.7.1",
     "@react-aria/utils": "^3.22.0",
     "@simplewebauthn/browser": "^8.3.4",
     "@vanilla-extract/css": "^1.14.0",

@@ -14,13 +14,12 @@ import {
 } from '@kadena/client/fp';
 import {
   Button,
-  FormFieldWrapper,
   Grid,
   GridItem,
   Heading,
-  Input,
   Stack,
   Text,
+  TextField,
   TrackerCard,
 } from '@kadena/react-ui';
 import { startAuthentication } from '@simplewebauthn/browser';
@@ -193,25 +192,24 @@ export default function DeployPage() {
   return (
     <Stack flexDirection="column">
       <Heading>Deploy</Heading>
-      <FormFieldWrapper htmlFor="file" label="orchestrationFile">
-        <Input
-          id="orchestrationFile"
-          type="file"
-          {...register('orchestrationFile', {
-            onChange: onChangeFile,
-          })}
-        />
-      </FormFieldWrapper>
-      <FormFieldWrapper htmlFor="pactFiles" label="pact module file">
-        <Input
-          id="pactFiles"
-          type="file"
-          multiple
-          {...register('pactFiles', {
-            onChange: onChangePactFiles,
-          })}
-        />
-      </FormFieldWrapper>
+
+      <TextField
+        id="orchestrationFile"
+        type="file"
+        {...register('orchestrationFile', {
+          onChange: onChangeFile,
+        })}
+      />
+      <TextField
+        id="pactFiles"
+        type="file"
+        // @ts-expect-error multiple is not supported by react-ui
+        multiple
+        {...register('pactFiles', {
+          onChange: onChangePactFiles,
+        })}
+      />
+
       <Profiles profiles={orchestrationData?.profiles} />
       {orchestrationData?.steps && <Button onClick={onDeploy}>Deploy</Button>}
       <DeploySteps

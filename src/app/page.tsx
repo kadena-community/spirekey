@@ -101,7 +101,7 @@ const Register = () => {
             ...register('displayName', { required: true }),
           }}
           info="This name is only for your convienience to recognize your device."
-          helperText="This name will be stored on the blockchain, don't use any sensitive information."
+          description="This name will be stored on the blockchain, don't use any sensitive information."
         />
         <Button onClick={onRegister}>Register</Button>
       </Stack>

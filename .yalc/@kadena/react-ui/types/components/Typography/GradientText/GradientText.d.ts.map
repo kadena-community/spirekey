@@ -1,1 +1,0 @@
-{"version":3,"file":"GradientText.d.ts","sourceRoot":"","sources":["../../../../src/components/Typography/GradientText/GradientText.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,EAAE,EAAE,MAAM,OAAO,CAAC;AAChC,OAAO,KAAK,MAAM,OAAO,CAAC;AAG1B,MAAM,WAAW,kBAAkB;IACjC,QAAQ,EAAE,KAAK,CAAC,SAAS,CAAC;CAC3B;AAKD,eAAO,MAAM,YAAY,EAAE,EAAE,CAAC,kBAAkB,CAE/C,CAAC"}

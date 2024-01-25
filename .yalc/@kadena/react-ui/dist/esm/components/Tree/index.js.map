@@ -1,1 +1,0 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../src/components/Tree/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,IAAI,EAAmB,MAAM,QAAQ,CAAC","sourcesContent":["export { Tree, type ITreeProps } from './Tree';\n"]}

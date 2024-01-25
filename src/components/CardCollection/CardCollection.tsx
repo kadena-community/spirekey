@@ -1,4 +1,4 @@
-import { atoms } from '@kadena/react-ui/theme';
+import { atoms } from '@kadena/react-ui/styles';
 import FlipMove from 'react-flip-move';
 
 interface CardCollectionProps {

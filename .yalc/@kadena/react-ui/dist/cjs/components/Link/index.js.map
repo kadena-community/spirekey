@@ -1,1 +1,0 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../src/components/Link/index.ts"],"names":[],"mappings":";;;AAAA,+BAA+C;AAAtC,4FAAA,IAAI,OAAA","sourcesContent":["export { Link, type ILinkProps } from './Link';\n"]}
