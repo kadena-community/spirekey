@@ -21,7 +21,7 @@ export default function Login({ searchParams }: LoginProps) {
           icon="Account"
         />
 
-        <AccountSelector />
+        <AccountSelector returnUrl={returnUrl} />
 
         <LoginConfirmation returnUrl={returnUrl} />
       </Box>

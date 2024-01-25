@@ -109,7 +109,7 @@ export default function AddWallet({ searchParams }: Props) {
     const newDevice = await getNewDevice(displayName);
     const tx = await addDevice(acc.devices[0], acc, newDevice);
     storeAccount(account);
-    sign(tx, acc.devices[0], '/add-wallet');
+    sign(tx, acc.devices[0] as any, '/add-wallet');
   };
 
   useEffect(() => {

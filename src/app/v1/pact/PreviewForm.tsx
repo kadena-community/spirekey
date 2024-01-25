@@ -94,10 +94,10 @@ export const PreviewForm: FC<PreviewFormProps> = ({
   useEffect(() => {
     if (!account) return;
     setValue('publicKey', account.publicKey);
-    setValue('senderAccount', account.caccount);
+    setValue('senderAccount', account.accountName);
     setValue('cid', account.cid);
     addPubkey({ pubkey: account.publicKey, cid: account.cid });
-  }, [account?.cid, account?.caccount, account?.publicKey]);
+  }, [account?.cid, account?.accountName, account?.publicKey]);
 
   const onCodeChange = async (
     event: React.ChangeEvent<HTMLTextAreaElement>,
@@ -193,20 +193,16 @@ export const PreviewForm: FC<PreviewFormProps> = ({
           labelValues={[
             {
               label: 'Account',
-              value: account.caccount,
+              value: account.accountName,
               isAccount: true,
             },
             {
               label: 'Display Name',
-              value: account.name,
+              value: account.displayName,
             },
             {
               label: 'Device',
               value: account.cid,
-            },
-            {
-              label: 'Account ID',
-              value: account.waccount,
             },
             {
               label: 'Public key',

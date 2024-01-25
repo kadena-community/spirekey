@@ -58,7 +58,7 @@ export default function Page({ searchParams }: Props) {
       publicKey: activeDevice.guard.keys[0],
       gasPayer: receiver,
     });
-    sign(tx, activeDevice, '/transfer', [receiverAcc]);
+    sign(tx, activeDevice as any, '/transfer', [receiverAcc]);
   };
   const { doSubmit, status } = useSubmit(searchParams);
   useEffect(() => {

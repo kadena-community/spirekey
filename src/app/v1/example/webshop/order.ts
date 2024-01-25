@@ -10,12 +10,11 @@ import {
 
 export const createOrder = async ({
   price,
-  caccount,
+  accountName,
   signerPubKey,
 }: {
   price: number;
-  caccount: string;
-  waccount: string;
+  accountName: string;
   signerPubKey: string;
 }) => {
   return asyncPipe(
@@ -23,16 +22,16 @@ export const createOrder = async ({
       execution(
         `(${
           process.env.NAMESPACE
-        }.webauthn-wallet.transfer "${caccount}" "cookie-shop" ${price.toPrecision(
+        }.webauthn-wallet.transfer "${accountName}" "cookie-shop" ${price.toPrecision(
           8,
-        )}`,
+        )})`,
       ),
       setMeta({
         chainId: '14',
         gasLimit: 1000,
         gasPrice: 0.0000001,
         ttl: 60000,
-        senderAccount: caccount,
+        senderAccount: accountName,
       }),
       setNetworkId(process.env.NETWORK_ID || 'fast-development'),
       addSigner(
@@ -44,13 +43,13 @@ export const createOrder = async ({
         (withCap: any) => [
           withCap(
             `${process.env.NAMESPACE}.webauthn-wallet.TRANSFER`,
-            caccount,
+            accountName,
             'cookie-shop',
             price,
           ),
           withCap(
             `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
-            caccount,
+            accountName,
             { int: 1 },
             1,
           ),
