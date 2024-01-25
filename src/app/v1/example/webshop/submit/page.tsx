@@ -16,18 +16,15 @@ import {
 type SearchParams = {
   searchParams: {
     payload: string;
-    response: string;
   };
 };
 export default function Submit({ searchParams }: SearchParams) {
-  const { doSubmit, result, status, SubmitStatus } = useSubmit(searchParams);
-  const {
-    isSuccessful,
-    error,
-    estimatedGas,
-    isLoading: estimatedGasIsLoading,
-    gasPayer,
-  } = usePreview(searchParams);
+  const { doSubmit, result, preview, status, SubmitStatus, tx } =
+    useSubmit(searchParams);
+
+  if (!tx) return null;
+
+  const sender = JSON.parse(tx.cmd).meta.sender;
 
   return (
     <Stack flexDirection="column" gap="md" alignItems="center" margin="xl">
@@ -38,15 +35,15 @@ export default function Submit({ searchParams }: SearchParams) {
       />
 
       <Stack flexDirection="column">
-        {isSuccessful === true && (
+        {status !== SubmitStatus.SUCCESS && (
           <Stack flexDirection="column" gap="md">
             <Stack flexDirection="column" gap="sm">
               <Heading variant="h6">Estimated transaction costs:</Heading>
               <Text>
-                {estimatedGasIsLoading ? 'Loading...' : `${estimatedGas} KDA`}
+                {!preview?.gas ? 'Loading...' : `${preview?.gas} KDA`}
               </Text>
               <Heading variant="h6">Paid by:</Heading>
-              <Text>{gasPayer}</Text>
+              <Text>{sender}</Text>
             </Stack>
 
             <Stack
@@ -59,14 +56,14 @@ export default function Submit({ searchParams }: SearchParams) {
               <Text>Transaction can be submitted</Text>
             </Stack>
 
-            <Button onClick={doSubmit} disabled={status !== SubmitStatus.IDLE}>
+            <Button onClick={doSubmit} disabled={status === SubmitStatus.IDLE}>
               {status === SubmitStatus.LOADING
                 ? 'Loading...'
                 : 'Submit transaction'}
             </Button>
           </Stack>
         )}{' '}
-        {isSuccessful === false && (
+        {status === SubmitStatus.ERROR && (
           <>
             <Stack flexDirection="row" alignItems="center" gap="sm">
               <SystemIcon.Close color="#ff0000" />
@@ -74,7 +71,7 @@ export default function Submit({ searchParams }: SearchParams) {
             </Stack>
             <Box marginBlockStart="md">
               <Text as="code">
-                <pre>{error}</pre>
+                <pre>{result}</pre>
               </Text>
             </Box>
           </>

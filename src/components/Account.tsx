@@ -4,9 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 
 export type Account = {
-  name: string;
-  waccount: string;
-  caccount: string;
+  displayName: string;
+  accountName: string;
   publicKey: string;
   cid: string;
 };
@@ -34,7 +33,7 @@ export const Account = ({
     );
   return (
     <>
-      <Text bold>Account: {account.name}</Text>
+      <Text bold>Account: {account.displayName}</Text>
     </>
   );
 };

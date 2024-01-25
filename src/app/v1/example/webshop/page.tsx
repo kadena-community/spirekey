@@ -14,7 +14,6 @@ import {
   Stack,
   Text,
 } from '@kadena/react-ui';
-import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
@@ -51,26 +50,20 @@ export default function Webshop({ searchParams }: WebshopProps) {
       async () => {
         if (!account) return;
         const order = await createOrder({
-          caccount: account.caccount,
-          waccount: account.waccount,
+          accountName: account.accountName,
           price,
           signerPubKey: account.publicKey,
         });
         router.push(
-          `${process.env.WALLET_URL}/v1/sign?payload=${Buffer.from(
+          `${process.env.WALLET_URL}/sign?payload=${Buffer.from(
             JSON.stringify(order),
           ).toString('base64')}&cid=${account.cid}&returnUrl=${getReturnUrl(
-            '/example/webshop/submit',
+            '/v1/example/webshop/submit',
           )}`,
         );
       },
     [response],
   );
-
-  const { setTheme } = useTheme();
-  useEffect(() => {
-    setTheme('light');
-  }, []);
 
   return (
     <Stack
