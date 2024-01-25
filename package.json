@@ -5,7 +5,7 @@
   "scripts": {
     "build": "next build",
     "deploy": "tsx pact/deploy/deploy-contracts.mts",
-    "dev": "next dev --port 1337",
+    "dev": "next dev --port 1337 --turbo",
     "generate": "npx pactjs contract-generate --file=\"./pact/webauthn.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
     "postinstall": "npx pactjs contract-generate --file=\"./pact/root/fungible-v2.pact\" --file=\"./pact/root/gas-payer-v1.pact\" --file=\"./pact/root/fungible-xchain-v1.pact\" --file=\"./pact/root/coin.pact\" --file=\"./pact/webauthn-guard.pact\" --file=\"./pact/webauthn-wallet.pact\" --file=\"./pact/l2-coin.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
     "lint": "next lint",
@@ -17,7 +17,6 @@
     "@kadena/cryptography-utils": "^0.4.2",
     "@kadena/fonts": "^0.0.1",
     "@kadena/pactjs": "^0.4.2",
-    "@kadena/react-ui": "^0.7.1",
     "@react-aria/utils": "^3.22.0",
     "@simplewebauthn/browser": "^8.3.4",
     "@vanilla-extract/css": "^1.14.0",
