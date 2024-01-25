@@ -2,6 +2,7 @@
 
 import { useAccounts } from '@/context/AccountsContext';
 import { useNetwork } from '@/context/NetworkContext';
+import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { useSign } from '@/hooks/useSign';
 import { transfer } from '@/utils/transfer';
 // import { transfer } from '@/utils/transfer';
@@ -11,7 +12,7 @@ import {
   Button,
   TextField,
 } from '@kadena/react-ui';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -26,13 +27,15 @@ const isCAccount = (account: string | string[]): account is string =>
 
 export default function SendPage() {
   const params = useParams();
-  const router = useRouter();
   const { accounts } = useAccounts();
-  const { getValues, handleSubmit, register } = useForm({
+  const { handleSubmit, register } = useForm({
     defaultValues: FORM_DEFAULTS,
     reValidateMode: 'onBlur',
   });
+  const pathname = usePathname();
+
   const { network } = useNetwork();
+  const { getReturnUrl } = useReturnUrl();
   // wallet url should probably be configurable somehow
   const { sign } = useSign(process.env.WALLET_URL!);
   const device = accounts
@@ -45,21 +48,21 @@ export default function SendPage() {
       (d) => d['credential-id'] === decodeURIComponent(params.cid as string),
     );
   const onSubmit = async (data: FormValues) => {
-    console.log(device);
     if (!isCAccount(params.caccount)) return;
     if (!process.env.NAMESPACE) return;
     if (!device) return;
+    const caccount = decodeURIComponent(params.caccount);
     const result = await transfer({
-      sender: params.caccount,
+      sender: caccount,
       receiver: data.to,
       amount: data.amount,
-      gasPayer: params.caccount,
+      gasPayer: caccount,
       namespace: process.env.NAMESPACE,
       networkId: network,
       publicKey: device?.guard.keys[0] || '',
     });
 
-    sign(result, device, '/yolo');
+    sign(result, device, pathname.replace(/\/send$/, 'submit'));
   };
   return (
     <div>

@@ -64,7 +64,7 @@ export const transfer = async ({
           ),
           signFor(
             `${namespace}.webauthn-wallet.GAS_PAYER`,
-            receiver,
+            sender,
             { int: 1 },
             1,
           ),
