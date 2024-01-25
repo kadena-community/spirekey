@@ -1,5 +1,5 @@
 import { Card } from '@kadena/react-ui';
-import { sprinkles } from '@kadena/react-ui/theme';
+import { sprinkles } from '@kadena/react-ui/styles';
 import * as base64url from 'base64url-universal';
 import { useRouter } from 'next/navigation';
 import QRScanner from 'qr-scanner';

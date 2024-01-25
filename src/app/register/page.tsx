@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/Button/Button';
 import Card from '@/components/Card/Card';
-import { ProgressButton } from '@/components/ProgressButton.tsx/ProgressButton';
+import { ProgressButton } from '@/components/ProgressButton/ProgressButton';
 import { useAccounts } from '@/hooks/useAccounts';
 import { registerAccount } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';

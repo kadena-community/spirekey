@@ -1,6 +1,5 @@
-import { atoms } from '@kadena/react-ui/theme';
+import { atoms } from '@kadena/react-ui/styles';
 import { style } from '@vanilla-extract/css';
-import { KodeMono } from '@kadena/fonts';
 
 export const card = style([
   atoms({

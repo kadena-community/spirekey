@@ -1,5 +1,6 @@
 import { useAccounts } from '@/hooks/useAccounts';
-import { Button, Stack } from '@kadena/react-ui';
+import { Stack } from '@kadena/react-ui';
+import { Button } from './Button/Button';
 
 export const LoginConfirmation = ({ returnUrl }: { returnUrl: string }) => {
   const { activeAccount, activeDevice } = useAccounts();
@@ -12,12 +13,9 @@ export const LoginConfirmation = ({ returnUrl }: { returnUrl: string }) => {
       justifyContent="flex-end"
       marginBlock="md"
     >
-      <Button as="a" href={returnUrl} variant="alternative">
-        Cancel
-      </Button>
+      <Button href={returnUrl}>Cancel</Button>
 
       <Button
-        as="a"
         href={`${returnUrl}?response=${Buffer.from(
           JSON.stringify({
             name: activeDevice.name,

@@ -168,8 +168,8 @@ export default function Sign(req: SignProps) {
 
       <Select
         id="lanuage"
-        ariaLabel="Chain ID"
-        onChange={(evt) => setLanguage(evt.currentTarget.value)}
+        label="Chain ID"
+        // onChange={(evt) => setLanguage(evt.currentTarget.value)}
       >
         <option value="">Select language</option>
         <option value="en">English</option>
@@ -227,7 +227,7 @@ export default function Sign(req: SignProps) {
       {signUrl && signPath && (
         <Stack flexDirection="column" gap="md" margin="md">
           <QRCode url={signPath} />
-          <TextField id="signUrl" value="signUrl" readOnly />
+          <TextField id="signUrl" value="signUrl" isReadOnly />
         </Stack>
       )}
     </Stack>

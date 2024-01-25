@@ -1,4 +1,4 @@
-import { atoms } from '@kadena/react-ui/theme';
+import { atoms } from '@kadena/react-ui/styles';
 import { style } from '@vanilla-extract/css';
 
 export const details = style([
@@ -43,7 +43,7 @@ export const transactionAmount = style([
       },
       '&[data-transaction-type="debet"]': {
         color: 'red',
-      }
-    }
+      },
+    },
   },
 ]);

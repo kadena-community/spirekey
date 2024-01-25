@@ -1,6 +1,6 @@
 import type { Device } from '@/context/AccountContext';
 import { CredentialPair, usePubkeys } from '@/hooks/usePubkeys';
-import { Button, SelectField, Stack, TextField } from '@kadena/react-ui';
+import { Button, Select, Stack, TextField } from '@kadena/react-ui';
 import {
   base64URLStringToBuffer,
   bufferToBase64URLString,
@@ -99,23 +99,23 @@ export const AddDevice = ({
           value: deviceName,
           onChange: onDeviceNameChange,
         }}
-        helperText="Enter the name of your device"
+        description="Enter the name of your device"
       />
-      <SelectField
+      <Select
         label="credential id"
         {...{
           id: 'credential-id',
           onChange: onCidChange,
           ariaLabel: 'credential id',
         }}
-        helperText="Enter the credential id of your previously registered device (optional)"
+        description="Enter the credential id of your previously registered device (optional)"
       >
         {pubkeys.map((p) => (
           <option key={p.cid} value={p.cid}>
             {p.cid}
           </option>
         ))}
-      </SelectField>
+      </Select>
 
       <Button onClick={register}>Add Device</Button>
     </Stack>

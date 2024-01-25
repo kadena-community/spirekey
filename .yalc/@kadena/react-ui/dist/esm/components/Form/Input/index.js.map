@@ -1,1 +1,0 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../../src/components/Form/Input/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,EAAoB,MAAM,SAAS,CAAC;AAClD,OAAO,EAAE,SAAS,EAAE,MAAM,uBAAuB,CAAC","sourcesContent":["export { Input, type IInputProps } from './Input';\nexport { InputCopy } from './InputCopy/InputCopy';\n"]}

@@ -1,6 +1,6 @@
-import { atoms } from '@kadena/react-ui/theme';
-import { style } from '@vanilla-extract/css';
 import { KodeMono } from '@kadena/fonts';
+import { atoms } from '@kadena/react-ui/styles';
+import { style } from '@vanilla-extract/css';
 
 export const card = style([
   atoms({
@@ -57,8 +57,7 @@ export const cardContentContainer = style([
 ]);
 
 export const cardLogo = style([
-  atoms({
-  }),
+  atoms({}),
   {
     height: '2rem',
     width: 'auto',
@@ -84,8 +83,7 @@ export const accountAliasContainer = style([
 ]);
 
 export const account = style([
-  atoms({
-  }),
+  atoms({}),
   {
     color: 'black',
   },
@@ -135,12 +133,11 @@ export const network = style([
   }),
   {
     fontSize: 'large', // while this is applied
-  }
+  },
 ]);
 
 export const cardContentBottom = style([
-  atoms({
-  }),
+  atoms({}),
   {
     color: 'black',
   },
@@ -163,7 +160,6 @@ export const balance = style([
     marginBlockEnd: '-1.25px',
   },
 ]);
-
 
 export const transactionsLabel = style([
   atoms({

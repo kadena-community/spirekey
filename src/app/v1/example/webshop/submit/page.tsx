@@ -56,7 +56,10 @@ export default function Submit({ searchParams }: SearchParams) {
               <Text>Transaction can be submitted</Text>
             </Stack>
 
-            <Button onClick={doSubmit} disabled={status === SubmitStatus.IDLE}>
+            <Button
+              onClick={doSubmit}
+              isDisabled={status === SubmitStatus.IDLE}
+            >
               {status === SubmitStatus.LOADING
                 ? 'Loading...'
                 : 'Submit transaction'}

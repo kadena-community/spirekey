@@ -79,11 +79,10 @@ export default function Restore() {
             ...register('account', { required: true }),
           }}
           info="The c:account you want to restore"
-          helperText="The c:account you want to restore"
+          description="The c:account you want to restore"
         />
         <Button type="submit">Restore</Button>
       </form>
     </>
   );
 }
-
