@@ -48,6 +48,7 @@ export const transfer = async ({
         senderAccount: gasPayer,
       }),
       setNetworkId(networkId),
+      // if payer === sender, then we need to add only one signer
       addSigner(
         // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         {
@@ -61,15 +62,6 @@ export const transfer = async ({
             receiver,
             amount,
           ),
-        ],
-      ),
-      addSigner(
-        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
-        {
-          pubKey: receiverAcc.devices[0].guard.keys[0],
-          scheme: 'WebAuthn',
-        },
-        (signFor) => [
           signFor(
             `${namespace}.webauthn-wallet.GAS_PAYER`,
             receiver,
@@ -78,6 +70,22 @@ export const transfer = async ({
           ),
         ],
       ),
+      // then this line should be skipped
+      // addSigner(
+      //   // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
+      //   {
+      //     pubKey: receiverAcc.devices[0].guard.keys[0],
+      //     scheme: 'WebAuthn',
+      //   },
+      //   (signFor) => [
+      //     signFor(
+      //       `${namespace}.webauthn-wallet.GAS_PAYER`,
+      //       receiver,
+      //       { int: 1 },
+      //       1,
+      //     ),
+      //   ],
+      // ),
     ),
     createTransaction,
   )({});

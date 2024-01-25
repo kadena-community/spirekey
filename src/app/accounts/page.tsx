@@ -4,6 +4,7 @@ import logo from '@/assets/images/bennuKey.svg';
 import { Account } from '@/components/Account/Account';
 import CardCollection from '@/components/CardCollection/CardCollection';
 import { Account as TAccount } from '@/context/AccountsContext';
+import { useNetwork } from '@/context/NetworkContext';
 import { useAccounts } from '@/hooks/useProfiles';
 import { Heading, Stack } from '@kadena/react-ui';
 import Image from 'next/image';
@@ -13,6 +14,7 @@ export default function Cards() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeAccount, setActiveAccount] = useState<TAccount>();
   const { accounts } = useAccounts();
+  const { setNetwork } = useNetwork();
 
   const sortedAccounts = [...accounts].sort((a, b) => {
     if (
@@ -31,6 +33,7 @@ export default function Cards() {
   const onCardClick = (account: TAccount) => {
     setActiveAccount(isCollapsed ? undefined : account);
     setIsCollapsed(!isCollapsed);
+    setNetwork(account.network);
   };
 
   if (!accounts) return <div>loading...</div>;
