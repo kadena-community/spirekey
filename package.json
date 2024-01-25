@@ -5,7 +5,7 @@
   "scripts": {
     "build": "next build",
     "deploy": "tsx pact/deploy/deploy-contracts.mts",
-    "dev": "next dev --port 1337 --turbo",
+    "dev": "next dev --port 1337",
     "generate": "npx pactjs contract-generate --file=\"./pact/webauthn.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
     "postinstall": "npx pactjs contract-generate --file=\"./pact/root/fungible-v2.pact\" --file=\"./pact/root/gas-payer-v1.pact\" --file=\"./pact/root/fungible-xchain-v1.pact\" --file=\"./pact/root/coin.pact\" --file=\"./pact/webauthn-guard.pact\" --file=\"./pact/webauthn-wallet.pact\" --file=\"./pact/l2-coin.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
     "lint": "next lint",
@@ -17,8 +17,10 @@
     "@kadena/cryptography-utils": "^0.4.2",
     "@kadena/fonts": "^0.0.1",
     "@kadena/pactjs": "^0.4.2",
+    "@kadena/react-ui": "^0.7.1",
     "@react-aria/utils": "^3.22.0",
-    "@simplewebauthn/browser": "^8.3.4",
+    "@simplewebauthn/browser": "^9.0.0",
+    "@simplewebauthn/types": "^9.0.0",
     "@vanilla-extract/css": "^1.14.0",
     "@vanilla-extract/next-plugin": "^2.3.3",
     "base64url-universal": "^2.0.0",
@@ -41,7 +43,6 @@
   },
   "devDependencies": {
     "@kadena/pactjs-cli": "^1.6.4",
-    "@simplewebauthn/typescript-types": "^8.3.4",
     "@types/node": "^20.10.3",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.2.41",

@@ -18,7 +18,7 @@ import {
   bufferToBase64URLString,
   startRegistration,
 } from '@simplewebauthn/browser';
-import type { RegistrationResponseJSON } from '@simplewebauthn/typescript-types';
+import type { RegistrationResponseJSON } from '@simplewebauthn/types';
 import cbor from 'cbor';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
