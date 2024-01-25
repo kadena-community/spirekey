@@ -3,6 +3,7 @@
 import { Button } from '@/components/Button/Button';
 import Card from '@/components/Card/Card';
 import { ProgressButton } from '@/components/ProgressButton.tsx/ProgressButton';
+import { useAccounts } from '@/hooks/useAccounts';
 import { registerAccount } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Box, Stack } from '@kadena/react-ui';
@@ -25,7 +26,7 @@ const TOTAL_STEPS = 4;
 const FORM_DEFAULT = {
   networkId: '',
   alias: '',
-  icon: '',
+  deviceType: '',
   color: '',
 };
 
@@ -38,6 +39,8 @@ export default function Account() {
   const prevStep = currentStep > 1 ? currentStep - 1 : null;
   const nextStep = currentStep < TOTAL_STEPS ? currentStep + 1 : null;
 
+  const { storeAccount } = useAccounts();
+
   const goToNextStep = () => {
     if (!nextStep) return;
     setCurrentStep(nextStep);
@@ -49,15 +52,16 @@ export default function Account() {
   };
 
   const onSubmit = async (data: FormValues) => {
-    const displayName = 'placeholder'; // @TODO
-    const { credentialId, publicKey } = await getNewWebauthnKey('placeholder');
+    const { credentialId, publicKey } = await getNewWebauthnKey(data.alias);
 
     const caccount = await registerAccount({
       credentialPubkey: publicKey,
       credentialId: credentialId,
-      displayName,
+      displayName: `${data.deviceType}_${data.color}`,
       domain: window.location.hostname,
     });
+
+    storeAccount(caccount);
   };
 
   return (
