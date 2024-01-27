@@ -1,0 +1,20 @@
+import '@kadena/react-ui/global';
+import { globalStyle } from '@vanilla-extract/css';
+import backgroundImagePortrait from '@/assets/images/bg-portrait.png';
+import backgroundImageLandscape from '@/assets/images/bg-landscape.jpg';
+
+globalStyle('body', {
+  backgroundColor: '#081320',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
+  backgroundAttachment: 'fixed',
+  '@media': {
+    '(orientation: portrait)': {
+      backgroundImage: `url(${backgroundImagePortrait.src})`,
+    },
+    '(orientation: landscape)': {
+      backgroundImage: `url(${backgroundImageLandscape.src})`,
+    },
+  },
+});
