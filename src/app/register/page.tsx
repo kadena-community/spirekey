@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@/components/Button/Button';
-import Card from '@/components/Card/Card';
 import { ProgressButton } from '@/components/ProgressButton/ProgressButton';
 import { useAccounts } from '@/hooks/useAccounts';
 import { registerAccount } from '@/utils/register';
@@ -21,6 +20,7 @@ import { Alias } from './steps/Alias';
 import { Color } from './steps/Color';
 import { DeviceType } from './steps/DeviceType';
 import { Network } from './steps/Network';
+import Card2 from '@/components/Card2/Card2';
 
 const TOTAL_STEPS = 4;
 const FORM_DEFAULT = {
@@ -67,17 +67,7 @@ export default function Account() {
   return (
     <Stack flexDirection="column" gap="md">
       <Box width="100%" paddingInline="md">
-        <Card
-          account={{
-            accountName: '',
-            balance: '',
-            devices: [],
-            network: '',
-          }}
-          onClick={() => {}}
-          isActive={true}
-          isCollapsed={false}
-        />
+        <Card2 />
       </Box>
 
       <FormProvider {...methods}>

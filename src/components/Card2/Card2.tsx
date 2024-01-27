@@ -13,14 +13,13 @@ import {
   cardContentContainer,
   cardLogo,
   device,
-  devicesContainer,
   network,
   transactions,
   transactionsLabel,
 } from './Card2.css';
 import Image from 'next/image';
-import CardBackground from '../../app/assets/images/card-background.svg';
-import CardLogo from '../../app/assets/images/card-logo.svg';
+import CardBackground from '../../assets/images/card-background.svg';
+import CardLogo from '../../assets/images/card-logo.svg';
 import { ThemeProvider } from 'next-themes';
 import classNames from 'classnames';
 
