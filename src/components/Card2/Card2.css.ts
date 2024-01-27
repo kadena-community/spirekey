@@ -1,12 +1,5 @@
-<<<<<<< HEAD
-import { KodeMono } from '@kadena/fonts';
 import { atoms } from '@kadena/react-ui/styles';
 import { style } from '@vanilla-extract/css';
-=======
-import { atoms } from '@kadena/react-ui/theme';
-import { style } from '@vanilla-extract/css';
-import { KodeMono } from '@kadena/fonts';
->>>>>>> d25b337 (feat(card): new card styling)
 
 export const card = style([
   atoms({
@@ -63,12 +56,7 @@ export const cardContentContainer = style([
 ]);
 
 export const cardLogo = style([
-<<<<<<< HEAD
   atoms({}),
-=======
-  atoms({
-  }),
->>>>>>> d25b337 (feat(card): new card styling)
   {
     height: '2rem',
     width: 'auto',
@@ -94,12 +82,7 @@ export const accountAliasContainer = style([
 ]);
 
 export const account = style([
-<<<<<<< HEAD
   atoms({}),
-=======
-  atoms({
-  }),
->>>>>>> d25b337 (feat(card): new card styling)
   {
     color: 'black',
   },
@@ -149,20 +132,11 @@ export const network = style([
   }),
   {
     fontSize: 'large', // while this is applied
-<<<<<<< HEAD
   },
 ]);
 
 export const cardContentBottom = style([
   atoms({}),
-=======
-  }
-]);
-
-export const cardContentBottom = style([
-  atoms({
-  }),
->>>>>>> d25b337 (feat(card): new card styling)
   {
     color: 'black',
   },
@@ -186,10 +160,6 @@ export const balance = style([
   },
 ]);
 
-<<<<<<< HEAD
-=======
-
->>>>>>> d25b337 (feat(card): new card styling)
 export const transactionsLabel = style([
   atoms({
     fontSize: 'md',
@@ -206,8 +176,4 @@ export const transactions = style([
   {
     marginBlockEnd: '-1.25px',
   },
-<<<<<<< HEAD
 ]);
-=======
-]);
->>>>>>> d25b337 (feat(card): new card styling)

@@ -1,4 +1,4 @@
-import { Box, Heading, MaskedValue, Stack, SystemIcon, Text } from '@kadena/react-ui';
+import { Box, Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
 import {
   accountAlias,
   accountAliasContainer,
@@ -22,6 +22,7 @@ import CardBackground from '../../assets/images/card-background.svg';
 import CardLogo from '../../assets/images/card-logo.svg';
 import { ThemeProvider } from 'next-themes';
 import classNames from 'classnames';
+import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 
 export default function Card2() {
   return (
