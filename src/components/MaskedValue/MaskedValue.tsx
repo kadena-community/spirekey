@@ -3,27 +3,26 @@
 import type { FC } from 'react';
 import React, { useState } from 'react';
 import {
-  titleContainer,
   valueContainer,
-  valueIconContainer,
 } from './MaskedValue.css';
 import { maskValue } from '@kadena/react-ui';
 import { KodeMono } from '@kadena/fonts';
+import classNames from 'classnames';
 
 KodeMono();
 
 export interface IMaskedValueProps {
-  title?: string;
   value: string;
   startUnmaskedValues?: number;
   endUnmaskedValues?: number;
+  className?: string;
 }
 
 export const MaskedValue: FC<IMaskedValueProps> = ({
-  title,
   value,
   startUnmaskedValues = 6,
   endUnmaskedValues = 4,
+  className = '',
 }): JSX.Element => {
   const maskedValue = maskValue(value, {
     headLength: startUnmaskedValues,
@@ -31,11 +30,6 @@ export const MaskedValue: FC<IMaskedValueProps> = ({
   });
 
   return (
-    <div data-testid="kda-masked-value">
-      <div className={titleContainer}>{title}</div>
-      <div className={valueIconContainer}>
-        <div className={valueContainer}>{maskedValue}</div>
-      </div>
-    </div>
+    <div className={classNames(className, valueContainer)}>{maskedValue}</div>
   );
 };

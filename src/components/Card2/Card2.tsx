@@ -1,5 +1,6 @@
 import { Box, Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
 import {
+  account,
   accountAlias,
   accountAliasContainer,
   accountIcon,
@@ -16,22 +17,21 @@ import {
   network,
   transactions,
   transactionsLabel,
+  txAndBalance,
 } from './Card2.css';
 import Image from 'next/image';
 import CardBackground from '../../assets/images/card-background.svg';
 import CardLogo from '../../assets/images/card-logo.svg';
-import { ThemeProvider } from 'next-themes';
-import classNames from 'classnames';
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 
 export default function Card2() {
   return (
-    <ThemeProvider
-      attribute="class"
-      enableSystem={false}
-      forcedTheme='light'
+    <Box
+      className={card}
+      style={{
+        '--card-progress': '75%',
+      }}
     >
-    <Box className={classNames('card', card)} style={{ colorScheme: 'light'}}>
       <Image
         src={CardBackground}
         alt="Card background"
@@ -42,8 +42,14 @@ export default function Card2() {
         justifyContent={'space-between'}
         className={cardContentContainer}
       >
-        <Stack flexDirection={'row'} justifyContent={'space-between'}>
-          <Stack flexDirection={'row'} alignItems={'center'} className={accountAliasContainer}>
+        <Stack
+          flexDirection={'row'}
+        >
+          <Stack
+            flexDirection={'row'}
+            alignItems={'center'}
+            className={accountAliasContainer}
+          >
             <Heading
               as={'h3'}
               variant={'h4'}
@@ -54,7 +60,11 @@ export default function Card2() {
             <Box className={accountIcon}>
               <SystemIcon.Account className={accountIconInner} />
             </Box>
-
+          </Stack>
+          <Stack
+            flexDirection={'row'}
+            alignItems={'center'}
+          >
             <Box className={device}>
               <SystemIcon.UsbFlashDrive />
             </Box>
@@ -68,11 +78,12 @@ export default function Card2() {
         </Stack>
         <Stack
           flexDirection={'column'}
-          className={classNames('card__content-center', cardContentCenter)}
+          className={cardContentCenter}
         >
           <MaskedValue
             value={'c:lmpNroVTMPQNv8wd6c5QUJjsUgdaoCH7UNMndllgWAE'}
             startUnmaskedValues={16}
+            className={account}
           />
           <Text className={network}>Testnet Network</Text>
         </Stack>
@@ -80,9 +91,12 @@ export default function Card2() {
           flexDirection={'row'}
           justifyContent={'space-between'}
           alignItems={'flex-end'}
-          className={classNames('card__content-bottom', cardContentBottom)}
+          className={cardContentBottom}
         >
-          <Stack flexDirection={'column'}>
+          <Stack
+            flexDirection={'column'}
+            className={txAndBalance}
+          >
             <Stack alignItems={'center'}>
               <span className={transactionsLabel}># TX</span>
               <span className={transactions}>12</span>
@@ -100,6 +114,5 @@ export default function Card2() {
         </Stack>
       </Stack>
     </Box>
-    </ThemeProvider>
   );
 }

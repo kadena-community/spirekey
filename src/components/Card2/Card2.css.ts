@@ -17,14 +17,31 @@ export const card = style([
       '&:before': {
         content: '',
         position: 'absolute',
+        width: '100%',
+        height: '50%',
         inset: 0,
-        borderRadius: 'inherit',
-        padding: '1px',
-        border: '1px solid transparent',
+        borderRadius: '1rem',
+        padding: '1rem',
+        border: '0.5rem solid transparent',
         background:
-          'linear-gradient(0deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.25)) border-box',
-        mask: 'linear-gradient(#f00 0 0) padding-box, linear-gradient(#f00 0 0)',
+          'linear-gradient(0deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0), rgba(255, 255, 255, 1)) border-box',
+        mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
         maskComposite: 'xor, exclude',
+      },
+      '&:after': {
+        content: '',
+        position: 'absolute',
+        width: '100%',
+        height: '50%',
+        inset: 0,
+        borderRadius: '1rem',
+        padding: '1rem',
+        border: '0.5rem solid transparent',
+        background:
+          'linear-gradient(0deg, rgba(255, 0, 255, 0), rgba(255, 0, 255, 0), rgba(255, 0, 255, 1)) border-box',
+        mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+        maskComposite: 'xor, exclude',
+        clipPath: 'polygon(0 0, var(--card-progress) 0%, var(--card-progress) 100%, 0 100%)',
       },
     },
   },
@@ -49,19 +66,20 @@ export const cardContentContainer = style([
     height: '100%',
   }),
   {
-    paddingBlockStart: '1.5rem',
-    paddingBlockEnd: '2rem',
-    paddingInline: '2.5rem',
+    paddingBlockStart: 'clamp(.75rem, 5%, 1.5rem)',
+    paddingBlockEnd: 'clamp(1rem, 5%, 2rem)',
+    paddingInline: 'clamp(1rem, 5%, 2.5rem)',
   },
 ]);
 
 export const cardLogo = style([
-  atoms({}),
   {
-    height: '2rem',
     width: 'auto',
     objectFit: 'contain',
     objectPosition: 'bottom',
+  },
+  {
+    height: 'clamp(1rem, 5vw, 2rem)',
   },
 ]);
 
@@ -72,28 +90,31 @@ export const accountAlias = style([
   {
     color: 'black',
     textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    fontSize: 'clamp(.9rem, 5vw, 1.5rem)',
   },
 ]);
 
 export const accountAliasContainer = style([
   atoms({
-    flexGrow: 0,
+    flexGrow: 1,
   }),
+  {
+    minWidth: 0,
+  },
 ]);
 
 export const account = style([
-  atoms({}),
   {
     color: 'black',
+    fontSize: 'clamp(.9rem, 5vw, 1.5rem)',
   },
 ]);
 
 export const accountIcon = style([
-  atoms({
-    marginInline: 'md',
-  }),
   {
     color: 'black',
+    marginInline: 'clamp(0.1rem, 2vw, 1rem)',
   },
 ]);
 
@@ -114,66 +135,73 @@ export const devicesContainer = style([
 ]);
 
 export const device = style([
-  atoms({
-    marginInlineStart: 'md',
-  }),
+  {
+    marginInlineStart: 'clamp(0.1rem, 2vw, 1rem)',
+  }
 ]);
 
 export const cardContentCenter = style([
-  atoms({
-    marginBlockStart: 'lg',
-  }),
+  {
+    marginBlockStart: 'clamp(0px, 4vw, 1.5rem)',
+  }
 ]);
 
 export const network = style([
   atoms({
     fontWeight: 'bodyFont.regular',
-    fontSize: 'lg', // is not applied for some reason
   }),
   {
-    fontSize: 'large', // while this is applied
+    fontSize: 'clamp(.75rem, 4vw, 1.125rem)',
+    color: 'black',
   },
 ]);
 
 export const cardContentBottom = style([
-  atoms({}),
   {
     color: 'black',
   },
 ]);
 
+export const txAndBalance = style([
+  {
+    gap: 'clamp(0.3rem, 2vw, 0.9rem)',
+  },
+]);
+
 export const balanceLabel = style([
-  atoms({
-    fontSize: 'md',
-  }),
+  {
+    fontSize: 'clamp(.75rem, 4vw, 1.125rem)',
+    lineHeight: 1,
+  }
 ]);
 
 export const balance = style([
   atoms({
     fontFamily: 'codeFont',
     fontWeight: 'monoFont.bold',
-    fontSize: 'lg',
-    marginInlineStart: 'md',
   }),
   {
-    marginBlockEnd: '-1.25px',
+    marginInlineStart: 'clamp(0.5rem, 2vw, 1rem)',
+    fontSize: 'clamp(.9rem, 4vw, 1.25rem)',
+    lineHeight: 1,
   },
 ]);
 
 export const transactionsLabel = style([
-  atoms({
-    fontSize: 'md',
-  }),
+  {
+    fontSize: 'clamp(.75rem, 4vw, 1.125rem)',
+    lineHeight: 1,
+  }
 ]);
 
 export const transactions = style([
   atoms({
     fontFamily: 'codeFont',
     fontWeight: 'monoFont.bold',
-    fontSize: 'lg',
-    marginInlineStart: 'md',
   }),
   {
-    marginBlockEnd: '-1.25px',
+    marginInlineStart: 'clamp(0.5rem, 2vw, 1rem)',
+    fontSize: 'clamp(.9rem, 4vw, 1.25rem)',
+    lineHeight: 1,
   },
 ]);
