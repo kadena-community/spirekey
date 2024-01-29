@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/Button/Button';
-import Card2 from '@/components/Card2/Card2';
+import Card from '@/components/Card/Card';
 import { ProgressBox } from '@/components/ProgressBox/ProgressBox';
 import { useAccounts } from '@/hooks/useAccounts';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
@@ -38,7 +38,7 @@ const FORM_DEFAULT = {
 type FormValues = typeof FORM_DEFAULT;
 
 export default function Account() {
-  const methods = useForm({ defaultValues: FORM_DEFAULT });
+  const formMethods = useForm({ defaultValues: FORM_DEFAULT });
 
   const [currentStep, setCurrentStep] = useState(1);
   const prevStep = currentStep > 1 ? currentStep - 1 : null;
@@ -59,12 +59,12 @@ export default function Account() {
 
   const onChangeAlias = async () => {
     const { credentialId, publicKey } = await getNewWebauthnKey(
-      methods.getValues('alias'),
+      formMethods.getValues('alias'),
     );
-    methods.setValue('credentialId', credentialId);
-    methods.setValue('credentialPubkey', publicKey);
+    formMethods.setValue('credentialId', credentialId);
+    formMethods.setValue('credentialPubkey', publicKey);
     const accountName = await getAccountName(publicKey);
-    methods.setValue('accountName', accountName);
+    formMethods.setValue('accountName', accountName);
   };
 
   const goToPrevStep = () => {
@@ -74,8 +74,8 @@ export default function Account() {
 
   const onSubmit = async (data: FormValues) => {
     const caccount = await registerAccount({
-      credentialPubkey: methods.getValues('credentialPubkey'),
-      credentialId: methods.getValues('credentialId'),
+      credentialPubkey: formMethods.getValues('credentialPubkey'),
+      credentialId: formMethods.getValues('credentialId'),
       displayName: `${data.deviceType}_${data.color}`,
       domain: window.location.hostname,
     });
@@ -86,21 +86,21 @@ export default function Account() {
   return (
     <Stack flexDirection="column" gap="md">
       <Box width="100%" paddingInline="md">
-        <Card2
+        <Card
           account={{
-            alias: methods.getValues('alias'),
-            accountName: methods.getValues('accountName'),
+            alias: formMethods.watch('alias'),
+            accountName: formMethods.watch('accountName'),
             balance: '0.0',
-            network: methods.getValues('networkId'),
+            network: formMethods.watch('networkId'),
             devices: [
               {
-                'credential-id': methods.getValues('credentialId'),
+                'credential-id': formMethods.watch('credentialId'),
                 domain: host,
-                identifier: `${methods.getValues(
+                identifier: `${formMethods.watch(
                   'deviceType',
-                )}_${methods.getValues('color')}`,
+                )}_${formMethods.watch('color')}`,
                 guard: {
-                  keys: [methods.getValues('credentialPubkey')],
+                  keys: [formMethods.watch('credentialPubkey')],
                   pred: 'keys-any',
                 },
               },
@@ -109,8 +109,8 @@ export default function Account() {
         />
       </Box>
 
-      <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onSubmit)}>
+      <FormProvider {...formMethods}>
+        <form onSubmit={formMethods.handleSubmit(onSubmit)}>
           <div className={wrapper}>
             <motion.div
               animate={{ x: `-${(currentStep - 1) * 100}%` }}
@@ -146,9 +146,6 @@ export default function Account() {
           <div className={buttonsContainer}>
             {!prevStep && <Button onClick={() => {}}>Cancel</Button>}
             {prevStep && <Button onClick={goToPrevStep}>Previous</Button>}
-
-            {/* Switching the type to 'submit' doesn't work properly, the form than already
-            submits in the second step. Switching the complete button out for now. */}
 
             <ProgressBox progress={(currentStep / TOTAL_STEPS) * 100}>
               {nextStep && (
