@@ -16,6 +16,7 @@ export const card = style([
     background: "url('/images/card-background.svg') no-repeat center center",
     backdropFilter: 'blur(16px)',
     borderRadius: '1rem',
+    backgroundSize: 'cover',
     selectors: {
       '&:before': {
         content: '',
