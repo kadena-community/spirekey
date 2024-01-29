@@ -23,6 +23,7 @@
     "@simplewebauthn/types": "^9.0.0",
     "@vanilla-extract/css": "^1.14.0",
     "@vanilla-extract/next-plugin": "^2.3.3",
+    "@vanilla-extract/recipes": "^0.5.1",
     "base64url-universal": "^2.0.0",
     "cbor": "^9.0.1",
     "classnames": "^2.5.1",

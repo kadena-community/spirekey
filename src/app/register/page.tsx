@@ -144,8 +144,9 @@ export default function Account() {
           </div>
 
           <div className={buttonsContainer}>
-            {!prevStep && <Button onClick={() => {}}>Cancel</Button>}
-            {prevStep && <Button onClick={goToPrevStep}>Previous</Button>}
+            <Button color="secondary" onPress={goToPrevStep}>
+              {!prevStep ? 'Cancel' : 'Previous'}
+            </Button>
 
             <ProgressBox progress={(currentStep / TOTAL_STEPS) * 100}>
               {nextStep && (

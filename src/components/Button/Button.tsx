@@ -1,36 +1,24 @@
-import classnames from 'classnames';
-import Link from 'next/link';
-import { FC } from 'react';
-import { wrapper } from './Button.css';
+import cn from 'classnames';
+import { ForwardedRef, forwardRef } from 'react';
+import type { ButtonProps } from 'react-aria-components';
+import { Button as AriaButton } from 'react-aria-components';
+import { Variants, button } from './SharedButton.css';
 
-interface Props {
-  onClick?: () => void;
-  href?: string;
-  type?: 'button' | 'submit' | 'reset';
-  className?: string;
-  children: React.ReactNode;
-}
+interface Props extends ButtonProps, Variants {}
 
-export const Button: FC<Props> = ({
-  children,
-  className,
-  onClick,
-  type = 'button',
-  href = '',
-}) => {
-  if (href)
-    return (
-      <Link href={href} className={classnames(wrapper, className)}>
-        {children}
-      </Link>
-    );
+function BaseButton(props: Props, ref: ForwardedRef<HTMLButtonElement>) {
+  const { children, className, color,  ...restProps } = props;
+
   return (
-    <button
-      className={classnames(wrapper, className)}
-      onClick={onClick}
-      type={type}
+    <AriaButton
+      ref={ref}
+      className={cn(button({ color }), className)}
+      {...restProps}
     >
       {children}
-    </button>
+    </AriaButton>
   );
 };
+
+
+export const Button = forwardRef(BaseButton)
