@@ -111,8 +111,8 @@ The JSON describing a user:
 
 The JSON describing Credentials:
 
-| param     | type    | comment                                                                                           |
-| :-------- | :------ | :------------------------------------------------------------------------------------------------ |
-| type      | string! | The type of the credential, can be "WebAuthn" or "ED25519"                                        |
-| publicKey | string! | The public key that is associated with this credential, keys are formatted as retrieved from pact |
-| id        | string? | The credential-id if the credential is a WebAuthn key                                             |
+| param     | type    | comment                                                                                      |
+| :-------- | :------ | :------------------------------------------------------------------------------------------- |
+| type      | string! | The type of the credential, can be `WebAuthn` or `ED25519`                                   |
+| publicKey | string! | The public key that is associated with this credential, keys are formatted as `WEBAUTHN-hex` |
+| id        | string? | The credential-id if the credential is a WebAuthn key, the id will be omited fo `ED25519`    |
