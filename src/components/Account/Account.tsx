@@ -4,7 +4,7 @@ import { forwardRef } from 'react';
 
 import Link from 'next/link';
 import { Button } from '../Button/Button';
-import Card from '../Card/Card';
+import Card from '../Card2/Card2';
 import { Carousel } from '../Carousel/Carousel';
 import { accountPosition } from './Account.css';
 interface AccountProps {
@@ -38,7 +38,7 @@ function BaseAccount(
                 isActive={isActive}
                 isCollapsed={isCollapsed}
               />
-              {!returnUrl && (
+              {!returnUrl && isActive && (
                 <>
                   <Link href={`/accounts/${caccount}/devices/add`}>add</Link> -
                   <Link href={`/accounts/${caccount}/devices/${cid}/send`}>

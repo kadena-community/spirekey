@@ -13,6 +13,7 @@ export const useReturnUrl = () => {
     [host],
   );
   return {
+    host,
     getReturnUrl,
   };
 };

@@ -1,12 +1,14 @@
 'use client';
 
 import { Button } from '@/components/Button/Button';
+import Card2 from '@/components/Card2/Card2';
 import { ProgressButton } from '@/components/ProgressButton/ProgressButton';
 import { useAccounts } from '@/hooks/useAccounts';
-import { registerAccount } from '@/utils/register';
+import { useReturnUrl } from '@/hooks/useReturnUrl';
+import { getAccountName, registerAccount } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Box, Stack } from '@kadena/react-ui';
-import { motion } from 'framer-motion';
+import { m, motion } from 'framer-motion';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
@@ -20,7 +22,6 @@ import { Alias } from './steps/Alias';
 import { Color } from './steps/Color';
 import { DeviceType } from './steps/DeviceType';
 import { Network } from './steps/Network';
-import Card2 from '@/components/Card2/Card2';
 
 const TOTAL_STEPS = 4;
 const FORM_DEFAULT = {
@@ -28,6 +29,9 @@ const FORM_DEFAULT = {
   alias: '',
   deviceType: '',
   color: '',
+  credentialPubkey: '',
+  credentialId: '',
+  accountName: '',
 };
 
 type FormValues = typeof FORM_DEFAULT;
@@ -41,9 +45,25 @@ export default function Account() {
 
   const { storeAccount } = useAccounts();
 
+  const { host } = useReturnUrl();
+
   const goToNextStep = () => {
     if (!nextStep) return;
+    if (nextStep === 3) {
+      return onChangeAlias().then(() => setCurrentStep(nextStep));
+    }
+
     setCurrentStep(nextStep);
+  };
+
+  const onChangeAlias = async () => {
+    const { credentialId, publicKey } = await getNewWebauthnKey(
+      methods.getValues('alias'),
+    );
+    methods.setValue('credentialId', credentialId);
+    methods.setValue('credentialPubkey', publicKey);
+    const accountName = await getAccountName(publicKey);
+    methods.setValue('accountName', accountName);
   };
 
   const goToPrevStep = () => {
@@ -52,11 +72,9 @@ export default function Account() {
   };
 
   const onSubmit = async (data: FormValues) => {
-    const { credentialId, publicKey } = await getNewWebauthnKey(data.alias);
-
     const caccount = await registerAccount({
-      credentialPubkey: publicKey,
-      credentialId: credentialId,
+      credentialPubkey: methods.getValues('credentialPubkey'),
+      credentialId: methods.getValues('credentialId'),
       displayName: `${data.deviceType}_${data.color}`,
       domain: window.location.hostname,
     });
@@ -67,7 +85,27 @@ export default function Account() {
   return (
     <Stack flexDirection="column" gap="md">
       <Box width="100%" paddingInline="md">
-        <Card2 />
+        <Card2
+          account={{
+            alias: methods.getValues('alias'),
+            accountName: methods.getValues('accountName'),
+            balance: '0.0',
+            network: methods.getValues('networkId'),
+            devices: [
+              {
+                'credential-id': methods.getValues('credentialId'),
+                domain: host,
+                identifier: `${methods.getValues(
+                  'deviceType',
+                )}_${methods.getValues('color')}`,
+                guard: {
+                  keys: [methods.getValues('credentialPubkey')],
+                  pred: 'keys-any',
+                },
+              },
+            ],
+          }}
+        />
       </Box>
 
       <FormProvider {...methods}>
