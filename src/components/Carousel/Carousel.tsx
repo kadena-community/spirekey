@@ -7,6 +7,7 @@ import {
   carouselNav,
   carouselNavItem,
 } from './Carousel.css';
+import AddDeviceCard from '../Card/AddDeviceCard';
 
 type CarouselProps = {
   children: React.ReactNode;
@@ -28,14 +29,16 @@ export const Carousel = ({ children, isActive }: CarouselProps) => {
           [carouselItems.nonScrollable]: !isActive,
         })}
       >
-        <div // REPLACE WITh ADD CARD
-          className={classNames({
-            [carouselItem.default]: true,
-            [carouselItem.nonScrollable]: !isActive,
-          })}
-        >
-          ADD
-        </div>
+        {isActive &&
+          <div
+            className={classNames({
+              [carouselItem.default]: true,
+              [carouselItem.nonScrollable]: !isActive,
+            })}
+          >
+            <AddDeviceCard />
+          </div>
+        }
         {Children.map(children, (child, index) => (
           <div
             className={classNames({
@@ -47,13 +50,12 @@ export const Carousel = ({ children, isActive }: CarouselProps) => {
           </div>
         ))}
       </div>
-      {Children.count(children) > 1 && (
-        <ol className={carouselNav[isActive ? 'default' : 'hidden']}>
-          {Children.map(children, () => (
-            <li className={carouselNavItem} />
-          ))}
-        </ol>
-      )}
+      <ol className={carouselNav[isActive ? 'default' : 'hidden']}>
+        <li className={carouselNavItem} />
+        {Children.map(children, () => (
+          <li className={carouselNavItem} />
+        ))}
+      </ol>
     </div>
   );
 };

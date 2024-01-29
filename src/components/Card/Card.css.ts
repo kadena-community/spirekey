@@ -209,3 +209,9 @@ export const transactions = style([
     lineHeight: 1,
   },
 ]);
+
+export const plusIconContainer = style([
+  atoms({
+    width: '100%',
+  }),
+]);

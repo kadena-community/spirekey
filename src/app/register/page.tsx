@@ -1,8 +1,7 @@
 'use client';
 
 import { Button } from '@/components/Button/Button';
-import Card from '@/components/Card/Card';
-import { ProgressBox } from '@/components/ProgressBox/ProgressBox';
+import DeviceCard from '@/components/Card/DeviceCard';
 import { Surface } from '@/components/Surface/Surface';
 import { useAccounts } from '@/hooks/useAccounts';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
@@ -13,14 +12,7 @@ import { atoms } from '@kadena/react-ui/styles';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import {
-  buttonsContainer,
-  container,
-  progressButton,
-  step,
-  stepWrapper,
-  wrapper,
-} from './page.css';
+import { container, wrapper } from './page.css';
 import { Alias } from './steps/Alias';
 import { Color } from './steps/Color';
 import { DeviceType } from './steps/DeviceType';
@@ -88,7 +80,7 @@ export default function Account() {
   return (
     <Stack flexDirection="column" gap="md" padding="lg">
       <Box width="100%">
-        <Card
+        <DeviceCard
           account={{
             alias: formMethods.watch('alias'),
             accountName: formMethods.watch('accountName'),
