@@ -28,13 +28,15 @@ import {
 type CardProps = {
   account: Account;
   onClick?: (account: Account) => void;
+  balancePercentage?: number;
   isCollapsed?: boolean;
   isActive?: boolean;
 };
 
-export default function Card2({
+export default function Card({
   account,
   onClick = (account: Account) => {},
+  balancePercentage = 10,
   isCollapsed = false,
   isActive = false,
 }: CardProps) {
@@ -45,7 +47,7 @@ export default function Card2({
     <Box
       className={card}
       style={{
-        '--card-progress': '10%',
+        '--card-progress': `${balancePercentage}%`,
       }}
       onClick={() => onClick(account)}
     >

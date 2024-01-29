@@ -18,26 +18,35 @@ export const carouselItems = styleVariants({
   },
 });
 
-export const carouselItem = styleVariants({
-  default: {
-    scrollSnapAlign: 'center',
-    flexShrink: 0,
-    width: '80%',
-    selectors: {
-      '&:first-child': {
-        marginLeft: '10%',
-      },
-      '&:last-child': {
-        marginRight: '10%',
-      },
+const carouseItemBase = {
+  scrollSnapAlign: 'center',
+  flexShrink: 0,
+  width: '80%',
+  selectors: {
+    '&:first-child': {
+      marginLeft: '10%',
+    },
+    '&:last-child': {
+      marginRight: '10%',
     },
   },
-  hidden: {
-    display: 'none',
-  },
-  nonScrollable: {
-    scrollSnapAlign: 'none',
-  },
+};
+
+export const carouselItem = styleVariants({
+  default: carouseItemBase,
+  hidden: [
+    carouseItemBase,
+    {
+      visibility: 'hidden',
+      scrollSnapAlign: 'none',
+    },
+  ],
+  nonScrollable: [
+    carouseItemBase,
+    {
+      scrollSnapAlign: 'none',
+    },
+  ],
 });
 
 export const carouselNav = styleVariants({
