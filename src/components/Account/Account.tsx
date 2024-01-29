@@ -38,7 +38,7 @@ function BaseAccount(
                 isActive={isActive}
                 isCollapsed={isCollapsed}
               />
-              {!returnUrl && (
+              {!returnUrl && isActive && (
                 <>
                   <Link href={`/accounts/${caccount}/devices/add`}>add</Link> -
                   <Link href={`/accounts/${caccount}/devices/${cid}/send`}>

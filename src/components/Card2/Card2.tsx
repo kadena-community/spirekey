@@ -44,8 +44,9 @@ export default function Card2({
     <Box
       className={card}
       style={{
-        '--card-progress': '75%',
+        '--card-progress': '10%',
       }}
+      onClick={() => onClick(account)}
     >
       <Image
         src={CardBackground}
