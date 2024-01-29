@@ -1,24 +1,38 @@
+import { Box } from '@kadena/react-ui';
+import { atoms } from '@kadena/react-ui/styles';
 import cn from 'classnames';
 import { ForwardedRef, forwardRef } from 'react';
 import type { ButtonProps } from 'react-aria-components';
 import { Button as AriaButton } from 'react-aria-components';
-import { Variants, button } from './SharedButton.css';
+import { Variants, button, progressIndicator } from './SharedButton.css';
 
-interface Props extends ButtonProps, Variants {}
+interface Props extends ButtonProps, Variants {
+  progress?: number;
+}
 
 function BaseButton(props: Props, ref: ForwardedRef<HTMLButtonElement>) {
-  const { children, className, color,  ...restProps } = props;
+  const { children, className, variant, progress = 0, ...restProps } = props;
 
   return (
     <AriaButton
       ref={ref}
-      className={cn(button({ color }), className)}
+      className={cn(button({ variant }), className)}
       {...restProps}
     >
-      {children}
+      {({}) => (
+        <>
+          {variant === 'progress' && (
+            <Box
+              as="span"
+              className={progressIndicator}
+              style={{ left: `${progress}%` }}
+            />
+          )}
+          {children}
+        </>
+      )}
     </AriaButton>
   );
-};
+}
 
-
-export const Button = forwardRef(BaseButton)
+export const Button = forwardRef(BaseButton);

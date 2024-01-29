@@ -13,10 +13,10 @@ interface LinkProps
 }
 
 export function ButtonLink(props: LinkProps) {
-  const { children, className, color, ...restProps } = props;
+  const { children, className, variant, ...restProps } = props;
 
   return (
-    <Link className={cn(button({ color }), className)} {...restProps}>
+    <Link className={cn(button({ variant }), className)} {...restProps}>
       {children}
     </Link>
   );

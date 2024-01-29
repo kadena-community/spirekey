@@ -34,7 +34,7 @@ export default function Home() {
       </Stack>
       <Stack flexDirection="row" justifyContent="center" gap="xl">
         {accounts.length > 0 && <Link href={'/accounts'}>Accounts</Link>}
-        <ButtonLink href={'/recover'} color="secondary">
+        <ButtonLink href={'/recover'} variant="secondary">
           Recover
         </ButtonLink>
         <ButtonLink href={'/register'}>Register</ButtonLink>
