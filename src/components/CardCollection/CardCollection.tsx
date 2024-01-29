@@ -26,14 +26,14 @@ export default function CardCollection({ children }: CardCollectionProps) {
               [active]: activeCard === i,
               [collapsed]: activeCard !== i,
             })}
-            transition={{ duration: 0.5 }}
             animate={activeCard !== i && 'collapsed'}
             variants={{
-              active: {},
               collapsed: {
-                marginBottom: `${i * 40}px`,
-                zIndex: `${100 - i}`,
+                marginBottom: `${i * 50}px`,
               },
+            }}
+            style={{
+              zIndex: `${100 - i}`,
             }}
           >
             {cloneElement(child, {

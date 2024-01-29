@@ -14,6 +14,7 @@ export const inner = style({
 
 export const card = style({
   width: '100%',
+  position: 'absolute',
 });
 
 export const active = style({
