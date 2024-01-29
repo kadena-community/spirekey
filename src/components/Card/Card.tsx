@@ -51,25 +51,20 @@ export default function Card({
       }}
       onClick={() => onClick(account)}
     >
-      <Image
-        src={CardBackground}
-        alt="Card background"
-        className={cardBackground}
-      />
       <Stack
-        flexDirection={'column'}
-        justifyContent={'space-between'}
+        flexDirection="column"
+        justifyContent="space-between"
         className={cardContentContainer}
       >
-        <Stack flexDirection={'row'}>
+        <Stack flexDirection="row">
           <Stack
-            flexDirection={'row'}
-            alignItems={'center'}
+            flexDirection="row"
+            alignItems="center"
             className={accountAliasContainer}
           >
             {account.alias && (
               <>
-                <Heading as={'h3'} variant={'h4'} className={accountAlias}>
+                <Heading as="h3" variant="h4" className={accountAlias}>
                   {account.alias}
                 </Heading>
                 <Box className={accountIcon}>
@@ -78,7 +73,7 @@ export default function Card({
               </>
             )}
           </Stack>
-          <Stack flexDirection={'row'} alignItems={'center'}>
+          <Stack flexDirection="row" alignItems="center">
             {Array.from(uniqueDeviceTypes).map((type) => {
               switch (type) {
                 case 'security-key':
@@ -109,7 +104,7 @@ export default function Card({
             })}
           </Stack>
         </Stack>
-        <Stack flexDirection={'column'} className={cardContentCenter}>
+        <Stack flexDirection="column" className={cardContentCenter}>
           <MaskedValue
             value={account.accountName}
             startUnmaskedValues={16}
@@ -118,13 +113,13 @@ export default function Card({
           <Text className={network}>{account.network}</Text>
         </Stack>
         <Stack
-          flexDirection={'row'}
-          justifyContent={'space-between'}
-          alignItems={'flex-end'}
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="flex-end"
           className={cardContentBottom}
         >
-          <Stack flexDirection={'column'} className={txAndBalance}>
-            <Stack alignItems={'center'}>
+          <Stack flexDirection="column" className={txAndBalance}>
+            <Stack alignItems="center">
               <span className={transactionsLabel}># TX</span>
               <span className={transactions}>0</span>
             </Stack>

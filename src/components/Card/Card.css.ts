@@ -13,6 +13,9 @@ export const card = style([
     aspectRatio: '8560 / 5398',
     height: 'auto',
     flexShrink: 0,
+    background: "url('/images/card-background.svg') no-repeat center center",
+    backdropFilter: 'blur(16px)',
+    borderRadius: '1rem',
     selectors: {
       '&:before': {
         content: '',
@@ -58,7 +61,6 @@ export const cardBackground = style([
     borderRadius: '1rem',
     objectFit: 'cover',
     objectPosition: 'center',
-    background: '#ffffff',
   },
 ]);
 
@@ -70,7 +72,6 @@ export const cardContentContainer = style([
     paddingBlockStart: 'clamp(.75rem, 5%, 1.5rem)',
     paddingBlockEnd: 'clamp(1rem, 5%, 2rem)',
     paddingInline: 'clamp(1rem, 5%, 2.5rem)',
-    position: 'relative',
   },
 ]);
 
