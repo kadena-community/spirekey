@@ -116,3 +116,50 @@ The JSON describing Credentials:
 | type      | string! | The type of the credential, can be `WebAuthn` or `ED25519`                                   |
 | publicKey | string! | The public key that is associated with this credential, keys are formatted as `WEBAUTHN-hex` |
 | id        | string? | The credential-id if the credential is a WebAuthn key, the id will be omited fo `ED25519`    |
+
+## Signers Information
+
+In order for dApps to prepare a transaction all signers needs to be communicated
+with the dApp. In cases where only the user needs to sign for the transaction
+the login token flow should suffice. However in cases where multiple parties
+need to sign for the transaction all public keys of those parties need to be
+collected and communicated with the dApp. The information about the signers do
+not cover authentication and only provides the necessary information to
+construct a transaction.
+
+The dApp can provide an interface from the dApp, but there are many cases that
+we believe would make sense for a Wallet to assist an user to orchastrate the
+collection of signers information. We envision a wallet to hold contact
+information allowing the user to select from their contacts who to include in
+the signers information.
+
+### Implementation
+
+The dApp can prompt a Wallet to provide information via search parameters. The
+following interface can be used to communicate the context of the request:
+
+| param     | type    | comment                        |
+| :-------- | :------ | :----------------------------- |
+| reason    | string! | The purpose of the transaction |
+| returnUrl | string! | The return url                 |
+
+The wallet can then provide a list of signers as response to the dApp:
+
+| param   | type    | comment                                        |
+| :------ | :------ | :--------------------------------------------- |
+| signers | string! | The base64 encoded JSON of Signers in an Array |
+
+The signer JSON would have the following interface:
+
+| param       | type    | comment                                            |
+| :---------- | :------ | :------------------------------------------------- |
+| credentials | [JSON]! | An array containing the credentials of an user     |
+| name        | string! | The display name provided by a wallet for the user |
+
+The JSON describing Credentials:
+
+| param     | type    | comment                                                                                      |
+| :-------- | :------ | :------------------------------------------------------------------------------------------- |
+| type      | string! | The type of the credential, can be `WebAuthn` or `ED25519`                                   |
+| publicKey | string! | The public key that is associated with this credential, keys are formatted as `WEBAUTHN-hex` |
+| id        | string? | The credential-id if the credential is a WebAuthn key, the id will be omited fo `ED25519`    |
