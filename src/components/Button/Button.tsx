@@ -23,6 +23,7 @@ function BaseButton(props: Props, ref: ForwardedRef<HTMLButtonElement>) {
         <>
           {variant === 'progress' && (
             <Box
+              aria-hidden
               as="span"
               className={progressIndicator}
               style={{ left: `${progress}%` }}
