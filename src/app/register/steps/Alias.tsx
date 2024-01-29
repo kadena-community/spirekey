@@ -4,13 +4,16 @@ import { motion } from 'framer-motion';
 import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { animationVariants } from '../animation';
+import { getNewWebauthnKey } from '@/utils/webauthnKey';
+
 
 interface Props {
   isVisible: boolean;
 }
 
 export const Alias: FC<Props> = ({ isVisible }) => {
-  const { register } = useFormContext();
+  const { register, getValues, setValue } = useFormContext();
+
 
   return (
     <motion.div
