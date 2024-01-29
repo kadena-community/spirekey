@@ -26,6 +26,11 @@ export default function CardCollection({ children }: CardCollectionProps) {
               [active]: activeCard === i,
               [collapsed]: activeCard !== i,
             })}
+            transition={{
+              type: 'spring',
+              damping: 44,
+              stiffness: 480,
+            }}
             animate={activeCard !== i && 'collapsed'}
             variants={{
               collapsed: {
