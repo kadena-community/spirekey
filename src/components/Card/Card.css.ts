@@ -41,7 +41,8 @@ export const card = style([
           'linear-gradient(0deg, rgba(255, 0, 255, 0), rgba(255, 0, 255, 0), rgba(255, 0, 255, 1)) border-box',
         mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
         maskComposite: 'xor, exclude',
-        clipPath: 'polygon(0 0, var(--card-progress) 0%, var(--card-progress) 100%, 0 100%)',
+        clipPath:
+          'polygon(0 0, var(--card-progress) 0%, var(--card-progress) 100%, 0 100%)',
       },
     },
   },
@@ -57,7 +58,7 @@ export const cardBackground = style([
     borderRadius: '1rem',
     objectFit: 'cover',
     objectPosition: 'center',
-    zIndex: -1,
+    background: '#ffffff',
   },
 ]);
 
@@ -69,6 +70,7 @@ export const cardContentContainer = style([
     paddingBlockStart: 'clamp(.75rem, 5%, 1.5rem)',
     paddingBlockEnd: 'clamp(1rem, 5%, 2rem)',
     paddingInline: 'clamp(1rem, 5%, 2.5rem)',
+    position: 'relative',
   },
 ]);
 
@@ -137,13 +139,13 @@ export const devicesContainer = style([
 export const device = style([
   {
     marginInlineStart: 'clamp(0.1rem, 2vw, 1rem)',
-  }
+  },
 ]);
 
 export const cardContentCenter = style([
   {
     marginBlockStart: 'clamp(0px, 4vw, 1.5rem)',
-  }
+  },
 ]);
 
 export const network = style([
@@ -172,7 +174,7 @@ export const balanceLabel = style([
   {
     fontSize: 'clamp(.75rem, 4vw, 1.125rem)',
     lineHeight: 1,
-  }
+  },
 ]);
 
 export const balance = style([
@@ -191,7 +193,7 @@ export const transactionsLabel = style([
   {
     fontSize: 'clamp(.75rem, 4vw, 1.125rem)',
     lineHeight: 1,
-  }
+  },
 ]);
 
 export const transactions = style([
