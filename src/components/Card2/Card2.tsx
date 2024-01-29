@@ -1,10 +1,15 @@
+import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
+import { Account } from '@/context/AccountsContext';
 import { Box, Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
+import Image from 'next/image';
+import CardBackground from '../../assets/images/card-background.svg';
+import CardLogo from '../../assets/images/card-logo.svg';
 import {
-  account,
   accountAlias,
   accountAliasContainer,
   accountIcon,
   accountIconInner,
+  account as accountStyle,
   balance,
   balanceLabel,
   card,
@@ -19,12 +24,22 @@ import {
   transactionsLabel,
   txAndBalance,
 } from './Card2.css';
-import Image from 'next/image';
-import CardBackground from '../../assets/images/card-background.svg';
-import CardLogo from '../../assets/images/card-logo.svg';
-import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 
-export default function Card2() {
+type CardProps = {
+  account: Account;
+  onClick?: (account: Account) => void;
+  isCollapsed?: boolean;
+  isActive?: boolean;
+};
+
+export default function Card2({
+  account,
+  onClick = (account: Account) => {},
+  isCollapsed = false,
+  isActive = false,
+}: CardProps) {
+  const uniqueDeviceTypes = new Set();
+  account.devices.map((d) => uniqueDeviceTypes.add(d.identifier.split('_')[0]));
   return (
     <Box
       className={card}
@@ -42,50 +57,57 @@ export default function Card2() {
         justifyContent={'space-between'}
         className={cardContentContainer}
       >
-        <Stack
-          flexDirection={'row'}
-        >
+        <Stack flexDirection={'row'}>
           <Stack
             flexDirection={'row'}
             alignItems={'center'}
             className={accountAliasContainer}
           >
-            <Heading
-              as={'h3'}
-              variant={'h4'}
-              className={accountAlias}
-            >
+            <Heading as={'h3'} variant={'h4'} className={accountAlias}>
               Account Alias
             </Heading>
             <Box className={accountIcon}>
               <SystemIcon.Account className={accountIconInner} />
             </Box>
           </Stack>
-          <Stack
-            flexDirection={'row'}
-            alignItems={'center'}
-          >
-            <Box className={device}>
-              <SystemIcon.UsbFlashDrive />
-            </Box>
-            <Box className={device}>
-              <SystemIcon.UsbFlashDrive />
-            </Box>
-            <Box className={device}>
-              <SystemIcon.UsbFlashDrive />
-            </Box>
+          <Stack flexDirection={'row'} alignItems={'center'}>
+            {Array.from(uniqueDeviceTypes).map((type) => {
+              switch (type) {
+                case 'security-key':
+                  return (
+                    <Box className={device}>
+                      <SystemIcon.UsbFlashDrive />
+                    </Box>
+                  );
+                case 'phone':
+                  return (
+                    <Box className={device}>
+                      <SystemIcon.Cookie />
+                    </Box>
+                  );
+                case 'desktop':
+                  return (
+                    <Box className={device}>
+                      <SystemIcon.Application />
+                    </Box>
+                  );
+                default:
+                  return (
+                    <Box className={device}>
+                      <SystemIcon.Information />
+                    </Box>
+                  );
+              }
+            })}
           </Stack>
         </Stack>
-        <Stack
-          flexDirection={'column'}
-          className={cardContentCenter}
-        >
+        <Stack flexDirection={'column'} className={cardContentCenter}>
           <MaskedValue
-            value={'c:lmpNroVTMPQNv8wd6c5QUJjsUgdaoCH7UNMndllgWAE'}
+            value={account.accountName}
             startUnmaskedValues={16}
-            className={account}
+            className={accountStyle}
           />
-          <Text className={network}>Testnet Network</Text>
+          <Text className={network}>{account.network}</Text>
         </Stack>
         <Stack
           flexDirection={'row'}
@@ -93,24 +115,17 @@ export default function Card2() {
           alignItems={'flex-end'}
           className={cardContentBottom}
         >
-          <Stack
-            flexDirection={'column'}
-            className={txAndBalance}
-          >
+          <Stack flexDirection={'column'} className={txAndBalance}>
             <Stack alignItems={'center'}>
               <span className={transactionsLabel}># TX</span>
               <span className={transactions}>12</span>
             </Stack>
             <Stack>
               <span className={balanceLabel}>Balance</span>
-              <span className={balance}>4567.89</span>
+              <span className={balance}>{account.balance}</span>
             </Stack>
           </Stack>
-          <Image
-            src={CardLogo}
-            alt="Card logo"
-            className={cardLogo}
-          />
+          <Image src={CardLogo} alt="Card logo" className={cardLogo} />
         </Stack>
       </Stack>
     </Box>

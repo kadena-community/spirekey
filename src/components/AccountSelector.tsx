@@ -11,6 +11,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 type AccountSelectorProps = {
+  showLinks?: boolean;
   returnUrl?: string;
 };
 
