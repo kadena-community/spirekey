@@ -4,6 +4,7 @@ import { getAccountFrom } from '@/utils/account';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 export type Account = {
+  alias: string;
   accountName: string;
   balance: string;
   devices: Device[];

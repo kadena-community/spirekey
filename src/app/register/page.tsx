@@ -28,9 +28,9 @@ const FORM_DEFAULT = {
   alias: '',
   deviceType: '',
   color: '',
-  credentialPubkey: '', 
+  credentialPubkey: '',
   credentialId: '',
-  accountName: "",
+  accountName: '',
 };
 
 type FormValues = typeof FORM_DEFAULT;
@@ -47,20 +47,21 @@ export default function Account() {
   const goToNextStep = () => {
     if (!nextStep) return;
     if (nextStep === 3) {
-      return onChangeAlias().then(()=> setCurrentStep(nextStep));
-    } 
+      return onChangeAlias().then(() => setCurrentStep(nextStep));
+    }
 
     setCurrentStep(nextStep);
   };
 
-
   const onChangeAlias = async () => {
-    const { credentialId, publicKey } = await getNewWebauthnKey(methods.getValues('alias'));
+    const { credentialId, publicKey } = await getNewWebauthnKey(
+      methods.getValues('alias'),
+    );
     methods.setValue('credentialId', credentialId);
     methods.setValue('credentialPubkey', publicKey);
-    const accountName  = await getAccountName(publicKey)
-    methods.setValue('accountName', accountName)
-};
+    const accountName = await getAccountName(publicKey);
+    methods.setValue('accountName', accountName);
+  };
 
   const goToPrevStep = () => {
     if (!prevStep) return;
@@ -78,21 +79,28 @@ export default function Account() {
     storeAccount(caccount);
   };
 
-
   return (
     <Stack flexDirection="column" gap="md">
       <Box width="100%" paddingInline="md">
         <Card2
           account={{
+            alias: methods.getValues('alias'),
             accountName: methods.getValues('accountName'),
             balance: '0.0',
             network: methods.getValues('networkId'),
-            devices: [{ 
-              "credential-id": methods.getValues('credentialId'),
-              domain: window.location.hostname,
-              identifier: `${methods.getValues("deviceType")}_${methods.getValues("color")}`,
-              guard: {keys: [methods.getValues('credentialPubkey')], pred: "keys-any"},
-            }],
+            devices: [
+              {
+                'credential-id': methods.getValues('credentialId'),
+                domain: window.location.hostname,
+                identifier: `${methods.getValues(
+                  'deviceType',
+                )}_${methods.getValues('color')}`,
+                guard: {
+                  keys: [methods.getValues('credentialPubkey')],
+                  pred: 'keys-any',
+                },
+              },
+            ],
           }}
         />
       </Box>

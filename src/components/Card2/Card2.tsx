@@ -63,12 +63,16 @@ export default function Card2({
             alignItems={'center'}
             className={accountAliasContainer}
           >
-            <Heading as={'h3'} variant={'h4'} className={accountAlias}>
-              Account Alias
-            </Heading>
-            <Box className={accountIcon}>
-              <SystemIcon.Account className={accountIconInner} />
-            </Box>
+            {account.alias && (
+              <>
+                <Heading as={'h3'} variant={'h4'} className={accountAlias}>
+                  {account.alias}
+                </Heading>
+                <Box className={accountIcon}>
+                  <SystemIcon.Account className={accountIconInner} />
+                </Box>
+              </>
+            )}
           </Stack>
           <Stack flexDirection={'row'} alignItems={'center'}>
             {Array.from(uniqueDeviceTypes).map((type) => {
@@ -118,7 +122,7 @@ export default function Card2({
           <Stack flexDirection={'column'} className={txAndBalance}>
             <Stack alignItems={'center'}>
               <span className={transactionsLabel}># TX</span>
-              <span className={transactions}>12</span>
+              <span className={transactions}>0</span>
             </Stack>
             <Stack>
               <span className={balanceLabel}>Balance</span>
