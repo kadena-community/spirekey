@@ -57,6 +57,23 @@ export const buttonsContainer = style([
   },
 ]);
 
-globalStyle(`${buttonsContainer} > button`, {
-  flex: 1,
-});
+export const progressButton = style([
+  atoms({
+    borderRadius: 'sm',
+    paddingBlock: 'md',
+    paddingInline: 'lg',
+    fontWeight: 'headingFont.bold',
+  }),
+  {
+    background: 'transparent',
+    color: '#0D1821',
+    border: 'none',
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    zIndex: 1,
+  },
+]);

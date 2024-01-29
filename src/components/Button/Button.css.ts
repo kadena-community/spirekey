@@ -3,12 +3,13 @@ import { style } from '@vanilla-extract/css';
 
 export const wrapper = style([
   atoms({
-    position: 'relative',
     borderRadius: 'sm',
     paddingBlock: 'md',
     paddingInline: 'lg',
+    fontWeight: 'headingFont.bold',
   }),
   {
+    position: 'relative',
     height: '100%',
     color: 'rgba(255, 255, 255, 0.60)',
     background: 'rgba(255, 255, 255, 0.05)',

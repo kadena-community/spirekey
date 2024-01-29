@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/Button/Button';
 import Card2 from '@/components/Card2/Card2';
-import { ProgressButton } from '@/components/ProgressButton/ProgressButton';
+import { ProgressBox } from '@/components/ProgressBox/ProgressBox';
 import { useAccounts } from '@/hooks/useAccounts';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getAccountName, registerAccount } from '@/utils/register';
@@ -14,6 +14,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import {
   buttonsContainer,
   container,
+  progressButton,
   step,
   stepWrapper,
   wrapper,
@@ -148,16 +149,23 @@ export default function Account() {
 
             {/* Switching the type to 'submit' doesn't work properly, the form than already
             submits in the second step. Switching the complete button out for now. */}
-            {!nextStep && <Button type="submit">Complete</Button>}
-            {nextStep && (
-              <ProgressButton
-                onClick={() => goToNextStep()}
-                progress={(currentStep / TOTAL_STEPS) * 100}
-                type={nextStep ? 'button' : 'submit'}
-              >
-                {nextStep ? 'Next' : 'Complete'}
-              </ProgressButton>
-            )}
+
+            <ProgressBox progress={(currentStep / TOTAL_STEPS) * 100}>
+              {nextStep && (
+                <button
+                  onClick={goToNextStep}
+                  type="button"
+                  className={progressButton}
+                >
+                  Next
+                </button>
+              )}
+              {!nextStep && (
+                <button type="submit" className={progressButton}>
+                  Complete
+                </button>
+              )}
+            </ProgressBox>
           </div>
         </form>
       </FormProvider>
