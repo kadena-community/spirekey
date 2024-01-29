@@ -12,12 +12,12 @@ export default function TransactionsPage() {
         <BreadcrumbsItem href={`/accounts/${params.caccount}`}>
           {decodeURIComponent(params.caccount.toString())}
         </BreadcrumbsItem>
-        <BreadcrumbsItem href={`/accounts/${params.caccount}/devices/${params.cid}`}>
+        <BreadcrumbsItem
+          href={`/accounts/${params.caccount}/devices/${params.cid}`}
+        >
           {decodeURIComponent(params.cid.toString())}
         </BreadcrumbsItem>
-        <BreadcrumbsItem>
-          Transactions
-        </BreadcrumbsItem>
+        <BreadcrumbsItem>Transactions</BreadcrumbsItem>
       </Breadcrumbs>
       <h1>Transactions</h1>
     </div>

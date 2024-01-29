@@ -13,7 +13,7 @@
     "update": "tsx pact/deploy/update-contracts.mts"
   },
   "dependencies": {
-    "@kadena/client": "^1.6.4",
+    "@kadena/client": "^1.7.0",
     "@kadena/cryptography-utils": "^0.4.2",
     "@kadena/fonts": "^0.0.1",
     "@kadena/pactjs": "^0.4.2",
@@ -38,19 +38,19 @@
     "react-aria-components": "^1.0.1",
     "react-dom": "^18.2.0",
     "react-flip-move": "^3.0.5",
-    "react-hook-form": "^7.48.2",
+    "react-hook-form": "^7.49.3",
     "swr": "^2.2.4"
   },
   "devDependencies": {
     "@kadena/pactjs-cli": "^1.6.4",
     "@types/node": "^20.10.3",
     "@types/qrcode": "^1.5.5",
-    "@types/react": "^18.2.41",
-    "@types/react-dom": "^18.2.17",
-    "prettier": "^3.1.1",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "prettier": "^3.2.4",
     "prettier-plugin-organize-imports": "^3.2.4",
-    "prettier-plugin-packagejson": "^2.4.7",
-    "tsx": "^4.6.2",
-    "typescript": "^5.3.2"
+    "prettier-plugin-packagejson": "^2.4.9",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
   }
 }

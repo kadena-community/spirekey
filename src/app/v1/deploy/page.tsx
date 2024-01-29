@@ -132,7 +132,7 @@ export default function DeployPage() {
           }),
           setNetworkId(orchestrationData.profiles[step.profile].networkId), // fast-development
           (cmd) => {
-            cmd.payload.exec.data = step.data;
+            cmd.payload.exec.data = step.data || {};
             return cmd;
           }, // add data
           addSigner(
