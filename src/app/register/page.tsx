@@ -4,6 +4,7 @@ import { Button } from '@/components/Button/Button';
 import Card2 from '@/components/Card2/Card2';
 import { ProgressButton } from '@/components/ProgressButton/ProgressButton';
 import { useAccounts } from '@/hooks/useAccounts';
+import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getAccountName, registerAccount } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Box, Stack } from '@kadena/react-ui';
@@ -43,6 +44,8 @@ export default function Account() {
   const nextStep = currentStep < TOTAL_STEPS ? currentStep + 1 : null;
 
   const { storeAccount } = useAccounts();
+
+  const { host } = useReturnUrl();
 
   const goToNextStep = () => {
     if (!nextStep) return;
@@ -91,7 +94,7 @@ export default function Account() {
             devices: [
               {
                 'credential-id': methods.getValues('credentialId'),
-                domain: window.location.hostname,
+                domain: host,
                 identifier: `${methods.getValues(
                   'deviceType',
                 )}_${methods.getValues('color')}`,
