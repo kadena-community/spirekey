@@ -8,7 +8,7 @@ import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getAccountName, registerAccount } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Box, Stack } from '@kadena/react-ui';
-import { m, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
