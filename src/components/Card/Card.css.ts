@@ -52,6 +52,10 @@ export const card = style([
   },
 ]);
 
+export const cardCollapsed = style({
+  maxHeight: '10rem',
+});
+
 export const cardBackground = style([
   atoms({
     position: 'absolute',

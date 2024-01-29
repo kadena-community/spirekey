@@ -1,6 +1,7 @@
 import { Account } from '@/context/AccountsContext';
 import { Box, Stack } from '@kadena/react-ui';
 import Image from 'next/image';
+import { ReactNode } from 'react';
 import CardLogo from '../../assets/images/card-logo.svg';
 import {
   accountAliasContainer,
@@ -10,7 +11,6 @@ import {
   cardLogo,
   txAndBalance,
 } from './Card.css';
-import { ReactNode } from 'react';
 
 type CardProps = {
   account?: Account;
@@ -37,7 +37,6 @@ export default function Card({
       style={{
         '--card-progress': `${balancePercentage}%`,
       }}
-      onClick={() => onClick(account)}
     >
       <Stack
         flexDirection="column"

@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/Button/Button';
+import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
 import { usePubkeys } from '@/hooks/usePubkeys';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { asyncPipe } from '@/utils/asyncPipe';
@@ -178,13 +179,13 @@ export const PreviewForm: FC<PreviewFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Button
+      <ButtonLink
         href={`${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(
           '/pact',
         )}`}
       >
         Select account
-      </Button>
+      </ButtonLink>
       {account && (
         <TrackerCard
           icon="ManageKda"
