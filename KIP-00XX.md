@@ -163,3 +163,50 @@ The JSON describing Credentials:
 | type      | string! | The type of the credential, can be `WebAuthn` or `ED25519`                                   |
 | publicKey | string! | The public key that is associated with this credential, keys are formatted as `WEBAUTHN-hex` |
 | id        | string? | The credential-id if the credential is a WebAuthn key, the id will be omited fo `ED25519`    |
+
+## Signatures
+
+So far we have only discussed the preparation of transactions. This section will
+cover how a transaction can be finilized. Like the preparation process, the dApp
+can always opt to orchastrate the collection of signatures. We however believe
+that by providing a way to orchastrate the collection of signatures via the
+wallet will open up new UX possibilities that will smoothen the experience
+further.
+
+This specification will describe two ways to orchastrate the collection of
+signatures through a Wallet:
+
+1. Link sharing
+2. Peer to Peer channels
+
+### Sign flow from the dApp
+
+To start a sign request from the dApp, the dApp will navigate the end user to
+their wallet with the transaction information attached as search parameters:
+
+| param       | type    | comment                                                                               |
+| :---------- | :------ | :------------------------------------------------------------------------------------ |
+| transaction | string! | The unsigned transaction as described by [chainweb](TODO:findLinkToDocs)              |
+| returnUrl   | string! | This is the url the wallet should redirect the end user to after confirming the login |
+
+After the wallet has collected the signature the wallet will send the user back
+to the dApp's provided `returnUrl` with the following search params:
+
+| param       | type    | comment                                                      |
+| :---------- | :------ | :----------------------------------------------------------- |
+| transaction | string! | The signed or partially signed transaction encoded in base64 |
+
+The transaction returned from the wallet can be signed or partially signed. The
+dApp should act accordingly.
+
+### Link sharing
+
+In the Web2 it's common to send transaction links to your peers. It's a concept
+most users will be familiar with. Users will also be able to share such link via
+any of their already established ways of communication, may it be their
+messaging app, email or even SMS.
+
+Wallet developers can use this as a base to incorporate even more convienient
+ways of sharing these links. Think of NFC, bluetooth or even QR scanning. This
+spec will describe how such a link should be build in order for all Wallets to
+be interoperable.
