@@ -1,86 +1,139 @@
+import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { Account } from '@/context/AccountsContext';
-import { Heading, MaskedValue, Stack } from '@kadena/react-ui';
+import { Box, Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
+import Image from 'next/image';
+import CardBackground from '../../assets/images/card-background.svg';
+import CardLogo from '../../assets/images/card-logo.svg';
 import {
-  accountName,
-  accountNameCollapsed,
+  accountAlias,
+  accountAliasContainer,
+  accountIcon,
+  accountIconInner,
+  account as accountStyle,
+  balance,
+  balanceLabel,
   card,
-  cardBody,
-  chainweb,
-  chainwebIcon,
-  desktopIcon,
-  devices,
-  logo,
-  logoCenter,
+  cardBackground,
+  cardContentBottom,
+  cardContentCenter,
+  cardContentContainer,
+  cardLogo,
+  device,
   network,
-  networkCollapsed,
-  phoneIcon,
-  usbIcon,
+  transactions,
+  transactionsLabel,
+  txAndBalance,
 } from './Card.css';
 
-interface CardProps {
+type CardProps = {
   account: Account;
-  onClick: (account: Account) => void;
-  isCollapsed: boolean;
-  isActive: boolean;
-}
+  onClick?: (account: Account) => void;
+  isCollapsed?: boolean;
+  isActive?: boolean;
+};
 
-export default function Card({
+export default function Card2({
   account,
-  onClick,
-  isCollapsed,
-  isActive,
+  onClick = (account: Account) => {},
+  isCollapsed = false,
+  isActive = false,
 }: CardProps) {
+  const uniqueDeviceTypes = new Set();
+  account.devices.map((d) => uniqueDeviceTypes.add(d.identifier.split('_')[0]));
+
   return (
-    <>
-      <div
-        className={card}
-        onClick={() => onClick(account)}
-        data-collapsed={isCollapsed}
-        data-active={isActive}
+    <Box
+      className={card}
+      style={{
+        '--card-progress': '10%',
+      }}
+      onClick={() => onClick(account)}
+    >
+      <Image
+        src={CardBackground}
+        alt="Card background"
+        className={cardBackground}
+      />
+      <Stack
+        flexDirection={'column'}
+        justifyContent={'space-between'}
+        className={cardContentContainer}
       >
-        <div className={cardBody}>
-          {(isActive || !isCollapsed) && (
-            <div className={logo} data-svg-background></div>
-          )}
-          <div className={logoCenter} data-svg-background></div>
-          <div
-            className={
-              isCollapsed && !isActive ? accountNameCollapsed : accountName
-            }
+        <Stack flexDirection={'row'}>
+          <Stack
+            flexDirection={'row'}
+            alignItems={'center'}
+            className={accountAliasContainer}
           >
-            <MaskedValue
-              value={account.accountName}
-              startUnmaskedValues={isCollapsed && !isActive ? 16 : 16}
-            />
-          </div>
-          <Stack className={devices} flexDirection="row-reverse">
-            {account.devices.length > 0 && (
-              <div className={phoneIcon} data-svg-background></div>
-            )}
-            {account.devices.length > 1 && (
-              <div className={usbIcon} data-svg-background></div>
-            )}
-            {account.devices.length > 2 && (
-              <div className={desktopIcon} data-svg-background></div>
+            {account.alias && (
+              <>
+                <Heading as={'h3'} variant={'h4'} className={accountAlias}>
+                  {account.alias}
+                </Heading>
+                <Box className={accountIcon}>
+                  <SystemIcon.Account className={accountIconInner} />
+                </Box>
+              </>
             )}
           </Stack>
-          <div
-            className={isCollapsed && !isActive ? networkCollapsed : network}
-          >
-            {account.network}
-          </div>
-          <Stack className={chainweb} flexDirection="column">
-            <div className={chainwebIcon} data-svg-background></div>
-            <Heading
-              variant="h6"
-              as="h6"
-              style={{ lineHeight: 0.8, transform: 'scale(0.7)' }}
-            >
-              chainweb
-            </Heading>
+          <Stack flexDirection={'row'} alignItems={'center'}>
+            {Array.from(uniqueDeviceTypes).map((type) => {
+              switch (type) {
+                case 'security-key':
+                  return (
+                    <Box className={device}>
+                      <SystemIcon.UsbFlashDrive />
+                    </Box>
+                  );
+                case 'phone':
+                  return (
+                    <Box className={device}>
+                      <SystemIcon.Cookie />
+                    </Box>
+                  );
+                case 'desktop':
+                  return (
+                    <Box className={device}>
+                      <SystemIcon.Application />
+                    </Box>
+                  );
+                default:
+                  return (
+                    <Box className={device}>
+                      <SystemIcon.Information />
+                    </Box>
+                  );
+              }
+            })}
           </Stack>
-        </div>
-      </div>
-    </>
+        </Stack>
+        <Stack flexDirection={'column'} className={cardContentCenter}>
+          <MaskedValue
+            value={account.accountName}
+            startUnmaskedValues={16}
+            className={accountStyle}
+          />
+          <Text className={network}>{account.network}</Text>
+        </Stack>
+        <Stack
+          flexDirection={'row'}
+          justifyContent={'space-between'}
+          alignItems={'flex-end'}
+          className={cardContentBottom}
+        >
+          <Stack flexDirection={'column'} className={txAndBalance}>
+            <Stack alignItems={'center'}>
+              <span className={transactionsLabel}># TX</span>
+              <span className={transactions}>0</span>
+            </Stack>
+            <Stack>
+              <span className={balanceLabel}>Balance</span>
+              <span className={balance}>{account.balance}</span>
+            </Stack>
+          </Stack>
+          <Image src={CardLogo} alt="Card logo" className={cardLogo} />
+        </Stack>
+      </Stack>
+    </Box>
   );
 }

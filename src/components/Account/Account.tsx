@@ -4,7 +4,7 @@ import { forwardRef } from 'react';
 
 import Link from 'next/link';
 import { Button } from '../Button/Button';
-import Card from '../Card2/Card2';
+import Card from '../Card/Card';
 import { Carousel } from '../Carousel/Carousel';
 import { accountPosition } from './Account.css';
 interface AccountProps {
