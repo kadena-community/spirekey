@@ -17,6 +17,7 @@ import { Alias } from './steps/Alias';
 import { Color } from './steps/Color';
 import { DeviceType } from './steps/DeviceType';
 import { Network } from './steps/Network';
+import { useRouter } from 'next/navigation';
 
 const TOTAL_STEPS = 4;
 const FORM_DEFAULT = {
@@ -33,6 +34,7 @@ type FormValues = typeof FORM_DEFAULT;
 
 export default function Account() {
   const formMethods = useForm({ defaultValues: FORM_DEFAULT });
+  const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState(1);
   const prevStep = currentStep > 1 ? currentStep - 1 : null;
@@ -78,6 +80,8 @@ export default function Account() {
       alias: data.alias,
       network: data.networkId,
     });
+
+    router.push('/');
   };
 
   return (
