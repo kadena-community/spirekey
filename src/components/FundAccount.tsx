@@ -1,4 +1,3 @@
-import { useAccounts } from '@/hooks/useAccounts';
 import { fundAccount } from '@/utils/fund';
 import { Button } from '@kadena/react-ui';
 import { useState } from 'react';
@@ -18,7 +17,6 @@ export const FundAccount = ({ accountName }: Props) => {
       if (!accountName) throw new Error('No account selected');
 
       await fundAccount(accountName);
-      getAccountDetails();
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
