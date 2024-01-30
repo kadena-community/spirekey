@@ -14,21 +14,19 @@ export const inner = style({
 
 export const card = style({
   width: '100%',
-  position: 'absolute',
+  bottom: 'auto',
+  position: 'relative',
+  marginBlockEnd: '20px',
 });
 
 export const active = style({
   order: '-1',
-  marginBlockEnd: '300px',
 });
 
 export const collapsed = style({
-  bottom: '-160px',
   position: 'absolute',
 });
 
 export const expanded = style({
-  bottom: 'auto',
   position: 'relative',
-  marginBlockEnd: '20px !important', // @TODO fix this in a better way
 });
