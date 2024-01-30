@@ -1,5 +1,5 @@
 import { Heading, Text } from '@kadena/react-ui';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { animationVariants } from '../animation';
@@ -20,7 +20,7 @@ export const Network: FC<Props> = ({ isVisible }) => {
     >
       <Heading>Network</Heading>
 
-      {['testnet', 'devnet'].includes(selectedNetwork) && (
+      {['testnet04', 'fast-development'].includes(selectedNetwork) && (
         <Text>For development purposes only</Text>
       )}
 
@@ -28,7 +28,7 @@ export const Network: FC<Props> = ({ isVisible }) => {
         <input
           {...register('networkId')}
           type="radio"
-          value="mainnet"
+          value="mainnet01"
           id="network-mainnet"
         />
         <label htmlFor="network-mainnet">Mainnet</label>
@@ -37,7 +37,7 @@ export const Network: FC<Props> = ({ isVisible }) => {
         <input
           {...register('networkId')}
           type="radio"
-          value="testnet"
+          value="testnet04"
           id="network-testnet"
         />
         <label htmlFor="network-testnet">Testnet</label>
@@ -46,7 +46,7 @@ export const Network: FC<Props> = ({ isVisible }) => {
         <input
           {...register('networkId')}
           type="radio"
-          value="devnet"
+          value="fast-development"
           id="network-devnet"
         />
         <label htmlFor="network-devnet">Devnet</label>
