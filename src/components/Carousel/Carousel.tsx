@@ -8,8 +8,10 @@ import {
   carouselNavItem,
 } from './Carousel.css';
 import AddDeviceCard from '../Card/AddDeviceCard';
+import { Account } from '@/context/AccountsContext';
 
 type CarouselProps = {
+  account: Account;
   children: React.ReactNode;
   isActive: boolean;
 };
@@ -20,7 +22,7 @@ const showCarouselItems = (isActive: boolean, index: number) => {
   return false;
 };
 
-export const Carousel = ({ children, isActive }: CarouselProps) => {
+export const Carousel = ({ account, children, isActive }: CarouselProps) => {
   return (
     <div className={carousel}>
       <div
@@ -36,7 +38,7 @@ export const Carousel = ({ children, isActive }: CarouselProps) => {
               [carouselItem.nonScrollable]: !isActive,
             })}
           >
-            <AddDeviceCard />
+            <AddDeviceCard account={account}/>
           </div>
         }
         {Children.map(children, (child, index) => (

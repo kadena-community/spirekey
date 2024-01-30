@@ -20,7 +20,7 @@ export function Account({
   returnUrl,
 }: AccountProps) {
   return (
-    <Carousel isActive={isActive}>
+    <Carousel account={account} isActive={isActive}>
       {account.devices.map((d) => {
         const caccount = encodeURIComponent(account.accountName);
         const cid = encodeURIComponent(d['credential-id']);
@@ -30,7 +30,6 @@ export function Account({
             <DeviceCard account={account} onClick={onClick} />
             {!returnUrl && isActive && (
               <>
-                <Link href={`/accounts/${caccount}/devices/add`}>add</Link> -
                 <Link href={`/accounts/${caccount}/devices/${cid}/fund`}>
                   fund
                 </Link>{' '}

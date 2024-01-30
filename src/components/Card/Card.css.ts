@@ -219,3 +219,9 @@ export const plusIconContainer = style([
     width: '100%',
   }),
 ]);
+
+export const cardLink = style([
+  atoms({
+    textDecoration: 'none',
+  }),
+]);
