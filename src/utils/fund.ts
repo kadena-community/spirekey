@@ -11,11 +11,7 @@ import {
   setNetworkId,
 } from '@kadena/client/fp';
 
-export const fundAccount = async ({
-  account,
-}: {
-  account: string;
-}): Promise<string> =>
+export const fundAccount = async (account: string): Promise<string> =>
   asyncPipe(
     getCommand(account),
     createTransaction,

@@ -1,18 +1,14 @@
 import { Account } from '@/context/AccountsContext';
 import { Box, SystemIcon } from '@kadena/react-ui';
-import {
-  device,
-} from './Card.css';
+import { device } from './Card.css';
 
 type DeviceIconsProps = {
   account: Account;
 };
 
-export default function DeviceIcons({
-  account,
-}: DeviceIconsProps) {
+export default function DeviceIcons({ account }: DeviceIconsProps) {
   const uniqueDeviceTypes = new Set();
-  account.devices.map((d) => uniqueDeviceTypes.add(d.identifier.split('_')[0]));
+  account.devices.map((d) => uniqueDeviceTypes.add(d.deviceType));
 
   return (
     <>
