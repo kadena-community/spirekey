@@ -1,3 +1,4 @@
+import { tokens } from '@kadena/react-ui/styles';
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 
@@ -43,6 +44,7 @@ export const card = recipe({
       },
       expanded: {
         position: 'relative',
+        marginBlockEnd: tokens.kda.foundation.spacing.lg,
       },
     },
   },

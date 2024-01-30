@@ -51,13 +51,9 @@ export default function CardCollection({ children }: CardCollectionProps) {
             className={card({ variant: getCardVariant(i) })}
             style={{
               zIndex: `${100 - i}`,
-              marginBlockEnd:
-                getCardVariant(i) === 'expanded'
-                  ? '20px'
-                  : `${i * cardSpacing}px`,
               bottom:
-                activeCard !== null && activeCard !== i
-                  ? `-${cardHeight - cardSpacing}px`
+                activeCard !== null && activeCard !== i // There is an active card, but it's not this one
+                  ? `-${cardHeight - (i + 1) * cardSpacing}px` // Position the card outside of the viewport, then move it up by the number of the card, multiplied by the spacing so the cards are stacked
                   : 'auto',
             }}
             ref={(ref) => (cardRefs.current[i] = ref)}
