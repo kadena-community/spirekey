@@ -6,7 +6,6 @@ import DeviceCard from '../Card/DeviceCard';
 import { Carousel } from '../Carousel/Carousel';
 interface AccountProps {
   account: Account;
-
   isActive?: boolean;
   returnUrl?: string;
 }
