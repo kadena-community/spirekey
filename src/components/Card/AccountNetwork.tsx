@@ -3,6 +3,7 @@ import { Account } from '@/context/AccountsContext';
 import { Box, Stack, SystemIcon, Text } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
 import { useCopyToClipboard } from 'usehooks-ts';
+import { copyButton } from './AccountNetwork.css';
 import {
   account as accountStyle,
   cardContentCenter,
@@ -32,11 +33,7 @@ export default function AccountNetwork({ account }: AccountNetworkProps) {
           className={accountStyle}
         />
         <button
-          className={atoms({
-            background: 'none',
-            border: 'none',
-            padding: 'md',
-          })}
+          className={copyButton}
           onClick={(e) => {
             e.stopPropagation();
             copy(account.accountName);

@@ -39,8 +39,9 @@ export default function CardCollection({ children }: CardCollectionProps) {
 
   return (
     <Box
-      className={wrapper}
-      style={{ overflow: `${activeCard === null ? 'scroll' : 'hidden'}` }}
+      className={wrapper({
+        variant: activeCard === null ? 'expanded' : 'collapsed',
+      })}
     >
       <Stack className={inner} flexDirection="column" paddingBlockStart="lg">
         {Children.map(children, (child, i) => (
@@ -78,7 +79,6 @@ export default function CardCollection({ children }: CardCollectionProps) {
           >
             {cloneElement(child, {
               isActive: activeCard === i,
-              isCollapsed: activeCard !== i,
             })}
           </motion.div>
         ))}
