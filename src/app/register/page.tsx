@@ -3,7 +3,7 @@
 import { Button } from '@/components/Button/Button';
 import DeviceCard from '@/components/Card/DeviceCard';
 import { Surface } from '@/components/Surface/Surface';
-import { useAccounts } from '@/hooks/useAccounts';
+import { useAccounts } from '@/context/AccountsContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getAccountName, registerAccount } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
@@ -39,7 +39,6 @@ export default function Account() {
   const nextStep = currentStep < TOTAL_STEPS ? currentStep + 1 : null;
 
   const { storeAccount } = useAccounts();
-
   const { host } = useReturnUrl();
 
   const goToNextStep = () => {
@@ -71,10 +70,10 @@ export default function Account() {
       credentialPubkey: formMethods.getValues('credentialPubkey'),
       credentialId: formMethods.getValues('credentialId'),
       displayName: `${data.deviceType}_${data.color}`,
-      domain: window.location.hostname,
+      domain: host,
     });
 
-    storeAccount(caccount);
+    storeAccount({ accountName: caccount, alias: data.alias, network: host });
   };
 
   return (

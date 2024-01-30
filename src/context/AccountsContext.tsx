@@ -23,9 +23,12 @@ export type Device = {
   };
 };
 
+type LocalAccount = Pick<Account, 'alias' | 'network' | 'accountName'>;
+
 const defaultState = {
   networks: ['mainnet01', 'testnet04', 'fast-development'],
   accounts: [] as Account[],
+  storeAccount: (account: LocalAccount) => {},
 };
 
 const networks = ['mainnet01', 'testnet04', 'fast-development'];
@@ -37,42 +40,75 @@ type Props = {
 };
 
 const getAllAccounts = async () => {
-  const accounts = localStorage.getItem('accounts');
+  const accounts = localStorage.getItem('localAccounts');
   if (!accounts) return;
 
-  // ['c:one', 'c:two', 'c:three']
-  const parsedAccounts = JSON.parse(accounts);
+  const parsedAccounts: LocalAccount[] = Object.values(JSON.parse(accounts));
 
-  const networkAccounts = await Promise.all(
-    networks.map(async (network) => {
-      const retrievedAccounts = await Promise.all(
-        parsedAccounts.map((account: string) =>
-          getAccountFrom({
-            networkId: network,
-            caccount: account,
-          }),
-        ),
-      );
-
-      return retrievedAccounts.filter(Boolean).map((account) => ({
+  return await Promise.all(
+    parsedAccounts.map(async ({ alias, accountName, network }) => {
+      const account = await getAccountFrom({
+        networkId: network,
+        caccount: accountName,
+      });
+      return {
         ...account,
-        accountName: account.name,
+        accountName,
+        network,
+        alias,
         devices: account.devices.map((device: any) => ({
           ...device,
           color: device.name.split('_')[1],
           deviceType: device.name.split('_')[0],
         })),
-        network,
-      }));
+      };
     }),
   );
-  return networkAccounts.flatMap((a) => a) as Account[];
 };
 
 const getLocalAccountInfo = (accountName: string, network: string) => {
-  const localItem = localStorage.getItem(`${accountName}-${network}`);
-  if (!localItem) return {};
-  return JSON.parse(localItem);
+  const accounts = localStorage.getItem('localAccounts');
+  if (!accounts) return {};
+
+  const localAccounts = JSON.parse(accounts);
+  return (
+    localAccounts[`${accountName}-${network}`] || {
+      alias: accountName,
+      network,
+      accountName,
+    }
+  );
+};
+
+const storeAccount = ({
+  accountName,
+  network,
+  alias,
+}: Pick<Account, 'alias' | 'network' | 'accountName'>) => {
+  const accounts = localStorage.getItem('localAccounts');
+  if (!accounts)
+    return localStorage.setItem(
+      'localAccounts',
+      JSON.stringify({
+        [`${accountName}-${network}`]: {
+          alias,
+          accountName,
+          network,
+        },
+      }),
+    );
+  const localAccounts = JSON.parse(accounts);
+  return localStorage.setItem(
+    'localAccounts',
+    JSON.stringify({
+      ...localAccounts,
+      [`${accountName}-${network}`]: {
+        alias,
+        accountName,
+        network,
+      },
+    }),
+  );
 };
 
 const AccountsProvider = ({ children }: Props) => {
@@ -87,7 +123,7 @@ const AccountsProvider = ({ children }: Props) => {
 
   return (
     <AccountsContext.Provider
-      value={{ accounts: (data as Account[]) || [], networks }}
+      value={{ accounts: (data as Account[]) || [], networks, storeAccount }}
     >
       {children}
     </AccountsContext.Provider>
