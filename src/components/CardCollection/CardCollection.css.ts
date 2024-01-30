@@ -27,21 +27,23 @@ export const inner = style({
   width: '100%',
 });
 
-export const card = style({
-  width: '100%',
-  bottom: 'auto',
-  position: 'relative',
-  marginBlockEnd: '20px',
-});
-
-export const active = style({
-  order: '-1',
-});
-
-export const collapsed = style({
-  position: 'absolute',
-});
-
-export const expanded = style({
-  position: 'relative',
+export const card = recipe({
+  base: {
+    width: '100%',
+    bottom: 'auto',
+    position: 'relative',
+  },
+  variants: {
+    variant: {
+      active: {
+        order: '-1',
+      },
+      collapsed: {
+        position: 'absolute',
+      },
+      expanded: {
+        position: 'relative',
+      },
+    },
+  },
 });
