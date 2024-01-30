@@ -62,14 +62,18 @@ export default function CardCollection({ children }: CardCollectionProps) {
             animate={getAnimationVariant(i)}
             variants={{
               expanded: {
-                marginBlockEnd: '20px',
+                // marginBlockEnd: '20px',
               },
               collapsed: {
-                marginBlockEnd: `${i * cardSpacing}px`,
+                // marginBlockEnd: `${i * cardSpacing}px`,
               },
             }}
             style={{
               zIndex: `${100 - i}`,
+              marginBlockEnd:
+                getAnimationVariant(i) === 'expanded'
+                  ? '20px'
+                  : `${i * cardSpacing}px`,
               bottom:
                 activeCard !== null && activeCard !== i
                   ? `-${cardHeight - cardSpacing}px`
