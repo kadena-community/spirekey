@@ -1,15 +1,22 @@
 'use client';
 
 import logo from '@/assets/images/bennuKey.svg';
-import { Button } from '@/components/Button/Button';
-import { buttonContainer } from '@/components/Button/SharedButton.css';
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
 import { useAccounts } from '@/hooks/useAccounts';
-import { Heading, Link, Stack } from '@kadena/react-ui';
+import { Heading, Stack } from '@kadena/react-ui';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function Home() {
   const { accounts } = useAccounts();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (accounts.length > 0) {
+      router.replace('/accounts');
+    }
+  }, [accounts]);
 
   return (
     <Stack
@@ -33,7 +40,6 @@ export default function Home() {
         </Heading>
       </Stack>
       <Stack flexDirection="row" justifyContent="center" gap="xl">
-        {accounts.length > 0 && <Link href={'/accounts'}>Accounts</Link>}
         <ButtonLink href={'/recover'} variant="secondary">
           Recover
         </ButtonLink>
