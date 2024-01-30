@@ -1,5 +1,6 @@
 import { Account } from '@/context/AccountsContext';
 import { Box, Stack } from '@kadena/react-ui';
+import classnames from 'classnames';
 import Image from 'next/image';
 import { ReactNode } from 'react';
 import CardLogo from '../../assets/images/card-logo.svg';
@@ -33,7 +34,7 @@ export default function Card({
 }: CardProps) {
   return (
     <Box
-      className={card}
+      className={classnames(card, 'card')}
       style={{
         '--card-progress': `${balancePercentage}%`,
       }}
