@@ -14,7 +14,7 @@ export default function Home() {
       width="100%"
       style={{ height: '100svh' }}
     >
-      <Stack flexDirection="column" alignItems="center">
+      <Stack flexDirection="column" alignItems="center" gap="sm">
         <Image src={logo} alt="BennuKey logo" style={{ marginTop: '2rem' }} />
         <Heading variant="h5" as="h2" style={{ lineHeight: 0.8 }}>
           BennuKey
