@@ -1,7 +1,6 @@
 import { type Account } from '@/context/AccountsContext';
 
 import Link from 'next/link';
-import { Button } from '../Button/Button';
 import { ButtonLink } from '../ButtonLink/ButtonLink';
 import DeviceCard from '../Card/DeviceCard';
 import { Carousel } from '../Carousel/Carousel';
@@ -32,6 +31,10 @@ export function Account({
             {!returnUrl && isActive && (
               <>
                 <Link href={`/accounts/${caccount}/devices/add`}>add</Link> -
+                <Link href={`/accounts/${caccount}/devices/${cid}/fund`}>
+                  fund
+                </Link>{' '}
+                -
                 <Link href={`/accounts/${caccount}/devices/${cid}/send`}>
                   send
                 </Link>{' '}
