@@ -9,7 +9,7 @@
     "generate": "npx pactjs contract-generate --file=\"./pact/webauthn.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
     "postinstall": "npx pactjs contract-generate --file=\"./pact/root/fungible-v2.pact\" --file=\"./pact/root/gas-payer-v1.pact\" --file=\"./pact/root/fungible-xchain-v1.pact\" --file=\"./pact/root/coin.pact\" --file=\"./pact/webauthn-guard.pact\" --file=\"./pact/webauthn-wallet.pact\" --file=\"./pact/l2-coin.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
     "lint": "next lint",
-    "start": "next start",
+    "start": "next start --port 1337",
     "update": "tsx pact/deploy/update-contracts.mts"
   },
   "dependencies": {
