@@ -12,16 +12,18 @@ type LoginProps = {
 export default function Login({ searchParams }: LoginProps) {
   const { returnUrl } = searchParams;
   return (
-    <Stack flexDirection="column" gap="lg">
+    <Stack flexDirection="column" gap="lg" style={{ height: '100svh' }}>
       <ContentHeader
         description={`Which account do you want to use to identify on ${searchParams.returnUrl}?`}
         heading="Login"
         icon="Account"
       />
 
-      <AccountSelector returnUrl={returnUrl} />
+      <Box height="100%">
+        <AccountSelector returnUrl={returnUrl} />
 
-      {/* <LoginConfirmation returnUrl={returnUrl} /> */}
+        {/* <LoginConfirmation returnUrl={returnUrl} /> */}
+      </Box>
     </Stack>
   );
 }

@@ -1,5 +1,4 @@
 import { Box } from '@kadena/react-ui';
-import { atoms } from '@kadena/react-ui/styles';
 import cn from 'classnames';
 import { ForwardedRef, forwardRef } from 'react';
 import type { ButtonProps } from 'react-aria-components';
@@ -19,19 +18,17 @@ function BaseButton(props: Props, ref: ForwardedRef<HTMLButtonElement>) {
       className={cn(button({ variant }), className)}
       {...restProps}
     >
-      {({}) => (
-        <>
-          {variant === 'progress' && (
-            <Box
-              aria-hidden
-              as="span"
-              className={progressIndicator}
-              style={{ left: `${progress}%` }}
-            />
-          )}
-          {children}
-        </>
-      )}
+      <>
+        {variant === 'progress' && (
+          <Box
+            aria-hidden
+            as="span"
+            className={progressIndicator}
+            style={{ left: `${progress}%` }}
+          />
+        )}
+        {children}
+      </>
     </AriaButton>
   );
 }
