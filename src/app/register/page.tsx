@@ -18,6 +18,7 @@ import { Color } from './steps/Color';
 import { DeviceType } from './steps/DeviceType';
 import { Network } from './steps/Network';
 import { useRouter } from 'next/navigation';
+import { useSWRConfig } from 'swr';
 
 const TOTAL_STEPS = 4;
 const FORM_DEFAULT = {
@@ -33,6 +34,7 @@ const FORM_DEFAULT = {
 type FormValues = typeof FORM_DEFAULT;
 
 export default function Account() {
+  const { mutate } = useSWRConfig();
   const formMethods = useForm({ defaultValues: FORM_DEFAULT });
   const router = useRouter();
 
@@ -80,6 +82,8 @@ export default function Account() {
       alias: data.alias,
       network: data.networkId,
     });
+
+    mutate('accounts');
 
     router.push('/');
   };
