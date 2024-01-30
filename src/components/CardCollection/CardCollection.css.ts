@@ -26,3 +26,9 @@ export const collapsed = style({
   bottom: '-160px',
   position: 'absolute',
 });
+
+export const expanded = style({
+  bottom: 'auto',
+  position: 'relative',
+  marginBlockEnd: '20px !important', // @TODO fix this in a better way
+});

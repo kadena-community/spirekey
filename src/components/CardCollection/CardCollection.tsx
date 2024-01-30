@@ -1,9 +1,16 @@
-import { Box, Stack } from '@kadena/react-ui';
+import { Box, Button, Stack } from '@kadena/react-ui';
 import classnames from 'classnames';
 import { motion } from 'framer-motion';
 import { Children, cloneElement, useState } from 'react';
 
-import { active, card, collapsed, inner, wrapper } from './CardCollection.css';
+import {
+  active,
+  card,
+  collapsed,
+  expanded,
+  inner,
+  wrapper,
+} from './CardCollection.css';
 
 interface CardCollectionProps {
   children: any; // @TODO ReactElement/ReactNode?
@@ -11,18 +18,21 @@ interface CardCollectionProps {
 
 export default function CardCollection({ children }: CardCollectionProps) {
   const [activeCard, setActiveCard] = useState<number>();
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   // Something we might be able to use for the scroll-enlarge-effect: https://codesandbox.io/p/sandbox/fervent-pasteur-dqs9ry?file=%2FApp.js%3A75%2C18-75%2C25
 
   return (
-    <Stack flexDirection="column" className={wrapper}>
-      <Box className={inner}>
+    <Box className={wrapper}>
+      <Button onClick={() => setIsExpanded(!isExpanded)}>Expand</Button>
+      <Stack className={inner} flexDirection="column" paddingBlockStart="lg">
         {Children.map(children, (child, i) => (
           <motion.div
             key={i}
             layout
             onClick={() => setActiveCard(i)}
             className={classnames(card, {
+              [expanded]: isExpanded,
               [active]: activeCard === i,
               [collapsed]: activeCard !== i,
             })}
@@ -31,10 +41,10 @@ export default function CardCollection({ children }: CardCollectionProps) {
               damping: 44,
               stiffness: 480,
             }}
-            animate={activeCard !== i && 'collapsed'}
+            animate={activeCard !== i && !isExpanded && 'collapsed'}
             variants={{
               collapsed: {
-                marginBottom: `${i * 50}px`,
+                marginBlockEnd: `${i * 50}px`,
               },
             }}
             style={{
@@ -47,7 +57,7 @@ export default function CardCollection({ children }: CardCollectionProps) {
             })}
           </motion.div>
         ))}
-      </Box>
-    </Stack>
+      </Stack>
+    </Box>
   );
 }
