@@ -62,8 +62,8 @@ const AccountsProvider = ({ children }: Props) => {
             accountName: account.name,
             devices: account.devices.map((device: any) => ({
               ...device,
-              color: device.identifier.split('_')[1],
-              deviceType: device.identifier.split('_')[0],
+              color: device.name.split('_')[1],
+              deviceType: device.name.split('_')[0],
             })),
             network,
           }));
