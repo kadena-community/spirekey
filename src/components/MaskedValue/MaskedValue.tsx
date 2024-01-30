@@ -1,13 +1,11 @@
 'use client';
 
-import type { FC } from 'react';
-import React, { useState } from 'react';
-import {
-  valueContainer,
-} from './MaskedValue.css';
-import { maskValue } from '@kadena/react-ui';
 import { KodeMono } from '@kadena/fonts';
+import { maskValue } from '@kadena/react-ui';
 import classNames from 'classnames';
+import type { FC } from 'react';
+import React from 'react';
+import { valueContainer } from './MaskedValue.css';
 
 KodeMono();
 

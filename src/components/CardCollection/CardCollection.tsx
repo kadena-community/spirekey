@@ -38,7 +38,11 @@ export default function CardCollection({ children }: CardCollectionProps) {
     cardRefs.current[0]?.querySelector('.card').offsetHeight || 0; // @TODO this doesn't work perfectly because some of the content is hidden when the card isn't active. When the card becomes active, the height increases
 
   return (
-    <Box className={wrapper}>
+    <Box
+      className={wrapper({
+        variant: activeCard === null ? 'expanded' : 'collapsed',
+      })}
+    >
       <Stack className={inner} flexDirection="column" paddingBlockStart="lg">
         {Children.map(children, (child, i) => (
           <motion.div
@@ -75,7 +79,6 @@ export default function CardCollection({ children }: CardCollectionProps) {
           >
             {cloneElement(child, {
               isActive: activeCard === i,
-              isCollapsed: activeCard !== i,
             })}
           </motion.div>
         ))}

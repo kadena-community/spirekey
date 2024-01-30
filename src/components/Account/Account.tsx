@@ -6,17 +6,14 @@ import DeviceCard from '../Card/DeviceCard';
 import { Carousel } from '../Carousel/Carousel';
 interface AccountProps {
   account: Account;
-  onClick?: (account: Account) => void;
-  isCollapsed?: boolean;
+
   isActive?: boolean;
   returnUrl?: string;
 }
 
 export function Account({
   account,
-  onClick,
   isActive = false,
-  isCollapsed = false,
   returnUrl,
 }: AccountProps) {
   return (
@@ -27,7 +24,7 @@ export function Account({
 
         return (
           <div key={d['credential-id']}>
-            <DeviceCard account={account} onClick={onClick} />
+            <DeviceCard account={account} />
             {!returnUrl && isActive && (
               <>
                 <Link href={`/accounts/${caccount}/devices/${cid}/fund`}>

@@ -1,4 +1,5 @@
 import { Box, Heading, SystemIcon } from '@kadena/react-ui';
+
 import { accountAlias, accountIcon, accountIconInner } from './Card.css';
 
 type CardProps = {

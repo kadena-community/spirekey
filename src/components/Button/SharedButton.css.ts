@@ -1,6 +1,6 @@
 import { customTokens } from '@/styles/tokens.css';
 import { atoms, tokens } from '@kadena/react-ui/styles';
-import { globalStyle, style } from '@vanilla-extract/css';
+import { style } from '@vanilla-extract/css';
 import { RecipeVariants, recipe } from '@vanilla-extract/recipes';
 
 export const button = recipe({

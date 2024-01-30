@@ -31,6 +31,7 @@ export const card = style([
           'linear-gradient(0deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0), rgba(255, 255, 255, 1)) border-box',
         mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
         maskComposite: 'xor, exclude',
+        zIndex: '-1',
       },
       '&:after': {
         content: '',

@@ -30,11 +30,6 @@ export default function Cards() {
     return 0;
   });
 
-  const onCardClick = (account: TAccount) => {
-    setActiveAccount(isCollapsed ? undefined : account);
-    setIsCollapsed(!isCollapsed);
-  };
-
   if (!accounts) return <div>loading...</div>;
 
   useEffect(() => {
@@ -91,8 +86,6 @@ export default function Cards() {
             <Account
               key={account.accountName + account.network}
               account={account}
-              onClick={onCardClick}
-              isCollapsed={isCollapsed}
               isActive={isActive}
             />
           );
