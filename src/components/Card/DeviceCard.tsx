@@ -1,9 +1,9 @@
 import { Account } from '@/context/AccountsContext';
-import Card from './Card';
-import Alias from './Alias';
-import DeviceIcons from './DeviceIcons';
 import AccountNetwork from './AccountNetwork';
+import Alias from './Alias';
+import Card from './Card';
 import CardBottom from './CardBottom';
+import DeviceIcons from './DeviceIcons';
 
 type CardProps = {
   account: Account;
@@ -17,7 +17,7 @@ export default function DeviceCard({
   balancePercentage = 10,
 }: CardProps) {
   const uniqueDeviceTypes = new Set();
-  account.devices.map((d) => uniqueDeviceTypes.add(d.identifier.split('_')[0]));
+  account.devices.map((d) => uniqueDeviceTypes.add(d.deviceType));
 
   return (
     <Card

@@ -1,7 +1,14 @@
 'use client';
 
 import { fundAccount } from '@/utils/fund';
-import { Breadcrumbs, BreadcrumbsItem, Button, Card, ContentHeader, Stack } from '@kadena/react-ui';
+import {
+  Breadcrumbs,
+  BreadcrumbsItem,
+  Button,
+  Card,
+  ContentHeader,
+  Stack,
+} from '@kadena/react-ui';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
@@ -18,15 +25,16 @@ export default function FundPage() {
       setLoading(true);
       if (!caccount) throw new Error('No account selected');
 
-      await fundAccount({account: caccount});
-
+      await fundAccount(caccount);
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
       }
     } finally {
       setLoading(false);
-      router.push(`/accounts/${params.caccount}/devices/${params.cid}/transactions`);
+      router.push(
+        `/accounts/${params.caccount}/devices/${params.cid}/transactions`,
+      );
     }
   };
 

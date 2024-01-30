@@ -90,9 +90,8 @@ export default function Account() {
               {
                 'credential-id': formMethods.watch('credentialId'),
                 domain: host,
-                identifier: `${formMethods.watch(
-                  'deviceType',
-                )}_${formMethods.watch('color')}`,
+                color: formMethods.watch('color'),
+                deviceType: formMethods.watch('deviceType'),
                 guard: {
                   keys: [formMethods.watch('credentialPubkey')],
                   pred: 'keys-any',

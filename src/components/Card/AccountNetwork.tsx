@@ -11,9 +11,13 @@ type AccountNetworkProps = {
   account: Account;
 };
 
-export default function AccountNetwork({
-  account,
-}: AccountNetworkProps) {
+const getNetworkDisplayName = (network: string) => {
+  if (network === 'mainnet01') return 'Mainnet';
+  if (network === 'testnet04') return 'Testnet';
+  if (network === 'fast-development') return 'Devnet';
+  return network;
+};
+export default function AccountNetwork({ account }: AccountNetworkProps) {
   return (
     <Stack flexDirection="column" className={cardContentCenter}>
       <MaskedValue
@@ -21,7 +25,7 @@ export default function AccountNetwork({
         startUnmaskedValues={16}
         className={accountStyle}
       />
-      <Text className={network}>{account.network}</Text>
+      <Text className={network}>{getNetworkDisplayName(account.network)}</Text>
     </Stack>
   );
 }

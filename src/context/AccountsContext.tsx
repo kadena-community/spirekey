@@ -12,8 +12,9 @@ export type Account = {
 };
 
 export type Device = {
-  identifier: string;
   domain: string;
+  color: string;
+  deviceType: string;
   ['credential-id']: string;
   guard: {
     keys: string[];
@@ -61,7 +62,8 @@ const AccountsProvider = ({ children }: Props) => {
             accountName: account.name,
             devices: account.devices.map((device: any) => ({
               ...device,
-              identifier: device.name,
+              color: device.name.split('_')[1],
+              deviceType: device.name.split('_')[0],
             })),
             network,
           }));
