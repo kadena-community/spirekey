@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/Button/Button';
 import { Account } from '@/context/AccountContext';
-import { useAccounts } from '@/hooks/useAccounts';
+import { useAccounts } from '@/context/AccountsContext';
 import { getAccountFrom } from '@/utils/account';
 import { Heading, TextField } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
@@ -14,7 +14,9 @@ const FORM_DEFAULT = {
   account: '',
 };
 
-const isAccount = (result: Account | null): result is Account => {
+const isAccount = (
+  result: Account | null,
+): result is Account & { network: string } => {
   return result !== null;
 };
 
@@ -34,10 +36,12 @@ export default function Recover() {
     const results = await Promise.all(
       networks.map(async (network) => {
         try {
-          return await getAccountFrom({
+          const acc = await getAccountFrom({
             caccount: account,
             networkId: network,
           });
+          if (!acc) return null;
+          return { ...acc, network };
         } catch (e) {
           console.log(e);
           return null;
@@ -63,7 +67,13 @@ export default function Recover() {
       })),
     });
 
-    await storeAccount(account);
+    results.filter(isAccount).forEach((r) => {
+      storeAccount({
+        accountName: r.name,
+        network: r.network,
+        alias: r.name,
+      });
+    });
     const caccount = encodeURIComponent(account);
     const cid = encodeURIComponent(authResult.id);
     router.push(`/accounts/${caccount}/devices/${cid}`);
