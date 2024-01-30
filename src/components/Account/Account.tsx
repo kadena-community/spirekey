@@ -1,87 +1,77 @@
-import { Account as TAccount } from '@/context/AccountsContext';
-import type { ForwardedRef } from 'react';
-import { forwardRef } from 'react';
+import { type Account } from '@/context/AccountsContext';
 
 import Link from 'next/link';
 import { Button } from '../Button/Button';
-import { Carousel } from '../Carousel/Carousel';
-import { accountPosition } from './Account.css';
+import { ButtonLink } from '../ButtonLink/ButtonLink';
 import DeviceCard from '../Card/DeviceCard';
+import { Carousel } from '../Carousel/Carousel';
 interface AccountProps {
-  account: TAccount;
-  onClick: (account: TAccount) => void;
-  isCollapsed: boolean;
-  isActive: boolean;
+  account: Account;
+  onClick?: (account: Account) => void;
+  isCollapsed?: boolean;
+  isActive?: boolean;
   returnUrl?: string;
 }
 
-function BaseAccount(
-  { account, onClick, isActive, isCollapsed, returnUrl }: AccountProps,
-  ref: ForwardedRef<HTMLDivElement>,
-) {
+export function Account({
+  account,
+  onClick,
+  isActive = false,
+  isCollapsed = false,
+  returnUrl,
+}: AccountProps) {
   return (
-    <div
-      ref={ref}
-      className={accountPosition}
-      data-collapsed={isCollapsed}
-      data-active={isActive}
-    >
-      <Carousel isActive={isActive}>
-        {account.devices.map((d) => {
-          const caccount = encodeURIComponent(account.accountName);
-          const cid = encodeURIComponent(d['credential-id']);
-          return (
-            <div id={d['credential-id']}>
-              <DeviceCard
-                account={account}
-                onClick={onClick}
-              />
-              {!returnUrl && isActive && (
-                <>
-                  <Link href={`/accounts/${caccount}/devices/add`}>add</Link> -
-                  <Link href={`/accounts/${caccount}/devices/${cid}/send`}>
-                    send
-                  </Link>{' '}
-                  -
-                  <Link href={`/accounts/${caccount}/devices/${cid}/receive`}>
-                    receive
-                  </Link>{' '}
-                  -
-                  <Link
-                    href={`/accounts/${caccount}/devices/${cid}/transactions`}
-                  >
-                    transactions
-                  </Link>{' '}
-                  -
-                  <Link href={`/accounts/${caccount}/devices/${cid}#${cid}`}>
-                    details
-                  </Link>
-                </>
-              )}
-              {returnUrl && (
-                <>
-                  <Button href={returnUrl}>Cancel</Button>
+    <Carousel isActive={isActive}>
+      {account.devices.map((d) => {
+        const caccount = encodeURIComponent(account.accountName);
+        const cid = encodeURIComponent(d['credential-id']);
 
-                  <Button
-                    href={`${returnUrl}?response=${Buffer.from(
-                      JSON.stringify({
-                        displayName: account.accountName,
-                        accountName: account.accountName,
-                        cid,
-                        publicKey: d.guard.keys[0],
-                      }),
-                    ).toString('base64')}`}
-                  >
-                    Login
-                  </Button>
-                </>
-              )}
-            </div>
-          );
-        })}
-      </Carousel>
-    </div>
+        return (
+          <div key={d['credential-id']}>
+            <DeviceCard account={account} onClick={onClick} />
+            {!returnUrl && isActive && (
+              <>
+                <Link href={`/accounts/${caccount}/devices/add`}>add</Link> -
+                <Link href={`/accounts/${caccount}/devices/${cid}/send`}>
+                  send
+                </Link>{' '}
+                -
+                <Link href={`/accounts/${caccount}/devices/${cid}/receive`}>
+                  receive
+                </Link>{' '}
+                -
+                <Link
+                  href={`/accounts/${caccount}/devices/${cid}/transactions`}
+                >
+                  transactions
+                </Link>{' '}
+                -
+                <Link href={`/accounts/${caccount}/devices/${cid}#${cid}`}>
+                  details
+                </Link>
+              </>
+            )}
+            {returnUrl && isActive && (
+              <>
+                <ButtonLink href={returnUrl}>Cancel</ButtonLink>
+
+                <ButtonLink
+                  href={`${returnUrl}?response=${Buffer.from(
+                    JSON.stringify({
+                      displayName: account.accountName,
+                      accountName: account.accountName,
+                      cid,
+                      publicKey: d.guard.keys[0],
+                    }),
+                  ).toString('base64')}`}
+                >
+                  Login
+                </ButtonLink>
+              </>
+            )}
+          </div>
+        );
+      })}
+    </Carousel>
   );
 }
-
-export const Account = forwardRef(BaseAccount);
