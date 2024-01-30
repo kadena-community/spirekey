@@ -3,11 +3,13 @@
 import { Button } from '@/components/Button/Button';
 import Card from '@/components/Card/Card';
 import { ProgressBox } from '@/components/ProgressBox/ProgressBox';
+import { Surface } from '@/components/Surface/Surface';
 import { useAccounts } from '@/hooks/useAccounts';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getAccountName, registerAccount } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Box, Stack } from '@kadena/react-ui';
+import { atoms } from '@kadena/react-ui/styles';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -84,8 +86,8 @@ export default function Account() {
   };
 
   return (
-    <Stack flexDirection="column" gap="md">
-      <Box width="100%" paddingInline="md">
+    <Stack flexDirection="column" gap="md" padding="lg">
+      <Box width="100%">
         <Card
           account={{
             alias: formMethods.watch('alias'),
@@ -117,52 +119,44 @@ export default function Account() {
               transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
               className={container}
             >
-              <div className={stepWrapper}>
-                <div className={step}>
-                  <Network isVisible={currentStep === 1} />
-                </div>
-              </div>
+              <Surface>
+                <Network isVisible={currentStep === 1} />
+              </Surface>
 
-              <div className={stepWrapper}>
-                <div className={step}>
-                  <Alias isVisible={currentStep === 2} />
-                </div>
-              </div>
+              <Surface>
+                <Alias isVisible={currentStep === 2} />
+              </Surface>
 
-              <div className={stepWrapper}>
-                <div className={step}>
-                  <DeviceType isVisible={currentStep === 3} />
-                </div>
-              </div>
+              <Surface>
+                <DeviceType isVisible={currentStep === 3} />
+              </Surface>
 
-              <div className={stepWrapper}>
-                <div className={step}>
-                  <Color isVisible={currentStep === 4} />
-                </div>
-              </div>
+              <Surface>
+                <Color isVisible={currentStep === 4} />
+              </Surface>
             </motion.div>
           </div>
 
-          <div className={buttonsContainer}>
-            {!prevStep && <Button onClick={() => {}}>Cancel</Button>}
-            {prevStep && <Button onClick={goToPrevStep}>Previous</Button>}
+          <div
+            className={atoms({ display: 'flex', marginBlock: 'lg', gap: 'xl' })}
+          >
+            <Button
+              variant="secondary"
+              onPress={goToPrevStep}
+              className={atoms({ flex: 1 })}
+            >
+              {!prevStep ? 'Cancel' : 'Previous'}
+            </Button>
 
-            <ProgressBox progress={(currentStep / TOTAL_STEPS) * 100}>
-              {nextStep && (
-                <button
-                  onClick={goToNextStep}
-                  type="button"
-                  className={progressButton}
-                >
-                  Next
-                </button>
-              )}
-              {!nextStep && (
-                <button type="submit" className={progressButton}>
-                  Complete
-                </button>
-              )}
-            </ProgressBox>
+            <Button
+              onPress={goToNextStep}
+              variant="progress"
+              progress={(currentStep / TOTAL_STEPS) * 100}
+              className={atoms({ flex: 1 })}
+              type={nextStep ? 'button' : 'submit'}
+            >
+              {nextStep ? 'Next' : 'Complete'}
+            </Button>
           </div>
         </form>
       </FormProvider>

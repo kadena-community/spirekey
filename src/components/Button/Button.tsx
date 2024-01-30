@@ -1,36 +1,39 @@
-import classnames from 'classnames';
-import Link from 'next/link';
-import { FC } from 'react';
-import { wrapper } from './Button.css';
+import { Box } from '@kadena/react-ui';
+import { atoms } from '@kadena/react-ui/styles';
+import cn from 'classnames';
+import { ForwardedRef, forwardRef } from 'react';
+import type { ButtonProps } from 'react-aria-components';
+import { Button as AriaButton } from 'react-aria-components';
+import { Variants, button, progressIndicator } from './SharedButton.css';
 
-interface Props {
-  onClick?: () => void;
-  href?: string;
-  type?: 'button' | 'submit' | 'reset';
-  className?: string;
-  children: React.ReactNode;
+interface Props extends ButtonProps, Variants {
+  progress?: number;
 }
 
-export const Button: FC<Props> = ({
-  children,
-  className,
-  onClick,
-  type = 'button',
-  href = '',
-}) => {
-  if (href)
-    return (
-      <Link href={href} className={classnames(wrapper, className)}>
-        {children}
-      </Link>
-    );
+function BaseButton(props: Props, ref: ForwardedRef<HTMLButtonElement>) {
+  const { children, className, variant, progress = 0, ...restProps } = props;
+
   return (
-    <button
-      className={classnames(wrapper, className)}
-      onClick={onClick}
-      type={type}
+    <AriaButton
+      ref={ref}
+      className={cn(button({ variant }), className)}
+      {...restProps}
     >
-      {children}
-    </button>
+      {({}) => (
+        <>
+          {variant === 'progress' && (
+            <Box
+              aria-hidden
+              as="span"
+              className={progressIndicator}
+              style={{ left: `${progress}%` }}
+            />
+          )}
+          {children}
+        </>
+      )}
+    </AriaButton>
   );
-};
+}
+
+export const Button = forwardRef(BaseButton);

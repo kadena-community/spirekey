@@ -1,16 +1,22 @@
 'use client';
 
-import { useAccounts } from '@/hooks/useAccounts';
-import {
-  Heading,
-  Link,
-  Stack,
-} from '@kadena/react-ui';
-import Image from 'next/image';
 import logo from '@/assets/images/bennuKey.svg';
+import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
+import { useAccounts } from '@/hooks/useAccounts';
+import { Heading, Stack } from '@kadena/react-ui';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function Home() {
   const { accounts } = useAccounts();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (accounts.length > 0) {
+      router.replace('/accounts');
+    }
+  }, [accounts]);
 
   return (
     <Stack
@@ -20,10 +26,7 @@ export default function Home() {
       width="100%"
       style={{ height: '100svh' }}
     >
-      <Stack
-        flexDirection="column"
-        alignItems="center"
-      >
+      <Stack flexDirection="column" alignItems="center">
         <Image src={logo} alt="BennuKey logo" style={{ marginTop: '2rem' }} />
         <Heading variant="h5" as="h2" style={{ lineHeight: 0.8 }}>
           BennuKey
@@ -36,14 +39,11 @@ export default function Home() {
           Wallet
         </Heading>
       </Stack>
-      <Stack
-        flexDirection="row"
-        justifyContent="center"
-        gap="md"
-      >
-        {accounts.length > 0 && <Link href={'/accounts'}>Accounts</Link>}
-        <Link href={'/restore'}>Restore</Link>
-        <Link href={'/register'}>Register</Link>
+      <Stack flexDirection="row" justifyContent="center" gap="xl">
+        <ButtonLink href={'/recover'} variant="secondary">
+          Recover
+        </ButtonLink>
+        <ButtonLink href={'/register'}>Register</ButtonLink>
       </Stack>
     </Stack>
   );

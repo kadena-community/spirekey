@@ -1,12 +1,13 @@
 'use client';
 
+import { Button } from '@/components/Button/Button';
 import { Account } from '@/context/AccountContext';
 import { useAccounts } from '@/hooks/useAccounts';
 import { getAccountFrom } from '@/utils/account';
 import { Heading, TextField } from '@kadena/react-ui';
+import { atoms } from '@kadena/react-ui/styles';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useRouter } from 'next/navigation';
-import { Button } from 'react-aria-components';
 import { useForm } from 'react-hook-form';
 
 const FORM_DEFAULT = {
@@ -17,7 +18,7 @@ const isAccount = (result: Account | null): result is Account => {
   return result !== null;
 };
 
-export default function Restore() {
+export default function Recover() {
   const router = useRouter();
   const { storeAccount } = useAccounts();
   const { register, handleSubmit, getValues } = useForm({
@@ -69,20 +70,33 @@ export default function Restore() {
   };
 
   return (
-    <>
-      <Heading>Restore</Heading>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <div
+      className={atoms({
+        paddingInline: 'lg',
+        paddingBlock: 'lg',
+      })}
+    >
+      <Heading>Recover</Heading>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className={atoms({
+          marginBlockStart: 'lg',
+          display: 'flex',
+          gap: 'lg',
+          flexDirection: 'column',
+        })}
+      >
         <TextField
           label="Account"
           {...{
             id: 'account',
             ...register('account', { required: true }),
           }}
-          info="The c:account you want to restore"
-          description="The c:account you want to restore"
+          info="The c:account you want to recover"
+          description="The c:account you want to recover"
         />
-        <Button type="submit">Restore</Button>
+        <Button type="submit">Recover</Button>
       </form>
-    </>
+    </div>
   );
 }
