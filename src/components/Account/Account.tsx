@@ -4,9 +4,9 @@ import { forwardRef } from 'react';
 
 import Link from 'next/link';
 import { Button } from '../Button/Button';
-import Card from '../Card/Card';
 import { Carousel } from '../Carousel/Carousel';
 import { accountPosition } from './Account.css';
+import DeviceCard from '../Card/DeviceCard';
 interface AccountProps {
   account: TAccount;
   onClick: (account: TAccount) => void;
@@ -32,11 +32,9 @@ function BaseAccount(
           const cid = encodeURIComponent(d['credential-id']);
           return (
             <div id={d['credential-id']}>
-              <Card
+              <DeviceCard
                 account={account}
                 onClick={onClick}
-                isActive={isActive}
-                isCollapsed={isCollapsed}
               />
               {!returnUrl && isActive && (
                 <>
