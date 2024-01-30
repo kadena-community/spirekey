@@ -148,26 +148,15 @@ export default function Account() {
               {!prevStep ? 'Cancel' : 'Previous'}
             </Button>
 
-            {nextStep && (
-              <Button
-                onPress={goToNextStep}
-                variant="progress"
-                progress={(currentStep / TOTAL_STEPS) * 100}
-                className={atoms({ flex: 1 })}
-              >
-                Next
-              </Button>
-            )}
-            {!nextStep && (
-              <Button
-                type="submit"
-                progress={(currentStep / TOTAL_STEPS) * 100}
-                variant="progress"
-                className={atoms({ flex: 1 })}
-              >
-                Complete
-              </Button>
-            )}
+            <Button
+              onPress={goToNextStep}
+              variant="progress"
+              progress={(currentStep / TOTAL_STEPS) * 100}
+              className={atoms({ flex: 1 })}
+              type={nextStep ? 'button' : 'submit'}
+            >
+              {nextStep ? 'Next' : 'Complete'}
+            </Button>
           </div>
         </form>
       </FormProvider>

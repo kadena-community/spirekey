@@ -59,6 +59,7 @@ export const progressIndicator = style({
   right: 0,
   backgroundColor: tokens.kda.foundation.color.neutral.n100,
   zIndex: -1,
+  transition: 'left 0.2s ease-in-out',
 });
 
 export type Variants = Omit<
