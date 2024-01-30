@@ -73,7 +73,11 @@ export default function Account() {
       domain: host,
     });
 
-    storeAccount({ accountName: caccount, alias: data.alias, network: host });
+    storeAccount({
+      accountName: caccount,
+      alias: data.alias,
+      network: data.networkId,
+    });
   };
 
   return (
