@@ -19,7 +19,6 @@ export default function DeviceCard({
 
   return (
     <Card
-      account={account}
       balancePercentage={balancePercentage}
       title={<Alias title={account.alias} />}
       icons={<DeviceIcons account={account} />}
