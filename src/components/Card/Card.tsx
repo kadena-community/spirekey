@@ -14,8 +14,6 @@ import {
 } from './Card.css';
 
 type CardProps = {
-  account?: Account;
-  onClick?: (account: Account) => void;
   balancePercentage?: number;
   title?: ReactNode;
   icons?: ReactNode;
@@ -24,8 +22,6 @@ type CardProps = {
 };
 
 export default function Card({
-  account = undefined,
-  onClick = (account: Account) => {},
   balancePercentage = 10,
   title = undefined,
   icons = undefined,

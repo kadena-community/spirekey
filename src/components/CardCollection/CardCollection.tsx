@@ -38,7 +38,10 @@ export default function CardCollection({ children }: CardCollectionProps) {
     cardRefs.current[0]?.querySelector('.card').offsetHeight || 0; // @TODO this doesn't work perfectly because some of the content is hidden when the card isn't active. When the card becomes active, the height increases
 
   return (
-    <Box className={wrapper}>
+    <Box
+      className={wrapper}
+      style={{ overflow: `${activeCard === null ? 'scroll' : 'hidden'}` }}
+    >
       <Stack className={inner} flexDirection="column" paddingBlockStart="lg">
         {Children.map(children, (child, i) => (
           <motion.div

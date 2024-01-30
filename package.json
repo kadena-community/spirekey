@@ -40,7 +40,8 @@
     "react-dom": "^18.2.0",
     "react-flip-move": "^3.0.5",
     "react-hook-form": "^7.49.3",
-    "swr": "^2.2.4"
+    "swr": "^2.2.4",
+    "usehooks-ts": "^2.10.0"
   },
   "devDependencies": {
     "@kadena/pactjs-cli": "^1.6.4",

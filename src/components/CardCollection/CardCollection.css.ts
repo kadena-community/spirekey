@@ -3,7 +3,6 @@ import { style } from '@vanilla-extract/css';
 export const wrapper = style({
   height: '100%',
   width: '100%',
-  overflow: 'hidden',
 });
 
 export const inner = style({

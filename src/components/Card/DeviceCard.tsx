@@ -7,13 +7,11 @@ import DeviceIcons from './DeviceIcons';
 
 type CardProps = {
   account: Account;
-  onClick?: (account: Account) => void;
   balancePercentage?: number;
 };
 
 export default function DeviceCard({
   account,
-  onClick = (account: Account) => {},
   balancePercentage = 10,
 }: CardProps) {
   const uniqueDeviceTypes = new Set();
@@ -22,7 +20,6 @@ export default function DeviceCard({
   return (
     <Card
       account={account}
-      onClick={onClick}
       balancePercentage={balancePercentage}
       title={<Alias title={account.alias} />}
       icons={<DeviceIcons account={account} />}

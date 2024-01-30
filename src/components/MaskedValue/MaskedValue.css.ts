@@ -5,7 +5,6 @@ export const valueContainer = style([
   atoms({
     fontFamily: 'codeFont',
     fontWeight: 'monoFont.bold',
-    width: '100%',
   }),
   {
     overflow: 'hidden',
