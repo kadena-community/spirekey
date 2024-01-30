@@ -1,27 +1,14 @@
 import { atoms } from '@kadena/react-ui/styles';
 import { style } from '@vanilla-extract/css';
+import { recipe } from '@vanilla-extract/recipes';
 
 export const details = style([
   atoms({
     marginBlockStart: 'md',
-    overflowY: 'hidden',
+    paddingInline: 'md',
   }),
   {
-    height: 'calc(100vh - 35.75rem)',
-  },
-]);
-
-export const transactions = style([
-  atoms({
-    border: 'hairline',
-    overflowY: 'auto',
-    borderRadius: 'md',
-    padding: 'md',
-  }),
-  {
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    flex: '1 1 auto',
-    minHeight: 'calc(100vh - 39rem)',
+    width: '100vw',
   },
 ]);
 
@@ -29,6 +16,9 @@ export const transactionAddress = style([
   atoms({
     fontWeight: 'bodyFont.bold',
   }),
+  {
+    color: 'white',
+  },
 ]);
 
 export const transactionAmount = style([
@@ -36,14 +26,32 @@ export const transactionAmount = style([
     fontWeight: 'bodyFont.bold',
     fontFamily: 'codeFont',
   }),
-  {
-    selectors: {
-      '&[data-transaction-type="credit"]': {
+]);
+
+export const transactionDate = style([
+  atoms({
+    alignItems: 'center',
+    display: 'flex',
+    fontFamily: 'codeFont',
+    fontSize: 'xs',
+  }),
+]);
+
+export const transactionAmountVariants = recipe({
+  base: {
+    textAlign: 'end',
+  },
+  variants: {
+    variant: {
+      credit: {
         color: 'green',
       },
-      '&[data-transaction-type="debet"]': {
+      debet: {
         color: 'red',
       },
     },
   },
-]);
+  defaultVariants: {
+    variant: 'credit',
+  },
+});

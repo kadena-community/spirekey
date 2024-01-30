@@ -1,8 +1,10 @@
+import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { Account } from '@/context/AccountsContext';
 import { getChainwebDataUrl } from '@/context/NetworkContext';
-import { Box, Button, MaskedValue, Stack, Table, Text } from '@kadena/react-ui';
+import { Grid, GridItem } from '@kadena/react-ui';
 import useSWR from 'swr';
-import { details, transactionAddress, transactionAmount, transactions } from './AccountDetails.css';
+import { details, transactionAddress, transactionAmount, transactionAmountVariants, transactionDate } from './AccountDetails.css';
+import classNames from 'classnames';
 
 interface AccountDetailsProps {
   account: Account;
@@ -10,40 +12,49 @@ interface AccountDetailsProps {
 
 export function AccountDetails({ account }: AccountDetailsProps) {
   const domain = getChainwebDataUrl(account.network || '');
-  const { data, error, isLoading } = useSWR(
+  const { data } = useSWR(
     `${domain}/txs/account/${encodeURIComponent(account.accountName)}`,
     async (url: string) => {
-      if (!account) return [];
-      return await fetch(url, {mode: 'no-cors'}).then((res) => res.json());
+      return await fetch(url).then((res) => res.json());
     },
   );
 
   return (
-    <div className={details}>
-      <Stack flexDirection="column">
-        <Stack
-          flexDirection="column"
-          marginBlockStart="md"
-          paddingInline="md"
-          className={transactions}
-        >
-          {data?.map((tx: any, index: number) => (
-            <Stack width='100%' justifyContent="space-between">
-              <MaskedValue
-                startUnmaskedValues={16}
-                value={
-                  tx.fromAccount === account.accountName
-                    ? tx.toAccount
-                    : tx.fromAccount
-                }
-              />
-              <Text className={transactionAmount} data-transaction-type={tx.fromAccount === account.accountName ? 'debet' : 'credit'}>
-                {tx.amount}
-              </Text>
-            </Stack>
-          ))}
-        </Stack>
-      </Stack>
-    </div>
+    <Grid
+      className={details}
+      gap={'xs'}
+      columns={{
+        lg: 5,
+        md: 5,
+        sm: 5,
+        xl: 5,
+        xs: 5,
+        xxl: 5,
+      }}
+    >
+      {data?.map((tx: any, index: number) => (
+        <>
+          <GridItem columnSpan={2}>
+            <MaskedValue
+              className={transactionAddress}
+              startUnmaskedValues={16}
+              value={
+                tx.fromAccount === account.accountName
+                  ? tx.toAccount
+                  : tx.fromAccount
+              }
+            />
+          </GridItem>
+          <GridItem columnSpan={2} className={transactionDate}>{new Date(tx.blockTime).toLocaleString()}</GridItem>
+          <GridItem
+            className={classNames([transactionAmount, transactionAmountVariants({
+              variant: tx.fromAccount === account.accountName ? 'debet' : 'credit',
+            })])}
+          >
+            {parseFloat(tx.amount).toFixed(2)}
+          </GridItem>
+        </>
+      ))}
+    </Grid>
   );
 }
