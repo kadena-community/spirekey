@@ -15,6 +15,23 @@ export const button = recipe({
       position: 'relative',
       border: 'none',
     }),
+    {
+      selectors: {
+        '&:after': {
+          pointerEvents: 'none',
+          content: '',
+          position: 'absolute',
+          inset: 0,
+          borderRadius: 'inherit',
+          padding: '1px',
+          border: '1px solid transparent',
+          background:
+            'linear-gradient(0deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.1)) border-box',
+          mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+          maskComposite: 'xor, exclude',
+        },
+      },
+    },
   ],
   variants: {
     variant: {
@@ -26,13 +43,12 @@ export const button = recipe({
         color: customTokens.color.buttonText,
         backgroundColor: customTokens.color.surface,
         backdropFilter: 'blur(18px)',
-        border: tokens.kda.foundation.border.hairline,
       },
       progress: {
         background: 'none',
         color: tokens.kda.foundation.color.text.base.inverse.default,
         ':before': {
-          content: '""',
+          content: '',
           position: 'absolute',
           borderRadius: tokens.kda.foundation.radius.xs,
           top: 0,

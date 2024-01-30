@@ -10,15 +10,15 @@ import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Box, Stack } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useSWRConfig } from 'swr';
 import { container, wrapper } from './page.css';
 import { Alias } from './steps/Alias';
 import { Color } from './steps/Color';
 import { DeviceType } from './steps/DeviceType';
 import { Network } from './steps/Network';
-import { useRouter } from 'next/navigation';
-import { useSWRConfig } from 'swr';
 
 const TOTAL_STEPS = 4;
 const FORM_DEFAULT = {
@@ -37,13 +37,24 @@ export default function Account() {
   const { mutate } = useSWRConfig();
   const formMethods = useForm({ defaultValues: FORM_DEFAULT });
   const router = useRouter();
-
   const [currentStep, setCurrentStep] = useState(1);
+  const [canSubmit, setCanSubmit] = useState(false);
+  const { storeAccount } = useAccounts();
+  const { host } = useReturnUrl();
+
   const prevStep = currentStep > 1 ? currentStep - 1 : null;
   const nextStep = currentStep < TOTAL_STEPS ? currentStep + 1 : null;
 
-  const { storeAccount } = useAccounts();
-  const { host } = useReturnUrl();
+  useEffect(() => {
+    if (!nextStep) {
+      setCanSubmit(true);
+    }
+  }, [nextStep]);
+
+  const goToPrevStep = () => {
+    if (!prevStep) return;
+    setCurrentStep(prevStep);
+  };
 
   const goToNextStep = () => {
     if (!nextStep) return;
@@ -62,11 +73,6 @@ export default function Account() {
     formMethods.setValue('credentialPubkey', publicKey);
     const accountName = await getAccountName(publicKey);
     formMethods.setValue('accountName', accountName);
-  };
-
-  const goToPrevStep = () => {
-    if (!prevStep) return;
-    setCurrentStep(prevStep);
   };
 
   const onSubmit = async (data: FormValues) => {
@@ -155,9 +161,9 @@ export default function Account() {
               variant="progress"
               progress={(currentStep / TOTAL_STEPS) * 100}
               className={atoms({ flex: 1 })}
-              type={nextStep ? 'button' : 'submit'}
+              type={canSubmit ? 'submit' : 'button'}
             >
-              {nextStep ? 'Next' : 'Complete'}
+              {canSubmit ? 'Complete' : 'Next'}
             </Button>
           </div>
         </form>
