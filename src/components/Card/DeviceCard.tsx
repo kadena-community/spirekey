@@ -9,11 +9,13 @@ import DeviceIcons from './DeviceIcons';
 type CardProps = {
   account: Account;
   balancePercentage?: number;
+  isLoading?: boolean;
 };
 
 export default function DeviceCard({
   account,
   balancePercentage = 10,
+  isLoading = false,
 }: CardProps) {
   const uniqueDeviceTypes = new Set();
   account.devices.map((d) => uniqueDeviceTypes.add(d.deviceType));
@@ -27,7 +29,7 @@ export default function DeviceCard({
       balancePercentage={balancePercentage}
       title={<Alias title={account.alias} />}
       icons={<DeviceIcons account={account} />}
-      center={<AccountNetwork account={account} />}
+      center={<AccountNetwork account={account} isLoading={isLoading} />}
       cardBottom={<CardBottom account={account} />}
     />
   );

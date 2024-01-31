@@ -8,7 +8,7 @@ import { deviceColors } from '@/styles/tokens.css';
 import { fundAccount } from '@/utils/fund';
 import { getAccountName, registerAccount } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
-import { Box, Stack } from '@kadena/react-ui';
+import { Box, Stack, Text } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -34,7 +34,7 @@ const FORM_DEFAULT = isInstaFund
       color: deviceColors.yellow,
       credentialPubkey: '',
       credentialId: '',
-      accountName: '',
+      accountName: 'c:....................................',
     }
   : {
       networkId: 'fast-development',
@@ -43,7 +43,7 @@ const FORM_DEFAULT = isInstaFund
       color: deviceColors.purple,
       credentialPubkey: '',
       credentialId: '',
-      accountName: '',
+      accountName: 'c:....................................',
     };
 
 type FormValues = typeof FORM_DEFAULT;
@@ -111,10 +111,10 @@ export default function Account() {
 
   const onSubmit = async (data: FormValues) => {
     if (isSubmitting) return;
-    setIsSubmitting(true);
 
     if (isInstaFund) {
       const { credentialId, publicKey, accountName } = await onChangeAlias();
+      setIsSubmitting(true);
       const caccount = await registerAccount({
         credentialPubkey: publicKey,
         credentialId,
@@ -174,6 +174,7 @@ export default function Account() {
               },
             ],
           }}
+          isLoading={isSubmitting}
         />
       </Box>
 
@@ -220,7 +221,6 @@ export default function Account() {
             </motion.div>
           </div>
 
-          {isSubmitting && <div>Loading...</div>}
           {!isSubmitting && (
             <div
               className={atoms({
