@@ -1,9 +1,13 @@
+import { Surface } from '@/components/Surface/Surface';
+import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
+import { customTokens } from '@/styles/tokens.css';
+import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { Heading, SystemIcon, Text } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { animationVariants } from '../animation';
-import { item, itemContainer } from './icons.css';
+import { descriptionEmphasis, item, itemContainer } from './steps.css';
 
 interface Props {
   isVisible: boolean;
@@ -12,57 +16,67 @@ interface Props {
 export const Network: FC<Props> = ({ isVisible }) => {
   const { register, watch } = useFormContext();
 
-  const selectedNetwork = watch('network');
+  const selectedNetwork = watch('networkId');
+
+  const getDescription = () => {
+    const dev = ' For development purposes only';
+
+    return (
+      <Text>
+        <Text className={descriptionEmphasis}>
+          {getNetworkDisplayName(selectedNetwork)}
+        </Text>{' '}
+        selected.
+        {['testnet04', 'fast-development'].includes(selectedNetwork) && dev}
+      </Text>
+    );
+  };
 
   return (
     <motion.div
       animate={isVisible ? 'visible' : 'hidden'}
       variants={animationVariants}
     >
-      <Heading>Network</Heading>
-
-      {['testnet04', 'fast-development'].includes(selectedNetwork) && (
-        <Text>For development purposes only</Text>
-      )}
-
-      <div className={itemContainer}>
-        <div>
-          <input
-            {...register('networkId')}
-            aria-label="Mainnet"
-            type="radio"
-            value="mainnet01"
-            id="network-mainnet"
-          />
-          <label htmlFor="network-mainnet" className={item}>
-            <SystemIcon.Earth size="xl" />
-          </label>
+      <SurfaceCard title="Network" description={getDescription()}>
+        <div className={itemContainer}>
+          <div>
+            <input
+              {...register('networkId')}
+              aria-label="Mainnet"
+              type="radio"
+              value="mainnet01"
+              id="network-mainnet"
+            />
+            <label htmlFor="network-mainnet" className={item}>
+              <SystemIcon.Earth size="xl" />
+            </label>
+          </div>
+          <div>
+            <input
+              {...register('networkId')}
+              aria-label="Testnet"
+              type="radio"
+              value="testnet04"
+              id="network-testnet"
+            />
+            <label htmlFor="network-testnet" className={item}>
+              <SystemIcon.CarBrakeParking size="xl" />
+            </label>
+          </div>
+          <div>
+            <input
+              {...register('networkId')}
+              aria-label="Devnet"
+              type="radio"
+              value="fast-development"
+              id="network-devnet"
+            />
+            <label htmlFor="network-devnet" className={item}>
+              <SystemIcon.ApplicationBrackets size="xl" />
+            </label>
+          </div>
         </div>
-        <div>
-          <input
-            {...register('networkId')}
-            aria-label="Testnet"
-            type="radio"
-            value="testnet04"
-            id="network-testnet"
-          />
-          <label htmlFor="network-testnet" className={item}>
-            <SystemIcon.CarBrakeParking size="xl" />
-          </label>
-        </div>
-        <div>
-          <input
-            {...register('networkId')}
-            aria-label="Devnet"
-            type="radio"
-            value="fast-development"
-            id="network-devnet"
-          />
-          <label htmlFor="network-devnet" className={item}>
-            <SystemIcon.ApplicationBrackets size="xl" />
-          </label>
-        </div>
-      </div>
+      </SurfaceCard>
     </motion.div>
   );
 };

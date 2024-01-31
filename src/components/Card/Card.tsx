@@ -1,4 +1,6 @@
 import { Account } from '@/context/AccountsContext';
+import { deviceColors } from '@/styles/tokens.css';
+import { hexadecimalToRGB } from '@/utils/color';
 import { Box, Stack } from '@kadena/react-ui';
 import classnames from 'classnames';
 import Image from 'next/image';
@@ -12,8 +14,6 @@ import {
   cardLogo,
   txAndBalance,
 } from './Card.css';
-import { deviceColors } from '@/styles/tokens.css';
-import { hexadecimalToRGB } from '@/utils/color';
 
 type CardProps = {
   color?: string;

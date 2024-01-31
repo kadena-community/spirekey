@@ -2,9 +2,9 @@
 
 import { Button } from '@/components/Button/Button';
 import DeviceCard from '@/components/Card/DeviceCard';
-import { Surface } from '@/components/Surface/Surface';
 import { useAccounts } from '@/context/AccountsContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
+import { deviceColors } from '@/styles/tokens.css';
 import { fundAccount } from '@/utils/fund';
 import { getAccountName, registerAccount } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
@@ -15,31 +15,32 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSWRConfig } from 'swr';
-import { container, wrapper } from './page.css';
+import { container, step, wrapper } from './page.css';
 import { Alias } from './steps/Alias';
 import { Color } from './steps/Color';
 import { DeviceType } from './steps/DeviceType';
+import { Fingerprint } from './steps/Fingerprint';
 import { Network } from './steps/Network';
 
 const isInstaFund = process.env.INSTA_FUND === 'true';
 
-const TOTAL_STEPS = isInstaFund ? 1 : 4;
+const TOTAL_STEPS = isInstaFund ? 1 : 5;
 
 const FORM_DEFAULT = isInstaFund
   ? {
       networkId: 'testnet04',
       alias: '',
       deviceType: 'phone',
-      color: 'yellow',
+      color: deviceColors.yellow,
       credentialPubkey: '',
       credentialId: '',
       accountName: '',
     }
   : {
-      networkId: '',
+      networkId: 'fast-development',
       alias: '',
-      deviceType: '',
-      color: '',
+      deviceType: 'security-key',
+      color: deviceColors.purple,
       credentialPubkey: '',
       credentialId: '',
       accountName: '',
@@ -53,6 +54,7 @@ export default function Account() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [canSubmit, setCanSubmit] = useState(false);
+  const [usedAlias, setUsedAlias] = useState<string>();
   const { storeAccount } = useAccounts();
   const { host } = useReturnUrl();
 
@@ -64,17 +66,32 @@ export default function Account() {
   useEffect(() => {
     if (!nextStep) {
       setCanSubmit(true);
+    } else {
+      setCanSubmit(false);
     }
   }, [nextStep]);
 
   const goToPrevStep = () => {
     if (!prevStep) return;
+
+    if (currentStep === 4 && usedAlias === formMethods.getValues('alias')) {
+      // skip the fingerprint step when we already have an account for the same alias
+      return setCurrentStep(prevStep - 1);
+    }
+
     setCurrentStep(prevStep);
   };
 
   const goToNextStep = () => {
     if (!nextStep) return;
-    if (nextStep === 3) {
+    if (currentStep === 2 && usedAlias === formMethods.getValues('alias')) {
+      // skip the fingerprint step if the currently filled in alias is the same as the one we used before
+      return setCurrentStep(nextStep + 1);
+    }
+
+    if (currentStep === 3) {
+      // get a new account
+      setUsedAlias(formMethods.getValues('alias'));
       return onChangeAlias().then(() => setCurrentStep(nextStep));
     }
 
@@ -95,6 +112,7 @@ export default function Account() {
   const onSubmit = async (data: FormValues) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
+
     if (isInstaFund) {
       const { credentialId, publicKey, accountName } = await onChangeAlias();
       const caccount = await registerAccount({
@@ -135,8 +153,8 @@ export default function Account() {
   };
 
   return (
-    <Stack flexDirection="column" gap="md" padding="lg">
-      <Box width="100%">
+    <Stack flexDirection="column" gap="md">
+      <Box width="100%" padding="lg">
         <DeviceCard
           account={{
             alias: formMethods.watch('alias'),
@@ -168,25 +186,35 @@ export default function Account() {
               className={container}
             >
               {isInstaFund && (
-                <Surface>
-                  <Alias isVisible={true} />
-                </Surface>
+                <Box className={step}>
+                  <Alias isVisible />
+                </Box>
               )}
+
               {!isInstaFund && (
                 <>
-                  <Surface>
+                  <Box className={step}>
                     <Network isVisible={currentStep === 1} />
-                  </Surface>
+                  </Box>
 
-                  <Surface>
+                  <Box className={step}>
                     <Alias isVisible={currentStep === 2} />
-                  </Surface>
-                  <Surface>
-                    <DeviceType isVisible={currentStep === 3} />
-                  </Surface>
-                  <Surface>
-                    <Color isVisible={currentStep === 4} />
-                  </Surface>
+                  </Box>
+
+                  <Box className={step}>
+                    <Fingerprint
+                      isVisible={currentStep === 3}
+                      onClick={goToNextStep}
+                    />
+                  </Box>
+
+                  <Box className={step}>
+                    <DeviceType isVisible={currentStep === 4} />
+                  </Box>
+
+                  <Box className={step}>
+                    <Color isVisible={currentStep === 5} />
+                  </Box>
                 </>
               )}
             </motion.div>
@@ -199,6 +227,7 @@ export default function Account() {
                 display: 'flex',
                 marginBlock: 'lg',
                 gap: 'xl',
+                paddingInline: 'lg',
               })}
             >
               {isInstaFund && (

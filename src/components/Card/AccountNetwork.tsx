@@ -1,5 +1,6 @@
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { Account } from '@/context/AccountsContext';
+import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { Stack, SystemIcon, Text } from '@kadena/react-ui';
 import { useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'usehooks-ts';
@@ -12,13 +13,6 @@ import {
 
 type AccountNetworkProps = {
   account: Account;
-};
-
-const getNetworkDisplayName = (network: string) => {
-  if (network === 'mainnet01') return 'Mainnet';
-  if (network === 'testnet04') return 'Testnet';
-  if (network === 'fast-development') return 'Devnet';
-  return network;
 };
 
 export default function AccountNetwork({ account }: AccountNetworkProps) {
@@ -34,6 +28,8 @@ export default function AccountNetwork({ account }: AccountNetworkProps) {
       clearTimeout(timer);
     };
   }, [hasCopied]);
+
+  if (!account.accountName) return null;
 
   return (
     <Stack flexDirection="column" className={cardContentCenter}>

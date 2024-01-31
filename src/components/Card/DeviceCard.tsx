@@ -1,10 +1,10 @@
 import { Account } from '@/context/AccountsContext';
+import { deviceColors } from '@/styles/tokens.css';
 import AccountNetwork from './AccountNetwork';
 import Alias from './Alias';
 import Card from './Card';
 import CardBottom from './CardBottom';
 import DeviceIcons from './DeviceIcons';
-import { deviceColors } from '@/styles/tokens.css';
 
 type CardProps = {
   account: Account;
@@ -19,7 +19,7 @@ export default function DeviceCard({
   account.devices.map((d) => uniqueDeviceTypes.add(d.deviceType));
 
   // @todo: use the color of a specific device
-  const color = deviceColors[account.devices[0].color];
+  const color = account.devices[0].color;
 
   return (
     <Card

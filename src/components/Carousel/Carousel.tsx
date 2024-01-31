@@ -1,5 +1,8 @@
+import { Account } from '@/context/AccountsContext';
 import classNames from 'classnames';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Children } from 'react';
+import AddDeviceCard from '../Card/AddDeviceCard';
 import {
   carousel,
   carouselItem,
@@ -7,8 +10,6 @@ import {
   carouselNav,
   carouselNavItem,
 } from './Carousel.css';
-import AddDeviceCard from '../Card/AddDeviceCard';
-import { Account } from '@/context/AccountsContext';
 
 type CarouselProps = {
   account: Account;
@@ -31,16 +32,21 @@ export const Carousel = ({ account, children, isActive }: CarouselProps) => {
           [carouselItems.nonScrollable]: !isActive,
         })}
       >
-        {isActive &&
-          <div
-            className={classNames({
-              [carouselItem.default]: true,
-              [carouselItem.nonScrollable]: !isActive,
-            })}
-          >
-            <AddDeviceCard account={account}/>
-          </div>
-        }
+        {isActive && (
+          <AnimatePresence>
+            <motion.div
+              initial={{ transform: 'translateX(-100%)' }}
+              animate={{ transform: 'translateX(0)' }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className={classNames({
+                [carouselItem.default]: true,
+                [carouselItem.nonScrollable]: !isActive,
+              })}
+            >
+              <AddDeviceCard account={account} />
+            </motion.div>
+          </AnimatePresence>
+        )}
         {Children.map(children, (child, index) => (
           <div
             className={classNames({

@@ -68,7 +68,7 @@ export const button = recipe({
 
 export const progressIndicator = style({
   position: 'absolute',
-  borderRadius: tokens.kda.foundation.radius.xs,
+  // borderRadius: tokens.kda.foundation.radius.xs,
   top: 0,
   bottom: 0,
   left: 0,
