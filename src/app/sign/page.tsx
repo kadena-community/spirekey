@@ -11,6 +11,7 @@ import {
   Heading,
   ProductIcon,
   Select,
+  SelectItem,
   Stack,
   SystemIcon,
   Text,
@@ -171,10 +172,18 @@ export default function Sign(req: SignProps) {
         label="Chain ID"
         // onChange={(evt) => setLanguage(evt.currentTarget.value)}
       >
-        <option value="">Select language</option>
-        <option value="en">English</option>
-        <option value="nl">Nederlands</option>
-        <option value="fr">Français</option>
+        <SelectItem>
+          <option value="">Select language</option>
+        </SelectItem>
+        <SelectItem>
+          <option value="en">English</option>
+        </SelectItem>
+        <SelectItem>
+          <option value="nl">Nederlands</option>
+        </SelectItem>
+        <SelectItem>
+          <option value="fr">Français</option>
+        </SelectItem>
       </Select>
 
       {getLabels(txData.signers, language).map((x) => (
