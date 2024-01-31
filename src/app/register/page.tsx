@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSWRConfig } from 'swr';
-import { container, wrapper } from './page.css';
+import { container, step, wrapper } from './page.css';
 import { Alias } from './steps/Alias';
 import { Color } from './steps/Color';
 import { DeviceType } from './steps/DeviceType';
@@ -23,7 +23,7 @@ import { Network } from './steps/Network';
 
 const isInstaFund = process.env.INSTA_FUND === 'true';
 
-const TOTAL_STEPS = isInstaFund ? 1 : 4;
+const TOTAL_STEPS = isInstaFund ? 1 : 5;
 
 const FORM_DEFAULT = isInstaFund
   ? {
@@ -51,7 +51,7 @@ export default function Account() {
   const { mutate } = useSWRConfig();
   const formMethods = useForm({ defaultValues: FORM_DEFAULT });
   const router = useRouter();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(4);
   const [canSubmit, setCanSubmit] = useState(false);
   const { storeAccount } = useAccounts();
   const { host } = useReturnUrl();
@@ -64,6 +64,8 @@ export default function Account() {
   useEffect(() => {
     if (!nextStep) {
       setCanSubmit(true);
+    } else {
+      setCanSubmit(false);
     }
   }, [nextStep]);
 
@@ -95,6 +97,7 @@ export default function Account() {
   const onSubmit = async (data: FormValues) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
+
     if (isInstaFund) {
       const { credentialId, publicKey, accountName } = await onChangeAlias();
       const caccount = await registerAccount({
@@ -135,8 +138,8 @@ export default function Account() {
   };
 
   return (
-    <Stack flexDirection="column" gap="md" padding="lg">
-      <Box width="100%">
+    <Stack flexDirection="column" gap="md">
+      <Box width="100%" padding="lg">
         <DeviceCard
           account={{
             alias: formMethods.watch('alias'),
@@ -168,25 +171,28 @@ export default function Account() {
               className={container}
             >
               {isInstaFund && (
-                <Surface>
-                  <Alias isVisible={true} />
-                </Surface>
+                <Box className={step}>
+                  <Alias isVisible />
+                </Box>
               )}
+
               {!isInstaFund && (
                 <>
-                  <Surface>
+                  <Box className={step}>
                     <Network isVisible={currentStep === 1} />
-                  </Surface>
+                  </Box>
 
-                  <Surface>
+                  <Box className={step}>
                     <Alias isVisible={currentStep === 2} />
-                  </Surface>
-                  <Surface>
+                  </Box>
+
+                  <Box className={step}>
                     <DeviceType isVisible={currentStep === 3} />
-                  </Surface>
-                  <Surface>
+                  </Box>
+
+                  <Box className={step}>
                     <Color isVisible={currentStep === 4} />
-                  </Surface>
+                  </Box>
                 </>
               )}
             </motion.div>

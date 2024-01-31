@@ -35,6 +35,8 @@ export default function AccountNetwork({ account }: AccountNetworkProps) {
     };
   }, [hasCopied]);
 
+  if (!account.accountName) return null;
+
   return (
     <Stack flexDirection="column" className={cardContentCenter}>
       <Stack flexDirection="row" alignItems="center">

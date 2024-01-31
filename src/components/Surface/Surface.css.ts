@@ -6,8 +6,6 @@ export const background = style([
     position: 'relative',
     borderRadius: 'sm',
     padding: 'lg',
-    width: '100%',
-    flexShrink: 0,
   }),
   {
     background: 'rgba(147, 147, 147, 0.1)',

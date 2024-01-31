@@ -1,3 +1,4 @@
+import { Surface } from '@/components/Surface/Surface';
 import { Heading, SystemIcon, Text } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
@@ -19,50 +20,52 @@ export const Network: FC<Props> = ({ isVisible }) => {
       animate={isVisible ? 'visible' : 'hidden'}
       variants={animationVariants}
     >
-      <Heading>Network</Heading>
+      <Heading variant="h5">Network</Heading>
 
       {['testnet04', 'fast-development'].includes(selectedNetwork) && (
         <Text>For development purposes only</Text>
       )}
 
-      <div className={itemContainer}>
-        <div>
-          <input
-            {...register('networkId')}
-            aria-label="Mainnet"
-            type="radio"
-            value="mainnet01"
-            id="network-mainnet"
-          />
-          <label htmlFor="network-mainnet" className={item}>
-            <SystemIcon.Earth size="xl" />
-          </label>
+      <Surface>
+        <div className={itemContainer}>
+          <div>
+            <input
+              {...register('networkId')}
+              aria-label="Mainnet"
+              type="radio"
+              value="mainnet01"
+              id="network-mainnet"
+            />
+            <label htmlFor="network-mainnet" className={item}>
+              <SystemIcon.Earth size="xl" />
+            </label>
+          </div>
+          <div>
+            <input
+              {...register('networkId')}
+              aria-label="Testnet"
+              type="radio"
+              value="testnet04"
+              id="network-testnet"
+            />
+            <label htmlFor="network-testnet" className={item}>
+              <SystemIcon.CarBrakeParking size="xl" />
+            </label>
+          </div>
+          <div>
+            <input
+              {...register('networkId')}
+              aria-label="Devnet"
+              type="radio"
+              value="fast-development"
+              id="network-devnet"
+            />
+            <label htmlFor="network-devnet" className={item}>
+              <SystemIcon.ApplicationBrackets size="xl" />
+            </label>
+          </div>
         </div>
-        <div>
-          <input
-            {...register('networkId')}
-            aria-label="Testnet"
-            type="radio"
-            value="testnet04"
-            id="network-testnet"
-          />
-          <label htmlFor="network-testnet" className={item}>
-            <SystemIcon.CarBrakeParking size="xl" />
-          </label>
-        </div>
-        <div>
-          <input
-            {...register('networkId')}
-            aria-label="Devnet"
-            type="radio"
-            value="fast-development"
-            id="network-devnet"
-          />
-          <label htmlFor="network-devnet" className={item}>
-            <SystemIcon.ApplicationBrackets size="xl" />
-          </label>
-        </div>
-      </div>
+      </Surface>
     </motion.div>
   );
 };

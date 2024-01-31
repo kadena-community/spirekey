@@ -1,3 +1,4 @@
+import { Surface } from '@/components/Surface/Surface';
 import { Heading } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
@@ -16,8 +17,9 @@ export const DeviceType: FC<Props> = ({ isVisible }) => {
       animate={isVisible ? 'visible' : 'hidden'}
       variants={animationVariants}
     >
-      <Heading>Device Type</Heading>
-      <div>
+      <Heading variant="h5">Device Type</Heading>
+
+      <Surface>
         <input
           {...register('deviceType')}
           type="radio"
@@ -43,7 +45,7 @@ export const DeviceType: FC<Props> = ({ isVisible }) => {
           id="deviceType-desktop"
         />
         <label htmlFor="deviceType-desktop">Desktop</label>
-      </div>
+      </Surface>
 
       {/* <Picker
         label="Icon"

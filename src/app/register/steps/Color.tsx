@@ -1,9 +1,13 @@
 // import { Picker, PickerItem } from '@/components/Picker/Picker';
-import { Heading } from '@kadena/react-ui';
+import { Surface } from '@/components/Surface/Surface';
+import { customTokens } from '@/styles/tokens.css';
+import { deviceColors } from '@/utils/deviceColors';
+import { Box, Heading, Text } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { animationVariants } from '../animation';
+import { color } from './Color.css';
 
 interface Props {
   isVisible: boolean;
@@ -17,29 +21,37 @@ export const Color: FC<Props> = ({ isVisible }) => {
       animate={isVisible ? 'visible' : 'hidden'}
       variants={animationVariants}
     >
-      <Heading>Color</Heading>
-      <div>
-        <input {...register('color')} type="radio" value="red" id="color-red" />
-        <label htmlFor="color-red">Red</label>
-        <br />
+      <Heading variant="h5">Color</Heading>
 
-        <input
-          {...register('color')}
-          type="radio"
-          value="yellow"
-          id="color-yellow"
-        />
-        <label htmlFor="color-yellow">Yellow</label>
-        <br />
+      <Text>
+        This color helps you to identify this account. The color is only stored
+        on your device and cannot been seen by others.
+      </Text>
 
-        <input
-          {...register('color')}
-          type="radio"
-          value="green"
-          id="color-green"
-        />
-        <label htmlFor="color-green">Green</label>
-      </div>
+      <Surface>
+        {Object.entries(deviceColors).map(([description, colorHex]) => {
+          return (
+            <>
+              <input
+                {...register('color')}
+                type="radio"
+                value={colorHex}
+                id={`color-${colorHex}`}
+              />
+              <label
+                htmlFor={`color-${colorHex}`}
+                aria-label={`Color ${description}`}
+              >
+                <Box
+                  className={color}
+                  style={{ backgroundColor: colorHex }}
+                ></Box>
+              </label>
+              <br />
+            </>
+          );
+        })}
+      </Surface>
 
       {/* <Picker
         label="Color"
