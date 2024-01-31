@@ -4,6 +4,7 @@ import { Button } from '@/components/Button/Button';
 import DeviceCard from '@/components/Card/DeviceCard';
 import { useAccounts } from '@/context/AccountsContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
+import { deviceColors } from '@/styles/tokens.css';
 import { fundAccount } from '@/utils/fund';
 import { getAccountName, registerAccount } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
@@ -30,7 +31,7 @@ const FORM_DEFAULT = isInstaFund
       networkId: 'testnet04',
       alias: '',
       deviceType: 'phone',
-      color: 'yellow',
+      color: deviceColors.yellow,
       credentialPubkey: '',
       credentialId: '',
       accountName: '',
@@ -38,8 +39,8 @@ const FORM_DEFAULT = isInstaFund
   : {
       networkId: 'fast-development',
       alias: '',
-      deviceType: '',
-      color: '',
+      deviceType: 'security-key',
+      color: deviceColors.purple,
       credentialPubkey: '',
       credentialId: '',
       accountName: '',
