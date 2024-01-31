@@ -4,6 +4,7 @@ import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { Stack, SystemIcon, Text } from '@kadena/react-ui';
 import { useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'usehooks-ts';
+import { AccountRevealer } from '../AccountRevealer/AccountRevealer';
 import { copyButton } from './AccountNetwork.css';
 import {
   account as accountStyle,
@@ -13,9 +14,13 @@ import {
 
 type AccountNetworkProps = {
   account: Account;
+  isLoading?: boolean;
 };
 
-export default function AccountNetwork({ account }: AccountNetworkProps) {
+export default function AccountNetwork({
+  account,
+  isLoading,
+}: AccountNetworkProps) {
   const [, copy] = useCopyToClipboard();
   const [hasCopied, setHasCopied] = useState(false);
 
@@ -34,11 +39,19 @@ export default function AccountNetwork({ account }: AccountNetworkProps) {
   return (
     <Stack flexDirection="column" className={cardContentCenter}>
       <Stack flexDirection="row" alignItems="center">
-        <MaskedValue
-          value={account.accountName}
-          startUnmaskedValues={16}
-          className={accountStyle}
-        />
+        {isLoading ? (
+          <AccountRevealer
+            accountName={account.accountName}
+            className={accountStyle}
+            reveal={!isLoading}
+          />
+        ) : (
+          <MaskedValue
+            value={account.accountName}
+            startUnmaskedValues={16}
+            className={accountStyle}
+          />
+        )}
         <button
           className={copyButton}
           onClick={(e) => {
