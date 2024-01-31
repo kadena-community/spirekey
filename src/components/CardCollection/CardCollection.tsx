@@ -15,6 +15,8 @@ export default function CardCollection({ children }: CardCollectionProps) {
   const [activeCard, setActiveCard] = useState<number | null>(null);
   const cardRefs = useRef(new Array());
 
+  console.log(activeCard);
+
   const getCardVariant = (i: number) => {
     if (activeCard === i) {
       return 'active';

@@ -1,8 +1,6 @@
 // import { Picker, PickerItem } from '@/components/Picker/Picker';
-import { Surface } from '@/components/Surface/Surface';
 import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
-import { customTokens } from '@/styles/tokens.css';
-import { deviceColors } from '@/utils/deviceColors';
+import { deviceColors } from '@/styles/tokens.css';
 import { Box, Grid, GridItem, Heading, Stack, Text } from '@kadena/react-ui';
 import classnames from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';

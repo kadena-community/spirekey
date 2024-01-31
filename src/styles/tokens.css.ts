@@ -4,9 +4,17 @@ export const deviceColors = {
   purple: '#893DE7',
   pink: '#C82269',
   red: '#D31510',
-  yellow: '#E8C600',
-  green: '#AAD816',
+  orange: '#856600',
+  darkGreen: '#577400',
   blue: '#0265DC',
+  violet: '#5258E4',
+  lightPurple: '#ACAFFF',
+  lightBlue: '#96CEFD',
+  green: '#AAD816',
+  yellow: '#E8C600',
+  salmon: '#FFB7A9',
+  skin: '#FFB2CE',
+  lightViolet: '#DBBBFE',
 };
 
 export const customTokens = createGlobalTheme(':root', {
