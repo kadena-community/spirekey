@@ -50,11 +50,13 @@ export const registerAccount = async ({
   domain,
   credentialId,
   credentialPubkey,
+  network,
 }: {
   displayName: string;
   domain: string;
   credentialId: string;
   credentialPubkey: string;
+  network: string;
 }): Promise<string> => {
   const caccount = await getAccountName(credentialPubkey);
 
@@ -65,6 +67,7 @@ export const registerAccount = async ({
       domain,
       credentialId,
       credentialPubkey,
+      network,
     }),
     createTransaction,
     signWithKeyPair({ publicKey: genesisPubKey, secretKey: genesisPrivateKey }),
@@ -85,12 +88,14 @@ const registerAccountCommand = ({
   credentialId,
   credentialPubkey,
   domain,
+  network,
 }: {
   caccount: string;
   displayName: string;
   credentialId: string;
   credentialPubkey: string;
   domain: string;
+  network: string;
 }) =>
   composePactCommand(
     execution(
@@ -126,5 +131,5 @@ const registerAccountCommand = ({
       ttl: 60000,
       senderAccount: gasStation,
     }),
-    setNetworkId(process.env.NETWORK_ID || 'fast-development'),
+    setNetworkId(network),
   );
