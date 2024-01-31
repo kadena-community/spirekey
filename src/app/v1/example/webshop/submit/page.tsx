@@ -1,7 +1,6 @@
 'use client';
 
 import { SubmitResult } from '@/components/SubmitResult';
-import { usePreview } from '@/hooks/usePreview';
 import { useSubmit } from '@/hooks/useSubmit';
 import {
   Box,
@@ -26,6 +25,9 @@ export default function Submit({ searchParams }: SearchParams) {
 
   const sender = JSON.parse(tx.cmd).meta.sender;
 
+  const txCosts = preview?.events
+    ?.filter((m: any) => m.module.name === 'coin' && m.name === 'TRANSFER')
+    .reduce((s: number, a: any) => s + a.params[2], 0);
   return (
     <Stack flexDirection="column" gap="md" alignItems="center" margin="xl">
       <ContentHeader
@@ -39,9 +41,7 @@ export default function Submit({ searchParams }: SearchParams) {
           <Stack flexDirection="column" gap="md">
             <Stack flexDirection="column" gap="sm">
               <Heading variant="h6">Estimated transaction costs:</Heading>
-              <Text>
-                {!preview?.gas ? 'Loading...' : `${preview?.gas} KDA`}
-              </Text>
+              <Text>{!preview?.gas ? 'Loading...' : `${txCosts} KDA`}</Text>
               <Heading variant="h6">Paid by:</Heading>
               <Text>{sender}</Text>
             </Stack>
