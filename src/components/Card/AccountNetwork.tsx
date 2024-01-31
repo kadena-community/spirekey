@@ -1,7 +1,7 @@
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { Account } from '@/context/AccountsContext';
-import { Box, Stack, SystemIcon, Text } from '@kadena/react-ui';
-import { atoms } from '@kadena/react-ui/styles';
+import { Stack, SystemIcon, Text } from '@kadena/react-ui';
+import { useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'usehooks-ts';
 import { copyButton } from './AccountNetwork.css';
 import {
@@ -22,7 +22,18 @@ const getNetworkDisplayName = (network: string) => {
 };
 
 export default function AccountNetwork({ account }: AccountNetworkProps) {
-  const [copiedText, copy] = useCopyToClipboard();
+  const [, copy] = useCopyToClipboard();
+  const [hasCopied, setHasCopied] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHasCopied(false);
+    }, 2000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [hasCopied]);
 
   return (
     <Stack flexDirection="column" className={cardContentCenter}>
@@ -37,10 +48,14 @@ export default function AccountNetwork({ account }: AccountNetworkProps) {
           onClick={(e) => {
             e.stopPropagation();
             copy(account.accountName);
-            alert(`Copied ${copiedText} to clipboard`); // @TODO: Replace with toast
+            setHasCopied(true);
           }}
         >
-          <SystemIcon.ContentCopy size="sm" color="black" />
+          {hasCopied ? (
+            <SystemIcon.Check size="md" color="green" />
+          ) : (
+            <SystemIcon.ContentCopy size="md" color="black" />
+          )}
         </button>
       </Stack>
       <Text className={network}>{getNetworkDisplayName(account.network)}</Text>
