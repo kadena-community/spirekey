@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/Button/Button';
 import DeviceCard from '@/components/Card/DeviceCard';
-import { Surface } from '@/components/Surface/Surface';
 import { useAccounts } from '@/context/AccountsContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { fundAccount } from '@/utils/fund';
@@ -19,6 +18,7 @@ import { container, step, wrapper } from './page.css';
 import { Alias } from './steps/Alias';
 import { Color } from './steps/Color';
 import { DeviceType } from './steps/DeviceType';
+import { Fingerprint } from './steps/Fingerprint';
 import { Network } from './steps/Network';
 
 const isInstaFund = process.env.INSTA_FUND === 'true';
@@ -36,7 +36,7 @@ const FORM_DEFAULT = isInstaFund
       accountName: '',
     }
   : {
-      networkId: '',
+      networkId: 'fast-development',
       alias: '',
       deviceType: '',
       color: '',
@@ -51,8 +51,9 @@ export default function Account() {
   const { mutate } = useSWRConfig();
   const formMethods = useForm({ defaultValues: FORM_DEFAULT });
   const router = useRouter();
-  const [currentStep, setCurrentStep] = useState(4);
+  const [currentStep, setCurrentStep] = useState(1);
   const [canSubmit, setCanSubmit] = useState(false);
+  const [usedAlias, setUsedAlias] = useState<string>();
   const { storeAccount } = useAccounts();
   const { host } = useReturnUrl();
 
@@ -71,12 +72,25 @@ export default function Account() {
 
   const goToPrevStep = () => {
     if (!prevStep) return;
+
+    if (currentStep === 4 && usedAlias === formMethods.getValues('alias')) {
+      // skip the fingerprint step when we already have an account for the same alias
+      return setCurrentStep(prevStep - 1);
+    }
+
     setCurrentStep(prevStep);
   };
 
   const goToNextStep = () => {
     if (!nextStep) return;
-    if (nextStep === 3) {
+    if (currentStep === 2 && usedAlias === formMethods.getValues('alias')) {
+      // skip the fingerprint step if the currently filled in alias is the same as the one we used before
+      return setCurrentStep(nextStep + 1);
+    }
+
+    if (currentStep === 3) {
+      // get a new account
+      setUsedAlias(formMethods.getValues('alias'));
       return onChangeAlias().then(() => setCurrentStep(nextStep));
     }
 
@@ -187,11 +201,18 @@ export default function Account() {
                   </Box>
 
                   <Box className={step}>
-                    <DeviceType isVisible={currentStep === 3} />
+                    <Fingerprint
+                      isVisible={currentStep === 3}
+                      onClick={goToNextStep}
+                    />
                   </Box>
 
                   <Box className={step}>
-                    <Color isVisible={currentStep === 4} />
+                    <DeviceType isVisible={currentStep === 4} />
+                  </Box>
+
+                  <Box className={step}>
+                    <Color isVisible={currentStep === 5} />
                   </Box>
                 </>
               )}
@@ -205,6 +226,7 @@ export default function Account() {
                 display: 'flex',
                 marginBlock: 'lg',
                 gap: 'xl',
+                paddingInline: 'lg',
               })}
             >
               {isInstaFund && (

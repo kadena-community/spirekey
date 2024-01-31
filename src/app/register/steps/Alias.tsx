@@ -1,6 +1,6 @@
 // import { Picker, PickerItem } from '@/components/Picker/Picker';
-import { Surface } from '@/components/Surface/Surface';
-import { Heading, Text, TextField } from '@kadena/react-ui';
+import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
+import { TextField } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -18,16 +18,13 @@ export const Alias: FC<Props> = ({ isVisible }) => {
       animate={isVisible ? 'visible' : 'hidden'}
       variants={animationVariants}
     >
-      <Heading variant="h5">Alias</Heading>
-
-      <Text>
-        This alias helps you to identify this account. The alias is only stored
-        on your device and cannot been seen by others.
-      </Text>
-
-      <Surface>
+      <SurfaceCard
+        title="Alias"
+        description="This alias helps you to identify this account. The alias is only stored
+        on your device and cannot been seen by others."
+      >
         <TextField id="alias" placeholder="Your alias" {...register('alias')} />
-      </Surface>
+      </SurfaceCard>
     </motion.div>
   );
 };

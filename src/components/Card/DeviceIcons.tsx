@@ -1,5 +1,8 @@
 import { Account } from '@/context/AccountsContext';
 import { Box, SystemIcon } from '@kadena/react-ui';
+import { DeviceDesktop } from '../icons/DeviceDesktop';
+import { DevicePhone } from '../icons/DevicePhone';
+import { DeviceSecurityKey } from '../icons/DeviceSecurityKey';
 import { device } from './Card.css';
 
 type DeviceIconsProps = {
@@ -17,19 +20,19 @@ export default function DeviceIcons({ account }: DeviceIconsProps) {
           case 'security-key':
             return (
               <Box key={i} className={device}>
-                <SystemIcon.UsbFlashDrive />
+                <DeviceSecurityKey />
               </Box>
             );
           case 'phone':
             return (
               <Box key={i} className={device}>
-                <SystemIcon.Cookie />
+                <DevicePhone />
               </Box>
             );
           case 'desktop':
             return (
               <Box key={i} className={device}>
-                <SystemIcon.Application />
+                <DeviceDesktop />
               </Box>
             );
           default:
