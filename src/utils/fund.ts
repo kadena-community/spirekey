@@ -11,9 +11,15 @@ import {
   setNetworkId,
 } from '@kadena/client/fp';
 
-export const fundAccount = async (account: string): Promise<string> =>
+export const fundAccount = async ({
+  account,
+  network,
+}: {
+  account: string;
+  network: string;
+}): Promise<string> =>
   asyncPipe(
-    getCommand(account),
+    getCommand({ account, network }),
     createTransaction,
     signWithKeyPair({
       publicKey: genesisPubKey,
@@ -24,11 +30,16 @@ export const fundAccount = async (account: string): Promise<string> =>
     (tx) => JSON.stringify(tx),
   )({});
 
-const getCommand = (account: string) => {
-  if (process.env.NETWORK_ID === 'fast-development') {
-    return fundLocally(account);
-  }
-  return fundViaFaucet(account);
+const getCommand = ({
+  account,
+  network,
+}: {
+  account: string;
+  network: string;
+}) => {
+  if (network === 'fast-development') return fundLocally(account);
+  if (network === 'testnet04') return fundViaFaucet(account);
+  throw new Error(`Unsupported network: ${network}`);
 };
 
 const fundLocally = (account: string) =>
