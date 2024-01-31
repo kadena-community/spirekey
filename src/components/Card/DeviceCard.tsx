@@ -4,6 +4,7 @@ import Alias from './Alias';
 import Card from './Card';
 import CardBottom from './CardBottom';
 import DeviceIcons from './DeviceIcons';
+import { deviceColors } from '@/styles/tokens.css';
 
 type CardProps = {
   account: Account;
@@ -17,8 +18,12 @@ export default function DeviceCard({
   const uniqueDeviceTypes = new Set();
   account.devices.map((d) => uniqueDeviceTypes.add(d.deviceType));
 
+  // @todo: use the color of a specific device
+  const color = deviceColors[account.devices[0].color];
+
   return (
     <Card
+      color={color}
       balancePercentage={balancePercentage}
       title={<Alias title={account.alias} />}
       icons={<DeviceIcons account={account} />}

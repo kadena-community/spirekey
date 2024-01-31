@@ -1,9 +1,10 @@
-import { type Account } from '@/context/AccountsContext';
+import { useAccounts, type Account } from '@/context/AccountsContext';
 
 import Link from 'next/link';
 import { ButtonLink } from '../ButtonLink/ButtonLink';
 import DeviceCard from '../Card/DeviceCard';
 import { Carousel } from '../Carousel/Carousel';
+import { calculateBalancePercentage } from '@/utils/balance';
 interface AccountProps {
   account: Account;
   isActive?: boolean;
@@ -15,6 +16,10 @@ export function Account({
   isActive = false,
   returnUrl,
 }: AccountProps) {
+  const { accounts } = useAccounts();
+  const accountBalancesOnNetwork = accounts.filter(a => a.network === account.network).map(a => parseFloat(a.balance));
+  const balancePercentage = calculateBalancePercentage(parseFloat(account.balance), accountBalancesOnNetwork);
+
   return (
     <Carousel account={account} isActive={isActive}>
       {account.devices.map((d) => {
@@ -23,7 +28,7 @@ export function Account({
 
         return (
           <div key={d['credential-id']}>
-            <DeviceCard account={account} />
+            <DeviceCard account={account} balancePercentage={balancePercentage} />
             {!returnUrl && isActive && (
               <>
                 <Link href={`/accounts/${caccount}/devices/${cid}/fund`}>

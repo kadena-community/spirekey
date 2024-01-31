@@ -43,7 +43,7 @@ export const card = style([
         padding: '1rem',
         border: '0.5rem solid transparent',
         background:
-          'linear-gradient(0deg, rgba(255, 0, 255, 0), rgba(255, 0, 255, 0), rgba(255, 0, 255, 1)) border-box',
+          'linear-gradient(0deg, var(--card-progress-color-start), var(--card-progress-color-start), var(--card-progress-color-end)) border-box',
         mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
         maskComposite: 'xor, exclude',
         clipPath:
