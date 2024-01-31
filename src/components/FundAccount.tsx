@@ -4,9 +4,11 @@ import { useState } from 'react';
 
 interface Props {
   accountName: string;
+  network: string;
 }
 
-export const FundAccount = ({ accountName }: Props) => {
+// TODO: This seems to be unused?
+export const FundAccount = ({ accountName, network }: Props) => {
   // const { activeAccount, getAccountDetails } = useAccounts();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
@@ -16,7 +18,7 @@ export const FundAccount = ({ accountName }: Props) => {
       setLoading(true);
       if (!accountName) throw new Error('No account selected');
 
-      await fundAccount(accountName);
+      await fundAccount({ account: accountName, network });
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);

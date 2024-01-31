@@ -5,6 +5,7 @@ import DeviceCard from '@/components/Card/DeviceCard';
 import { Surface } from '@/components/Surface/Surface';
 import { useAccounts } from '@/context/AccountsContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
+import { fundAccount } from '@/utils/fund';
 import { getAccountName, registerAccount } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Box, Stack } from '@kadena/react-ui';
@@ -82,6 +83,10 @@ export default function Account() {
       displayName: `${data.deviceType}_${data.color}`,
       domain: host,
     });
+    if (Boolean(process.env.INSTA_FUND)) {
+      // fire and forget
+      fundAccount({ account: caccount, network: data.networkId });
+    }
 
     storeAccount({
       accountName: caccount,

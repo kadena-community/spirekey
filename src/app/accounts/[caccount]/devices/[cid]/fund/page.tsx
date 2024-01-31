@@ -1,5 +1,6 @@
 'use client';
 
+import { useNetwork } from '@/context/NetworkContext';
 import { fundAccount } from '@/utils/fund';
 import {
   Breadcrumbs,
@@ -15,6 +16,7 @@ import React, { useState } from 'react';
 export default function FundPage() {
   const params = useParams();
   const router = useRouter();
+  const { network } = useNetwork();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
 
@@ -25,7 +27,7 @@ export default function FundPage() {
       setLoading(true);
       if (!caccount) throw new Error('No account selected');
 
-      await fundAccount(caccount);
+      await fundAccount({ account: caccount, network });
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
