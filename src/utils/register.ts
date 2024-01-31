@@ -77,7 +77,7 @@ export const registerAccount = async ({
   )({});
 };
 
-const getWebAuthnPubkeyFormat = (pubkey: string) => {
+export const getWebAuthnPubkeyFormat = (pubkey: string) => {
   if (/^WEBAUTHN-/.test(pubkey)) return pubkey;
   return `WEBAUTHN-${pubkey}`;
 };

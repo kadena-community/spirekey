@@ -7,7 +7,11 @@ import { usePubkeys } from '@/hooks/usePubkeys';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { deviceColors } from '@/styles/tokens.css';
 import { fundAccount } from '@/utils/fund';
-import { getAccountName, registerAccount } from '@/utils/register';
+import {
+  getAccountName,
+  getWebAuthnPubkeyFormat,
+  registerAccount,
+} from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Box, Stack, Text } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
@@ -124,7 +128,10 @@ export default function Account() {
         domain: host,
         network: data.networkId,
       });
-      addPubkey({ cid: credentialId, pubkey: publicKey });
+      addPubkey({
+        cid: credentialId,
+        pubkey: getWebAuthnPubkeyFormat(publicKey),
+      });
       storeAccount({
         accountName: caccount,
         alias: data.alias,
@@ -138,12 +145,19 @@ export default function Account() {
       return;
     }
 
+    setIsSubmitting(true);
     const caccount = await registerAccount({
       credentialPubkey: formMethods.getValues('credentialPubkey'),
       credentialId: formMethods.getValues('credentialId'),
       displayName: `${data.deviceType}_${data.color}`,
       domain: host,
       network: data.networkId,
+    });
+    addPubkey({
+      cid: formMethods.getValues('credentialId'),
+      pubkey: getWebAuthnPubkeyFormat(
+        formMethods.getValues('credentialPubkey'),
+      ),
     });
     storeAccount({
       accountName: caccount,
