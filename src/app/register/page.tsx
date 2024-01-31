@@ -3,6 +3,7 @@
 import { Button } from '@/components/Button/Button';
 import DeviceCard from '@/components/Card/DeviceCard';
 import { useAccounts } from '@/context/AccountsContext';
+import { usePubkeys } from '@/hooks/usePubkeys';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { deviceColors } from '@/styles/tokens.css';
 import { fundAccount } from '@/utils/fund';
@@ -58,6 +59,7 @@ export default function Account() {
   const { storeAccount } = useAccounts();
   const { host } = useReturnUrl();
 
+  const { addPubkey } = usePubkeys();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const prevStep = currentStep > 1 ? currentStep - 1 : null;
@@ -122,12 +124,14 @@ export default function Account() {
         domain: host,
         network: data.networkId,
       });
-      fundAccount({ account: caccount, network: data.networkId });
+      addPubkey({ cid: credentialId, pubkey: publicKey });
       storeAccount({
         accountName: caccount,
         alias: data.alias,
         network: data.networkId,
       });
+      fundAccount({ account: caccount, network: data.networkId });
+
       mutate('accounts');
 
       router.push('/');
