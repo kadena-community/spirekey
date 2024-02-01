@@ -24,6 +24,8 @@
 
   (defschema device-schema
     name          : string
+    deviceType    : string
+    color         : string
     domain        : string
     credential-id : string
     guard         : guard
@@ -63,7 +65,25 @@
       { 'devices := devices
       , 'min-registration-approvals := min-registration-approvals
       }
-      (enforce-guard-min (map (extract-guard) devices) min-registration-approvals)
+      (enforce-guard-min 
+        (map (extract-guard) devices) min-registration-approvals
+      )
+    )
+  )
+
+  (defcap UPDATE_DEVICE(account:string device-id:string)
+    (with-read account-table account
+      { 'devices := devices
+      , 'min-approvals := min-approvals
+      , 'min-registration-approvals := min-registration-approvals
+      }
+      (enforce-guard-min 
+        (map (extract-guard) devices) min-registration-approvals
+      )
+      (enforce 
+        (contains device-id (map (at 'credential-id) devices))
+        "Device must exist in account"
+      )
     )
   )
 
@@ -73,7 +93,9 @@
       , 'min-approvals := min-approvals
       , 'min-registration-approvals := min-registration-approvals
       }
-      (enforce-guard-min (map (extract-guard) devices) min-registration-approvals)
+      (enforce-guard-min 
+        (map (extract-guard) devices) min-registration-approvals
+      )
     )
   )
 
@@ -139,6 +161,29 @@
           (update account-table account
             { 'devices : new-devices }
           )
+        )
+      )
+    )
+  )
+
+  (defun map-updated-device (device:object{device-schema} d:object{device-schema})
+    (if (= (at 'credential-id d) (at 'credential-id device))
+      device
+      d
+    )
+  )
+
+  (defun update-device(account:string device:object{device-schema})
+    (with-capability (UPDATE_DEVICE account (at 'credential-id device))
+      (with-read account-table account
+        {'devices := devices}
+        (update account-table account 
+          { 'devices : 
+            (map 
+              (map-updated-device device)
+              devices
+            )
+          }
         )
       )
     )
