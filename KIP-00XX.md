@@ -184,10 +184,10 @@ signatures through a Wallet:
 To start a sign request from the dApp, the dApp will navigate the end user to
 their wallet with the transaction information attached as search parameters:
 
-| param       | type    | comment                                                                               |
-| :---------- | :------ | :------------------------------------------------------------------------------------ |
-| transaction | string! | The unsigned transaction as described by [chainweb](TODO:findLinkToDocs)              |
-| returnUrl   | string! | This is the url the wallet should redirect the end user to after confirming the login |
+| param       | type    | comment                                                                                                           |
+| :---------- | :------ | :---------------------------------------------------------------------------------------------------------------- |
+| transaction | string! | The unsigned transaction as described by [chainweb](https://api.chainweb.com/openapi/pact.html#tag/model-command) |
+| returnUrl   | string! | This is the url the wallet should redirect the end user to after confirming the login                             |
 
 After the wallet has collected the signature the wallet will send the user back
 to the dApp's provided `returnUrl` with the following search params:
