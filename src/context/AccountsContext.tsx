@@ -1,8 +1,9 @@
 'use client';
 
 import { getAccountFrom } from '@/utils/account';
-import { createContext, useContext, useEffect, useState } from 'react';
-import useSWR from 'swr';
+import { registerAccountOnChain } from '@/utils/register';
+import { createContext, useContext, useState } from 'react';
+import useSWR, { mutate } from 'swr';
 
 export type Account = {
   alias: string;
@@ -21,14 +22,25 @@ export type Device = {
     keys: string[];
     pred: 'keys-any';
   };
+  isRegistered: boolean;
 };
 
-type LocalAccount = Pick<Account, 'alias' | 'network' | 'accountName'>;
+export type AccountRegistration = {
+  caccount: string;
+  displayName: string;
+  domain: string;
+  credentialId: string;
+  credentialPubkey: string;
+  network: string;
+};
+
+type LocalAccount = Pick<Account, 'alias' | 'network' | 'accountName' | 'devices'>;
 
 const defaultState = {
   networks: ['mainnet01', 'testnet04', 'fast-development'],
   accounts: [] as Account[],
   storeAccount: (account: LocalAccount) => {},
+  registerAccount: (data: AccountRegistration) => {},
 };
 
 const networks = ['mainnet01', 'testnet04', 'fast-development'];
@@ -46,21 +58,37 @@ const getAllAccounts = async () => {
   const parsedAccounts: LocalAccount[] = Object.values(JSON.parse(accounts));
 
   return await Promise.all(
-    parsedAccounts.map(async ({ alias, accountName, network }) => {
+    parsedAccounts.map(async ({ alias, accountName, network, devices }) => {
       const account = await getAccountFrom({
         networkId: network,
         caccount: accountName,
       });
+
+      if (! account) {
+        return {
+          accountName,
+          network,
+          alias,
+          devices,
+        };
+      }
+
       return {
         ...account,
         accountName,
         network,
         alias,
-        devices: account.devices.map((device: any) => ({
-          ...device,
-          color: device.name.split('_')[1],
-          deviceType: device.name.split('_')[0],
-        })),
+        devices: devices.map((device: Device) => {
+          const deviceOnChain = account.devices.find(d => d['credential-id'] === device['credential-id']);
+
+          if (! deviceOnChain) {
+            return device;
+          }
+
+          device.isRegistered = true;
+
+          return device
+        }),
       };
     }),
   );
@@ -80,11 +108,61 @@ const getLocalAccountInfo = (accountName: string, network: string) => {
   );
 };
 
+const registerAccount = async ({
+  caccount,
+  displayName,
+  domain,
+  credentialId,
+  credentialPubkey,
+  network,
+}: AccountRegistration
+): Promise<void> => {
+  await registerAccountOnChain({
+    caccount,
+    displayName,
+    domain,
+    credentialId,
+    credentialPubkey,
+    network,
+  });
+  const accounts = localStorage.getItem('localAccounts');
+
+  if (! accounts) {
+    return;
+  }
+
+  const localAccounts = JSON.parse(accounts);
+  const localAccount: Account = localAccounts[`${caccount}-${network}`];
+
+  if (! localAccount) {
+    return;
+  }
+
+  const devices: Device[] = localAccount.devices;
+  const deviceIndex = devices.findIndex(d => d['credential-id'] === credentialId);
+
+  if (deviceIndex < 0) {
+    return;
+  }
+
+  devices[deviceIndex].isRegistered = true;
+
+  storeAccount({
+    accountName: caccount,
+    alias: displayName,
+    network,
+    devices,
+  });
+
+  // refresh the accounts
+};
+
 const storeAccount = ({
   accountName,
   network,
   alias,
-}: Pick<Account, 'alias' | 'network' | 'accountName'>) => {
+  devices,
+}: Pick<Account, 'alias' | 'network' | 'accountName' | 'devices'>) => {
   const accounts = localStorage.getItem('localAccounts');
   if (!accounts)
     return localStorage.setItem(
@@ -94,6 +172,7 @@ const storeAccount = ({
           alias,
           accountName,
           network,
+          devices,
         },
       }),
     );
@@ -106,6 +185,7 @@ const storeAccount = ({
         alias,
         accountName,
         network,
+        devices,
       },
     }),
   );
@@ -123,7 +203,12 @@ const AccountsProvider = ({ children }: Props) => {
 
   return (
     <AccountsContext.Provider
-      value={{ accounts: (data as Account[]) || [], networks, storeAccount }}
+      value={{
+        accounts: (data as Account[]) || [],
+        networks,
+        storeAccount,
+        registerAccount,
+      }}
     >
       {children}
     </AccountsContext.Provider>

@@ -5,9 +5,11 @@ import { useAccounts } from '@/context/AccountsContext';
 import { Heading, Stack, SystemIcon } from '@kadena/react-ui';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useSWRConfig } from 'swr';
 
 export default function Accounts() {
-  const { accounts } = useAccounts();
+  const { mutate } = useSWRConfig();
+  const { accounts, registrations } = useAccounts();
   const router = useRouter();
 
   useEffect(() => {
@@ -15,6 +17,10 @@ export default function Accounts() {
       router.replace('/welcome');
     }
   }, [accounts]);
+
+  useEffect(() => {
+    mutate('accounts');
+  }, [registrations]);
 
   return (
     <Stack

@@ -20,6 +20,7 @@ export const Network: FC<Props> = ({ isVisible }) => {
 
   const getDescription = () => {
     const dev = ' For development purposes only';
+    const main = ' WebAuthn wallets are not yet supported on Mainnet';
 
     return (
       <Text>
@@ -27,7 +28,7 @@ export const Network: FC<Props> = ({ isVisible }) => {
           {getNetworkDisplayName(selectedNetwork)}
         </Text>{' '}
         selected.
-        {['testnet04', 'fast-development'].includes(selectedNetwork) && dev}
+        {['testnet04', 'fast-development'].includes(selectedNetwork) ? dev : main}
       </Text>
     );
   };
