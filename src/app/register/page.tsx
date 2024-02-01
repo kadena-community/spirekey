@@ -110,7 +110,10 @@ export default function Account() {
     );
     formMethods.setValue('credentialId', credentialId);
     formMethods.setValue('credentialPubkey', publicKey);
-    const accountName = await getAccountName(publicKey);
+    const accountName = await getAccountName(
+      publicKey,
+      formMethods.getValues('networkId'),
+    );
     formMethods.setValue('accountName', accountName);
     return { credentialId, publicKey, accountName };
   };
