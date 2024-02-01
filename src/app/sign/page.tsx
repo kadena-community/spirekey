@@ -1,6 +1,7 @@
 'use client';
 
 import { QRCode } from '@/components/QRCode';
+import { useAccounts } from '@/context/AccountsContext';
 import { usePubkeys } from '@/hooks/usePubkeys';
 import { useSign } from '@/hooks/useSign';
 import { getSig } from '@/utils/getSig';
@@ -105,9 +106,8 @@ export default function Sign(req: SignProps) {
     req.searchParams;
   const router = useRouter();
   const data = payload ? Buffer.from(payload, 'base64').toString() : null;
-  const signersData = signers
-    ? Buffer.from(signers, 'base64').toString()
-    : null;
+  const { accounts } = useAccounts();
+  const signersData = Object.values(accounts);
   const tx = JSON.parse(data ?? '{}');
   const txData = JSON.parse(tx.cmd || '{}');
   const { pubkeys } = usePubkeys();
@@ -134,10 +134,13 @@ export default function Sign(req: SignProps) {
       console.log('Unsigned sig', signedTx.cmd);
       const payload: IPactCommand = JSON.parse(signedTx.cmd);
       const nextSigner: any = payload.signers[unsignedSigIndex];
-      console.log('Next signer', nextSigner);
-      const s = JSON.parse(signersData!);
-      console.log('Signers', s);
-      const params = getSignParams(signedTx, s[0].devices[0]);
+      const signer = signersData.find((x) =>
+        x.devices.find((y) =>
+          y.guard.keys.find((z) => z === nextSigner.pubKey),
+        ),
+      );
+      if (!signer) throw new Error('No signer found');
+      const params = getSignParams(signedTx, signer.devices[0]);
       console.log('Params', params);
       const signPath = `/sign?payload=${params.payload}&cid=${params.cid}&signers=${signers}&originReturnUrl=${returnUrl}`;
       setSignPath(signPath);

@@ -7,7 +7,7 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
-import { getAccount, getAccountFrom } from './account';
+import { getAccountFrom } from './account';
 
 export const transfer = async ({
   amount,

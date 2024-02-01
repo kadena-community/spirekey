@@ -3,10 +3,15 @@
 import { Button } from '@/components/Button/Button';
 import DeviceCard from '@/components/Card/DeviceCard';
 import { useAccounts } from '@/context/AccountsContext';
+import { usePubkeys } from '@/hooks/usePubkeys';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { deviceColors } from '@/styles/tokens.css';
 import { fundAccount } from '@/utils/fund';
-import { getAccountName, registerAccount } from '@/utils/register';
+import {
+  getAccountName,
+  getWebAuthnPubkeyFormat,
+  registerAccount,
+} from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Box, Stack, Text } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
@@ -58,6 +63,7 @@ export default function Account() {
   const { storeAccount } = useAccounts();
   const { host } = useReturnUrl();
 
+  const { addPubkey } = usePubkeys();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const prevStep = currentStep > 1 ? currentStep - 1 : null;
@@ -104,7 +110,10 @@ export default function Account() {
     );
     formMethods.setValue('credentialId', credentialId);
     formMethods.setValue('credentialPubkey', publicKey);
-    const accountName = await getAccountName(publicKey);
+    const accountName = await getAccountName(
+      publicKey,
+      formMethods.getValues('networkId'),
+    );
     formMethods.setValue('accountName', accountName);
     return { credentialId, publicKey, accountName };
   };
@@ -122,24 +131,36 @@ export default function Account() {
         domain: host,
         network: data.networkId,
       });
-      fundAccount({ account: caccount, network: data.networkId });
+      addPubkey({
+        cid: credentialId,
+        pubkey: getWebAuthnPubkeyFormat(publicKey),
+      });
       storeAccount({
         accountName: caccount,
         alias: data.alias,
         network: data.networkId,
       });
+      fundAccount({ account: caccount, network: data.networkId });
+
       mutate('accounts');
 
       router.push('/');
       return;
     }
 
+    setIsSubmitting(true);
     const caccount = await registerAccount({
       credentialPubkey: formMethods.getValues('credentialPubkey'),
       credentialId: formMethods.getValues('credentialId'),
       displayName: `${data.deviceType}_${data.color}`,
       domain: host,
       network: data.networkId,
+    });
+    addPubkey({
+      cid: formMethods.getValues('credentialId'),
+      pubkey: getWebAuthnPubkeyFormat(
+        formMethods.getValues('credentialPubkey'),
+      ),
     });
     storeAccount({
       accountName: caccount,

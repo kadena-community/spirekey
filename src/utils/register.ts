@@ -16,7 +16,7 @@ import {
   setNetworkId,
 } from '@kadena/client/fp';
 
-export const getAccountName = async (publicKey: string) =>
+export const getAccountName = async (publicKey: string, networkId: string) =>
   asyncPipe(
     composePactCommand(
       execution(`
@@ -36,7 +36,7 @@ export const getAccountName = async (publicKey: string) =>
         keys: [getWebAuthnPubkeyFormat(publicKey)],
         pred: 'keys-any',
       }),
-      setNetworkId(process.env.NETWORK_ID || 'fast-development'),
+      setNetworkId(networkId),
     ),
     createTransaction,
     (tx) =>
@@ -58,7 +58,7 @@ export const registerAccount = async ({
   credentialPubkey: string;
   network: string;
 }): Promise<string> => {
-  const caccount = await getAccountName(credentialPubkey);
+  const caccount = await getAccountName(credentialPubkey, network);
 
   return asyncPipe(
     registerAccountCommand({
@@ -77,7 +77,7 @@ export const registerAccount = async ({
   )({});
 };
 
-const getWebAuthnPubkeyFormat = (pubkey: string) => {
+export const getWebAuthnPubkeyFormat = (pubkey: string) => {
   if (/^WEBAUTHN-/.test(pubkey)) return pubkey;
   return `WEBAUTHN-${pubkey}`;
 };
