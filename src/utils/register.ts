@@ -53,7 +53,7 @@ export const registerAccountOnChain = async ({
   credentialId,
   credentialPubkey,
   network,
-}: AccountRegistration): Promise<ICommandResult> => {
+}: Omit<AccountRegistration, 'alias'>): Promise<ICommandResult> => {
   return asyncPipe(
     registerAccountCommand({
       caccount,

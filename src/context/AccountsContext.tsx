@@ -2,8 +2,8 @@
 
 import { getAccountFrom } from '@/utils/account';
 import { registerAccountOnChain } from '@/utils/register';
-import { createContext, useContext, useState } from 'react';
-import useSWR, { mutate } from 'swr';
+import { createContext, useContext } from 'react';
+import useSWR, { useSWRConfig } from 'swr';
 
 export type Account = {
   alias: string;
@@ -27,6 +27,7 @@ export type Device = {
 
 export type AccountRegistration = {
   caccount: string;
+  alias: string;
   displayName: string;
   domain: string;
   credentialId: string;
@@ -41,6 +42,7 @@ const defaultState = {
   accounts: [] as Account[],
   storeAccount: (account: LocalAccount) => {},
   registerAccount: (data: AccountRegistration) => {},
+  mutateAccounts: () => {},
 };
 
 const networks = ['mainnet01', 'testnet04', 'fast-development'];
@@ -110,6 +112,7 @@ const getLocalAccountInfo = (accountName: string, network: string) => {
 
 const registerAccount = async ({
   caccount,
+  alias,
   displayName,
   domain,
   credentialId,
@@ -149,12 +152,10 @@ const registerAccount = async ({
 
   storeAccount({
     accountName: caccount,
-    alias: displayName,
+    alias,
     network,
     devices,
   });
-
-  // refresh the accounts
 };
 
 const storeAccount = ({
@@ -192,6 +193,7 @@ const storeAccount = ({
 };
 
 const AccountsProvider = ({ children }: Props) => {
+  const { mutate } = useSWRConfig();
   const { data } = useSWR('accounts', async () => {
     const allAccounts = await getAllAccounts();
     if (!allAccounts) return [];
@@ -207,7 +209,11 @@ const AccountsProvider = ({ children }: Props) => {
         accounts: (data as Account[]) || [],
         networks,
         storeAccount,
-        registerAccount,
+        registerAccount: async (accountRegistration: AccountRegistration) => {
+          await registerAccount(accountRegistration);
+          mutate('accounts');
+        },
+        mutateAccounts: () => mutate('accounts'),
       }}
     >
       {children}
@@ -218,7 +224,7 @@ const AccountsProvider = ({ children }: Props) => {
 const useAccounts = () => {
   const context = useContext(AccountsContext);
   if (context === undefined) {
-    throw new Error('useNetwork must be used within a NetworkProvider');
+    throw new Error('useAccounts must be used within a NetworkProvider');
   }
   return context;
 };

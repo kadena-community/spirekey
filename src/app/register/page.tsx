@@ -37,13 +37,12 @@ const FORM_DEFAULT = {
 type FormValues = typeof FORM_DEFAULT;
 
 export default function Account() {
-  const { mutate } = useSWRConfig();
   const formMethods = useForm({ defaultValues: FORM_DEFAULT });
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [canSubmit, setCanSubmit] = useState(false);
   const [usedAlias, setUsedAlias] = useState<string>();
-  const { storeAccount, registerAccount } = useAccounts();
+  const { storeAccount, registerAccount, mutateAccounts } = useAccounts();
   const { host } = useReturnUrl();
 
   const { addPubkey } = usePubkeys();
@@ -130,10 +129,11 @@ export default function Account() {
       }],
     });
 
-    mutate('accounts');
+    mutateAccounts();
 
     registerAccount({
       caccount,
+      alias: formMethods.getValues('alias'),
       credentialPubkey,
       credentialId,
       displayName,
