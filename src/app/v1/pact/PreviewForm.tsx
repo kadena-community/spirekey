@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/Button/Button';
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
-import { usePubkeys } from '@/hooks/usePubkeys';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { asyncPipe } from '@/utils/asyncPipe';
 import { l1Client } from '@/utils/client';
@@ -25,6 +24,7 @@ import {
   uploadModuleTransaction,
   validateJson,
 } from './pact.utils';
+import { useAccounts } from '@/context/AccountsContext';
 
 const FORM_DEFAULT = {
   chainId: '14',
@@ -74,6 +74,11 @@ export const PreviewForm: FC<PreviewFormProps> = ({
   const { response } = searchParams;
   const account = decodeAccount(response);
   const { getReturnUrl } = useReturnUrl();
+  const { accounts: localAccounts} = useAccounts();
+
+  const localAccount = localAccounts.find(a => a.devices.map(d => d['credential-id'] === account?.cid))
+  const device = localAccount?.devices.find(d => d['credential-id'] === account?.cid)
+  const pubkeys = device?.guard.keys || [];
 
   const onChangeFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -90,14 +95,11 @@ export const PreviewForm: FC<PreviewFormProps> = ({
     }
   };
 
-  const { pubkeys, addPubkey } = usePubkeys();
-
   useEffect(() => {
     if (!account) return;
     setValue('publicKey', account.publicKey);
     setValue('senderAccount', account.accountName);
     setValue('cid', account.cid);
-    addPubkey({ pubkey: account.publicKey, cid: account.cid });
   }, [account?.cid, account?.accountName, account?.publicKey]);
 
   const onCodeChange = async (
@@ -116,11 +118,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
   };
 
   const onPublicKeyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const pubkey = event.target.value;
-    const pk = pubkeys.find((pk) => pk.pubkey === pubkey);
-    if (!pk) return;
-    setValue('publicKey', pk.pubkey);
-    setValue('cid', pk.cid);
+    setValue('publicKey', event.target.value);
   };
 
   const formatContractData = (
@@ -225,8 +223,8 @@ export const PreviewForm: FC<PreviewFormProps> = ({
                 onChange: onPublicKeyChange,
               })}
             >
-              {pubkeys.map(({ pubkey, cid }) => (
-                <option key={cid} value={pubkey}>
+              {pubkeys.map((pubkey) => (
+                <option key={pubkey} value={pubkey}>
                   {pubkey}
                 </option>
               ))}
