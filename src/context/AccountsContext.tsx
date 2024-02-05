@@ -30,7 +30,8 @@ export type Device = {
 export type AccountRegistration = {
   caccount: string;
   alias: string;
-  displayName: string;
+  color: string;
+  deviceType: string;
   domain: string;
   credentialId: string;
   credentialPubkey: string;
@@ -116,7 +117,8 @@ const getAllAccounts = async () => {
 const registerAccount = async ({
   caccount,
   alias,
-  displayName,
+  color,
+  deviceType,
   domain,
   credentialId,
   credentialPubkey,
@@ -124,7 +126,8 @@ const registerAccount = async ({
 }: AccountRegistration): Promise<ITransactionDescriptor> => {
   const { requestKey, chainId, networkId } = await registerAccountOnChain({
     caccount,
-    displayName,
+    color,
+    deviceType,
     domain,
     credentialId,
     credentialPubkey,
@@ -134,8 +137,8 @@ const registerAccount = async ({
   const devices: Device[] = [
     {
       domain,
-      color: displayName.split('_')[1],
-      deviceType: displayName.split('_')[0],
+      color,
+      deviceType,
       'credential-id': credentialId,
       guard: {
         keys: [credentialPubkey],
