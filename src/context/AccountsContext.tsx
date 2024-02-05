@@ -35,7 +35,10 @@ export type AccountRegistration = {
   network: string;
 };
 
-type LocalAccount = Pick<Account, 'alias' | 'network' | 'accountName' | 'devices'>;
+type LocalAccount = Pick<
+  Account,
+  'alias' | 'network' | 'accountName' | 'devices'
+>;
 
 const defaultState = {
   networks: ['mainnet01', 'testnet04', 'fast-development'],
@@ -66,7 +69,7 @@ const getAllAccounts = async () => {
         caccount: accountName,
       });
 
-      if (! account) {
+      if (!account) {
         return {
           accountName,
           network,
@@ -81,9 +84,11 @@ const getAllAccounts = async () => {
         network,
         alias,
         devices: devices.map((device: Device) => {
-          const deviceOnChain = account.devices.find(d => d['credential-id'] === device['credential-id']);
+          const deviceOnChain = account.devices.find(
+            (d) => d['credential-id'] === device['credential-id'],
+          );
 
-          if (! deviceOnChain) {
+          if (!deviceOnChain) {
             return device;
           }
 
@@ -118,8 +123,7 @@ const registerAccount = async ({
   credentialId,
   credentialPubkey,
   network,
-}: AccountRegistration
-): Promise<void> => {
+}: AccountRegistration): Promise<void> => {
   await registerAccountOnChain({
     caccount,
     displayName,
@@ -130,19 +134,21 @@ const registerAccount = async ({
   });
   const accounts = localStorage.getItem('localAccounts');
 
-  if (! accounts) {
+  if (!accounts) {
     return;
   }
 
   const localAccounts = JSON.parse(accounts);
   const localAccount: Account = localAccounts[`${caccount}-${network}`];
 
-  if (! localAccount) {
+  if (!localAccount) {
     return;
   }
 
   const devices: Device[] = localAccount.devices;
-  const deviceIndex = devices.findIndex(d => d['credential-id'] === credentialId);
+  const deviceIndex = devices.findIndex(
+    (d) => d['credential-id'] === credentialId,
+  );
 
   if (deviceIndex < 0) {
     return;
@@ -163,7 +169,7 @@ const storeAccount = ({
   network,
   alias,
   devices,
-}: Pick<Account, 'alias' | 'network' | 'accountName' | 'devices'>) => {
+}: LocalAccount) => {
   const accounts = localStorage.getItem('localAccounts');
   if (!accounts)
     return localStorage.setItem(

@@ -38,17 +38,21 @@ export default function Page({ searchParams }: Props) {
     defaultValues: FORM_DEFAULTS,
     reValidateMode: 'onBlur',
   });
+  const { doSubmit, status } = useSubmit(searchParams);
+
   const onSign = async () => {
     const amount = getValues('amount');
     const receiver = getValues('receiver');
     if (!activeAccount) throw new Error('No active account');
     if (!activeDevice) throw new Error('No active device');
     if (!amount || !receiver) throw new Error('Invalid form');
+
     const receiverAcc = await getAccountFrom({
       caccount: receiver,
       namespace: process.env.NAMESPACE!,
       networkId: network,
     });
+
     const tx = await transfer({
       amount: parseFloat(amount),
       sender: activeAccount.account,
@@ -58,12 +62,13 @@ export default function Page({ searchParams }: Props) {
       publicKey: activeDevice.guard.keys[0],
       gasPayer: receiver,
     });
-    sign(tx, activeDevice as any, '/transfer', [receiverAcc]);
+    await sign(tx, activeDevice['credential-id'], '/transfer');
   };
-  const { doSubmit, status } = useSubmit(searchParams);
+
   useEffect(() => {
     if (status === SubmitStatus.SUBMITABLE) doSubmit();
   }, [status, doSubmit]);
+
   return (
     <Stack flexDirection="column" gap="md" margin="md">
       <NetworkSelector />

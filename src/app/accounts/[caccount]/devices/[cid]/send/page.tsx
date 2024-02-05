@@ -1,7 +1,6 @@
 'use client';
 
 import { useAccounts } from '@/context/AccountsContext';
-import { useNetwork } from '@/context/NetworkContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { useSign } from '@/hooks/useSign';
 import { transfer } from '@/utils/transfer';
@@ -27,11 +26,11 @@ export default function SendPage() {
   const { caccount, cid } = useParams();
   const { accounts } = useAccounts();
   const [isLoading, setIsLoading] = useState(false);
-  const account = accounts.find(a =>
-    a.accountName === decodeURIComponent(params.caccount as string)
+  const account = accounts.find(
+    (a) => a.accountName === decodeURIComponent(params.caccount as string),
   );
-  const device = account?.devices.find(d =>
-    d['credential-id'] === decodeURIComponent(cid as string)
+  const device = account?.devices.find(
+    (d) => d['credential-id'] === decodeURIComponent(cid as string),
   );
   const pubkeys = device?.guard.keys || [];
   const network = account?.network || '';
@@ -74,7 +73,11 @@ export default function SendPage() {
       publicKey: device?.guard.keys[0] || '',
     });
 
-    await sign(result, device, pathname.replace(/\/send$/, 'submit'));
+    await sign(
+      result,
+      device['credential-id'],
+      pathname.replace(/\/send$/, 'submit'),
+    );
     setIsLoading(false);
   };
 
@@ -84,9 +87,7 @@ export default function SendPage() {
         <BreadcrumbsItem href={`/accounts/${params.caccount}`}>
           {decodeURIComponent(params.caccount.toString())}
         </BreadcrumbsItem>
-        <BreadcrumbsItem
-          href={`/accounts/${params.caccount}/devices/${cid}`}
-        >
+        <BreadcrumbsItem href={`/accounts/${params.caccount}/devices/${cid}`}>
           {decodeURIComponent(cid.toString())}
         </BreadcrumbsItem>
         <BreadcrumbsItem>Send</BreadcrumbsItem>
