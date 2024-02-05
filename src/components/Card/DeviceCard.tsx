@@ -20,7 +20,7 @@ export default function DeviceCard({
   // @todo: use the color of a specific device
   const color = account.devices[0].color;
   // @todo: check isRegistered for a specific device
-  const isRegistered = account.devices[0].isRegistered;
+  const isRegistered = !!account.devices[0].pendingRegistrationTx;
 
   return (
     <Card
@@ -28,7 +28,7 @@ export default function DeviceCard({
       balancePercentage={balancePercentage}
       title={<Alias title={account.alias} />}
       icons={<DeviceIcons account={account} />}
-      center={<AccountNetwork account={account} isLoading={! isRegistered} />}
+      center={<AccountNetwork account={account} isLoading={isRegistered} />}
       cardBottom={<CardBottom account={account} />}
       isRegistered={isRegistered}
     />

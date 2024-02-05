@@ -31,7 +31,7 @@ export default function Card({
   icons = undefined,
   center = undefined,
   cardBottom = undefined,
-  isRegistered = false,
+  isRegistered = true,
 }: CardProps) {
   const { r, g, b } = hexadecimalToRGB(color);
   const colorStart = `rgba(${r}, ${g}, ${b}, 0)`;

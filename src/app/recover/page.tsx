@@ -74,11 +74,10 @@ export default function Recover() {
         accountName: r.account,
         network: r.network,
         alias: 'Restored', // @todo: Provide a way to update the alias of an account
-        devices: r.devices.map(d => ({
+        devices: r.devices.map((d) => ({
           ...d,
           deviceType: r.name.split('_')[0],
           color: r.name.split('_')[1],
-          isRegistered: true,
         })),
       });
     });

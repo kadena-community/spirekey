@@ -109,24 +109,29 @@ export default function Account() {
     const displayName = `${deviceType}_${color}`;
     const credentialId = formMethods.getValues('credentialId');
 
-    storeAccount({
-      accountName: caccount,
-      alias: formMethods.getValues('alias'),
-      network,
-      devices: [{
-        domain: host,
-        'credential-id': credentialId,
-        color,
-        deviceType,
-        guard: {
-          keys: [credentialPubkey],
-          pred: 'keys-any',
-        },
-        isRegistered: false,
-      }],
-    });
+    if (!credentialId) {
+      throw new Error('Credential ID is required');
+    }
 
-    mutateAccounts();
+    // storeAccount({
+    //   accountName: caccount,
+    //   alias: formMethods.getValues('alias'),
+    //   network,
+    //   devices: [
+    //     {
+    //       domain: host,
+    //       'credential-id': credentialId,
+    //       color,
+    //       deviceType,
+    //       guard: {
+    //         keys: [credentialPubkey],
+    //         pred: 'keys-any',
+    //       },
+    //     },
+    //   ],
+    // });
+
+    // mutateAccounts();
 
     registerAccount({
       caccount,
@@ -160,7 +165,6 @@ export default function Account() {
                   keys: [formMethods.watch('credentialPubkey')],
                   pred: 'keys-any',
                 },
-                isRegistered: true,
               },
             ],
           }}
