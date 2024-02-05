@@ -3,6 +3,7 @@
 import { Button } from '@/components/Button/Button';
 import { Account } from '@/context/AccountContext';
 import { useAccounts } from '@/context/AccountsContext';
+import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getAccountFrom } from '@/utils/account';
 import { Heading, TextField } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
@@ -21,8 +22,9 @@ const isAccount = (
 };
 
 export default function Recover() {
+  const { host } = useReturnUrl();
   const router = useRouter();
-  const { storeAccount } = useAccounts();
+  const { storeAccount, mutateAccounts } = useAccounts();
   const { register, handleSubmit, getValues } = useForm({
     defaultValues: FORM_DEFAULT,
     reValidateMode: 'onBlur',
@@ -69,11 +71,20 @@ export default function Recover() {
 
     results.filter(isAccount).forEach((r) => {
       storeAccount({
-        accountName: r.name,
+        accountName: r.account,
         network: r.network,
-        alias: r.name,
+        alias: 'Restored', // @todo: Provide a way to update the alias of an account
+        devices: r.devices.map(d => ({
+          ...d,
+          deviceType: r.name.split('_')[0],
+          color: r.name.split('_')[1],
+          isRegistered: true,
+        })),
       });
     });
+
+    mutateAccounts();
+
     const caccount = encodeURIComponent(account);
     const cid = encodeURIComponent(authResult.id);
     router.push(`/accounts/${caccount}/devices/${cid}`);

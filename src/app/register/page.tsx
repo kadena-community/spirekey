@@ -6,14 +6,9 @@ import { useAccounts } from '@/context/AccountsContext';
 import { usePubkeys } from '@/hooks/usePubkeys';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { deviceColors } from '@/styles/tokens.css';
-import { fundAccount } from '@/utils/fund';
-import {
-  getAccountName,
-  getWebAuthnPubkeyFormat,
-  registerAccount,
-} from '@/utils/register';
+import { getAccountName, getWebAuthnPubkeyFormat } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
-import { Box, Stack, Text } from '@kadena/react-ui';
+import { Box, Stack } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -27,40 +22,27 @@ import { DeviceType } from './steps/DeviceType';
 import { Fingerprint } from './steps/Fingerprint';
 import { Network } from './steps/Network';
 
-const isInstaFund = process.env.INSTA_FUND === 'true';
+const TOTAL_STEPS = 5;
 
-const TOTAL_STEPS = isInstaFund ? 1 : 5;
-
-const FORM_DEFAULT = isInstaFund
-  ? {
-      networkId: 'testnet04',
-      alias: '',
-      deviceType: 'phone',
-      color: deviceColors.yellow,
-      credentialPubkey: '',
-      credentialId: '',
-      accountName: 'c:....................................',
-    }
-  : {
-      networkId: 'fast-development',
-      alias: '',
-      deviceType: 'security-key',
-      color: deviceColors.purple,
-      credentialPubkey: '',
-      credentialId: '',
-      accountName: 'c:....................................',
-    };
+const FORM_DEFAULT = {
+  networkId: 'fast-development',
+  alias: '',
+  deviceType: 'security-key',
+  color: deviceColors.purple,
+  credentialPubkey: '',
+  credentialId: '',
+  accountName: 'c:...',
+};
 
 type FormValues = typeof FORM_DEFAULT;
 
 export default function Account() {
-  const { mutate } = useSWRConfig();
   const formMethods = useForm({ defaultValues: FORM_DEFAULT });
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [canSubmit, setCanSubmit] = useState(false);
   const [usedAlias, setUsedAlias] = useState<string>();
-  const { storeAccount } = useAccounts();
+  const { storeAccount, registerAccount, mutateAccounts } = useAccounts();
   const { host } = useReturnUrl();
 
   const { addPubkey } = usePubkeys();
@@ -121,54 +103,48 @@ export default function Account() {
   const onSubmit = async (data: FormValues) => {
     if (isSubmitting) return;
 
-    if (isInstaFund) {
-      const { credentialId, publicKey, accountName } = await onChangeAlias();
-      setIsSubmitting(true);
-      const caccount = await registerAccount({
-        credentialPubkey: publicKey,
-        credentialId,
-        displayName: `${data.deviceType}_${data.color}`,
-        domain: host,
-        network: data.networkId,
-      });
-      addPubkey({
-        cid: credentialId,
-        pubkey: getWebAuthnPubkeyFormat(publicKey),
-      });
-      storeAccount({
-        accountName: caccount,
-        alias: data.alias,
-        network: data.networkId,
-      });
-      fundAccount({ account: caccount, network: data.networkId });
-
-      mutate('accounts');
-
-      router.push('/');
-      return;
-    }
-
     setIsSubmitting(true);
-    const caccount = await registerAccount({
-      credentialPubkey: formMethods.getValues('credentialPubkey'),
-      credentialId: formMethods.getValues('credentialId'),
-      displayName: `${data.deviceType}_${data.color}`,
-      domain: host,
-      network: data.networkId,
-    });
-    addPubkey({
-      cid: formMethods.getValues('credentialId'),
-      pubkey: getWebAuthnPubkeyFormat(
-        formMethods.getValues('credentialPubkey'),
-      ),
-    });
+
+    const network = data.networkId;
+    const credentialPubkey = formMethods.getValues('credentialPubkey');
+    const caccount = await getAccountName(credentialPubkey, network);
+    const { color, deviceType } = data;
+    const displayName = `${deviceType}_${color}`;
+    const credentialId = formMethods.getValues('credentialId');
+
     storeAccount({
       accountName: caccount,
-      alias: data.alias,
-      network: data.networkId,
+      alias: formMethods.getValues('alias'),
+      network,
+      devices: [{
+        domain: host,
+        'credential-id': credentialId,
+        color,
+        deviceType,
+        guard: {
+          keys: [credentialPubkey],
+          pred: 'keys-any',
+        },
+        isRegistered: false,
+      }],
     });
 
-    mutate('accounts');
+    mutateAccounts();
+
+    registerAccount({
+      caccount,
+      alias: formMethods.getValues('alias'),
+      credentialPubkey,
+      credentialId,
+      displayName,
+      domain: host,
+      network,
+    });
+
+    addPubkey({
+      cid: credentialId,
+      pubkey: getWebAuthnPubkeyFormat(credentialPubkey),
+    });
 
     router.push('/');
   };
@@ -192,10 +168,10 @@ export default function Account() {
                   keys: [formMethods.watch('credentialPubkey')],
                   pred: 'keys-any',
                 },
+                isRegistered: true,
               },
             ],
           }}
-          isLoading={isSubmitting}
         />
       </Box>
 
@@ -207,38 +183,28 @@ export default function Account() {
               transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
               className={container}
             >
-              {isInstaFund && (
-                <Box className={step}>
-                  <Alias isVisible />
-                </Box>
-              )}
+              <Box className={step}>
+                <Network isVisible={currentStep === 1} />
+              </Box>
 
-              {!isInstaFund && (
-                <>
-                  <Box className={step}>
-                    <Network isVisible={currentStep === 1} />
-                  </Box>
+              <Box className={step}>
+                <Alias isVisible={currentStep === 2} />
+              </Box>
 
-                  <Box className={step}>
-                    <Alias isVisible={currentStep === 2} />
-                  </Box>
+              <Box className={step}>
+                <Fingerprint
+                  isVisible={currentStep === 3}
+                  onClick={goToNextStep}
+                />
+              </Box>
 
-                  <Box className={step}>
-                    <Fingerprint
-                      isVisible={currentStep === 3}
-                      onClick={goToNextStep}
-                    />
-                  </Box>
+              <Box className={step}>
+                <DeviceType isVisible={currentStep === 4} />
+              </Box>
 
-                  <Box className={step}>
-                    <DeviceType isVisible={currentStep === 4} />
-                  </Box>
-
-                  <Box className={step}>
-                    <Color isVisible={currentStep === 5} />
-                  </Box>
-                </>
-              )}
+              <Box className={step}>
+                <Color isVisible={currentStep === 5} />
+              </Box>
             </motion.div>
           </div>
 
@@ -251,48 +217,23 @@ export default function Account() {
                 paddingInline: 'lg',
               })}
             >
-              {isInstaFund && (
-                <>
-                  <Button
-                    variant="secondary"
-                    onPress={goToPrevStep}
-                    className={atoms({ flex: 1 })}
-                  >
-                    Cancel
-                  </Button>
+              <Button
+                variant="secondary"
+                onPress={goToPrevStep}
+                className={atoms({ flex: 1 })}
+              >
+                {!prevStep ? 'Cancel' : 'Previous'}
+              </Button>
 
-                  <Button
-                    onPress={goToNextStep}
-                    variant="progress"
-                    progress={100}
-                    className={atoms({ flex: 1 })}
-                    type="submit"
-                  >
-                    Complete
-                  </Button>
-                </>
-              )}
-              {!isInstaFund && (
-                <>
-                  <Button
-                    variant="secondary"
-                    onPress={goToPrevStep}
-                    className={atoms({ flex: 1 })}
-                  >
-                    {!prevStep ? 'Cancel' : 'Previous'}
-                  </Button>
-
-                  <Button
-                    onPress={goToNextStep}
-                    variant="progress"
-                    progress={(currentStep / TOTAL_STEPS) * 100}
-                    className={atoms({ flex: 1 })}
-                    type={canSubmit ? 'submit' : 'button'}
-                  >
-                    {canSubmit ? 'Complete' : 'Next'}
-                  </Button>
-                </>
-              )}
+              <Button
+                onPress={goToNextStep}
+                variant="progress"
+                progress={(currentStep / TOTAL_STEPS) * 100}
+                className={atoms({ flex: 1 })}
+                type={canSubmit ? 'submit' : 'button'}
+              >
+                {canSubmit ? 'Complete' : 'Next'}
+              </Button>
             </div>
           )}
         </form>
