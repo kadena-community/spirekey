@@ -1,10 +1,12 @@
 import { useAccounts, type Account } from '@/context/AccountsContext';
 
+import { calculateBalancePercentage } from '@/utils/balance';
+import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { ButtonLink } from '../ButtonLink/ButtonLink';
 import DeviceCard from '../Card/DeviceCard';
 import { Carousel } from '../Carousel/Carousel';
-import { calculateBalancePercentage } from '@/utils/balance';
 interface AccountProps {
   account: Account;
   isActive?: boolean;
@@ -17,44 +19,69 @@ export function Account({
   returnUrl,
 }: AccountProps) {
   const { accounts } = useAccounts();
-  const accountBalancesOnNetwork = accounts.filter(a => a.network === account.network).map(a => parseFloat(a.balance));
-  const balancePercentage = calculateBalancePercentage(parseFloat(account.balance), accountBalancesOnNetwork);
+  const [delayedActive, setDelayedActive] = useState(false);
+  const accountBalancesOnNetwork = accounts
+    .filter((a) => a.network === account.network)
+    .map((a) => parseFloat(a.balance));
+  const balancePercentage = calculateBalancePercentage(
+    parseFloat(account.balance),
+    accountBalancesOnNetwork,
+  );
+
+  // We want to delay the rendering of the active state to prevent the height of the cards animating in `CardCollection`
+  useEffect(() => {
+    if (isActive) {
+      setTimeout(() => setDelayedActive(true), 500);
+    } else {
+      setDelayedActive(false);
+    }
+    () => setDelayedActive(false);
+  }, [isActive]);
 
   return (
-    <Carousel account={account} isActive={isActive}>
+    <Carousel account={account} isActive={delayedActive}>
       {account.devices.map((d) => {
         const caccount = encodeURIComponent(account.accountName);
         const cid = encodeURIComponent(d['credential-id']);
 
         return (
           <div key={d['credential-id']}>
-            <DeviceCard account={account} balancePercentage={balancePercentage} />
-            {!returnUrl && isActive && (
-              <>
-                <Link href={`/accounts/${caccount}/devices/${cid}/fund`}>
-                  fund
-                </Link>{' '}
-                -
-                <Link href={`/accounts/${caccount}/devices/${cid}/send`}>
-                  send
-                </Link>{' '}
-                -
-                <Link href={`/accounts/${caccount}/devices/${cid}/receive`}>
-                  receive
-                </Link>{' '}
-                -
-                <Link
-                  href={`/accounts/${caccount}/devices/${cid}/transactions`}
+            <DeviceCard
+              account={account}
+              balancePercentage={balancePercentage}
+            />
+            <AnimatePresence>
+              {!returnUrl && delayedActive && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  transactions
-                </Link>{' '}
-                -
-                <Link href={`/accounts/${caccount}/devices/${cid}#${cid}`}>
-                  details
-                </Link>
-              </>
-            )}
-            {returnUrl && isActive && (
+                  <Link href={`/accounts/${caccount}/devices/${cid}/fund`}>
+                    fund
+                  </Link>{' '}
+                  -
+                  <Link href={`/accounts/${caccount}/devices/${cid}/send`}>
+                    send
+                  </Link>{' '}
+                  -
+                  <Link href={`/accounts/${caccount}/devices/${cid}/receive`}>
+                    receive
+                  </Link>{' '}
+                  -
+                  <Link
+                    href={`/accounts/${caccount}/devices/${cid}/transactions`}
+                  >
+                    transactions
+                  </Link>{' '}
+                  -
+                  <Link href={`/accounts/${caccount}/devices/${cid}#${cid}`}>
+                    details
+                  </Link>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            {returnUrl && delayedActive && (
               <>
                 <ButtonLink href={returnUrl}>Cancel</ButtonLink>
 
