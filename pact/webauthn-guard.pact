@@ -24,8 +24,8 @@
 
   (defschema device-schema
     name          : string
-    deviceType    : string
-    color         : string
+    ;  deviceType    : string
+    ;  color         : string
     domain        : string
     credential-id : string
     guard         : guard
