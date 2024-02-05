@@ -224,7 +224,7 @@ const AccountsProvider = ({ children }: Props) => {
 const useAccounts = () => {
   const context = useContext(AccountsContext);
   if (context === undefined) {
-    throw new Error('useAccounts must be used within a NetworkProvider');
+    throw new Error('useAccounts must be used within a AccountsProvider');
   }
   return context;
 };
