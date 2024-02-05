@@ -4,7 +4,7 @@ import { getAccountFrom } from '@/utils/account';
 import { l1Client } from '@/utils/client';
 import { registerAccountOnChain } from '@/utils/register';
 import { ITransactionDescriptor } from '@kadena/client';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 
 export type Account = {
@@ -196,14 +196,39 @@ const storeAccount = ({
 
 const AccountsProvider = ({ children }: Props) => {
   const { mutate } = useSWRConfig();
-  const { data } = useSWR('accounts', () => {
+  const { data: accounts } = useSWR('accounts', () => {
     return getAllAccounts();
   });
+
+  useEffect(() => {
+    if (!accounts) return;
+
+    const checkPendingTxs = async () => {
+      for (const account of accounts) {
+        for (const device of account.devices) {
+          if (device.pendingRegistrationTx) {
+            const result = await l1Client.listen({
+              requestKey: device.pendingRegistrationTx,
+              chainId: '14',
+              networkId: account.network,
+            });
+
+            if (result.result.status === 'success') {
+              delete device.pendingRegistrationTx;
+              storeAccount(account);
+            }
+          }
+        }
+      }
+    };
+
+    checkPendingTxs();
+  }, [accounts]);
 
   return (
     <AccountsContext.Provider
       value={{
-        accounts: (data as Account[]) || [],
+        accounts: (accounts as Account[]) || [],
         networks,
         storeAccount,
         registerAccount: async (accountRegistration: AccountRegistration) => {
