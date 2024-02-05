@@ -1,4 +1,4 @@
-import type { Account, Device } from '@/context/AccountContext';
+import type { Account, Device } from '@/context/AccountsContext';
 import { asyncPipe } from '@/utils/asyncPipe';
 import { createTransaction } from '@kadena/client';
 import {
@@ -19,11 +19,11 @@ export const addDevice = async (
     composePactCommand(
       execution(
         `(${process.env.NAMESPACE}.webauthn-wallet.add-device
-          "${account.name}" (read-msg 'device))`,
+          "${account.accountName}" (read-msg 'device))`,
       ),
       addData('device', device),
       setMeta({
-        senderAccount: account.name,
+        senderAccount: account.accountName,
         gasLimit: 4000,
         chainId: '14',
         gasPrice: 0.00000001,
@@ -38,11 +38,11 @@ export const addDevice = async (
         (withCap) => [
           withCap(
             `${process.env.NAMESPACE}.webauthn-wallet.ADD_DEVICE`,
-            account.name,
+            account.accountName,
           ),
           withCap(
             `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
-            account.name,
+            account.accountName,
             { int: 1 },
             1,
           ),

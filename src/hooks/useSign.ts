@@ -46,6 +46,8 @@ export const useSign = (walletUrl: string) => {
       pubKey: getPubkey(accounts, cid),
     });
 
+    setSignedTx(signedTx);
+
     const unsignedSigIndex = signedTx.sigs.findIndex((x: null) => x === null);
     if (unsignedSigIndex !== -1) {
       const payload: IPactCommand = JSON.parse(signedTx.cmd);

@@ -4,8 +4,7 @@ import { darkThemeClass } from '@kadena/react-ui/styles';
 import { ThemeProvider } from 'next-themes';
 import { ReactNode, Suspense } from 'react';
 
-import { AccountsProvider } from '@/context/AccountContext';
-import { AccountsProvider as NewAccountsProvider } from '@/context/AccountsContext';
+import { AccountsProvider } from '@/context/AccountsContext';
 import { NetworkProvider } from '@/context/NetworkContext';
 import { SWRConfig } from 'swr';
 
@@ -29,18 +28,16 @@ export default function Providers({ children }: { children: ReactNode }) {
     <SWRConfig value={{ provider: localStorageProvider }}>
       <NetworkProvider defaultNetwork={process.env.NETWORK_ID || 'testnet04'}>
         <AccountsProvider>
-          <NewAccountsProvider>
-            <ThemeProvider
-              attribute="class"
-              enableSystem={false}
-              value={{
-                dark: darkThemeClass,
-              }}
-              defaultTheme="dark"
-            >
-              <Suspense>{children}</Suspense>
-            </ThemeProvider>
-          </NewAccountsProvider>
+          <ThemeProvider
+            attribute="class"
+            enableSystem={false}
+            value={{
+              dark: darkThemeClass,
+            }}
+            defaultTheme="dark"
+          >
+            <Suspense>{children}</Suspense>
+          </ThemeProvider>
         </AccountsProvider>
       </NetworkProvider>
     </SWRConfig>

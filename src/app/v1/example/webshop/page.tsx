@@ -117,7 +117,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
                     <Button
                       color="primary"
                       title="Shop now"
-                      onClick={onOrder({ price })}
+                      onPress={onOrder({ price })}
                     >
                       Buy now
                     </Button>

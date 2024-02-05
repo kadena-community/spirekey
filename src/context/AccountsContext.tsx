@@ -60,57 +60,53 @@ type Props = {
 };
 
 const getAllAccounts = async () => {
-  const accounts = localStorage.getItem('localAccounts');
-  if (!accounts) return;
+  const rawLocalAccounts = localStorage.getItem('localAccounts');
+  if (!rawLocalAccounts) return;
 
-  const parsedAccounts: LocalAccount[] = Object.values(JSON.parse(accounts));
+  const localAccounts: LocalAccount[] = Object.values(
+    JSON.parse(rawLocalAccounts),
+  );
 
   return await Promise.all(
-    parsedAccounts.map(
-      async ({ alias, accountName, network, devices = [] }) => {
-        const account = await getAccountFrom({
-          networkId: network,
-          caccount: accountName,
-        });
+    localAccounts.map(async ({ alias, accountName, network, devices = [] }) => {
+      const account = await getAccountFrom({
+        networkId: network,
+        caccount: accountName,
+      });
 
-        if (!account) {
-          return {
-            accountName,
-            network,
-            alias,
-            devices,
-          };
-        }
-
-        const uniqueDevices = Array.from(
-          [...devices, ...account.devices]
-            .reduce(
-              (allUniqueDevices, d) =>
-                allUniqueDevices.set(d['credential-id'], d),
-              new Map(),
-            )
-            .values(),
-        );
-
+      if (!account) {
         return {
-          ...account,
           accountName,
           network,
           alias,
-          devices: uniqueDevices.map((device: Device) => {
-            const deviceOnChain = account.devices.find(
-              (d) => d['credential-id'] === device['credential-id'],
-            );
-
-            if (!deviceOnChain) {
-              return device;
-            }
-
-            return device;
-          }),
+          devices,
         };
-      },
-    ),
+      }
+
+      const uniqueDevices = Array.from(
+        [...account.devices, ...devices]
+          .reduce(
+            (allUniqueDevices, d) =>
+              allUniqueDevices.set(d['credential-id'], d),
+            new Map(),
+          )
+          .values(),
+      );
+
+      return {
+        ...account,
+        accountName,
+        network,
+        alias,
+        devices: uniqueDevices.map((device: Device) => {
+          const deviceOnChain = account.devices.find(
+            (d) => d['credential-id'] === device['credential-id'],
+          );
+
+          return { ...deviceOnChain, ...device };
+        }),
+      };
+    }),
   );
 };
 
