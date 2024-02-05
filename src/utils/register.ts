@@ -48,7 +48,8 @@ export const getAccountName = async (publicKey: string, networkId: string) =>
 
 export const registerAccountOnChain = async ({
   caccount,
-  displayName,
+  color,
+  deviceType,
   domain,
   credentialId,
   credentialPubkey,
@@ -57,7 +58,8 @@ export const registerAccountOnChain = async ({
   return asyncPipe(
     registerAccountCommand({
       caccount,
-      displayName,
+      color,
+      deviceType,
       domain,
       credentialId,
       credentialPubkey,
@@ -76,20 +78,23 @@ export const getWebAuthnPubkeyFormat = (pubkey: string) => {
 
 const registerAccountCommand = ({
   caccount,
-  displayName,
+  color,
+  deviceType,
   credentialId,
   credentialPubkey,
   domain,
   network,
 }: {
   caccount: string;
-  displayName: string;
+  color: string;
+  deviceType: string;
   credentialId: string;
   credentialPubkey: string;
   domain: string;
   network: string;
-}) =>
-  composePactCommand(
+}) => {
+  const displayName = `${deviceType}_${color} `;
+  return composePactCommand(
     execution(
       `
         (${process.env.NAMESPACE}.webauthn-wallet.create-wallet 
@@ -125,3 +130,4 @@ const registerAccountCommand = ({
     }),
     setNetworkId(network),
   );
+};

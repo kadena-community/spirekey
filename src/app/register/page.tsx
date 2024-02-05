@@ -106,7 +106,6 @@ export default function Account() {
     const credentialPubkey = formMethods.getValues('credentialPubkey');
     const caccount = await getAccountName(credentialPubkey, network);
     const { color, deviceType } = data;
-    const displayName = `${deviceType}_${color}`;
     const credentialId = formMethods.getValues('credentialId');
 
     if (!credentialId) {
@@ -136,9 +135,10 @@ export default function Account() {
     registerAccount({
       caccount,
       alias: formMethods.getValues('alias'),
+      color: formMethods.getValues('color'),
+      deviceType: formMethods.getValues('deviceType'),
       credentialPubkey,
       credentialId,
-      displayName,
       domain: host,
       network,
     });
