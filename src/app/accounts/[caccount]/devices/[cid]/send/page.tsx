@@ -2,11 +2,9 @@
 
 import { useAccounts } from '@/context/AccountsContext';
 import { useNetwork } from '@/context/NetworkContext';
-import { usePubkeys } from '@/hooks/usePubkeys';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { useSign } from '@/hooks/useSign';
 import { transfer } from '@/utils/transfer';
-// import { transfer } from '@/utils/transfer';
 import {
   Breadcrumbs,
   BreadcrumbsItem,
@@ -26,22 +24,30 @@ const isCAccount = (account: string | string[]): account is string =>
 export default function SendPage() {
   const params = useParams();
   const router = useRouter();
-  const { caccount } = useParams();
+  const { caccount, cid } = useParams();
   const { accounts } = useAccounts();
   const [isLoading, setIsLoading] = useState(false);
-  const { pubkeys } = usePubkeys();
+  const account = accounts.find(a =>
+    a.accountName === decodeURIComponent(params.caccount as string)
+  );
+  const device = account?.devices.find(d =>
+    d['credential-id'] === decodeURIComponent(cid as string)
+  );
+  const pubkeys = device?.guard.keys || [];
+  const network = account?.network || '';
 
   const FORM_DEFAULTS = {
     sender: Array.isArray(caccount)
       ? decodeURIComponent(caccount[0])
       : decodeURIComponent(caccount),
-    publicKey: '',
+    publicKey: pubkeys[0] || '',
     receiver: '',
     amount: 0,
     gasPayer: '',
-    networkId: '',
-    namespace: process.env.NAMESPACE || 'abc',
+    networkId: account?.network,
+    namespace: process.env.NAMESPACE || '',
   };
+
   type FormValues = typeof FORM_DEFAULTS;
   const { handleSubmit, register, control } = useForm({
     defaultValues: FORM_DEFAULTS,
@@ -49,24 +55,15 @@ export default function SendPage() {
   });
   const pathname = usePathname();
 
-  const { network } = useNetwork();
   const { getReturnUrl } = useReturnUrl();
   // wallet url should probably be configurable somehow
   const { sign } = useSign(process.env.WALLET_URL!);
-  const device = accounts
-    .find(
-      (a) =>
-        a.accountName === decodeURIComponent(params.caccount as string) &&
-        a.network === network,
-    )
-    ?.devices.find(
-      (d) => d['credential-id'] === decodeURIComponent(params.cid as string),
-    );
   const onSubmit = async (data: FormValues) => {
-    if (!isCAccount(params.caccount)) return;
+    if (!isCAccount(data.sender)) return;
     if (!process.env.NAMESPACE) return;
     if (!device) return;
-    const caccount = decodeURIComponent(params.caccount);
+    setIsLoading(true);
+    const caccount = decodeURIComponent(data.sender);
     const result = await transfer({
       sender: caccount,
       receiver: data.receiver,
@@ -77,7 +74,8 @@ export default function SendPage() {
       publicKey: device?.guard.keys[0] || '',
     });
 
-    sign(result, device, pathname.replace(/\/send$/, 'submit'));
+    await sign(result, device, pathname.replace(/\/send$/, 'submit'));
+    setIsLoading(false);
   };
 
   return (
@@ -87,16 +85,21 @@ export default function SendPage() {
           {decodeURIComponent(params.caccount.toString())}
         </BreadcrumbsItem>
         <BreadcrumbsItem
-          href={`/accounts/${params.caccount}/devices/${params.cid}`}
+          href={`/accounts/${params.caccount}/devices/${cid}`}
         >
-          {decodeURIComponent(params.cid.toString())}
+          {decodeURIComponent(cid.toString())}
         </BreadcrumbsItem>
         <BreadcrumbsItem>Send</BreadcrumbsItem>
       </Breadcrumbs>
 
       <h1>Send</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField id="sender" label="From" {...register('sender')} />
+        <TextField
+          id="sender"
+          label="From"
+          disabled={true}
+          {...register('sender')}
+        />
 
         <Text>Public Key</Text>
         <Controller
@@ -106,8 +109,8 @@ export default function SendPage() {
           render={({ field }) => (
             <Select id="publicKey" aria-label="Public key" {...field}>
               {pubkeys.map((credential) => (
-                <SelectItem key={credential.pubkey}>
-                  {credential.pubkey}
+                <SelectItem key={credential}>
+                  {`WEBAUTHN-${credential}`}
                 </SelectItem>
               ))}
             </Select>

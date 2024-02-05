@@ -89,7 +89,7 @@ const getAllAccounts = async () => {
 
           device.isRegistered = true;
 
-          return device
+          return device;
         }),
       };
     }),

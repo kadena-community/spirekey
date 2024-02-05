@@ -2,7 +2,6 @@
 
 import { QRCode } from '@/components/QRCode';
 import { useAccounts } from '@/context/AccountsContext';
-import { usePubkeys } from '@/hooks/usePubkeys';
 import { useSign } from '@/hooks/useSign';
 import { getSig } from '@/utils/getSig';
 import { addSignatures, ICap, IPactCommand } from '@kadena/client';
@@ -110,16 +109,17 @@ export default function Sign(req: SignProps) {
   const signersData = Object.values(accounts);
   const tx = JSON.parse(data ?? '{}');
   const txData = JSON.parse(tx.cmd || '{}');
-  const { pubkeys } = usePubkeys();
   const { getSignParams } = useSign(process.env.WALLET_URL!);
 
   const [language, setLanguage] = useState('en');
   const [signUrl, setSignUrl] = useState<string | null>(null);
   const [signPath, setSignPath] = useState<string | null>(null);
 
+  const account = accounts.find(a => a.devices.map(d => d['credential-id']).includes(cid));
+  const device = account?.devices.find(d => d['credential-id'] === cid);
+  const pubkeys = device?.guard.keys || [];
+
   const onSign = async () => {
-    const pubKey = pubkeys.find((x) => x.cid === cid);
-    if (!pubKey) throw new Error('No public key found');
     const res = await startAuthentication({
       challenge: tx.hash,
       rpId: window.location.hostname,
@@ -127,7 +127,7 @@ export default function Sign(req: SignProps) {
     });
     const signedTx = addSignatures(tx, {
       ...getSig(res.response),
-      pubKey: pubKey.pubkey,
+      pubKey: pubkeys[0] || '',
     });
     const unsignedSigIndex = signedTx.sigs.findIndex((x: null) => x === null);
     if (unsignedSigIndex !== -1) {

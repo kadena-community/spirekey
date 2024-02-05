@@ -3,10 +3,9 @@
 import { Button } from '@/components/Button/Button';
 import DeviceCard from '@/components/Card/DeviceCard';
 import { useAccounts } from '@/context/AccountsContext';
-import { usePubkeys } from '@/hooks/usePubkeys';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { deviceColors } from '@/styles/tokens.css';
-import { getAccountName, getWebAuthnPubkeyFormat } from '@/utils/register';
+import { getAccountName } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Box, Stack } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
@@ -44,8 +43,6 @@ export default function Account() {
   const [usedAlias, setUsedAlias] = useState<string>();
   const { storeAccount, registerAccount, mutateAccounts } = useAccounts();
   const { host } = useReturnUrl();
-
-  const { addPubkey } = usePubkeys();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const prevStep = currentStep > 1 ? currentStep - 1 : null;
@@ -139,11 +136,6 @@ export default function Account() {
       displayName,
       domain: host,
       network,
-    });
-
-    addPubkey({
-      cid: credentialId,
-      pubkey: getWebAuthnPubkeyFormat(credentialPubkey),
     });
 
     router.push('/');
