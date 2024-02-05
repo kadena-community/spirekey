@@ -7,7 +7,7 @@ import {
   genesisPubKey,
 } from '@/utils/constants';
 import { signWithKeyPair } from '@/utils/signSubmitListen';
-import { ICommandResult, createTransaction } from '@kadena/client';
+import { ITransactionDescriptor, createTransaction } from '@kadena/client';
 import {
   addData,
   addSigner,
@@ -53,7 +53,7 @@ export const registerAccountOnChain = async ({
   credentialId,
   credentialPubkey,
   network,
-}: Omit<AccountRegistration, 'alias'>): Promise<ICommandResult> => {
+}: Omit<AccountRegistration, 'alias'>): Promise<ITransactionDescriptor> => {
   return asyncPipe(
     registerAccountCommand({
       caccount,
@@ -66,7 +66,6 @@ export const registerAccountOnChain = async ({
     createTransaction,
     signWithKeyPair({ publicKey: genesisPubKey, secretKey: genesisPrivateKey }),
     l1Client.submit,
-    l1Client.listen,
   )({});
 };
 
