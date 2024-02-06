@@ -1,8 +1,8 @@
 'use client';
 
-import logo from '@/assets/images/bennuKey.svg';
+import logo from '@/assets/images/SpireKey-logo.svg';
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
-import { Heading, Stack } from '@kadena/react-ui';
+import { Stack } from '@kadena/react-ui';
 import Image from 'next/image';
 
 export default function Home() {
@@ -16,16 +16,6 @@ export default function Home() {
     >
       <Stack flexDirection="column" alignItems="center" gap="sm">
         <Image src={logo} alt="BennuKey logo" style={{ marginTop: '2rem' }} />
-        <Heading variant="h5" as="h2" style={{ lineHeight: 0.8 }}>
-          BennuKey
-        </Heading>
-        <Heading
-          variant="h3"
-          as="h1"
-          style={{ marginTop: 0, lineHeight: 0.8, marginBottom: '2rem' }}
-        >
-          Wallet
-        </Heading>
       </Stack>
       <Stack flexDirection="row" justifyContent="center" gap="xl">
         <ButtonLink href={'/recover'} variant="secondary">
