@@ -64,13 +64,10 @@ When a user visits a dApp, the dApp can send the user to their wallet. When
 sending the user to their wallet the following information should be provided
 for the wallet:
 
-| param       | type     | comment                                                                               |
-| :---------- | :------- | :------------------------------------------------------------------------------------ |
-| returnUrl   | string!  | This is the url the wallet should redirect the end user to after confirming the login |
-| reason      | string?  | The dApp can provide a reason for the login request                                   |
-| email       | boolean? | This flag indicates if an email is desired by the dApp                                |
-| phoneNumber | boolean? | This flag indicates if an phone number is desired by the dApp                         |
-| address     | boolean? | This flag indicates if address info is desired by the dApp                            |
+| param     | type    | comment                                                                               |
+| :-------- | :------ | :------------------------------------------------------------------------------------ |
+| returnUrl | string! | This is the url the wallet should redirect the end user to after confirming the login |
+| reason    | string? | The dApp can provide a reason for the login request                                   |
 
 The Wallet will then prepare a transaction for the end user to sign. For the
 WebAuthn Wallet account it would look like:
@@ -101,13 +98,12 @@ be send back to the dApp are:
 
 The JSON describing a user:
 
-| param       | type    | comment                                                                      |
-| :---------- | :------ | :--------------------------------------------------------------------------- |
-| credentials | [JSON]! | An array containing the credentials of an user                               |
-| name        | string! | The display name provided by a wallet for the user                           |
-| email       | string? | The email of the user (if the user explicitely consents for this)            |
-| phoneNumber | string? | The phone number of the user (if the user explicitely consents for this)     |
-| address     | JSON?   | The address info JSON containing: street address, postal code, city, country |
+| param        | type      | comment                                            |
+| :----------- | :-------- | :------------------------------------------------- |
+| credentials  | [JSON]!   | An array containing the credentials of an user     |
+| accountName  | string!   | The caccount the user                              |
+| name         | string!   | The display name provided by a wallet for the user |
+| pendingTxIds | [string]! | The pending tx for registration                    |
 
 The JSON describing Credentials:
 
@@ -210,3 +206,4 @@ Wallet developers can use this as a base to incorporate even more convienient
 ways of sharing these links. Think of NFC, bluetooth or even QR scanning. This
 spec will describe how such a link should be build in order for all Wallets to
 be interoperable.
+
