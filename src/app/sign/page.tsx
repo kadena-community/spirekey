@@ -88,7 +88,10 @@ export default function Sign(req: SignProps) {
     );
 
     if (optimistic && device?.pendingRegistrationTx) {
-      params.append('reqKey', device?.pendingRegistrationTx);
+      params.append(
+        'reqKeys',
+        encodeURIComponent(JSON.stringify([device?.pendingRegistrationTx])),
+      );
     }
 
     setRedirectLocation(`${returnUrl}?${params.toString()}`);
