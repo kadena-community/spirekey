@@ -3,8 +3,6 @@
 (module webauthn-wallet GOVERNANCE
   (defconst GOVERNANCE_KEYSET (read-string 'webauthn-keyset-name))
 
-  (implements copy-interface)
-
   (use coin)
   (use webauthn-guard)
   (use fungible-v2)

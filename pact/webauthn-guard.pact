@@ -1,9 +1,5 @@
 (namespace (read-string 'webauthn-namespace))
 
-(interface copy-interface
-  (defpact copy-account:string(account:string target:string))
-)
-
 (module webauthn-guard GOVERNANCE
   @model [
     (defproperty get-account-after(account:string)
@@ -19,8 +15,6 @@
       (at 'devices (get-account-before account))
     )
   ]
-  (implements copy-interface)
-
   (defconst GOVERNANCE_KEYSET (read-string 'webauthn-keyset-name))
 
   (defcap GOVERNANCE()
