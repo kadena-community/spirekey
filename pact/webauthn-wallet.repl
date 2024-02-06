@@ -34,6 +34,12 @@
   , 'webauthn-wallet-namespace   : "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9"
   , 'webauthn-keyset-name        : "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-keyset"
   , 'webauthn-namespace          : "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9"
+  , 'l1                          : "14"
+  , 'l2-keyset                   :
+    { 'pred                      : "keys-all"
+    , 'keys                      :
+      [ "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca" ]
+    }
   , 'upgrade                     : false
   }
 )
@@ -46,6 +52,7 @@
 (begin-tx "Load webauthn-wallet contract")
 (load "webauthn-guard.pact")
 (load "webauthn-wallet.pact")
+(load "l2-coin.pact")
 (commit-tx)
 
 (env-data
@@ -76,6 +83,7 @@
   (print caccount)
   (test-capability (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.GAS_PAYER caccount 1 1.0))
   (require-capability (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.GAS_PAYER caccount 1 1.0))
+  (coin.coinbase caccount (at 'guard (coin.details caccount)) 100.0)
 )
 (commit-tx)
 (env-data {})
@@ -104,5 +112,64 @@
   }
 )
 (commit-tx)
+(env-data {})
+(env-sigs [])
 
-(verify "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet")
+(env-sigs
+  [
+    { 'key : "WEBAUTHN-key"
+    , 'caps : 
+      [
+        (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.COPY_ACCOUNT "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA")
+      ]
+    }
+  ]
+)
+(env-chain-data { 'chain-id : "0" })
+(begin-tx "Copy account")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.copy-account
+  "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA"
+  "14"
+)
+(env-chain-data { 'chain-id : "14" })
+(continue-pact 1)
+(commit-tx)
+
+(begin-tx "Create fungible account")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.create-fungible-account
+  "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA"
+  n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.l2
+)
+(commit-tx)
+
+(env-sigs
+  [
+    { 'key : "WEBAUTHN-key"
+    , 'caps : 
+      [
+        (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.TRANSFER_XCHAIN
+          "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA"
+          "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA"
+          1.0
+          "14"
+        )
+      ]
+    }
+  ]
+)
+(begin-tx "Transfer crosschain")
+(env-chain-data { 'chain-id : "0" })
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.transfer-crosschain-fungible
+  "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA"
+  "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA"
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-webauthn-guard "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA")
+  "14"
+  1.0
+  coin
+)
+(env-chain-data { 'chain-id : "14" })
+(continue-pact 1)
+(commit-tx)
+
+; nested defpact causes type errors, therefor the verification is disabled
+; (verify "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet")

@@ -5,6 +5,8 @@
 
   (use coin)
   (use webauthn-guard)
+  (use fungible-v2)
+  (use fungible-xchain-v1)
 
   (defcap GOVERNANCE()
     (enforce-guard GOVERNANCE_KEYSET)
@@ -20,6 +22,27 @@
 
   (defcap REMOVE_DEVICE(account:string)
     true
+  )
+
+  (defcap COPY_ACCOUNT(account:string)
+    true
+  )
+
+  (defcap LOGIN(account:string)
+    @doc "Login to account for duration seconds"
+    (enforce-authenticated account)
+  )
+
+  (defcap TRANSFER_XCHAIN
+    ( sender:string
+      receiver:string
+      amount:decimal
+      target-chain:string
+    )  
+    (with-read guard-lookup-table sender
+      { 'webauthn-guard-name := guard-name }
+      (compose-capability (DEBIT guard-name))
+    )
   )
 
   (defcap TRANSFER(sender:string receiver:string amount:decimal)
@@ -52,7 +75,7 @@
   (defun get-webauthn-guard(account:string)
     (with-read guard-lookup-table account
       { 'webauthn-guard-name := guard-name }
-      (webauthn-guard.get-account guard-name)
+      (get-account-guard guard-name)
     )
   )
 
@@ -106,6 +129,93 @@
     )
   )
 
+  (defun login(account:string)
+    (with-capability (LOGIN account)
+      true
+    )
+  )
+
+  (defschema copy-account-schema
+    guard-name : string
+  )
+
+  (defpact copy-account:string(account:string target:string)
+    (step
+      (with-capability (COPY_ACCOUNT account)
+        (with-read guard-lookup-table account
+          { 'webauthn-guard-name := guard-name }
+          (webauthn-guard.copy-account guard-name target)
+
+          (let ((yield-data:object{copy-account-schema} { 'guard-name : guard-name }))
+            (yield yield-data)
+          )
+        )
+      )
+    )
+
+    (step
+      (resume 
+        { 'guard-name := guard-name }
+        (continue (webauthn-guard.copy-account guard-name target))
+      )
+    )
+  )
+
+  (defpact transfer-crosschain:string
+    ( sender:string
+      receiver:string
+      receiver-guard:guard
+      target-chain:string
+      amount:decimal
+    )
+    (step 
+      (with-capability (TRANSFER_XCHAIN sender receiver amount target-chain)
+        (install-capability (coin.TRANSFER sender receiver amount))
+        (coin.transfer-crosschain sender receiver receiver-guard target-chain amount)
+      )
+    )
+    (step
+      (continue (coin.transfer-crosschain sender receiver receiver-guard target-chain amount))
+    )
+  )
+
+  ;;;;;;;;;;;;;;;;
+  ; Fungible API ;
+  ;;;;;;;;;;;;;;;;
+
+  (defun create-fungible-account(account:string fung:module{fungible-v2})
+    (with-read guard-lookup-table account
+      { 'webauthn-guard-name := guard-name }
+      (fung::create-account account (get-account-guard guard-name))
+    )
+  )
+
+  (defun transfer-fungible(sender:string receiver:string amount:decimal fung:module{fungible-v2})
+    (with-capability (TRANSFER sender receiver amount)
+      (install-capability (fung::TRANSFER sender receiver amount))
+      (fung::transfer sender receiver amount)
+    )
+  )
+
+  (defpact transfer-crosschain-fungible:string
+    ( sender:string
+      receiver:string
+      receiver-guard:guard
+      target-chain:string
+      amount:decimal
+      fung:module{fungible-v2,fungible-xchain-v1}
+    )
+    (step 
+      (with-capability (TRANSFER_XCHAIN sender receiver amount target-chain)
+        (install-capability (fung::TRANSFER_XCHAIN sender receiver amount target-chain))
+        (fung::transfer-crosschain sender receiver receiver-guard target-chain amount)
+      )
+    )
+    (step
+      (continue (fung::transfer-crosschain sender receiver receiver-guard target-chain amount))
+    )
+  )
+  
   ;;;;;;;;;;;;;;;
   ; GAS PAYMENT ;
   ;;;;;;;;;;;;;;;
