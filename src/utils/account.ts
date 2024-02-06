@@ -1,5 +1,5 @@
-import type { Account } from '@/context/AccountContext';
-import { createTransaction, IClient } from '@kadena/client';
+import type { Account } from '@/context/AccountsContext';
+import { createTransaction } from '@kadena/client';
 import {
   composePactCommand,
   execution,

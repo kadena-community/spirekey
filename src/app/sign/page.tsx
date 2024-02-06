@@ -39,20 +39,19 @@ export default function Sign(req: SignProps) {
     originReturnUrl,
     optimistic = false,
   } = req.searchParams;
-  const [ autoRedirect, setAutoRedirect ] = useState<boolean>(true);
-  const [ isReadyToSubmit, setIsReadyToSubmit ] = useState<boolean>(true);
-  const [ redirectPayload, setRedirectPayload ] = useState<string>('');
+  const [autoRedirect, setAutoRedirect] = useState<boolean>(true);
+  const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(true);
+  const [redirectLocation, setRedirectLocation] = useState<string>('');
   const router = useRouter();
   const { accounts } = useAccounts();
   const data = payload ? Buffer.from(payload, 'base64').toString() : null;
   const { sign, signUrl, signPath } = useSign(process.env.WALLET_URL!);
+  const [language, setLanguage] = useState('en');
 
   const tx = JSON.parse(data ?? '{}');
   const txData = JSON.parse(tx.cmd || '{}');
 
-  const [language, setLanguage] = useState('en');
-
-  const publicKeys = txData.signers.map((s: { pubKey: string; }) => s.pubKey);
+  const publicKeys = txData.signers.map((s: { pubKey: string }) => s.pubKey);
 
   if (publicKeys.length === 0) {
     // @todo: deal with multiple public keys
@@ -61,29 +60,41 @@ export default function Sign(req: SignProps) {
 
   const publicKey = publicKeys[0];
 
-  const account = accounts.find(a => a.devices.map(d => d.guard.keys.includes(publicKey)));
-
-  const devices = account?.devices;
-  const device = devices?.find(d => d.guard.keys.includes(publicKey));
+  const device = accounts
+    .map((account) =>
+      account.devices.find((d) => d.guard.keys.includes(publicKey)),
+    )
+    .find((device) => device !== undefined);
   // @todo: handle edge case where device does not exist on any account
 
   useEffect(() => {
-    const isAccountMinted = device !== null && ! device?.pendingRegistrationTx;
+    const isAccountMinted = device !== null && !device?.pendingRegistrationTx;
     setIsReadyToSubmit((!optimistic && isAccountMinted) || optimistic);
   }, [device, optimistic, setIsReadyToSubmit]);
 
   useEffect(() => {
-    if (isReadyToSubmit && redirectPayload && autoRedirect) {
-      router.push(
-        `${returnUrl}?payload=${redirectPayload}`,
-      );
+    if (isReadyToSubmit && redirectLocation && autoRedirect) {
+      router.push(redirectLocation);
     }
-  }, [redirectPayload, isReadyToSubmit, router, returnUrl, autoRedirect]);
-
+  }, [redirectLocation, isReadyToSubmit, router, returnUrl, autoRedirect]);
 
   const onSign = async () => {
     const signedTx = await sign(tx, cid, signers, originReturnUrl);
-    setRedirectPayload(Buffer.from(JSON.stringify(signedTx)).toString('base64'));
+
+    const params = new URLSearchParams();
+    params.append(
+      'payload',
+      Buffer.from(JSON.stringify(signedTx)).toString('base64'),
+    );
+
+    if (optimistic && device?.pendingRegistrationTx) {
+      params.append(
+        'reqKeys',
+        encodeURIComponent(JSON.stringify([device?.pendingRegistrationTx])),
+      );
+    }
+
+    setRedirectLocation(`${returnUrl}?${params.toString()}`);
   };
 
   const onAutoRedirectChange = () => {
@@ -92,20 +103,6 @@ export default function Sign(req: SignProps) {
 
   return (
     <>
-      <Stack flexDirection="column" gap="md" margin="xl">
-        {! isReadyToSubmit && <p>Minting...</p>}
-        {! redirectPayload && ! isReadyToSubmit &&
-          <label>
-            <input type="checkbox" checked={autoRedirect} onChange={onAutoRedirectChange} />
-            Go back to {returnUrl} when ready
-          </label>
-        }
-        {isReadyToSubmit && redirectPayload &&
-          <ButtonLink
-            href={`${returnUrl}?payload=${redirectPayload}`}
-          >Go back</ButtonLink>
-        }
-      </Stack>
       <Stack flexDirection="column" gap="md" alignItems="center" margin="xl">
         <Stack gap="sm" alignItems="center">
           <ProductIcon.ManageKda size="lg" />
@@ -187,6 +184,26 @@ export default function Sign(req: SignProps) {
             <TextField id="signUrl" value="signUrl" isReadOnly />
           </Stack>
         )}
+
+        <Stack flexDirection="column" gap="md" margin="xl">
+          {!isReadyToSubmit && <p>Minting...</p>}
+          {!redirectLocation && !isReadyToSubmit && (
+            <label>
+              <input
+                type="checkbox"
+                checked={autoRedirect}
+                onChange={onAutoRedirectChange}
+              />
+              Go back to {returnUrl} when ready
+            </label>
+          )}
+
+          {redirectLocation && isReadyToSubmit && (
+            <ButtonLink href={redirectLocation}>
+              Go back to ${returnUrl}
+            </ButtonLink>
+          )}
+        </Stack>
       </Stack>
     </>
   );
