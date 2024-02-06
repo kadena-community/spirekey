@@ -34,8 +34,8 @@ conversion rate.
 # Specifications
 
 Wallets and dApps will communicate with the end user's browser via `https`. All
-the information will be relayed via the end user. In this specification there
-will be the following points of interest:
+the information will be relayed via the end user's browser. In this
+specification there will be the following points of interest:
 
 1. Login token
 2. Signers information
@@ -52,7 +52,7 @@ In general information stored on the blockchain is public. So if the information
 that is displayed is stored on the blockchain, it should pose no risk. If this
 login token is used to display information retrieved from a private database,
 then it should be used with caution. This specification has no elaborate
-implementation with session or token management.
+implementation of session or token management.
 
 ### Implementation
 
@@ -87,9 +87,9 @@ The signed transaction will then be base64 encoded and can then be used by the
 dApp to perform a `/local?preflight=true` call to see if the transaction
 validates.
 
-There are several ways to remember if a user is logged in. It's up to the dApp's
-discretion how to store the information of the user. The information that will
-be send back to the dApp are:
+There are several ways to remember if a user is logged in. It's at the
+descretion of the dApp's how to store the information of the user. The
+information that will be send back to the dApp are:
 
 | param | type    | comment                                                                   |
 | :---- | :------ | :------------------------------------------------------------------------ |
@@ -115,16 +115,16 @@ The JSON describing Credentials:
 
 ## Signers Information
 
-In order for dApps to prepare a transaction all signers needs to be communicated
+In order for dApps to prepare a transaction all signers need to be communicated
 with the dApp. In cases where only the user needs to sign for the transaction
 the login token flow should suffice. However in cases where multiple parties
 need to sign for the transaction all public keys of those parties need to be
-collected and communicated with the dApp. The information about the signers do
+collected and communicated with the dApp. The information about the signers does
 not cover authentication and only provides the necessary information to
 construct a transaction.
 
 The dApp can provide an interface from the dApp, but there are many cases that
-we believe would make sense for a Wallet to assist an user to orchastrate the
+we believe would make sense for a Wallet to assist a user to orchastrate the
 collection of signers information. We envision a wallet to hold contact
 information allowing the user to select from their contacts who to include in
 the signers information.
@@ -165,9 +165,8 @@ The JSON describing Credentials:
 So far we have only discussed the preparation of transactions. This section will
 cover how a transaction can be finilized. Like the preparation process, the dApp
 can always opt to orchastrate the collection of signatures. We however believe
-that by providing a way to orchastrate the collection of signatures via the
-wallet will open up new UX possibilities that will smoothen the experience
-further.
+that providing a way to orchastrate the collection of signatures via the wallet
+will open up new UX possibilities that will smoothen the experience further.
 
 This specification will describe two ways to orchastrate the collection of
 signatures through a Wallet:
@@ -193,7 +192,7 @@ to the dApp's provided `returnUrl` with the following search params:
 | transaction | string! | The signed or partially signed transaction encoded in base64 |
 
 The transaction returned from the wallet can be signed or partially signed. The
-dApp should act accordingly.
+dApp should act accordingly. TODO: Explain multi sig flows
 
 ### Link sharing
 
