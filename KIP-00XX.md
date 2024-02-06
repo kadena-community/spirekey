@@ -206,4 +206,3 @@ Wallet developers can use this as a base to incorporate even more convienient
 ways of sharing these links. Think of NFC, bluetooth or even QR scanning. This
 spec will describe how such a link should be build in order for all Wallets to
 be interoperable.
-

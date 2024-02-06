@@ -7,6 +7,8 @@
 
   (use coin)
   (use webauthn-guard)
+  (use fungible-v2)
+  (use fungible-xchain-v1)
 
   (defcap GOVERNANCE()
     (enforce-guard GOVERNANCE_KEYSET)
@@ -36,9 +38,8 @@
   (defcap TRANSFER_XCHAIN
     ( sender:string
       receiver:string
-      receiver-guard:guard
-      target-chain:string
       amount:decimal
+      target-chain:string
     )  
     (with-read guard-lookup-table sender
       { 'webauthn-guard-name := guard-name }
@@ -76,7 +77,7 @@
   (defun get-webauthn-guard(account:string)
     (with-read guard-lookup-table account
       { 'webauthn-guard-name := guard-name }
-      (webauthn-guard.get-account guard-name)
+      (get-account-guard guard-name)
     )
   )
 
@@ -170,7 +171,7 @@
       amount:decimal
     )
     (step 
-      (with-capability (TRANSFER_XCHAIN sender receiver receiver-guard target-chain)
+      (with-capability (TRANSFER_XCHAIN sender receiver amount target-chain)
         (install-capability (coin.TRANSFER sender receiver amount))
         (coin.transfer-crosschain sender receiver receiver-guard target-chain amount)
       )
@@ -180,6 +181,43 @@
     )
   )
 
+  ;;;;;;;;;;;;;;;;
+  ; Fungible API ;
+  ;;;;;;;;;;;;;;;;
+
+  (defun create-fungible-account(account:string fung:module{fungible-v2})
+    (with-read guard-lookup-table account
+      { 'webauthn-guard-name := guard-name }
+      (fung::create-account account (get-account-guard guard-name))
+    )
+  )
+
+  (defun transfer-fungible(sender:string receiver:string amount:decimal fung:module{fungible-v2})
+    (with-capability (TRANSFER sender receiver amount)
+      (install-capability (fung::TRANSFER sender receiver amount))
+      (fung::transfer sender receiver amount)
+    )
+  )
+
+  (defpact transfer-crosschain-fungible:string
+    ( sender:string
+      receiver:string
+      receiver-guard:guard
+      target-chain:string
+      amount:decimal
+      fung:module{fungible-v2,fungible-xchain-v1}
+    )
+    (step 
+      (with-capability (TRANSFER_XCHAIN sender receiver amount target-chain)
+        (install-capability (fung::TRANSFER_XCHAIN sender receiver amount target-chain))
+        (fung::transfer-crosschain sender receiver receiver-guard target-chain amount)
+      )
+    )
+    (step
+      (continue (fung::transfer-crosschain sender receiver receiver-guard target-chain amount))
+    )
+  )
+  
   ;;;;;;;;;;;;;;;
   ; GAS PAYMENT ;
   ;;;;;;;;;;;;;;;
