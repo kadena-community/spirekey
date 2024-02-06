@@ -141,7 +141,7 @@ const registerAccount = async ({
       deviceType,
       'credential-id': credentialId,
       guard: {
-        keys: [credentialPubkey],
+        keys: [`WEBAUTHN-${credentialPubkey}`],
         pred: 'keys-any',
       },
       pendingRegistrationTx: requestKey,
