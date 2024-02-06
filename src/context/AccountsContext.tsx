@@ -2,7 +2,7 @@
 
 import { getAccountFrom } from '@/utils/account';
 import { l1Client } from '@/utils/client';
-import { registerAccountOnChain } from '@/utils/register';
+import { getWebAuthnPubkeyFormat, registerAccountOnChain } from '@/utils/register';
 import { ITransactionDescriptor } from '@kadena/client';
 import { createContext, useContext, useEffect } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
@@ -141,7 +141,7 @@ const registerAccount = async ({
       deviceType,
       'credential-id': credentialId,
       guard: {
-        keys: [`WEBAUTHN-${credentialPubkey}`],
+        keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
         pred: 'keys-any',
       },
       pendingRegistrationTx: requestKey,
