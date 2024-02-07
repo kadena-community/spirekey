@@ -1,0 +1,1 @@
+(coin.details "some-id")
