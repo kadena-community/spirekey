@@ -46,6 +46,7 @@ export const card = style([
           'linear-gradient(0deg, var(--card-progress-color-start), var(--card-progress-color-start), var(--card-progress-color-end)) border-box',
         mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
         maskComposite: 'xor, exclude',
+        zIndex: '-1',
         clipPath:
           'polygon(0 0, var(--card-progress) 0%, var(--card-progress) 100%, 0 100%)',
       },
