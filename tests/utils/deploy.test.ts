@@ -1,10 +1,11 @@
+import { genesisPrivateKey, genesisPubKey } from '@/utils/constants';
 import {
   DeployConfiguration,
-  executeStep,
+  executeStepWith,
   resolveConfiguration,
 } from '@/utils/deploy';
 import assert from 'node:assert';
-import { describe, it } from 'node:test';
+import { beforeEach, describe, it, mock } from 'node:test';
 
 describe('deploy', () => {
   const config: DeployConfiguration = {
@@ -16,20 +17,28 @@ describe('deploy', () => {
       },
     },
     signers: {
-      alice: {
-        publicKey: 'some-public-key',
-        secretKey: 'some-secret-key',
+      sender00: {
+        publicKey: genesisPubKey,
+        secretKey: genesisPrivateKey,
       },
     },
     steps: [
       {
         profile: 'dev',
         data: { name: 'token' },
-        sender: 'alice',
+        sender: 'sender00',
         codeFile: './tests/utils/deploy.mock.pact',
       },
     ],
   };
+  const mockClient = {
+    submit: mock.fn((x) => Promise.resolve(x)),
+    listen: mock.fn((x) => Promise.resolve(x)),
+  };
+  beforeEach(() => {
+    mockClient.submit.mock.resetCalls();
+    mockClient.listen.mock.resetCalls();
+  });
   it('should resolve configuration', async () => {
     const resolvedConfig = await resolveConfiguration(config);
     assert.equal(
@@ -39,14 +48,24 @@ describe('deploy', () => {
     );
   });
   it('should execute the step on all defined chains', async () => {
-    const result = await executeStep(
+    await executeStepWith(mockClient)(
       {
         profile: 'dev',
         data: { name: 'token' },
-        sender: 'alice',
+        sender: 'sender00',
         code: '(coin.details "some-id")\n',
       },
-      config.profiles,
+      config,
+    );
+    assert.equal(
+      mockClient.submit.mock.callCount(),
+      2,
+      'should have submitted for each chain',
+    );
+    assert.equal(
+      mockClient.listen.mock.callCount(),
+      2,
+      'should have listened for each chain',
     );
   });
 });

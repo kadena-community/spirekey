@@ -1,4 +1,15 @@
+import { IClient, createTransaction } from '@kadena/client';
+import {
+  addSigner,
+  composePactCommand,
+  execution,
+  setMeta,
+  setNetworkId,
+} from '@kadena/client/fp';
 import { readFile } from 'fs/promises';
+import { asyncPipe } from './asyncPipe';
+import { l1Client } from './client';
+import { signWithKeyPair } from './signSubmitListen';
 
 type ProfileConfig = {
   host: string;
@@ -20,7 +31,7 @@ type Signers = {
 type BaseStep = {
   profile: keyof Profiles;
   data: Record<string, any>;
-  sender: keyof Signers;
+  sender: string;
   caps?: string[][];
 };
 type ResolvedStep = BaseStep & {
@@ -53,12 +64,63 @@ export const resolveConfiguration = async (config: DeployConfiguration) => {
   return { ...config, steps: resolvedSteps };
 };
 
-export const executeStep = async (step: ResolvedStep, profiles: Profiles) => {
-  for (const chain of profiles[step.profile].chains) {
-    // execute step
-    console.log(`executing step on chain ${chain}`);
-  }
+const logInfo = (message: string) => (tx: any) => {
+  console.log(message, tx);
+  return tx;
 };
+
+export const executeStepWith =
+  (client: Pick<IClient, 'submit' | 'listen'>) =>
+  async (
+    step: ResolvedStep,
+    { profiles, signers }: Pick<DeployConfiguration, 'profiles' | 'signers'>,
+  ) =>
+    await Promise.all(
+      profiles[step.profile].chains.map(async (chain) => {
+        const signer = signers[step.sender];
+        const { publicKey, secretKey } = signer;
+        return await asyncPipe(
+          composePactCommand(
+            execution(step.code),
+            setMeta({
+              chainId: chain,
+              senderAccount: step.sender,
+              gasLimit: 100000,
+            }),
+            setNetworkId(profiles[step.profile].networkId),
+            (cmd) => ({
+              ...cmd,
+              payload: {
+                ...cmd.payload,
+                exec: {
+                  ...cmd.payload.exec,
+                  data: step.data || {},
+                },
+              },
+            }),
+            addSigner(
+              publicKey,
+              (withCap) =>
+                step.caps?.map((cap) => {
+                  const [name, ...args] = cap;
+                  return withCap(
+                    name,
+                    ...args.map((resValue: any) => {
+                      if (isNaN(resValue)) return resValue;
+                      if (resValue.includes('.')) return Number(resValue);
+                      return { int: Number(resValue) };
+                    }),
+                  );
+                }) || [],
+            ),
+          ),
+          createTransaction,
+          signWithKeyPair({ publicKey, secretKey }),
+          client.submit,
+          client.listen,
+        )({});
+      }),
+    );
 
 export const deploy = async (config: ResolvedDeployConfiguration) => {
   const resolvedConfig = await resolveConfiguration(config);
