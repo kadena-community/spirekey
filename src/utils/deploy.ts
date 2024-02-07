@@ -1,3 +1,5 @@
+#!/usr/bin/env tsx
+
 import { IClient, createTransaction } from '@kadena/client';
 import {
   addSigner,
@@ -127,7 +129,18 @@ export const deploy = async (config: ResolvedDeployConfiguration) => {
   }
 };
 
-export const deployFile = async (configFilePath: string) => {
+export const deployFile = async (
+  configFilePath: string,
+  signersFilePath: string,
+) => {
   const config = JSON.parse(await readFile(configFilePath, 'utf-8'));
-  await deploy(config);
+  const signers = JSON.parse(await readFile(signersFilePath, 'utf-8'));
+  await deploy({ ...config, signers });
 };
+
+if (process.argv.length > 1) {
+  const [configFilePath, signersFilePath] = process.argv.slice(2);
+  if (!configFilePath) throw new Error('No config file path provided');
+  if (!signersFilePath) throw new Error('No signers file path provided');
+  deployFile(configFilePath, signersFilePath);
+}
