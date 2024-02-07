@@ -21,8 +21,6 @@ export default function Login({ searchParams }: LoginProps) {
 
       <Box height="100%">
         <AccountSelector returnUrl={returnUrl} />
-
-        {/* <LoginConfirmation returnUrl={returnUrl} /> */}
       </Box>
     </Stack>
   );
