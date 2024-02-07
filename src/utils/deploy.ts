@@ -5,7 +5,7 @@ type ProfileConfig = {
   networkId: string;
   chains: string[];
 };
-type Profile = {
+type Profiles = {
   [key: string]: ProfileConfig;
 };
 
@@ -18,7 +18,7 @@ type Signers = {
 };
 
 type BaseStep = {
-  profile: keyof Profile;
+  profile: keyof Profiles;
   data: Record<string, any>;
   sender: keyof Signers;
   caps?: string[][];
@@ -32,7 +32,7 @@ type UnresolvedStep = BaseStep & {
 type Step = ResolvedStep | UnresolvedStep;
 
 export type DeployConfiguration = {
-  profiles: Profile;
+  profiles: Profiles;
   signers: Signers;
   steps: Step[];
 };
@@ -52,4 +52,14 @@ export const resolveConfiguration = async (config: DeployConfiguration) => {
   );
   return { ...config, steps: resolvedSteps };
 };
-export const deploy = async (config: ResolvedDeployConfiguration) => {};
+
+export const executeStep = async (step: ResolvedStep, profiles: Profiles) => {
+  for (const chain of profiles[step.profile].chains) {
+    // execute step
+    console.log(`executing step on chain ${chain}`);
+  }
+};
+
+export const deploy = async (config: ResolvedDeployConfiguration) => {
+  const resolvedConfig = await resolveConfiguration(config);
+};
