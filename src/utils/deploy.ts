@@ -64,11 +64,6 @@ export const resolveConfiguration = async (config: DeployConfiguration) => {
   return { ...config, steps: resolvedSteps };
 };
 
-const logInfo = (message: string) => (tx: any) => {
-  console.log(message, tx);
-  return tx;
-};
-
 export const executeStepWith =
   (client: Pick<IClient, 'submit' | 'listen'>) =>
   async (
@@ -124,4 +119,15 @@ export const executeStepWith =
 
 export const deploy = async (config: ResolvedDeployConfiguration) => {
   const resolvedConfig = await resolveConfiguration(config);
+  const executeStep = executeStepWith(l1Client);
+  for (const step of resolvedConfig.steps) {
+    console.log('Executing step', step.code);
+    const result = await executeStep(step, resolvedConfig);
+    console.log('Executed step', result);
+  }
+};
+
+export const deployFile = async (configFilePath: string) => {
+  const config = JSON.parse(await readFile(configFilePath, 'utf-8'));
+  await deploy(config);
 };
