@@ -11,7 +11,7 @@ export default function Accounts() {
   const router = useRouter();
 
   useEffect(() => {
-    if (! accounts.length) {
+    if (!accounts.length) {
       router.replace('/welcome');
     }
   }, [accounts]);

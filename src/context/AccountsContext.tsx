@@ -119,7 +119,7 @@ const registerAccount = async ({
   credentialId,
   credentialPubkey,
   network,
-}: AccountRegistration): Promise<ITransactionDescriptor> => {
+}: AccountRegistration): Promise<ITransactionDescriptor> => {  
   const { requestKey, chainId, networkId } = await registerAccountOnChain({
     caccount,
     color,
