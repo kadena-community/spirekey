@@ -13,7 +13,6 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useSWRConfig } from 'swr';
 import { container, step, wrapper } from './page.css';
 import { Alias } from './steps/Alias';
 import { Color } from './steps/Color';
@@ -41,7 +40,7 @@ export default function Account() {
   const [currentStep, setCurrentStep] = useState(1);
   const [canSubmit, setCanSubmit] = useState(false);
   const [usedAlias, setUsedAlias] = useState<string>();
-  const { storeAccount, registerAccount, mutateAccounts } = useAccounts();
+  const { registerAccount } = useAccounts();
   const { host } = useReturnUrl();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -105,32 +104,11 @@ export default function Account() {
     const network = data.networkId;
     const credentialPubkey = formMethods.getValues('credentialPubkey');
     const caccount = await getAccountName(credentialPubkey, network);
-    const { color, deviceType } = data;
     const credentialId = formMethods.getValues('credentialId');
 
     if (!credentialId) {
       throw new Error('Credential ID is required');
     }
-
-    // storeAccount({
-    //   accountName: caccount,
-    //   alias: formMethods.getValues('alias'),
-    //   network,
-    //   devices: [
-    //     {
-    //       domain: host,
-    //       'credential-id': credentialId,
-    //       color,
-    //       deviceType,
-    //       guard: {
-    //         keys: [credentialPubkey],
-    //         pred: 'keys-any',
-    //       },
-    //     },
-    //   ],
-    // });
-
-    // mutateAccounts();
 
     registerAccount({
       caccount,

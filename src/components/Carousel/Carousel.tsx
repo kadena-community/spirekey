@@ -1,10 +1,13 @@
 import { Account } from '@/context/AccountsContext';
+import { Text } from '@kadena/react-ui';
 import classNames from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Children } from 'react';
 import AddDeviceCard from '../Card/AddDeviceCard';
+import { Plus } from '../icons/Plus';
 import {
   carousel,
+  carouselAddItem,
   carouselItem,
   carouselItems,
   carouselNav,
@@ -38,9 +41,8 @@ export const Carousel = ({ account, children, isActive }: CarouselProps) => {
               initial={{ transform: 'translateX(-100%)' }}
               animate={{ transform: 'translateX(0)' }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className={classNames({
-                [carouselItem.default]: true,
-                [carouselItem.nonScrollable]: !isActive,
+              className={carouselItem({
+                variant: !isActive ? 'nonScrollable' : undefined,
               })}
             >
               <AddDeviceCard account={account} />
@@ -49,9 +51,10 @@ export const Carousel = ({ account, children, isActive }: CarouselProps) => {
         )}
         {Children.map(children, (child, index) => (
           <div
-            className={classNames({
-              [carouselItem.default]: true,
-              [carouselItem.hidden]: !showCarouselItems(isActive, index),
+            className={carouselItem({
+              variant: !showCarouselItems(isActive, index)
+                ? 'hidden'
+                : undefined,
             })}
           >
             {child}
@@ -59,9 +62,11 @@ export const Carousel = ({ account, children, isActive }: CarouselProps) => {
         ))}
       </div>
       <ol className={carouselNav[isActive ? 'default' : 'hidden']}>
-        <li className={carouselNavItem} />
+        <li className={carouselAddItem}>
+          <Plus />
+        </li>
         {Children.map(children, () => (
-          <li className={carouselNavItem} />
+          <li className={carouselNavItem({ variant: 'active' })} /> // @ TODO set variant when actually active
         ))}
       </ol>
     </div>

@@ -14,11 +14,11 @@ export function AccountDevice(props: AccountDeviceProps) {
   const { name, network, balance, icon, color } = props;
   return (
     <div className={container} style={{ borderColor: color }}>
-      <Stack justifyContent={'space-between'}>
-        <MaskedValue value={name} startUnmaskedValues={8} />
+      <Stack justifyContent="space-between">
+        <MaskedValue value={name} />
         <div>{icon}</div>
       </Stack>
-      <Stack justifyContent={'space-between'}>
+      <Stack justifyContent="space-between">
         <div>{network}</div>
         <div>{balance}</div>
       </Stack>

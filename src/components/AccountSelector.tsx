@@ -5,7 +5,6 @@ import CardCollection from '@/components/CardCollection/CardCollection';
 import { useAccounts } from '@/hooks/useProfiles';
 
 type AccountSelectorProps = {
-  showLinks?: boolean;
   returnUrl?: string;
 };
 

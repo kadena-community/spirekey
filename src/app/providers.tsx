@@ -36,7 +36,7 @@ export default function Providers({ children }: { children: ReactNode }) {
             }}
             defaultTheme="dark"
           >
-            <Suspense>{children}</Suspense>
+            {children}
           </ThemeProvider>
         </AccountsProvider>
       </NetworkProvider>

@@ -18,13 +18,14 @@ export interface IMaskedValueProps {
 
 export const MaskedValue: FC<IMaskedValueProps> = ({
   value,
-  startUnmaskedValues = 6,
+  startUnmaskedValues = 4,
   endUnmaskedValues = 4,
   className = '',
 }): JSX.Element => {
   const maskedValue = maskValue(value, {
     headLength: startUnmaskedValues,
     tailLength: endUnmaskedValues,
+    character: '.',
   });
 
   return (

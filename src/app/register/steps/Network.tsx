@@ -1,8 +1,10 @@
 import { Surface } from '@/components/Surface/Surface';
 import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
-import { customTokens } from '@/styles/tokens.css';
+import { NetworkDevnet } from '@/components/icons/NetworkDevnet';
+import { NetworkMainnet } from '@/components/icons/NetworkMainnet';
+import { NetworkTestnet } from '@/components/icons/NetworkTestnet';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
-import { Heading, SystemIcon, Text } from '@kadena/react-ui';
+import { Text } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -28,7 +30,9 @@ export const Network: FC<Props> = ({ isVisible }) => {
           {getNetworkDisplayName(selectedNetwork)}
         </Text>{' '}
         selected.
-        {['testnet04', 'fast-development'].includes(selectedNetwork) ? dev : main}
+        {['testnet04', 'fast-development'].includes(selectedNetwork)
+          ? dev
+          : main}
       </Text>
     );
   };
@@ -49,7 +53,7 @@ export const Network: FC<Props> = ({ isVisible }) => {
               id="network-mainnet"
             />
             <label htmlFor="network-mainnet" className={item}>
-              <SystemIcon.Earth size="xl" />
+              <NetworkMainnet />
             </label>
           </div>
           <div>
@@ -61,7 +65,7 @@ export const Network: FC<Props> = ({ isVisible }) => {
               id="network-testnet"
             />
             <label htmlFor="network-testnet" className={item}>
-              <SystemIcon.CarBrakeParking size="xl" />
+              <NetworkTestnet />
             </label>
           </div>
           <div>
@@ -71,9 +75,10 @@ export const Network: FC<Props> = ({ isVisible }) => {
               type="radio"
               value="fast-development"
               id="network-devnet"
+              required
             />
             <label htmlFor="network-devnet" className={item}>
-              <SystemIcon.ApplicationBrackets size="xl" />
+              <NetworkDevnet />
             </label>
           </div>
         </div>
