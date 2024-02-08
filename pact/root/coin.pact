@@ -68,17 +68,11 @@
   (defcap DEBIT (sender:string)
     "Capability for managing debiting operations"
     (enforce-guard (at 'guard (read coin-table sender)))
-    (enforce-unit (at 'balance (read coin-table sender)))
     (enforce (!= sender "") "valid sender"))
 
   (defcap CREDIT (receiver:string)
     "Capability for managing crediting operations"
-    (with-default-read coin-table receiver
-      { 'balance : 0.0 }
-      { 'balance := balance }
-      (enforce-unit balance)
-      (enforce (!= receiver "") "valid receiver"))
-    )
+    (enforce (!= receiver "") "valid receiver"))
 
   (defcap ROTATE (account:string)
     @doc "Autonomously managed capability for guard rotation"

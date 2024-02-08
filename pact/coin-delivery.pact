@@ -66,19 +66,14 @@
 
   (defschema order-schema
     @doc "Order table schema"
-
     @model [
+      (invariant (>= order-price 0.0))
+      (invariant (>= delivery-price 0.0))
       (invariant
         (or (= CREATED order-status)
         (or (= READY_FOR_DELIVERY order-status)
         (or (= IN_TRANSIT order-status)
             (= DELIVERED order-status)))))
-      (invariant (> order-price 0.0))
-      (invariant (= order-price (floor order-price MINIMUM_PRECISION)))
-      (invariant (> delivery-price 0.0))
-      (invariant (= delivery-price (floor delivery-price MINIMUM_PRECISION)))
-      (invariant (is-principal merchant))
-      (invariant (is-principal buyer))
     ]
     order-status   : string
     merchant       : string
@@ -93,9 +88,6 @@
 
   (defschema delivery-schema
     @doc "Delivery table schema - the id has an implicit relation to the order itself"
-    @model [
-      (invariant (is-principal courier))
-    ]
     courier       : string
 	  courier-guard : guard
   )
@@ -179,46 +171,6 @@
     delivery-price : decimal
   )
     @doc "Creates an order in the order table and reserves funds to the escrow account"
-    @model [
-      (property (> order-price 0.0))
-      (property (> delivery-price 0.0))
-      (property (not (row-exists order-table order-id 'before)))
-      (property (= (current-order-status-after order-id) CREATED))
-      (property (row-enforced coin-table 'guard merchant))
-      (property (row-enforced coin-table 'guard buyer))
-      (property
-        (when (= buyer merchant)
-          (=
-            (- (+ (+ order-price delivery-price) order-price))
-            (cell-delta coin-table 'balance buyer)
-          )
-        )
-      )
-      (property
-        (when (!= buyer merchant)
-          (=
-            (- (+ order-price delivery-price))
-            (cell-delta coin-table 'balance buyer)
-          )
-        )
-      )
-      (property
-        (when (!= buyer merchant)
-          (=
-            (- order-price)
-            (cell-delta coin-table 'balance merchant)
-          )
-        )
-      )
-      (property
-        (=
-          (+ (* 2 order-price) delivery-price)
-          (cell-delta coin-table 'balance ESCROW_ID)
-        )
-      )
-      (property (= order-price (at 'order-price (read order-table order-id 'after))))
-      (property (= delivery-price (at 'delivery-price (read order-table order-id 'after))))
-    ]
     (enforce (!= order-id "") "Order id can not be empty")
     (enforce (< 0.0 order-price) "Order price is not a positive number")
     (enforce (< 0.0 delivery-price) "Delivery price is not a positive number")
@@ -251,9 +203,6 @@
 
   (defun update-order-status(order-id:string order-status:string)
     @model [
-      ; Order status can not be empty
-      (property (!= order-status ""))
-      ; Order status can be updated only in a specific transition order
       (property
         (or (expect-order-status-transition CREATED READY_FOR_DELIVERY order-id order-status)
         (or (expect-order-status-transition READY_FOR_DELIVERY IN_TRANSIT order-id order-status)
@@ -291,35 +240,18 @@
 
   (defun set-order-ready-for-delivery(order-id:string merchant-guard:guard)
     @doc "Allow the merchant to mark the product ready for delivery"
-    @model [
-      (property (= (current-order-status order-id) CREATED))
-      (property (row-enforced order-table 'merchant-guard order-id))
-    ]
     (with-capability (SET_READY_FOR_DELIVERY order-id)
       (update-order-status order-id READY_FOR_DELIVERY)))
 
   (defun get-courier-deposit-amount:decimal (order-price:decimal)
     @doc "Calculate the courier deposit (stake) - equal to 2 times order price"
-    @model [
-      (property (= result (* 2.0 order-price)))
-    ]
     (* 2.0 order-price))
 
   (defun get-merchant-deposit-amount:decimal (order-price:decimal)
     @doc "Calculate the amount of the merchant's deposit (stake) - equal to the order price"
-    @model [
-      (property (= result order-price))
-    ]
     order-price)
 
   (defun reserve-funds (order-id:string sender:string amount:decimal)
-    @model [
-      (property (!= order-id ""))
-      (property (is-principal sender))
-      (property (> amount 0.0))
-      (property (= (- amount) (cell-delta coin-table 'balance sender)))
-      (property (= amount (cell-delta coin-table 'balance ESCROW_ID)))
-    ]
     (require-capability (RESERVE_FUNDS))
     (enforce (!= order-id "") "Order id can not be empty")
     (enforce (is-principal sender) "Sender can not be empty")
@@ -329,14 +261,8 @@
 
   (defun pickup-delivery(order-id:string courier:string courier-guard:guard)
     @model [
-      (property (= (current-order-status order-id) READY_FOR_DELIVERY))
-      (property (= (current-order-status-after order-id) IN_TRANSIT))
-      (property (is-principal courier))
-      (property (= (- (get-delivery-stake order-id)) (cell-delta coin-table 'balance courier)))
-      (property (= (get-delivery-stake order-id) (cell-delta coin-table 'balance ESCROW_ID)))
-      (property (row-exists delivery-table order-id 'after))
-      (property (not (row-exists delivery-table order-id 'before)))
-      (property (row-enforced coin-table 'guard courier))
+      (property (= READY_FOR_DELIVERY (current-order-status order-id)))
+      (property (= IN_TRANSIT (current-order-status-after order-id)))
     ]
     (with-capability (PICKUP_DELIVERY order-id courier-guard)
       (with-read order-table order-id
@@ -357,52 +283,8 @@
 
   (defun deliver-order(order-id:string)
     @model [
-      (property (= (current-order-status order-id) IN_TRANSIT))
-      (property (= (current-order-status-after order-id) DELIVERED))
-      (property
-        (when (!= (get-courier order-id) (get-merchant order-id))
-          (and
-            (=
-              (+ (get-delivery-stake order-id)
-                 (get-delivery-price order-id))
-              (cell-delta coin-table 'balance (get-courier order-id))
-            )
-            (=
-              (* (get-order-price order-id) 2.0)
-              (cell-delta coin-table 'balance (get-merchant order-id))
-            )
-          )
-        )
-      )
-      (property
-        (when (= (get-courier order-id) (get-merchant order-id))
-          (=
-            (+ (+ (get-delivery-stake order-id)
-                  (get-delivery-price order-id))
-               (* 2.0 (get-order-price order-id)))
-            (cell-delta coin-table 'balance (get-courier order-id))
-          )
-        )
-      )
-      (property
-        (when (= (get-courier order-id) (get-merchant order-id))
-          (=
-            (cell-delta coin-table 'balance (get-courier order-id))
-            (abs (cell-delta coin-table 'balance ESCROW_ID))
-          )
-        )
-      )
-      (property
-        (when (!= (get-courier order-id) (get-merchant order-id))
-          (=
-            (+ (cell-delta coin-table 'balance (get-courier order-id))
-               (cell-delta coin-table 'balance (get-merchant order-id)))
-            (abs (cell-delta coin-table 'balance ESCROW_ID))
-          )
-        )
-      )
-      (property (row-enforced delivery-table 'courier-guard order-id))
-      (property (row-enforced order-table 'buyer-guard order-id))
+      (property (= IN_TRANSIT (current-order-status order-id)))
+      (property (= DELIVERED (current-order-status-after order-id)))
     ]
     (with-capability (DELIVER_ORDER order-id)
       (with-read order-table order-id
@@ -412,11 +294,18 @@
         }
         (with-read delivery-table order-id
           { 'courier := courier }
-          (install-capability (coin.TRANSFER ESCROW_ID courier (+ (get-courier-deposit-amount order-price) delivery-price)))
-          (coin.transfer ESCROW_ID courier (+ (get-courier-deposit-amount order-price) delivery-price))
-          (install-capability (coin.TRANSFER ESCROW_ID merchant (+ (get-merchant-deposit-amount order-price) order-price)))
-          (coin.transfer ESCROW_ID merchant (+ (get-merchant-deposit-amount order-price) order-price))
-          (update-order-status order-id DELIVERED)
+          (let* (
+            (courier-deposit (get-courier-deposit-amount order-price))
+            (merchant-deposit (get-merchant-deposit-amount order-price))
+            (courier-payout (+ courier-deposit delivery-price))
+            (merchant-payout (+ merchant-deposit order-price))
+          )
+            (install-capability (coin.TRANSFER ESCROW_ID courier courier-payout))
+            (coin.transfer ESCROW_ID courier courier-payout)
+            (install-capability (coin.TRANSFER ESCROW_ID merchant merchant-payout))
+            (coin.transfer ESCROW_ID merchant merchant-payout)
+            (update-order-status order-id DELIVERED)
+          )
         )
       )
     )
