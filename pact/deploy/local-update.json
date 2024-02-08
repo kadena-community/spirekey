@@ -86,7 +86,7 @@
       "data": {
         "webauthn-keyset-name": "n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-keyset",
         "webauthn-namespace": "n_eef68e581f767dd66c4d4c39ed922be944ede505",
-        "upgrade": false
+        "upgrade": true
       },
       "sender": "w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any"
     },
@@ -96,7 +96,7 @@
       "data": {
         "webauthn-keyset-name": "n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-keyset",
         "webauthn-namespace": "n_eef68e581f767dd66c4d4c39ed922be944ede505",
-        "upgrade": false
+        "upgrade": true
       },
       "sender": "w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any"
     },
@@ -106,7 +106,7 @@
       "data": {
         "ns": "n_eef68e581f767dd66c4d4c39ed922be944ede505",
         "ks-name": "webauthn-keyset",
-        "upgrade": false
+        "upgrade": true
       },
       "sender": "w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any"
     },
