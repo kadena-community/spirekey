@@ -21,6 +21,9 @@ const ConnectionContext = createContext({
 });
 
 const ConnectionProvider = ({ children }: { children: ReactNode }) => {
+  // state for peer
+  // state for queued up messages
+  // state for queued up connections
   const [id, setId] = useState<ConnectionId>(
     JSON.parse(localStorage.getItem('connectionId') || 'null') || undefined,
   );
