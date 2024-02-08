@@ -41,7 +41,7 @@ export default function Account() {
   const [currentStep, setCurrentStep] = useState(1);
   const [canSubmit, setCanSubmit] = useState(false);
   const [usedAlias, setUsedAlias] = useState<string>();
-  const { storeAccount, registerAccount, mutateAccounts } = useAccounts();
+  const { registerAccount, listenForRegistrationTransaction } = useAccounts();
   const { host } = useReturnUrl();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -105,34 +105,13 @@ export default function Account() {
     const network = data.networkId;
     const credentialPubkey = formMethods.getValues('credentialPubkey');
     const caccount = await getAccountName(credentialPubkey, network);
-    const { color, deviceType } = data;
     const credentialId = formMethods.getValues('credentialId');
 
     if (!credentialId) {
       throw new Error('Credential ID is required');
     }
 
-    // storeAccount({
-    //   accountName: caccount,
-    //   alias: formMethods.getValues('alias'),
-    //   network,
-    //   devices: [
-    //     {
-    //       domain: host,
-    //       'credential-id': credentialId,
-    //       color,
-    //       deviceType,
-    //       guard: {
-    //         keys: [credentialPubkey],
-    //         pred: 'keys-any',
-    //       },
-    //     },
-    //   ],
-    // });
-
-    // mutateAccounts();
-
-    registerAccount({
+    const tx = await registerAccount({
       caccount,
       alias: formMethods.getValues('alias'),
       color: formMethods.getValues('color'),
@@ -142,6 +121,10 @@ export default function Account() {
       domain: host,
       network,
     });
+
+    if (tx) {
+      listenForRegistrationTransaction(tx);
+    }
 
     router.push('/');
   };

@@ -4,13 +4,12 @@ import { getAccountFrom } from '@/utils/account';
 import { l1Client } from '@/utils/client';
 import { getWebAuthnPubkeyFormat, registerAccountOnChain } from '@/utils/register';
 import { ITransactionDescriptor } from '@kadena/client';
-import { createContext, useContext, useEffect } from 'react';
-import useSWR, { useSWRConfig } from 'swr';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 export type Account = {
   alias: string;
   accountName: string;
-  balance: string;
+  balance?: string;
   devices: Device[];
   network: string;
 };
@@ -38,17 +37,12 @@ export type AccountRegistration = {
   network: string;
 };
 
-type LocalAccount = Pick<
-  Account,
-  'alias' | 'network' | 'accountName' | 'devices'
->;
-
 const defaultState = {
   networks: ['mainnet01', 'testnet04', 'fast-development'],
-  accounts: [] as Account[],
-  storeAccount: (account: LocalAccount) => {},
-  registerAccount: (data: AccountRegistration) => {},
-  mutateAccounts: () => {},
+  accounts: null as (Account[] | null),
+  registerAccount: async (data: AccountRegistration): Promise<ITransactionDescriptor | undefined> => undefined,
+  listenForRegistrationTransaction: (tx: ITransactionDescriptor) => {},
+  setAccount: (account: Account): void => undefined,
 };
 
 const networks = ['mainnet01', 'testnet04', 'fast-development'];
@@ -59,32 +53,26 @@ type Props = {
   children: React.ReactNode;
 };
 
-const getAllAccounts = async () => {
-  const rawLocalAccounts = localStorage.getItem('localAccounts');
-  if (!rawLocalAccounts) return;
-
-  const localAccounts: LocalAccount[] = Object.values(
-    JSON.parse(rawLocalAccounts),
-  );
-
+const fetchAccountsFromChain = async (localAccounts: Account[]) => {
   return await Promise.all(
-    localAccounts.map(async ({ alias, accountName, network, devices = [] }) => {
-      const account = await getAccountFrom({
-        networkId: network,
-        caccount: accountName,
-      });
+    localAccounts.map(async (localAccount) => {
+      const {accountName, network, alias, devices, balance} = localAccount;
+      let remoteAccount: Account;
+      try {
+        remoteAccount = await getAccountFrom({
+          networkId: network,
+          caccount: accountName,
+        })
+      } catch (e: unknown) {
+        return localAccount;
+      }
 
-      if (!account) {
-        return {
-          accountName,
-          network,
-          alias,
-          devices,
-        };
+      if (!remoteAccount) {
+        return localAccount;
       }
 
       const uniqueDevices = Array.from(
-        [...account.devices, ...devices]
+        [...remoteAccount.devices, ...devices]
           .reduce(
             (allUniqueDevices, d) =>
               allUniqueDevices.set(d['credential-id'], d),
@@ -94,128 +82,158 @@ const getAllAccounts = async () => {
       );
 
       return {
-        ...account,
         accountName,
         network,
         alias,
+        balance: remoteAccount.balance,
         devices: uniqueDevices.map((device: Device) => {
-          const deviceOnChain = account.devices.find(
+          const deviceOnChain = remoteAccount.devices.find(
             (d) => d['credential-id'] === device['credential-id'],
           );
 
           return { ...deviceOnChain, ...device };
         }),
       };
-    }),
+    })
   );
 };
 
-const registerAccount = async ({
-  caccount,
-  alias,
-  color,
-  deviceType,
-  domain,
-  credentialId,
-  credentialPubkey,
-  network,
-}: AccountRegistration): Promise<ITransactionDescriptor> => {
-  const { requestKey, chainId, networkId } = await registerAccountOnChain({
+const fetchAccountsFromLocalStorage = () => {
+  const rawLocalAccounts = localStorage !== undefined
+    ? localStorage.getItem('localAccounts')
+    : undefined;
+
+  if (! rawLocalAccounts) {
+    return [];
+  }
+
+  try {
+    return Object.values(JSON.parse(rawLocalAccounts)) as Account[];
+  } catch (e: unknown) {
+    return [];
+  }
+};
+
+const AccountsProvider = ({ children }: Props) => {
+  const [ accounts, setAccounts ] = useState<null | Account[]>(null);
+
+  useEffect(() => {
+    const localAccounts = fetchAccountsFromLocalStorage();
+
+    const enrichAccountsWithChainData = async () => {
+      const updatedAccounts = await fetchAccountsFromChain(localAccounts);
+      setAccounts(updatedAccounts);
+    };
+
+    enrichAccountsWithChainData();
+  }, []);
+
+  const setAccount = (account: Account): void => {
+    const updatedAccounts = accounts?.filter(a => a.accountName !== account.accountName) || [];
+    updatedAccounts.push(account);
+    setAccounts(updatedAccounts);
+  }
+
+  const addAccount = (account: Account): void => {
+    setAccounts([...(accounts || []), account]);
+  }
+
+  const registerAccount = async ({
     caccount,
+    alias,
     color,
     deviceType,
     domain,
     credentialId,
     credentialPubkey,
     network,
-  });
-
-  const devices: Device[] = [
-    {
-      domain,
+  }: AccountRegistration): Promise<ITransactionDescriptor> => {
+    const { requestKey, chainId, networkId } = await registerAccountOnChain({
+      caccount,
       color,
       deviceType,
-      'credential-id': credentialId,
-      guard: {
-        keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
-        pred: 'keys-any',
-      },
-      pendingRegistrationTx: requestKey,
-    },
-  ];
+      domain,
+      credentialId,
+      credentialPubkey,
+      network,
+    });
 
-  storeAccount({
-    accountName: caccount,
-    alias,
-    network,
-    devices,
-  });
-
-  return {
-    requestKey,
-    chainId,
-    networkId,
-  };
-};
-
-const storeAccount = ({
-  accountName,
-  network,
-  alias,
-  devices,
-}: LocalAccount) => {
-  const rawLocalAccounts = localStorage.getItem('localAccounts');
-  if (!rawLocalAccounts)
-    return localStorage.setItem(
-      'localAccounts',
-      JSON.stringify({
-        [`${accountName}-${network}`]: {
-          alias,
-          accountName,
-          network,
-          devices,
+    const devices: Device[] = [
+      {
+        domain,
+        color,
+        deviceType,
+        'credential-id': credentialId,
+        guard: {
+          keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
+          pred: 'keys-any',
         },
-      }),
-    );
-
-  const localAccounts = JSON.parse(rawLocalAccounts);
-  return localStorage.setItem(
-    'localAccounts',
-    JSON.stringify({
-      ...localAccounts,
-      [`${accountName}-${network}`]: {
-        alias,
-        accountName,
-        network,
-        devices,
+        pendingRegistrationTx: requestKey,
       },
-    }),
-  );
-};
+    ];
 
-const AccountsProvider = ({ children }: Props) => {
-  const { mutate } = useSWRConfig();
-  const { data: accounts } = useSWR('accounts', () => {
-    return getAllAccounts();
-  });
+    addAccount({
+      accountName: caccount,
+      alias,
+      network,
+      devices,
+    });
 
+    return {
+      requestKey,
+      chainId,
+      networkId,
+    };
+  };
+
+  const removePendingTransaction = (requestKey: string) => {
+    const account = accounts?.find(a => a.devices.map(d => d.pendingRegistrationTx).includes(requestKey));
+
+    if (! account) {
+      return;
+    }
+
+    for (let device of account.devices) {
+      if (device.pendingRegistrationTx === requestKey) {
+        delete device.pendingRegistrationTx;
+        break;
+      }
+    }
+
+    setAccount(account);
+  };
+
+  const listenForRegistrationTransaction = async (tx: ITransactionDescriptor) => {
+    const result = await l1Client.listen(tx);
+    if (result.result.status === 'success') {
+      removePendingTransaction(tx.requestKey);
+    }
+  };
+
+  // - sync the accounts to local storage every time the accounts data change
+  // - check pending device registration transactions
   useEffect(() => {
-    if (!accounts) return;
+    if (! accounts) {
+      return;
+    }
+
+    localStorage.setItem(
+      'localAccounts',
+      JSON.stringify(accounts.reduce((accounts, account: Account) => ({
+        ...accounts,
+        [`${account.accountName}-${account.network}`]: account,
+      }), {}))
+    );
 
     const checkPendingTxs = async () => {
       for (const account of accounts) {
         for (const device of account.devices) {
           if (device.pendingRegistrationTx) {
-            const result = await l1Client.listen({
+            listenForRegistrationTransaction({
               requestKey: device.pendingRegistrationTx,
               chainId: '14',
               networkId: account.network,
             });
-
-            if (result.result.status === 'success') {
-              delete device.pendingRegistrationTx;
-              storeAccount(account);
-            }
           }
         }
       }
@@ -227,16 +245,17 @@ const AccountsProvider = ({ children }: Props) => {
   return (
     <AccountsContext.Provider
       value={{
-        accounts: (accounts as Account[]) || [],
+        accounts: (accounts as (null | Account[])),
         networks,
-        storeAccount,
-        registerAccount: async (accountRegistration: AccountRegistration) => {
-          const tx = await registerAccount(accountRegistration);
-          mutate('accounts');
-          await l1Client.listen(tx);
-          mutate('accounts');
+        registerAccount: async (accountRegistration: AccountRegistration): Promise<ITransactionDescriptor | undefined> => {
+          try {
+            return await registerAccount(accountRegistration);
+          } catch (e: unknown) {
+            return undefined;
+          }
         },
-        mutateAccounts: () => mutate('accounts'),
+        listenForRegistrationTransaction,
+        setAccount,
       }}
     >
       {children}

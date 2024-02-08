@@ -21,7 +21,7 @@ const isAccount = (
 
 export default function Recover() {
   const router = useRouter();
-  const { storeAccount, mutateAccounts } = useAccounts();
+  const { setAccount } = useAccounts();
   const { register, handleSubmit, getValues } = useForm({
     defaultValues: FORM_DEFAULT,
     reValidateMode: 'onBlur',
@@ -67,7 +67,7 @@ export default function Recover() {
     });
 
     results.filter(isAccount).forEach((r) => {
-      storeAccount({
+      setAccount({
         accountName: r.accountName,
         network: r.network,
         alias: 'Restored', // @todo: Provide a way to update the alias of an account
@@ -78,8 +78,6 @@ export default function Recover() {
         })),
       });
     });
-
-    mutateAccounts();
 
     const caccount = encodeURIComponent(account);
     const cid = encodeURIComponent(authResult.id);

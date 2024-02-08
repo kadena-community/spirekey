@@ -26,7 +26,7 @@ export default function SendPage() {
   const { caccount, cid } = useParams();
   const { accounts } = useAccounts();
   const [isLoading, setIsLoading] = useState(false);
-  const account = accounts.find(
+  const account = accounts?.find(
     (a) => a.accountName === decodeURIComponent(params.caccount as string),
   );
   const device = account?.devices.find(

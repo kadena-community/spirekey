@@ -76,7 +76,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
   const { getReturnUrl } = useReturnUrl();
   const { accounts: localAccounts} = useAccounts();
 
-  const localAccount = localAccounts.find(a => a.devices.map(d => d['credential-id'] === account?.cid))
+  const localAccount = localAccounts?.find(a => a.devices.map(d => d['credential-id'] === account?.cid))
   const device = localAccount?.devices.find(d => d['credential-id'] === account?.cid)
   const pubkeys = device?.guard.keys || [];
 
