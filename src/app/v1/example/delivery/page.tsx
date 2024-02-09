@@ -74,7 +74,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     if (!tx) return;
     const receiver = localStorage.getItem('receiver');
     if (!receiver) return;
-    send({ id: '1234', publicKey: receiver }, JSON.stringify(tx));
+    send({ id: '1234', publicKey: receiver }, { type: 'tx', data: tx });
   }, [tx, isLoading]);
   return (
     <div>

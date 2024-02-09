@@ -12,81 +12,89 @@ type ConnectionId = {
   publicKey: string;
 };
 
+type Message = {
+  type: 'tx' | 'id';
+  data: any;
+};
+
 const ConnectionContext = createContext({
-  peers: [] as ConnectionId[],
   connect: (id: ConnectionId) => {},
-  send: (id: ConnectionId, data: any) => {},
+  send: (id: ConnectionId, message: Message) => {},
   setId: (id: ConnectionId) => {},
   isLoading: true,
+  messages: [] as Message[],
 });
 
+const getConnectionId = (id: ConnectionId) =>
+  hash(id.publicKey + id.id).replace(/_/g, '-');
+
+const isMessage = (data: any): data is Message => {
+  return data.type === 'tx' || data.type === 'id';
+};
+
 const ConnectionProvider = ({ children }: { children: ReactNode }) => {
-  // state for peer
-  // state for queued up messages
-  // state for queued up connections
+  const [messages, setMessages] = useState<Message[]>([]);
   const [id, setId] = useState<ConnectionId>(
     JSON.parse(localStorage.getItem('connectionId') || 'null') || undefined,
   );
-  const [connections, setConnections] = useState<DataConnection[]>([]);
-  const [peers, setPeers] = useState<ConnectionId[]>([]);
+  const [connections, setConnections] = useState<
+    Record<string, DataConnection>
+  >({});
   const connect = async (id: ConnectionId) => {
-    console.log('peer', peer);
     if (!peer) return;
-    const connectionId = hash(id.publicKey + id.id).replace(/_/g, '-');
+    const connectionId = getConnectionId(id);
     return new Promise((resolve) => {
-      const conn = peer.connect(connectionId);
+      const conn = peer.connect(connectionId, {
+        serialization: 'json',
+      });
       conn.on('open', () => {
-        console.log('Connection opened', conn);
-        setConnections((prev) => [...prev, conn]);
-        setPeers((prev) => [...prev, id]);
+        setConnections((prev) => ({ ...prev, [connectionId]: conn }));
         conn.on('data', (data: any) => {
-          console.log('Data received', data);
+          console.log('Received data from peer connected I connected to', data);
         });
         resolve(conn);
       });
       conn.on('error', (err) => {
-        console.log('Connection error', err);
+        console.error('Connection error', err);
       });
     });
   };
-  const send = async (id: ConnectionId, data: any) => {
-    if (connections.length === 0) {
-      const conn = (await connect(id)) as DataConnection;
-      conn.send(data);
-      return;
-    }
-    connections.forEach((conn) => {
-      console.log('Sending to', conn);
-      conn.send(data);
-    });
+  const send = async (id: ConnectionId, message: Message) => {
+    const connectionId = getConnectionId(id);
+    const conn =
+      connections[connectionId] || ((await connect(id)) as DataConnection);
+    conn.send(message);
   };
   const onSetId = (id: ConnectionId) => {
     setId(id);
     localStorage.setItem('connectionId', JSON.stringify(id));
   };
-  const { data: peer } = useSWR(
-    id.publicKey + id.id,
+  const { data: peer, isLoading } = useSWR<Peer | undefined>(
+    id?.publicKey + id?.id,
     async (pid) => {
       if (!id) return;
       const { Peer } = await import('peerjs');
       const peerId = hash(pid).replace(/_/g, '-');
-      console.log('Creating peer', peerId);
       const peer = new Peer(peerId);
+
       peer.on('connection', (conn) => {
-        console.log('Connection received', conn);
-        setConnections((prev) => [...prev, conn]);
-        // todo extract id from conn
+        setConnections((prev) => ({ ...prev, [conn.peer]: conn }));
         conn.on('open', () => {
-          console.log('Connection opened', conn);
           conn.on('data', (data) => {
-            console.log('Data received', data);
+            if (!isMessage(data)) return;
+            console.log('Someone send me Data', data);
+            setMessages((prev) => [...prev, data]);
           });
         });
         conn.on('error', (err) => {
-          console.log('Connection error', err);
+          console.error('Connection error', err);
         });
       });
-      return peer;
+      return new Promise((resolve) => {
+        peer.on('open', () => {
+          resolve(peer);
+        });
+      });
     },
     {
       revalidateIfStale: false,
@@ -96,7 +104,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
   );
   return (
     <ConnectionContext.Provider
-      value={{ peers, connect, send, setId: onSetId, isLoading: !peer }}
+      value={{ connect, send, setId: onSetId, isLoading, messages }}
     >
       {children}
     </ConnectionContext.Provider>
