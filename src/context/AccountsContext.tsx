@@ -55,7 +55,7 @@ const getAccountsFromLocalStorage = (): Account[] => {
   }
 
   try {
-    return Object.values(JSON.parse(rawLocalAccounts)) as Account[];
+    return JSON.parse(rawLocalAccounts) as Account[];
   } catch (e: unknown) {
     return [];
   }
@@ -142,15 +142,7 @@ const AccountsProvider = ({ children }: Props) => {
   useEffect(() => {
     localStorage.setItem(
       'localAccounts',
-      JSON.stringify(
-        accounts.reduce(
-          (accounts, account: Account) => ({
-            ...accounts,
-            [`${account.accountName}-${account.network}`]: account,
-          }),
-          {},
-        ),
-      ),
+      JSON.stringify(accounts),
     );
 
     const checkPendingTxs = async () => {
@@ -173,12 +165,12 @@ const AccountsProvider = ({ children }: Props) => {
   const setAccount = (account: Account): void => {
     const updatedAccounts =
       accounts?.filter((a) => a.accountName !== account.accountName) || [];
-    updatedAccounts.push(account);
+    updatedAccounts.unshift(account);
     setAccounts(updatedAccounts);
   };
 
   const addAccount = (account: Account): void => {
-    setAccounts([...accounts, account]);
+    setAccounts([account, ...accounts,]);
   };
 
   const registerAccount = async ({
