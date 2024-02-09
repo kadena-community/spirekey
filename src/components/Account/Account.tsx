@@ -20,7 +20,8 @@ export function Account({
 }: AccountProps) {
   const { accounts } = useAccounts();
   const [delayedActive, setDelayedActive] = useState(false);
-  const accountBalancesOnNetwork = accounts?.filter((a) => a.network === account.network)
+  const accountBalancesOnNetwork = accounts
+    .filter((a) => a.network === account.network)
     .map((a) => parseFloat(a?.balance || '0'));
   const balancePercentage = calculateBalancePercentage(
     parseFloat(account?.balance || '0'),

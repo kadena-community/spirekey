@@ -60,7 +60,8 @@ export default function Sign(req: SignProps) {
 
   const publicKey = publicKeys[0];
 
-  const device = accounts?.map((account) =>
+  const device = accounts
+    .map((account) =>
       account.devices.find((d) => d.guard.keys.includes(publicKey)),
     )
     .find((device) => device !== undefined);
