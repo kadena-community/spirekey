@@ -40,7 +40,7 @@ export default function CardCollection({ children }: CardCollectionProps) {
   const collapsedCardsVisible = 3;
 
   const cardHeight =
-    cardRefs.current[0]?.querySelector('.card').offsetHeight || 0;
+    cardRefs.current[0]?.querySelector('.card')?.offsetHeight || 0;
 
   const totalCardHeight = children.length * cardHeight;
   const excessHeight = totalCardHeight - (innerHeight - 30);

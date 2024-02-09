@@ -14,7 +14,7 @@ export default function Accounts() {
     if (accounts === null) {
       return;
     }
-    if (! accounts.length) {
+    if (!accounts.length) {
       router.replace('/welcome');
     }
   }, [accounts]);

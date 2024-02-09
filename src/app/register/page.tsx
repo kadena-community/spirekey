@@ -13,7 +13,6 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useSWRConfig } from 'swr';
 import { container, step, wrapper } from './page.css';
 import { Alias } from './steps/Alias';
 import { Color } from './steps/Color';

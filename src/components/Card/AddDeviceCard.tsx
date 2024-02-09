@@ -1,18 +1,20 @@
-import { Heading, Stack, SystemIcon } from '@kadena/react-ui';
-import {
-  accountAlias, cardLink, plusIconContainer,
-} from './Card.css';
-import Card from './Card';
 import { Account } from '@/context/AccountsContext';
+import { Heading, Stack, SystemIcon } from '@kadena/react-ui';
 import Link from 'next/link';
+import { PlusCircle } from '../icons/PlusCircle';
+import Card from './Card';
+import { accountAlias, cardLink, plusIconContainer } from './Card.css';
 
 interface Props {
-  account: Account,
+  account: Account;
 }
 
 export default function AddDeviceCard({ account }: Props) {
   return (
-    <Link href={`/accounts/${account.accountName}/devices/add`} className={cardLink}>
+    <Link
+      href={`/accounts/${account.accountName}/devices/add`}
+      className={cardLink}
+    >
       <Card
         balancePercentage={0}
         title={
@@ -22,7 +24,7 @@ export default function AddDeviceCard({ account }: Props) {
         }
         center={
           <Stack justifyContent="center" className={plusIconContainer}>
-            <SystemIcon.Plus size='xl' />
+            <PlusCircle />
           </Stack>
         }
       />

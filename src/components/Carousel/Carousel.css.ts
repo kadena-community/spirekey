@@ -1,5 +1,6 @@
 import { atoms } from '@kadena/react-ui/styles';
-import { style, styleVariants } from '@vanilla-extract/css';
+import { globalStyle, style, styleVariants } from '@vanilla-extract/css';
+import { recipe } from '@vanilla-extract/recipes';
 
 export const carousel = style({});
 
@@ -18,35 +19,31 @@ export const carouselItems = styleVariants({
   },
 });
 
-const carouseItemBase = {
-  scrollSnapAlign: 'center',
-  flexShrink: 0,
-  width: '80%',
-  selectors: {
-    '&:first-child': {
-      marginLeft: '10%',
-    },
-    '&:last-child': {
-      marginRight: '10%',
+export const carouselItem = recipe({
+  base: {
+    scrollSnapAlign: 'center',
+    flexShrink: 0,
+    width: '80%',
+    selectors: {
+      '&:first-child': {
+        marginLeft: '10%',
+      },
+      '&:last-child': {
+        marginRight: '10%',
+      },
     },
   },
-};
-
-export const carouselItem = styleVariants({
-  default: carouseItemBase,
-  hidden: [
-    carouseItemBase,
-    {
-      visibility: 'hidden',
-      scrollSnapAlign: 'none',
+  variants: {
+    variant: {
+      hidden: {
+        visibility: 'hidden',
+        scrollSnapAlign: 'none',
+      },
+      nonScrollable: {
+        scrollSnapAlign: 'none',
+      },
     },
-  ],
-  nonScrollable: [
-    carouseItemBase,
-    {
-      scrollSnapAlign: 'none',
-    },
-  ],
+  },
 });
 
 export const carouselNav = styleVariants({
@@ -71,9 +68,28 @@ export const carouselNav = styleVariants({
   ],
 });
 
-export const carouselNavItem = style({
-  borderRadius: '50%',
+export const carouselAddItem = style({
   width: '0.7em',
   height: '0.7em',
-  border: '1px solid #fff',
+});
+
+globalStyle(`${carouselAddItem} svg`, {
+  width: '100%',
+  height: '100%',
+});
+
+export const carouselNavItem = recipe({
+  base: {
+    borderRadius: '50%',
+    width: '0.7em',
+    height: '0.7em',
+    border: '1px solid #fff',
+  },
+  variants: {
+    variant: {
+      active: {
+        backgroundColor: '#fff',
+      },
+    },
+  },
 });
