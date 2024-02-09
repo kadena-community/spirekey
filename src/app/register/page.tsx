@@ -40,7 +40,7 @@ export default function Account() {
   const [currentStep, setCurrentStep] = useState(1);
   const [canSubmit, setCanSubmit] = useState(false);
   const [usedAlias, setUsedAlias] = useState<string>();
-  const { registerAccount, listenForRegistrationTransaction } = useAccounts();
+  const { registerAccount } = useAccounts();
   const { host } = useReturnUrl();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -110,7 +110,7 @@ export default function Account() {
       throw new Error('Credential ID is required');
     }
 
-    const tx = await registerAccount({
+    await registerAccount({
       caccount,
       alias: formMethods.getValues('alias'),
       color: formMethods.getValues('color'),
@@ -120,10 +120,6 @@ export default function Account() {
       domain: host,
       network,
     });
-
-    if (tx) {
-      listenForRegistrationTransaction(tx);
-    }
 
     router.push('/');
   };
