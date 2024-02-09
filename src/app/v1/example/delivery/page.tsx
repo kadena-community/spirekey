@@ -3,7 +3,6 @@
 import { Account } from '@/components/Account';
 import { Button } from '@/components/Button/Button';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { useSign } from '@/hooks/useSign';
 import { useSubmit } from '@/hooks/useSubmit';
 import { decodeAccount } from '@/utils/decodeAccount';
 import { transfer } from '@/utils/transfer';
