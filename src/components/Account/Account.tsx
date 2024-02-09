@@ -20,12 +20,11 @@ export function Account({
 }: AccountProps) {
   const { accounts } = useAccounts();
   const [delayedActive, setDelayedActive] = useState(false);
-  const accountBalancesOnNetwork = accounts
-    .filter((a) => a.network === account.network)
-    .map((a) => parseFloat(a.balance));
+  const accountBalancesOnNetwork = accounts?.filter((a) => a.network === account.network)
+    .map((a) => parseFloat(a?.balance || '0'));
   const balancePercentage = calculateBalancePercentage(
-    parseFloat(account.balance),
-    accountBalancesOnNetwork,
+    parseFloat(account?.balance || '0'),
+    accountBalancesOnNetwork || [],
   );
 
   // We want to delay the rendering of the active state to prevent the height of the cards animating in `CardCollection`

@@ -33,7 +33,7 @@ export const useSign = (walletUrl: string) => {
     signers: string,
     originReturnUrl?: string,
   ) => {
-    const signersData = Object.values(accounts);
+    const signersData = accounts || [];
 
     const res = await startAuthentication({
       challenge: tx.hash,
@@ -43,7 +43,7 @@ export const useSign = (walletUrl: string) => {
 
     const signedTx = addSignatures(tx, {
       ...getSig(res.response),
-      pubKey: getPubkey(accounts, cid),
+      pubKey: getPubkey(accounts || [], cid),
     });
 
     setSignedTx(signedTx);

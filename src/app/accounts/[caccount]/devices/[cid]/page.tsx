@@ -16,7 +16,7 @@ export default function Cards() {
   const { accounts } = useAccounts();
   const { caccount, cid } = useParams();
 
-  const sortedAccounts = [...accounts].sort((a, b) => {
+  const sortedAccounts = [...(accounts || [])].sort((a, b) => {
     if (
       a.accountName === activeAccount?.accountName &&
       a.network === activeAccount?.network
