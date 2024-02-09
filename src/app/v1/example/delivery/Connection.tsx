@@ -12,7 +12,7 @@ type ConnectionId = {
   publicKey: string;
 };
 
-type Message = {
+export type Message = {
   type: 'tx' | 'id';
   data: any;
 };

@@ -6,11 +6,13 @@ import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { useSubmit } from '@/hooks/useSubmit';
 import { decodeAccount } from '@/utils/decodeAccount';
 import { transfer } from '@/utils/transfer';
-import { TextField } from '@kadena/react-ui';
+import { Box, Stack, Text, TextField } from '@kadena/react-ui';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useConnection } from './Connection';
+import pizza from './pizza.png';
 
 type DeliveryProps = {
   searchParams: {
@@ -19,21 +21,21 @@ type DeliveryProps = {
   };
 };
 
+const price = 2.55;
 export default function DeliveryPage({ searchParams }: DeliveryProps) {
   const { response } = searchParams;
   const { tx } = useSubmit(searchParams);
   const account = decodeAccount(response);
   const { connect, setId, send, isLoading } = useConnection();
-  const [data, setData] = useState<string>('');
   const { getReturnUrl } = useReturnUrl();
 
   const router = useRouter();
-  const { register, getValues } = useForm({
+  const { register, getValues, watch } = useForm({
     defaultValues: {
-      receiver: '',
-      amount: 0,
+      receiver: 'c:-BtZKCieonbuxQHJocDqdUXMZgHwN4XDNQjXXSaTJDo',
+      amount: 1,
     },
-    reValidateMode: 'onBlur',
+    reValidateMode: 'onChange',
   });
 
   const onReceiverChange = () => {
@@ -45,7 +47,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   const onSend = async () => {
     if (!account) return;
     const tx = await transfer({
-      amount: getValues('amount'),
+      amount: getValues('amount') * price,
       receiver: getValues('receiver'),
       sender: account.accountName,
       gasPayer: getValues('receiver'),
@@ -53,7 +55,6 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       networkId: 'fast-development',
       publicKey: account?.publicKey,
     });
-    localStorage.setItem('receiver', getValues('receiver'));
     router.push(
       `${process.env.WALLET_URL}/sign?payload=${Buffer.from(
         JSON.stringify(tx),
@@ -71,28 +72,36 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   useEffect(() => {
     if (isLoading) return;
     if (!tx) return;
-    const receiver = localStorage.getItem('receiver');
-    if (!receiver) return;
-    send({ id: '1234', publicKey: receiver }, { type: 'tx', data: tx });
+    send(
+      { id: '1234', publicKey: getValues('receiver') },
+      { type: 'tx', data: tx },
+    );
   }, [tx, isLoading]);
   return (
     <div>
-      <h1>Delivery Page</h1>
-      <Account account={account} returnPath="/v1/example/delivery" />
-      <TextField
-        label="To"
-        {...register('receiver', {
-          onChange: onReceiverChange,
-        })}
-      />
-      <TextField
-        label="Amount"
-        {...register('amount', {
-          valueAsNumber: true,
-        })}
-      />
-      <Button onPress={onSend}>Sign</Button>
-      <p>{data}</p>
+      <Box margin="md">
+        <h1>Delivery Page</h1>
+        <Account account={account} returnPath="/v1/example/delivery" />
+      </Box>
+      {tx && <Box margin="md">Order pending...</Box>}
+      {!tx && (
+        <Stack gas="md" margin="md" flexDirection="column">
+          <Box margin="md">
+            <Image src={pizza} alt="pizza" width={100} height={100} />
+          </Box>
+          <TextField
+            defaultValue="1"
+            {...register('amount', {
+              valueAsNumber: true,
+              min: 1,
+            })}
+            label="Amount of slices"
+            type="number"
+          />
+          <Text>Price: {watch('amount') * price}</Text>
+          <Button onPress={onSend}>order</Button>
+        </Stack>
+      )}
     </div>
   );
 }
