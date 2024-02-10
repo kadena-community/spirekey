@@ -1,8 +1,13 @@
 'use client';
 
 import { Account } from '@/components/Account/Account';
-import CardCollection from '@/components/CardCollection/CardCollection';
 import { useAccounts } from '@/hooks/useProfiles';
+import dynamic from 'next/dynamic';
+
+const CardCollection = dynamic(
+  () => import('@/components/CardCollection/CardCollection'),
+  { ssr: false },
+);
 
 type AccountSelectorProps = {
   returnUrl?: string;
@@ -10,8 +15,6 @@ type AccountSelectorProps = {
 
 export const AccountSelector = ({ returnUrl }: AccountSelectorProps) => {
   const { accounts } = useAccounts();
-
-  if (!accounts) return <div>loading...</div>;
 
   return (
     <CardCollection>
