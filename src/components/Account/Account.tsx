@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { ButtonLink } from '../ButtonLink/ButtonLink';
 import DeviceCard from '../Card/DeviceCard';
 import { Carousel } from '../Carousel/Carousel';
+
 interface AccountProps {
   account: Account;
   isActive?: boolean;

@@ -1,4 +1,4 @@
-import { Account } from '@/components/Account';
+import type { LoginAccount } from '@/components/AccountButton';
 
 const getStoredAccount = () => {
   if (typeof window === 'undefined') return null;
@@ -8,7 +8,7 @@ const getStoredAccount = () => {
 
 export const decodeAccount = (response: string) => {
   if (!response) return getStoredAccount();
-  const account: Account = JSON.parse(
+  const account: LoginAccount = JSON.parse(
     Buffer.from(response, 'base64').toString(),
   );
 

@@ -83,13 +83,13 @@ export default function Sign(req: SignProps) {
 
     const params = new URLSearchParams();
     params.append(
-      'payload',
+      'transaction',
       Buffer.from(JSON.stringify(signedTx)).toString('base64'),
     );
 
     if (optimistic && device?.pendingRegistrationTx) {
       params.append(
-        'reqKeys',
+        'pendingTxIds',
         encodeURIComponent(JSON.stringify([device?.pendingRegistrationTx])),
       );
     }

@@ -3,18 +3,24 @@ import { Button, Text } from '@kadena/react-ui';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 
-export type Account = {
-  displayName: string;
-  accountName: string;
+interface Credential {
+  type: 'WebAuthn' | 'ED25519';
   publicKey: string;
-  cid: string;
-};
+  id?: string;
+}
 
-export const Account = ({
+export interface LoginAccount {
+  credentials: Credential[];
+  accountName: string;
+  name: string;
+  pendingTxIds: string[];
+}
+
+export const AccountButton = ({
   account,
   returnPath,
 }: {
-  account: Account | null;
+  account: LoginAccount | null;
   returnPath: string;
 }) => {
   const router = useRouter();
@@ -25,15 +31,12 @@ export const Account = ({
       `${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(returnPath)}`,
     );
   }, [getReturnUrl, returnPath]);
-  if (!account)
-    return (
-      <Button icon="Account" onClick={onLogin}>
-        Login
-      </Button>
-    );
+
+  if (!account) return <Button onClick={onLogin}>Login</Button>;
+
   return (
     <>
-      <Text bold>Account: {account.displayName}</Text>
+      <Text bold>Account: {account.name}</Text>
     </>
   );
 };

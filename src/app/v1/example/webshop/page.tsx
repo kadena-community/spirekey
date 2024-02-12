@@ -1,6 +1,6 @@
 'use client';
 
-import { Account } from '@/components/Account';
+import { AccountButton } from '@/components/AccountButton';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { decodeAccount } from '@/utils/decodeAccount';
 import {
@@ -16,7 +16,7 @@ import {
 } from '@kadena/react-ui';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import cookieImg from './chocolate-chip-cookie.jpg';
 import { createOrder } from './order';
 
@@ -29,6 +29,9 @@ type WebshopProps = {
 export default function Webshop({ searchParams }: WebshopProps) {
   const { response } = searchParams;
   const account = decodeAccount(response);
+  const router = useRouter();
+  const { getReturnUrl } = useReturnUrl();
+
   const cookies = [
     {
       price: 6.55,
@@ -43,8 +46,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
       image: cookieImg,
     },
   ];
-  const router = useRouter();
-  const { getReturnUrl } = useReturnUrl();
+
   const onOrder = useCallback(
     ({ price }: { price: number }) =>
       async () => {
@@ -54,6 +56,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
           price,
           signerPubKey: account.publicKey,
         });
+
         router.push(
           `${process.env.WALLET_URL}/sign?payload=${Buffer.from(
             JSON.stringify(order),
@@ -81,7 +84,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
       </Box>
 
       <Box>
-        <Account account={account} returnPath="/v1/example/webshop" />
+        <AccountButton account={account} returnPath="/v1/example/webshop" />
       </Box>
       {account && (
         <Grid columns={{ sm: 1, md: 2, lg: 2 }} gap="lg" margin="lg">
