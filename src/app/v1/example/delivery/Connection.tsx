@@ -81,7 +81,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
     async (pid) => {
       if (!id) return;
       const { Peer } = await import('peerjs');
-      const peerId = hash(pid).replace(/_/g, '-');
+      const peerId = getConnectionId(id);
       const peer = new Peer(peerId);
 
       return new Promise((resolve) => {
@@ -102,7 +102,6 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
       setConnections((prev) => ({ ...prev, [conn.peer]: conn }));
       conn.on('open', () => {
         conn.on('data', (data) => {
-          console.log('woooop', data);
           if (!isMessage(data)) return;
           console.log('Someone send me Data', data);
           setMessages((prev) => {
