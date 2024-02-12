@@ -12,15 +12,15 @@ interface Credential {
 export interface LoginAccount {
   credentials: Credential[];
   accountName: string;
-  name: string;
+  alias: string;
   pendingTxIds: string[];
 }
 
 export const AccountButton = ({
-  account,
+  user,
   returnPath,
 }: {
-  account: LoginAccount | null;
+  user: LoginAccount | null;
   returnPath: string;
 }) => {
   const router = useRouter();
@@ -32,11 +32,11 @@ export const AccountButton = ({
     );
   }, [getReturnUrl, returnPath]);
 
-  if (!account) return <Button onClick={onLogin}>Login</Button>;
+  if (!user) return <Button onPress={onLogin}>Login</Button>;
 
   return (
     <>
-      <Text bold>Account: {account.name}</Text>
+      <Text bold>Account: {user.alias}</Text>
     </>
   );
 };

@@ -16,19 +16,19 @@ import {
 } from '@kadena/react-ui';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useCallback } from 'react';
+
 import cookieImg from './chocolate-chip-cookie.jpg';
 import { createOrder } from './order';
 
 type WebshopProps = {
   searchParams: {
-    response: string;
+    user: string;
   };
 };
 
 export default function Webshop({ searchParams }: WebshopProps) {
-  const { response } = searchParams;
-  const account = decodeAccount(response);
+  const { user } = searchParams;
+  const account = decodeAccount(user);
   const router = useRouter();
   const { getReturnUrl } = useReturnUrl();
 
@@ -47,26 +47,24 @@ export default function Webshop({ searchParams }: WebshopProps) {
     },
   ];
 
-  const onOrder = useCallback(
+  const onOrder =
     ({ price }: { price: number }) =>
-      async () => {
-        if (!account) return;
-        const order = await createOrder({
-          accountName: account.accountName,
-          price,
-          signerPubKey: account.publicKey,
-        });
+    async () => {
+      if (!account) return;
+      const order = await createOrder({
+        accountName: account.accountName,
+        price,
+        signerPubKey: account.credentials[0].publicKey,
+      });
 
-        router.push(
-          `${process.env.WALLET_URL}/sign?payload=${Buffer.from(
-            JSON.stringify(order),
-          ).toString('base64')}&cid=${account.cid}&returnUrl=${getReturnUrl(
-            '/v1/example/webshop/submit',
-          )}`,
-        );
-      },
-    [response],
-  );
+      router.push(
+        `${process.env.WALLET_URL}/sign?payload=${Buffer.from(
+          JSON.stringify(order),
+        ).toString('base64')}&returnUrl=${getReturnUrl(
+          '/v1/example/webshop/submit',
+        )}`,
+      );
+    };
 
   return (
     <Stack
@@ -84,7 +82,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
       </Box>
 
       <Box>
-        <AccountButton account={account} returnPath="/v1/example/webshop" />
+        <AccountButton user={account} returnPath="/v1/example/webshop" />
       </Box>
       {account && (
         <Grid columns={{ sm: 1, md: 2, lg: 2 }} gap="lg" margin="lg">

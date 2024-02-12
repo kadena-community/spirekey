@@ -1,12 +1,12 @@
 import { Box, Button, Stack } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
-import { Children, ReactElement, cloneElement, useRef, useState } from 'react';
+import { Children, cloneElement, useRef, useState } from 'react';
 import { useElementSize } from 'usehooks-ts';
 
 import { card, inner, wrapper } from './CardCollection.css';
 
 interface CardCollectionProps {
-  children: ReactElement[];
+  children: any; // @TODO ReactElement/ReactNode?
 }
 
 // Something we might be able to use for the scroll-enlarge-effect: https://codesandbox.io/p/sandbox/fervent-pasteur-dqs9ry?file=%2FApp.js%3A75%2C18-75%2C25

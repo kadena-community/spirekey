@@ -1,6 +1,6 @@
 'use client';
 
-import { Account } from '@/components/Account';
+import { AccountButton } from '@/components/AccountButton';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
 import { decodeAccount } from '@/utils/decodeAccount';
@@ -42,7 +42,10 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
     <div>
       <Box margin="md">
         <h1>Merchant Page</h1>
-        <Account account={account} returnPath="/v1/example/delivery/merchant" />
+        <AccountButton
+          account={account}
+          returnPath="/v1/example/delivery/merchant"
+        />
       </Box>
       <Table.Root>
         <Table.Body>

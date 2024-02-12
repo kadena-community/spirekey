@@ -1,7 +1,6 @@
 'use client';
 
 import { useAccounts } from '@/context/AccountsContext';
-import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { useSign } from '@/hooks/useSign';
 import { transfer } from '@/utils/transfer';
 import {
@@ -13,7 +12,7 @@ import {
   Text,
   TextField,
 } from '@kadena/react-ui';
-import { useParams, usePathname, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -22,7 +21,6 @@ const isCAccount = (account: string | string[]): account is string =>
 
 export default function SendPage() {
   const params = useParams();
-  const router = useRouter();
   const { caccount, cid } = useParams();
   const { accounts } = useAccounts();
   const [isLoading, setIsLoading] = useState(false);
@@ -52,11 +50,7 @@ export default function SendPage() {
     defaultValues: FORM_DEFAULTS,
     reValidateMode: 'onBlur',
   });
-  const pathname = usePathname();
-
-  const { getReturnUrl } = useReturnUrl();
-  // wallet url should probably be configurable somehow
-  const { sign } = useSign(process.env.WALLET_URL!);
+  const { sign } = useSign();
   const onSubmit = async (data: FormValues) => {
     if (!isCAccount(data.sender)) return;
     if (!process.env.NAMESPACE) return;
@@ -73,11 +67,7 @@ export default function SendPage() {
       publicKey: device?.guard.keys[0] || '',
     });
 
-    await sign(
-      result,
-      device['credential-id'],
-      pathname.replace(/\/send$/, 'submit'),
-    );
+    await sign(result, device['credential-id']);
     setIsLoading(false);
   };
 

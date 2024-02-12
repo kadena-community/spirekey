@@ -87,12 +87,18 @@ export function Account({
                 <ButtonLink href={returnUrl}>Cancel</ButtonLink>
 
                 <ButtonLink
-                  href={`${returnUrl}?response=${Buffer.from(
+                  href={`${returnUrl}?user=${Buffer.from(
                     JSON.stringify({
-                      displayName: account.accountName,
+                      alias: account.alias,
                       accountName: account.accountName,
-                      cid,
-                      publicKey: d.guard.keys[0],
+                      pendingTxIds: [d.pendingRegistrationTx].filter(Boolean),
+                      credentials: [
+                        {
+                          type: 'WebAuthn',
+                          publicKey: d.guard.keys[0],
+                          id: d['credential-id'],
+                        },
+                      ],
                     }),
                   ).toString('base64')}`}
                 >
