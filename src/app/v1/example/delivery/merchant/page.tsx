@@ -3,23 +3,23 @@
 import { AccountButton } from '@/components/AccountButton';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
-import { decodeAccount } from '@/utils/decodeAccount';
 import { Box, Table } from '@kadena/react-ui';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import type { Message } from '../Connection';
 import { useConnection } from '../Connection';
+import { useLoggedInAccount } from '../useLoggedInAccount';
 
 type MerchantProps = {
   searchParams: {
-    response: string;
+    user: string;
     transaction: string;
   };
 };
 
 export default function MerchantPage({ searchParams }: MerchantProps) {
-  const { response } = searchParams;
-  const account = decodeAccount(response);
+  const { user } = searchParams;
+  const { account } = useLoggedInAccount(user);
   const { connect, setId, send, isLoading, messages } = useConnection();
   const { getReturnUrl } = useReturnUrl();
 
