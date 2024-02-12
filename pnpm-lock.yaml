@@ -35,6 +35,9 @@ dependencies:
   '@simplewebauthn/types':
     specifier: ^9.0.0
     version: 9.0.0
+  '@types/three':
+    specifier: ^0.161.2
+    version: 0.161.2
   '@vanilla-extract/css':
     specifier: ^1.14.0
     version: 1.14.0

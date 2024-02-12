@@ -27,6 +27,7 @@
     "@react-three/fiber": "^8.15.16",
     "@simplewebauthn/browser": "^9.0.0",
     "@simplewebauthn/types": "^9.0.0",
+    "@types/three": "^0.161.2",
     "@vanilla-extract/css": "^1.14.0",
     "@vanilla-extract/next-plugin": "^2.3.3",
     "@vanilla-extract/recipes": "^0.5.1",
