@@ -20,7 +20,7 @@ export const AccountButton = ({
   user,
   returnPath,
 }: {
-  user: LoginAccount | null;
+  user?: LoginAccount | null;
   returnPath: string;
 }) => {
   const router = useRouter();

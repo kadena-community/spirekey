@@ -4,7 +4,6 @@ import { AccountButton } from '@/components/AccountButton';
 import { Button } from '@/components/Button/Button';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { useSubmit } from '@/hooks/useSubmit';
-import { decodeAccount } from '@/utils/decodeAccount';
 import { transfer } from '@/utils/transfer';
 import { Box, Stack, Text, TextField } from '@kadena/react-ui';
 import Image from 'next/image';
@@ -13,19 +12,20 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useConnection } from './Connection';
 import pizza from './pizza.png';
+import { useLoggedInAccount } from './useLoggedInAccount';
 
 type DeliveryProps = {
   searchParams: {
-    response: string;
+    user: string;
     transaction: string;
   };
 };
 
 const price = 2.55;
 export default function DeliveryPage({ searchParams }: DeliveryProps) {
-  const { response } = searchParams;
+  const { user } = searchParams;
   const { tx } = useSubmit(searchParams);
-  const account = decodeAccount(response);
+  const { account } = useLoggedInAccount(user);
   const { messages, setId, send, isLoading } = useConnection();
   const { getReturnUrl } = useReturnUrl();
 
