@@ -81,7 +81,7 @@ export function InstancedTriangle({
         tempBox.scale.setZ(
           scale *
             (Math.sin(
-              clock.elapsedTime * 1 + randomRef.current[id] * 2 * Math.PI,
+              clock.elapsedTime * 0.2 + randomRef.current[id] * 2 * Math.PI,
             ) +
               1),
         );
