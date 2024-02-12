@@ -1,9 +1,8 @@
 import { l1Client } from '@/utils/client';
-import { getSig } from '@/utils/getSig';
 import { useEffect, useState } from 'react';
 
 type Props = {
-  payload: string;
+  transaction: string;
 };
 
 export enum SubmitStatus {
@@ -15,15 +14,15 @@ export enum SubmitStatus {
   INCOMPLETE = 'incomplete',
 }
 
-export const useSubmit = ({ payload }: Props) => {
+export const useSubmit = ({ transaction }: Props) => {
   const [result, setResult] = useState<any>({});
   const [status, setStatus] = useState(SubmitStatus.IDLE);
   const [tx, setTx] = useState<any>(null);
   const [preview, setPreview] = useState<any>(null);
 
   useEffect(() => {
-    if (!payload) return;
-    const tx = JSON.parse(Buffer.from(payload, 'base64').toString());
+    if (!transaction) return;
+    const tx = JSON.parse(Buffer.from(transaction, 'base64').toString());
     setTx(tx);
     if (tx.sigs.filter((x: any) => x === null).length)
       return setStatus(SubmitStatus.INCOMPLETE);
@@ -31,14 +30,14 @@ export const useSubmit = ({ payload }: Props) => {
       setPreview(res);
       setStatus(SubmitStatus.SUBMITABLE);
     });
-  }, [payload]);
+  }, [transaction]);
 
   const doSubmit = async () => {
-    if (!payload) return;
+    if (!transaction) return;
 
     setStatus(SubmitStatus.LOADING);
 
-    const tx = JSON.parse(Buffer.from(payload, 'base64').toString());
+    const tx = JSON.parse(Buffer.from(transaction, 'base64').toString());
     try {
       const txRes = await l1Client.submit(tx);
       const result = await l1Client.listen(txRes);

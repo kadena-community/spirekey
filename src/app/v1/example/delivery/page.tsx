@@ -17,13 +17,13 @@ import pizza from './pizza.png';
 type DeliveryProps = {
   searchParams: {
     response: string;
-    payload: string;
+    transaction: string;
   };
 };
 
 const price = 2.55;
 export default function DeliveryPage({ searchParams }: DeliveryProps) {
-  const { response, payload } = searchParams;
+  const { response } = searchParams;
   const { tx } = useSubmit(searchParams);
   const account = decodeAccount(response);
   const { messages, setId, send, isLoading } = useConnection();
@@ -50,7 +50,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       publicKey: account?.credentials[0].publicKey,
     });
     router.push(
-      `${process.env.WALLET_URL}/sign?payload=${Buffer.from(
+      `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
         JSON.stringify(tx),
       ).toString('base64')}&returnUrl=${getReturnUrl('/v1/example/delivery')}`,
     );

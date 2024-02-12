@@ -20,20 +20,22 @@ import { useEffect, useState } from 'react';
 
 interface SignProps {
   searchParams: {
-    payload: string;
+    transaction: string;
     returnUrl: string;
     optimistic?: boolean;
   };
 }
 
 export default function Sign(req: SignProps) {
-  const { payload, returnUrl, optimistic = false } = req.searchParams;
+  const { transaction, returnUrl, optimistic = false } = req.searchParams;
   const [autoRedirect, setAutoRedirect] = useState<boolean>(true);
   const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(true);
   const [redirectLocation, setRedirectLocation] = useState<string>('');
   const router = useRouter();
   const { accounts } = useAccounts();
-  const data = payload ? Buffer.from(payload, 'base64').toString() : null;
+  const data = transaction
+    ? Buffer.from(transaction, 'base64').toString()
+    : null;
   const { sign } = useSign();
   const [language, setLanguage] = useState('en');
 

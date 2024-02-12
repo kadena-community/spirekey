@@ -17,9 +17,7 @@ export const SubmitForm: FC<PreviewFormProps> = ({ values, onCancel }) => {
 
   const onSign = async () => {
     router.push(
-      `${process.env.WALLET_URL}/sign?payload=${values.payload}&cid=${
-        values.cid
-      }&returnUrl=${getReturnUrl('/pact/submit')}`,
+      `${process.env.WALLET_URL}/sign?transaction=${values.payload}&returnUrl=${getReturnUrl('/pact/submit')}`,
     );
   };
 
@@ -82,8 +80,8 @@ export const SubmitForm: FC<PreviewFormProps> = ({ values, onCancel }) => {
         <Text as="code">{values.result}</Text>
       </Stack>
       <Stack flexDirection="row" margin="md" justifyContent="flex-start">
-        <Button onClick={onSign}>Sign</Button>
-        <Button onClick={onCancel}>Back</Button>
+        <Button onPress={onSign}>Sign</Button>
+        <Button onPress={onCancel}>Back</Button>
       </Stack>
     </div>
   );

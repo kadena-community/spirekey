@@ -4,17 +4,17 @@ import { PactNumber } from '@kadena/pactjs';
 import { useEffect, useState } from 'react';
 
 type Props = {
-  payload: string;
+  transaction: string;
   response: string;
 };
 
-export const usePreview = ({ payload, response }: Props) => {
+export const usePreview = ({ transaction, response }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [estimatedGas, setEstimatedGas] = useState<number>();
   const [isSuccessful, setSuccessful] = useState<boolean>();
   const [error, setError] = useState<string>();
 
-  const p = JSON.parse(Buffer.from(payload, 'base64').toString());
+  const p = JSON.parse(Buffer.from(transaction, 'base64').toString());
   const r = JSON.parse(Buffer.from(response, 'base64').toString());
   const tx = {
     ...p,

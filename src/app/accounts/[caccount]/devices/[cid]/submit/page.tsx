@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 
 type SubmitPageProps = {
   searchParams: {
-    payload: string;
+    transaction: string;
   };
 };
 export default function SubmitPage({ searchParams }: SubmitPageProps) {
