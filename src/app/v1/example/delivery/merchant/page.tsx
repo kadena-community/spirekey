@@ -43,7 +43,7 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
       <Box margin="md">
         <h1>Merchant Page</h1>
         <AccountButton
-          account={account}
+          user={account}
           returnPath="/v1/example/delivery/merchant"
         />
       </Box>
@@ -64,9 +64,7 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
                 <Link
                   href={`${process.env.WALLET_URL}/sign?payload=${Buffer.from(
                     JSON.stringify(message.data),
-                  ).toString(
-                    'base64',
-                  )}&cid=${account.cid}&returnUrl=${getReturnUrl(
+                  ).toString('base64')}&returnUrl=${getReturnUrl(
                     '/v1/example/delivery/merchant',
                   )}`}
                 >

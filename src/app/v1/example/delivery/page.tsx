@@ -47,14 +47,12 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       gasPayer: getValues('receiver'),
       namespace: process.env.NAMESPACE!,
       networkId: 'fast-development',
-      publicKey: account?.publicKey,
+      publicKey: account?.credentials[0].publicKey,
     });
     router.push(
       `${process.env.WALLET_URL}/sign?payload=${Buffer.from(
         JSON.stringify(tx),
-      ).toString('base64')}&cid=${account.cid}&returnUrl=${getReturnUrl(
-        '/v1/example/delivery',
-      )}`,
+      ).toString('base64')}&returnUrl=${getReturnUrl('/v1/example/delivery')}`,
     );
   };
 
@@ -77,7 +75,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     <div>
       <Box margin="md">
         <h1>Delivery Page</h1>
-        <AccountButton account={account} returnPath="/v1/example/delivery" />
+        <AccountButton user={account} returnPath="/v1/example/delivery" />
       </Box>
       {pendingTx && <Box margin="md">Order pending...</Box>}
       {mintedTx && <Box margin="md">Your pizza is on the way!</Box>}
