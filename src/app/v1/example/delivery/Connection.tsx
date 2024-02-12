@@ -13,13 +13,14 @@ type ConnectionId = {
 };
 
 export type Message = {
-  type: 'tx' | 'id';
+  type: 'tx' | 'id' | 'confirm';
   data: any;
+  connectionId: ConnectionId;
 };
 
 const ConnectionContext = createContext({
   connect: (id: ConnectionId) => {},
-  send: (id: ConnectionId, message: Message) => {},
+  send: (id: ConnectionId, message: Pick<Message, 'type' | 'data'>) => {},
   setId: (id: ConnectionId) => {},
   isLoading: true,
   messages: [] as Message[],
@@ -29,11 +30,13 @@ const getConnectionId = (id: ConnectionId) =>
   hash(id.publicKey + id.id).replace(/_/g, '-');
 
 const isMessage = (data: any): data is Message => {
-  return data.type === 'tx' || data.type === 'id';
+  return data.type === 'tx' || data.type === 'id' || data.type === 'confirm';
 };
 
 const ConnectionProvider = ({ children }: { children: ReactNode }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(
+    JSON.parse(localStorage.getItem('messages') || '[]'),
+  );
   const [id, setId] = useState<ConnectionId>(
     JSON.parse(localStorage.getItem('connectionId') || 'null') || undefined,
   );
@@ -59,11 +62,15 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
       });
     });
   };
-  const send = async (id: ConnectionId, message: Message) => {
-    const connectionId = getConnectionId(id);
+  const send = async (
+    toId: ConnectionId,
+    message: Pick<Message, 'type' | 'data'>,
+  ) => {
+    const connectionId = getConnectionId(toId);
     const conn =
-      connections[connectionId] || ((await connect(id)) as DataConnection);
-    conn.send(message);
+      connections[connectionId] || ((await connect(toId)) as DataConnection);
+    console.log('Sending data to peer', message);
+    conn.send({ ...message, connectionId: id });
   };
   const onSetId = (id: ConnectionId) => {
     setId(id);
@@ -77,19 +84,6 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
       const peerId = hash(pid).replace(/_/g, '-');
       const peer = new Peer(peerId);
 
-      peer.on('connection', (conn) => {
-        setConnections((prev) => ({ ...prev, [conn.peer]: conn }));
-        conn.on('open', () => {
-          conn.on('data', (data) => {
-            if (!isMessage(data)) return;
-            console.log('Someone send me Data', data);
-            setMessages((prev) => [...prev, data]);
-          });
-        });
-        conn.on('error', (err) => {
-          console.error('Connection error', err);
-        });
-      });
       return new Promise((resolve) => {
         peer.on('open', () => {
           resolve(peer);
@@ -102,6 +96,27 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
       revalidateOnFocus: false,
     },
   );
+  useEffect(() => {
+    if (!peer) return;
+    peer.on('connection', (conn) => {
+      setConnections((prev) => ({ ...prev, [conn.peer]: conn }));
+      conn.on('open', () => {
+        conn.on('data', (data) => {
+          console.log('woooop', data);
+          if (!isMessage(data)) return;
+          console.log('Someone send me Data', data);
+          setMessages((prev) => {
+            const newMessages = [...prev, data];
+            localStorage.setItem('messages', JSON.stringify(newMessages));
+            return newMessages;
+          });
+        });
+      });
+      conn.on('error', (err) => {
+        console.error('Connection error', err);
+      });
+    });
+  }, [peer]);
   return (
     <ConnectionContext.Provider
       value={{ connect, send, setId: onSetId, isLoading, messages }}

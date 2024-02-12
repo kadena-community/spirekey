@@ -23,10 +23,10 @@ type DeliveryProps = {
 
 const price = 2.55;
 export default function DeliveryPage({ searchParams }: DeliveryProps) {
-  const { response } = searchParams;
+  const { response, payload } = searchParams;
   const { tx } = useSubmit(searchParams);
   const account = decodeAccount(response);
-  const { connect, setId, send, isLoading } = useConnection();
+  const { messages, setId, send, isLoading } = useConnection();
   const { getReturnUrl } = useReturnUrl();
 
   const router = useRouter();
@@ -38,12 +38,6 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     reValidateMode: 'onChange',
   });
 
-  const onReceiverChange = () => {
-    connect({
-      id: '1234',
-      publicKey: getValues('receiver'),
-    });
-  };
   const onSend = async () => {
     if (!account) return;
     const tx = await transfer({
@@ -77,13 +71,16 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       { type: 'tx', data: tx },
     );
   }, [tx, isLoading]);
+  const pendingTx = tx && !messages.some((m) => m.data.hash === tx.hash);
+  const mintedTx = tx && messages.some((m) => m.data.hash === tx.hash);
   return (
     <div>
       <Box margin="md">
         <h1>Delivery Page</h1>
         <Account account={account} returnPath="/v1/example/delivery" />
       </Box>
-      {tx && <Box margin="md">Order pending...</Box>}
+      {pendingTx && <Box margin="md">Order pending...</Box>}
+      {mintedTx && <Box margin="md">Your pizza is on the way!</Box>}
       {!tx && (
         <Stack gas="md" margin="md" flexDirection="column">
           <Box margin="md">

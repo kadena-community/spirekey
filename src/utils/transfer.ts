@@ -61,9 +61,9 @@ export const transfer = async ({
               `${namespace}.webauthn-wallet.TRANSFER`,
               sender,
               receiver,
-              amount,
+              Number(amount.toPrecision(8)),
             ),
-            gasPayer !== sender &&
+            gasPayer === sender &&
               signFor(
                 `${namespace}.webauthn-wallet.GAS_PAYER`,
                 sender,
