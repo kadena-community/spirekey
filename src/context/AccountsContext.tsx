@@ -56,9 +56,18 @@ const getAccountsFromLocalStorage = (): Account[] => {
 
   try {
     const localAccounts = JSON.parse(rawLocalAccounts) as (Account[] | Record<string, Account>);
-    return Array.isArray(localAccounts)
-      ? localAccounts
-      : Object.values(localAccounts);
+
+    if (Array.isArray(localAccounts)) {
+      return localAccounts;
+    }
+
+    const mutatedAccounts = Object.values(localAccounts);
+    localStorage.setItem(
+      'localAccounts',
+      JSON.stringify(mutatedAccounts),
+    );
+
+    return mutatedAccounts;
   } catch (e: unknown) {
     return [];
   }
