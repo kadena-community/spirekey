@@ -13,12 +13,13 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { container, step, wrapper } from './page.css';
+import { container, step as stepStyle, wrapper } from './page.css';
 import { Alias } from './steps/Alias';
 import { Color } from './steps/Color';
 import { DeviceType } from './steps/DeviceType';
 import { Fingerprint } from './steps/Fingerprint';
 import { Network } from './steps/Network';
+import Registration from '@/components/Registration/Registration';
 
 const TOTAL_STEPS = 5;
 
@@ -130,30 +131,10 @@ export default function Account() {
 
   return (
     <Stack flexDirection="column" gap="md">
-      <Box width="100%" padding="lg">
-        <DeviceCard
-          account={{
-            alias: formMethods.watch('alias'),
-            accountName: formMethods.watch('accountName'),
-            balance: '0.0',
-            network: formMethods.watch('networkId'),
-            devices: [
-              {
-                'credential-id': formMethods.watch('credentialId'),
-                domain: host,
-                color: formMethods.watch('color'),
-                deviceType: formMethods.watch('deviceType'),
-                guard: {
-                  keys: [formMethods.watch('credentialPubkey')],
-                  pred: 'keys-any',
-                },
-              },
-            ],
-          }}
-        />
-      </Box>
 
-      <FormProvider {...formMethods}>
+      <Registration />
+
+      {/* <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit)}>
           <div className={wrapper}>
             <motion.div
@@ -161,26 +142,26 @@ export default function Account() {
               transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
               className={container}
             >
-              <Box className={step}>
+              <Box className={stepStyle}>
                 <Network isVisible={currentStep === 1} />
               </Box>
 
-              <Box className={step}>
+              <Box className={stepStyle}>
                 <Alias isVisible={currentStep === 2} />
               </Box>
 
-              <Box className={step}>
+              <Box className={stepStyle}>
                 <Fingerprint
                   isVisible={currentStep === 3}
                   onClick={goToNextStep}
                 />
               </Box>
 
-              <Box className={step}>
+              <Box className={stepStyle}>
                 <DeviceType isVisible={currentStep === 4} />
               </Box>
 
-              <Box className={step}>
+              <Box className={stepStyle}>
                 <Color isVisible={currentStep === 5} />
               </Box>
             </motion.div>
@@ -215,7 +196,7 @@ export default function Account() {
             </div>
           )}
         </form>
-      </FormProvider>
+      </FormProvider> */}
     </Stack>
   );
 }
