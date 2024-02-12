@@ -15,7 +15,7 @@ import {
 
 type SearchParams = {
   searchParams: {
-    payload: string;
+    transaction: string;
     response: string;
   };
 };

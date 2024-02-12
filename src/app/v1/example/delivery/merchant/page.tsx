@@ -13,7 +13,7 @@ import { useConnection } from '../Connection';
 type MerchantProps = {
   searchParams: {
     response: string;
-    payload: string;
+    transaction: string;
   };
 };
 
@@ -62,7 +62,7 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
               <Table.Td>{message.data.hash}</Table.Td>
               <Table.Td>
                 <Link
-                  href={`${process.env.WALLET_URL}/sign?payload=${Buffer.from(
+                  href={`${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
                     JSON.stringify(message.data),
                   ).toString('base64')}&returnUrl=${getReturnUrl(
                     '/v1/example/delivery/merchant',

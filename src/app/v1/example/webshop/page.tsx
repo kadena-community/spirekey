@@ -58,7 +58,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
       });
 
       router.push(
-        `${process.env.WALLET_URL}/sign?payload=${Buffer.from(
+        `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
           JSON.stringify(order),
         ).toString('base64')}&returnUrl=${getReturnUrl(
           '/v1/example/webshop/submit',

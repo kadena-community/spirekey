@@ -14,7 +14,7 @@ import {
 
 type SearchParams = {
   searchParams: {
-    payload: string;
+    transaction: string;
   };
 };
 export default function Submit({ searchParams }: SearchParams) {
