@@ -55,7 +55,10 @@ const getAccountsFromLocalStorage = (): Account[] => {
   }
 
   try {
-    return JSON.parse(rawLocalAccounts) as Account[];
+    const localAccounts = JSON.parse(rawLocalAccounts) as (Account[] | Record<string, Account>);
+    return Array.isArray(localAccounts)
+      ? localAccounts
+      : Object.values(localAccounts);
   } catch (e: unknown) {
     return [];
   }
