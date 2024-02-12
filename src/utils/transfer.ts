@@ -55,37 +55,41 @@ export const transfer = async ({
           pubKey: publicKey,
           scheme: 'WebAuthn',
         },
-        (signFor) => [
-          signFor(
-            `${namespace}.webauthn-wallet.TRANSFER`,
-            sender,
-            receiver,
-            amount,
-          ),
-          signFor(
-            `${namespace}.webauthn-wallet.GAS_PAYER`,
-            sender,
-            { int: 1 },
-            1,
-          ),
-        ],
+        (signFor) =>
+          [
+            signFor(
+              `${namespace}.webauthn-wallet.TRANSFER`,
+              sender,
+              receiver,
+              Number(amount.toPrecision(8)),
+            ),
+            gasPayer === sender &&
+              signFor(
+                `${namespace}.webauthn-wallet.GAS_PAYER`,
+                sender,
+                { int: 1 },
+                1,
+              ),
+          ].filter(Boolean),
       ),
-      // then this line should be skipped
-      // addSigner(
-      //   // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
-      //   {
-      //     pubKey: receiverAcc.devices[0].guard.keys[0],
-      //     scheme: 'WebAuthn',
-      //   },
-      //   (signFor) => [
-      //     signFor(
-      //       `${namespace}.webauthn-wallet.GAS_PAYER`,
-      //       receiver,
-      //       { int: 1 },
-      //       1,
-      //     ),
-      //   ],
-      // ),
+      gasPayer !== sender
+        ? // then this line should be skipped
+          addSigner(
+            // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
+            {
+              pubKey: receiverAcc.devices[0].guard.keys[0],
+              scheme: 'WebAuthn',
+            },
+            (signFor) => [
+              signFor(
+                `${namespace}.webauthn-wallet.GAS_PAYER`,
+                receiver,
+                { int: 1 },
+                1,
+              ),
+            ],
+          )
+        : (t) => t,
     ),
     createTransaction,
   )({});

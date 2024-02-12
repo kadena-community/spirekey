@@ -75,6 +75,13 @@
   (defun get-webauthn-guard(account:string)
     (with-read guard-lookup-table account
       { 'webauthn-guard-name := guard-name }
+      (webauthn-guard.get-account guard-name)
+    )
+  )
+
+  (defun get-wallet-guard(account:string)
+    (with-read guard-lookup-table account
+      { 'webauthn-guard-name := guard-name }
       (get-account-guard guard-name)
     )
   )

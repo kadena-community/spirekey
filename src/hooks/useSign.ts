@@ -48,23 +48,23 @@ export const useSign = (walletUrl: string) => {
 
     setSignedTx(signedTx);
 
-    const unsignedSigIndex = signedTx.sigs.findIndex((x: null) => x === null);
-    if (unsignedSigIndex !== -1) {
-      const payload: IPactCommand = JSON.parse(signedTx.cmd);
-      const nextSigner: any = payload.signers[unsignedSigIndex];
-      const signer = signersData.find((x) =>
-        x.devices.find((y) =>
-          y.guard.keys.find((z) => z === nextSigner.pubKey),
-        ),
-      );
+    // const unsignedSigIndex = signedTx.sigs.findIndex((x: null) => x === null);
+    // if (unsignedSigIndex !== -1) {
+    //   const payload: IPactCommand = JSON.parse(signedTx.cmd);
+    //   const nextSigner: any = payload.signers[unsignedSigIndex];
+    //   const signer = signersData.find((x) =>
+    //     x.devices.find((y) =>
+    //       y.guard.keys.find((z) => z === nextSigner.pubKey),
+    //     ),
+    //   );
 
-      if (!signer) throw new Error('No signer found');
+    //   if (!signer) throw new Error('No signer found');
 
-      const params = getSignParams(signedTx, signer.devices[0]);
-      const signPath = `/sign?payload=${params.payload}&cid=${params.cid}&signers=${signers}&originReturnUrl=${originReturnUrl}`;
-      setSignPath(signPath);
-      setSignUrl(`${walletUrl}${signPath}`);
-    }
+    //   const params = getSignParams(signedTx, signer.devices[0]);
+    //   const signPath = `/sign?payload=${params.payload}&cid=${params.cid}&signers=${signers}&originReturnUrl=${originReturnUrl}`;
+    //   setSignPath(signPath);
+    //   setSignUrl(`${walletUrl}${signPath}`);
+    // }
 
     if (originReturnUrl) {
       setSignUrl(

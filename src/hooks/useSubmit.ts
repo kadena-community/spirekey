@@ -12,6 +12,7 @@ export enum SubmitStatus {
   ERROR = 'error',
   LOADING = 'loading',
   SUBMITABLE = 'submitable',
+  INCOMPLETE = 'incomplete',
 }
 
 export const useSubmit = ({ payload }: Props) => {
@@ -24,6 +25,8 @@ export const useSubmit = ({ payload }: Props) => {
     if (!payload) return;
     const tx = JSON.parse(Buffer.from(payload, 'base64').toString());
     setTx(tx);
+    if (tx.sigs.filter((x: any) => x === null).length)
+      return setStatus(SubmitStatus.INCOMPLETE);
     l1Client.local(tx).then((res) => {
       setPreview(res);
       setStatus(SubmitStatus.SUBMITABLE);
