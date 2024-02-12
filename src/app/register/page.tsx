@@ -93,6 +93,8 @@ export default function Account() {
       formMethods.getValues('networkId'),
     );
     formMethods.setValue('accountName', accountName);
+
+    console.log({ credentialId, publicKey, accountName });
     return { credentialId, publicKey, accountName };
   };
 
@@ -105,6 +107,8 @@ export default function Account() {
     const credentialPubkey = formMethods.getValues('credentialPubkey');
     const caccount = await getAccountName(credentialPubkey, network);
     const credentialId = formMethods.getValues('credentialId');
+
+    console.log({ credentialPubkey, credentialId, caccount });
 
     if (!credentialId) {
       throw new Error('Credential ID is required');

@@ -23,8 +23,11 @@
     "@kadena/pactjs": "^0.4.2",
     "@kadena/react-ui": "^0.7.1",
     "@react-aria/utils": "^3.22.0",
+    "@react-three/drei": "^9.97.1",
+    "@react-three/fiber": "^8.15.16",
     "@simplewebauthn/browser": "^9.0.0",
     "@simplewebauthn/types": "^9.0.0",
+    "@types/three": "^0.161.2",
     "@vanilla-extract/css": "^1.14.0",
     "@vanilla-extract/next-plugin": "^2.3.3",
     "@vanilla-extract/recipes": "^0.5.1",
@@ -46,6 +49,7 @@
     "react-flip-move": "^3.0.5",
     "react-hook-form": "^7.49.3",
     "swr": "^2.2.4",
+    "three": "^0.161.0",
     "usehooks-ts": "^2.10.0"
   },
   "devDependencies": {
