@@ -2,9 +2,9 @@
 
 import { Button } from '@/components/Button/Button';
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
-import { QRCode } from '@/components/QRCode';
 import { useAccounts } from '@/context/AccountsContext';
 import { useSign } from '@/hooks/useSign';
+import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
 import { getLabels } from '@/utils/signUtils';
 import {
   Box,
@@ -13,7 +13,6 @@ import {
   Stack,
   SystemIcon,
   Text,
-  TextField,
   Tooltip,
 } from '@kadena/react-ui';
 import { useRouter } from 'next/navigation';
@@ -23,54 +22,46 @@ interface SignProps {
   searchParams: {
     payload: string;
     returnUrl: string;
-    cid: string;
-    signers: string;
-    originReturnUrl: string;
     optimistic?: boolean;
   };
 }
 
 export default function Sign(req: SignProps) {
-  const {
-    payload,
-    returnUrl,
-    cid,
-    signers,
-    originReturnUrl,
-    optimistic = false,
-  } = req.searchParams;
+  const { payload, returnUrl, optimistic = false } = req.searchParams;
   const [autoRedirect, setAutoRedirect] = useState<boolean>(true);
   const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(true);
   const [redirectLocation, setRedirectLocation] = useState<string>('');
   const router = useRouter();
   const { accounts } = useAccounts();
   const data = payload ? Buffer.from(payload, 'base64').toString() : null;
-  const { sign, signUrl, signPath } = useSign(process.env.WALLET_URL!);
+  const { sign } = useSign();
   const [language, setLanguage] = useState('en');
 
   const tx = JSON.parse(data ?? '{}');
   const txData = JSON.parse(tx.cmd || '{}');
 
-  const publicKeys = txData.signers.map((s: { pubKey: string }) => s.pubKey);
+  const publicKeys: string[] = txData.signers.map(
+    (s: { pubKey: string }) => s.pubKey,
+  );
 
   if (publicKeys.length === 0) {
     // @todo: deal with multiple public keys
     throw new Error('No signers defined in transaction.');
   }
 
-  const publicKey = publicKeys[0];
+  const devices = publicKeys.map((publicKey) =>
+    getDeviceByPublicKey(accounts, publicKey),
+  );
 
-  const device = accounts
-    .map((account) =>
-      account.devices.find((d) => d.guard.keys.includes(publicKey)),
-    )
-    .find((device) => device !== undefined);
-  // @todo: handle edge case where device does not exist on any account
+  const pendingRegistrationTxs = devices.map(
+    (device) => device?.pendingRegistrationTx,
+  );
 
   useEffect(() => {
-    const isAccountMinted = device !== null && !device?.pendingRegistrationTx;
-    setIsReadyToSubmit((!optimistic && isAccountMinted) || optimistic);
-  }, [device, optimistic, setIsReadyToSubmit]);
+    setIsReadyToSubmit(
+      (!optimistic && !!pendingRegistrationTxs.length) || optimistic,
+    );
+  }, [devices, optimistic, setIsReadyToSubmit]);
 
   useEffect(() => {
     if (isReadyToSubmit && redirectLocation && autoRedirect) {
@@ -79,18 +70,18 @@ export default function Sign(req: SignProps) {
   }, [redirectLocation, isReadyToSubmit, router, returnUrl, autoRedirect]);
 
   const onSign = async () => {
-    const signedTx = await sign(tx, cid, signers, originReturnUrl);
+    const signedTx = await sign(tx, devices?.[0]?.['credential-id']!);
 
     const params = new URLSearchParams();
     params.append(
-      'payload',
+      'transaction',
       Buffer.from(JSON.stringify(signedTx)).toString('base64'),
     );
 
-    if (optimistic && device?.pendingRegistrationTx) {
+    if (optimistic && pendingRegistrationTxs) {
       params.append(
-        'reqKeys',
-        encodeURIComponent(JSON.stringify([device?.pendingRegistrationTx])),
+        'pendingTxIds',
+        encodeURIComponent(JSON.stringify(pendingRegistrationTxs)),
       );
     }
 
@@ -176,14 +167,7 @@ export default function Sign(req: SignProps) {
           </Text>
         </Box>
 
-        {!signUrl && <Button onPress={onSign}>Sign</Button>}
-
-        {signUrl && signPath && (
-          <Stack flexDirection="column" gap="md" margin="md">
-            <QRCode url={signPath} />
-            <TextField id="signUrl" value="signUrl" isReadOnly />
-          </Stack>
-        )}
+        <Button onPress={onSign}>Sign</Button>
 
         <Stack flexDirection="column" gap="md" margin="xl">
           {!isReadyToSubmit && <p>Minting...</p>}

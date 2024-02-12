@@ -1,4 +1,4 @@
-import { Account } from '@/components/Account';
+import type { LoginAccount } from '@/components/AccountButton';
 
 const getStoredAccount = () => {
   if (typeof window === 'undefined') return null;
@@ -6,13 +6,16 @@ const getStoredAccount = () => {
   return JSON.parse(storedAccount);
 };
 
-export const decodeAccount = (response: string) => {
+export const decodeAccount = (response: string): LoginAccount => {
   if (!response) return getStoredAccount();
-  const account: Account = JSON.parse(
+  const account: LoginAccount = JSON.parse(
     Buffer.from(response, 'base64').toString(),
   );
 
-  window.localStorage.setItem('account', JSON.stringify(account));
+  if (typeof window !== 'undefined') {
+    // @ TODO move to a better place
+    window.localStorage.setItem('account', JSON.stringify(account));
+  }
 
   return account;
 };

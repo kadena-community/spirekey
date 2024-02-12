@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/Button/Button';
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
+import { useAccounts } from '@/context/AccountsContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { asyncPipe } from '@/utils/asyncPipe';
 import { l1Client } from '@/utils/client';
@@ -24,7 +25,6 @@ import {
   uploadModuleTransaction,
   validateJson,
 } from './pact.utils';
-import { useAccounts } from '@/context/AccountsContext';
 
 const FORM_DEFAULT = {
   chainId: '14',
@@ -74,10 +74,14 @@ export const PreviewForm: FC<PreviewFormProps> = ({
   const { response } = searchParams;
   const account = decodeAccount(response);
   const { getReturnUrl } = useReturnUrl();
-  const { accounts: localAccounts} = useAccounts();
+  const { accounts: localAccounts } = useAccounts();
 
-  const localAccount = localAccounts?.find(a => a.devices.map(d => d['credential-id'] === account?.cid))
-  const device = localAccount?.devices.find(d => d['credential-id'] === account?.cid)
+  const localAccount = localAccounts?.find((a) =>
+    a.devices.map((d) => d['credential-id'] === account?.credentials[0].id),
+  );
+  const device = localAccount?.devices.find(
+    (d) => d['credential-id'] === account?.credentials[0].id,
+  );
   const pubkeys = device?.guard.keys || [];
 
   const onChangeFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,10 +101,14 @@ export const PreviewForm: FC<PreviewFormProps> = ({
 
   useEffect(() => {
     if (!account) return;
-    setValue('publicKey', account.publicKey);
+    setValue('publicKey', account?.credentials[0].publicKey);
     setValue('senderAccount', account.accountName);
-    setValue('cid', account.cid);
-  }, [account?.cid, account?.accountName, account?.publicKey]);
+    setValue('cid', account?.credentials[0].id || '');
+  }, [
+    account?.credentials[0].id,
+    account?.accountName,
+    account?.credentials[0].publicKey,
+  ]);
 
   const onCodeChange = async (
     event: React.ChangeEvent<HTMLTextAreaElement>,
@@ -195,15 +203,15 @@ export const PreviewForm: FC<PreviewFormProps> = ({
             },
             {
               label: 'Display Name',
-              value: account.displayName,
+              value: account.alias,
             },
             {
               label: 'Device',
-              value: account.cid,
+              value: account.credentials[0].id,
             },
             {
               label: 'Public key',
-              value: account.publicKey,
+              value: account.credentials[0].publicKey,
             },
           ]}
           helperText="This is the account you will use to login."

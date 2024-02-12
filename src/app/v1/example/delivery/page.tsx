@@ -1,6 +1,6 @@
 'use client';
 
-import { Account } from '@/components/Account';
+import { AccountButton } from '@/components/AccountButton';
 import { Button } from '@/components/Button/Button';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { useSubmit } from '@/hooks/useSubmit';
@@ -9,7 +9,7 @@ import { transfer } from '@/utils/transfer';
 import { Box, Stack, Text, TextField } from '@kadena/react-ui';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useConnection } from './Connection';
 import pizza from './pizza.png';
@@ -47,14 +47,12 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       gasPayer: getValues('receiver'),
       namespace: process.env.NAMESPACE!,
       networkId: 'fast-development',
-      publicKey: account?.publicKey,
+      publicKey: account?.credentials[0].publicKey,
     });
     router.push(
       `${process.env.WALLET_URL}/sign?payload=${Buffer.from(
         JSON.stringify(tx),
-      ).toString('base64')}&cid=${account.cid}&returnUrl=${getReturnUrl(
-        '/v1/example/delivery',
-      )}`,
+      ).toString('base64')}&returnUrl=${getReturnUrl('/v1/example/delivery')}`,
     );
   };
 
@@ -77,7 +75,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     <div>
       <Box margin="md">
         <h1>Delivery Page</h1>
-        <Account account={account} returnPath="/v1/example/delivery" />
+        <AccountButton user={account} returnPath="/v1/example/delivery" />
       </Box>
       {pendingTx && <Box margin="md">Order pending...</Box>}
       {mintedTx && <Box margin="md">Your pizza is on the way!</Box>}
