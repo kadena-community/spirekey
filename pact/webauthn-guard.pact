@@ -18,6 +18,7 @@
   (defconst GOVERNANCE_KEYSET (read-string 'webauthn-keyset-name))
 
   (defcap GOVERNANCE()
+    ; check gas limit of nog andere stats om te bepalen of we een module aan het deployen zijn
     (enforce-guard GOVERNANCE_KEYSET)
   )
 

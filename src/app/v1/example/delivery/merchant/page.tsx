@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import type { Message } from '../Connection';
 import { useConnection } from '../Connection';
+import { useDelivery } from '../useDelivery';
 import { useLoggedInAccount } from '../useLoggedInAccount';
 
 type MerchantProps = {
@@ -32,6 +33,10 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
   const { getReturnUrl } = useReturnUrl();
 
   const { status, doSubmit, tx } = useSubmit(searchParams);
+  const { orders, saveDelivery } = useDelivery({
+    chainId: process.env.CHAIN_ID!,
+    networkId: process.env.NETWORK_ID!,
+  });
 
   useEffect(() => {
     if (!account?.accountName) return;

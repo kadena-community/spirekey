@@ -24,7 +24,7 @@ const getDeliveriesByIds = async ({
   asyncPipe(
     composePactCommand(
       execution(
-        `(map (n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.get-order) [${ids.join(' ')}])`,
+        `(map (n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.get-order) [${ids.map((x) => `"${x}"`).join(' ')}])`,
       ),
       setMeta({
         chainId,
@@ -133,7 +133,7 @@ export const useDelivery = ({
   chainId?: string;
   networkId: string;
 }) => {
-  const { data } = useSWR('deliveries', async () => {
+  const { data, mutate } = useSWR('deliveries', async () => {
     const deliveryIds = JSON.parse(localStorage.getItem('deliveryIds') || '[]');
     const orders = await getDeliveriesByIds({
       ids: deliveryIds,
@@ -142,8 +142,19 @@ export const useDelivery = ({
     });
     return orders;
   });
+  const saveDelivery = (id: string) => {
+    const deliveryIds = new Set<string>(
+      JSON.parse(localStorage.getItem('deliveryIds') || '[]'),
+    );
+    deliveryIds.add(id);
+    localStorage.setItem(
+      'deliveryIds',
+      JSON.stringify(Array.from(deliveryIds)),
+    );
+    mutate('deliveries');
+  };
   const onCreateOrder = (
     orderDetails: Omit<OrderDetails, 'chainId' | 'networkId'>,
   ) => createOrder({ chainId, networkId, ...orderDetails });
-  return { orders: data, createOrder: onCreateOrder };
+  return { orders: data, createOrder: onCreateOrder, saveDelivery };
 };
