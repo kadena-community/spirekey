@@ -12,6 +12,10 @@ import { NetworkIdForm } from "./NetworkIdForm";
 import { BiometricsForm } from "./BiometricsForm";
 import { useRouter } from "next/navigation";
 import { useAccounts } from "@/context/AccountsContext";
+import { getAccountName } from "@/utils/register";
+import { getNewWebauthnKey } from "@/utils/webauthnKey";
+import { DeviceTypeForm } from "./DeviceTypeForm";
+import { ColorForm } from "./ColorForm";
 
 const defaultFormData = {
   alias: '',
@@ -51,23 +55,32 @@ export default function Registration() {
     <AliasForm {...data} updateFields={updateFields} />,
     <NetworkIdForm {...data} updateFields={updateFields} />,
     <BiometricsForm {...data} updateFields={updateFields} onCredentialCreated={onCredentialCreated} />,
-    <div>last</div>,
+    <DeviceTypeForm {...data} updateFields={updateFields} />,
+    <ColorForm {...data} updateFields={updateFields} />,
   ]);
   const { host } = useReturnUrl();
   const onSubmit = async (event: FormEvent) => {
-    console.log(event);
     event.preventDefault();
-    console.log(currentStepIndex, data);
+
     if (currentStepIndex === 2 && (data.accountName === '' || data.credentialId === '' || data.credentialPubkey === '')) {
-      alert('Please confirm your biometric data.');
-      return;
+      // the form was submitted on the biometrics step without creating webauthn credentials
+      const { credentialId, publicKey } = await getNewWebauthnKey(data.alias);
+      const accountName = await getAccountName(publicKey, data.networkId);
+      updateFields({
+        accountName,
+        credentialId,
+        credentialPubkey: publicKey,
+        usedAlias: data.alias,
+      });
+      return next();
     }
 
     if (isLastStep) {
+      // the form was submitted on the last step, so create an account locally and on chain
       if (isSubmitting) return;
       setIsSubmitting(true);
 
-      await registerAccount({
+      registerAccount({
         caccount: data.accountName,
         alias: data.alias,
         color: data.color,

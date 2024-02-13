@@ -17,7 +17,7 @@ export function AliasForm({ alias, updateFields }: Props) {
         value={alias}
         autoFocus={true}
         onChange={event => updateFields({alias: event.target.value})}
-        validationBehavior="native" 
+        validationBehavior="native"
         isRequired
       />
     </SurfaceCard>

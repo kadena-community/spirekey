@@ -1,8 +1,13 @@
 import { Box, Grid, GridItem } from "@kadena/react-ui";
 import { SurfaceCard } from "../SurfaceCard/SurfaceCard";
 import classNames from "classnames";
+import { deviceColors } from "@/styles/tokens.css";
+import { color as colorStyle, input, selected, wrapper } from './Color.css';
+import type { FormData, FormMethods } from "./Registration";
 
-export function ColorForm() {
+type Props = Pick<FormData, 'color'> & FormMethods;
+
+export function ColorForm({color, updateFields}: Props) {
   return (
     <SurfaceCard
       title="Color"
@@ -15,30 +20,25 @@ export function ColorForm() {
             <GridItem key={colorHex}>
               <input
                 className={input}
-                {...register('color')}
                 type="radio"
+                name="color"
                 value={colorHex}
                 id={`color-${colorHex}`}
+                checked={color === colorHex}
+                onChange={event => updateFields({color: event.target.value})}
               />
               <label
                 htmlFor={`color-${colorHex}`}
                 aria-label={`Color ${description}`}
               >
                 <Box
-                  className={classNames(color, {
-                    selected: selectedColor === colorHex,
+                  className={classNames(colorStyle, {
+                    selected: color === colorHex,
                   })}
                   style={{ backgroundColor: colorHex }}
                 >
-                  {selectedColor === colorHex && (
-                    <AnimatePresence>
-                      <motion.div
-                        initial={{ transform: 'scale(0)', opacity: 0 }}
-                        animate={{ transform: 'scale(1)', opacity: 1 }}
-                        transition={{ duration: 0.1 }}
-                        className={selected}
-                      />
-                    </AnimatePresence>
+                  {color === colorHex && (
+                    <div className={selected}></div>
                   )}
                 </Box>
               </label>
