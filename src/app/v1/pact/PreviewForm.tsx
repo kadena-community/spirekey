@@ -27,7 +27,7 @@ import {
 } from './pact.utils';
 
 const FORM_DEFAULT = {
-  chainId: '14',
+  chainId: process.env.CHAIN_ID!,
   networkdId: process.env.NETWORK_ID || 'fast-development',
   code: '',
   file: null as FileList | null,

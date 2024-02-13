@@ -13,6 +13,7 @@ const nextConfig = {
     CHAINWEB_DATA: process.env.CHAINWEB_DATA,
     GAS_STATION: process.env.GAS_STATION,
     INSTA_FUND: process.env.INSTA_FUND,
+    CHAIN_ID: process.env.CHAIN_ID,
   },
 };
 

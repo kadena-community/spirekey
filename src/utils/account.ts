@@ -27,7 +27,7 @@ export const getAccountFrom = async ({
         ]`,
       ),
       setMeta({
-        chainId: '14',
+        chainId: process.env.CHAIN_ID,
       }),
       setNetworkId(networkId),
     ),
