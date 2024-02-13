@@ -41,7 +41,7 @@ export const transfer = async ({
         )})`,
       ),
       setMeta({
-        chainId: '14',
+        chainId: process.env.CHAIN_ID,
         gasLimit: 2000,
         gasPrice: 0.0000001,
         ttl: 60000,

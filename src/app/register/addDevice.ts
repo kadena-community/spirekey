@@ -25,7 +25,7 @@ export const addDevice = async (
       setMeta({
         senderAccount: account.accountName,
         gasLimit: 4000,
-        chainId: '14',
+        chainId: process.env.CHAIN_ID,
         gasPrice: 0.00000001,
       }),
       setNetworkId(process.env.NETWORK_ID || 'fast-development'),

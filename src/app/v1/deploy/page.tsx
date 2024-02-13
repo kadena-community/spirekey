@@ -126,7 +126,7 @@ export default function DeployPage() {
         composePactCommand(
           execution(getCode(contracts, step.code, step.codeFile)),
           setMeta({
-            chainId: '14',
+            chainId: process.env.CHAIN_ID,
             gasLimit: 100000,
             senderAccount: step.sender, // c:account
           }),

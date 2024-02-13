@@ -16,5 +16,5 @@ export const genesisPubKey =
 export const genesisPrivateKey =
   '251a920c403ae8c8f65f59142316af3c82b631fba46ddea92ee8c95035bd2898';
 
-export const l1ChainId = '14';
+export const l1ChainId = process.env.CHAIN_ID;
 export const l2ChainId = '2';

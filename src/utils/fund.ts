@@ -54,7 +54,7 @@ const fundLocally = (account: string) =>
     `.trim(),
     ),
     setMeta({
-      chainId: '14',
+      chainId: process.env.CHAIN_ID,
       gasLimit: 10000,
       gasPrice: 0.0000001,
       ttl: 60000,
@@ -75,7 +75,7 @@ const fundViaFaucet = (account: string) =>
     `.trim(),
     ),
     setMeta({
-      chainId: '14',
+      chainId: process.env.CHAIN_ID,
       gasLimit: 10000,
       gasPrice: 0.0000001,
       ttl: 60000,

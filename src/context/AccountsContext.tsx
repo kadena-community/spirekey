@@ -163,7 +163,7 @@ const AccountsProvider = ({ children }: Props) => {
           if (device.pendingRegistrationTx) {
             listenForRegistrationTransaction({
               requestKey: device.pendingRegistrationTx,
-              chainId: '14',
+              chainId: process.env.CHAIN_ID,
               networkId: account.network,
             });
           }
