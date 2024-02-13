@@ -12,6 +12,7 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useConnection } from './Connection';
 import pizza from './pizza.png';
+import { useDelivery } from './useDelivery';
 import { useLoggedInAccount } from './useLoggedInAccount';
 
 type DeliveryProps = {
@@ -28,6 +29,10 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   const { account } = useLoggedInAccount(user);
   const { messages, setId, send, isLoading } = useConnection();
   const { getReturnUrl } = useReturnUrl();
+  const { orders } = useDelivery({
+    chainId: '14',
+    networkId: 'fast-development',
+  });
 
   const router = useRouter();
   const { register, getValues, watch } = useForm({
@@ -71,6 +76,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   }, [tx, isLoading]);
   const pendingTx = tx && !messages.some((m) => m.data.hash === tx.hash);
   const mintedTx = tx && messages.some((m) => m.data.hash === tx.hash);
+  console.log(orders);
   return (
     <div>
       <Box margin="md">

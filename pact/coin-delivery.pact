@@ -196,6 +196,16 @@
     )
   )
 
+  (defun get-order(order-id:string)
+    (with-default-read delivery-table order-id
+      { 'courier : "No courier assigned" }
+      { 'courier := courier }
+      { 'order   : (read order-table order-id)
+      , 'courier : courier 
+      }
+    )
+  )
+
   (defun get-order-status(order-id:string)
     (with-read order-table order-id
     { 'order-status := order-status }
