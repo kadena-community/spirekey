@@ -29,9 +29,9 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   const { account } = useLoggedInAccount(user);
   const { messages, setId, send, isLoading } = useConnection();
   const { getReturnUrl } = useReturnUrl();
-  const { orders } = useDelivery({
-    chainId: '14',
-    networkId: 'fast-development',
+  const { orders, createOrder } = useDelivery({
+    chainId: process.env.CHAIN_ID!,
+    networkId: process.env.NETWORK_ID!,
   });
 
   const router = useRouter();
@@ -45,14 +45,15 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
 
   const onSend = async () => {
     if (!account) return;
-    const tx = await transfer({
-      amount: getValues('amount') * price,
-      receiver: getValues('receiver'),
-      sender: account.accountName,
-      gasPayer: getValues('receiver'),
-      namespace: process.env.NAMESPACE!,
-      networkId: 'fast-development',
-      publicKey: account?.credentials[0].publicKey,
+    const tx = await createOrder({
+      customerAccount: account.accountName,
+      customerPublicKey: account.credentials[0].publicKey,
+      merchantAccount: 'c:-BtZKCieonbuxQHJocDqdUXMZgHwN4XDNQjXXSaTJDo',
+      merchantPublicKey:
+        'WEBAUTHN-a5010203262001215820c4518d145cd1ca74d6371dfd24fec692d770ef13335e299533e0cf2bd11286a2225820b956dd1d7d48d3bb4e3a47c0a1cd70c7e3751f0e3fabf50c58ab22fc07033950',
+      deliveryPrice: 3.25,
+      orderPrice: getValues('amount') * price,
+      orderId: '1',
     });
     router.push(
       `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
@@ -76,7 +77,6 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   }, [tx, isLoading]);
   const pendingTx = tx && !messages.some((m) => m.data.hash === tx.hash);
   const mintedTx = tx && messages.some((m) => m.data.hash === tx.hash);
-  console.log(orders);
   return (
     <div>
       <Box margin="md">

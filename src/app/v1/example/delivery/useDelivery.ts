@@ -48,6 +48,17 @@ const createOrderId = ({
   merchant: string;
   orderId: string;
 }) => hash(`${customer}-${merchant}-${orderId}`);
+type OrderDetails = {
+  chainId: string;
+  networkId: string;
+  customerAccount: string;
+  customerPublicKey: string;
+  merchantAccount: string;
+  merchantPublicKey: string;
+  orderPrice: number;
+  deliveryPrice: number;
+  orderId: string;
+};
 
 const createOrder = async ({
   chainId,
@@ -58,25 +69,19 @@ const createOrder = async ({
   merchantPublicKey,
   orderPrice,
   deliveryPrice,
-}: {
-  chainId: string;
-  networkId: string;
-  customerAccount: string;
-  customerPublicKey: string;
-  merchantAccount: string;
-  merchantPublicKey: string;
-  orderPrice: number;
-  deliveryPrice: number;
-}) =>
-  asyncPipe(
+  orderId,
+}: OrderDetails) => {
+  const orderHash = createOrderId({
+    customer: customerAccount,
+    merchant: merchantAccount,
+    orderId,
+  });
+
+  return asyncPipe(
     composePactCommand(
       execution(
         `(n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.create-order
-          "${createOrderId({
-            customer: 'customer',
-            merchant: 'merchant',
-            orderId: 'orderId',
-          })}"
+          "${orderHash}"
           "${merchantAccount}"
           (read-keyset 'm-ks)
           "${customerAccount}"
@@ -98,10 +103,36 @@ const createOrder = async ({
         keys: [merchantPublicKey],
         pred: 'keys-any',
       }),
-      addSigner(customerPublicKey),
+      addSigner(
+        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
+        { pubKey: customerPublicKey, scheme: 'WebAuthn' },
+        (withCap) => [
+          withCap(
+            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER',
+            orderHash,
+          ),
+        ],
+      ),
+      addSigner(
+        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
+        { pubKey: merchantPublicKey, scheme: 'WebAuthn' },
+        (withCap) => [
+          withCap(
+            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER',
+            orderHash,
+          ),
+          withCap(
+            `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.GAS_PAYER`,
+            merchantAccount,
+            { int: 1 },
+            1,
+          ),
+        ],
+      ),
     ),
     createTransaction,
   )({});
+};
 
 export const useDelivery = ({
   chainId = '14',
@@ -117,8 +148,10 @@ export const useDelivery = ({
       chainId,
       networkId,
     });
-    // get the delivery details from the chain
     return orders;
   });
-  return { orders: data };
+  const onCreateOrder = (
+    orderDetails: Omit<OrderDetails, 'chainId' | 'networkId'>,
+  ) => createOrder({ chainId, networkId, ...orderDetails });
+  return { orders: data, createOrder: onCreateOrder };
 };

@@ -118,12 +118,10 @@
     )
   )
 
-  (defcap CREATE_ORDER (merchant-guard:guard buyer-guard:guard)
+  (defcap CREATE_ORDER (order-id:string)
     @doc "Capability validates that both merchant and buyer should sign an order"
     (compose-capability (UPDATE_ORDER_STATUS))
     (compose-capability (RESERVE_FUNDS))
-    (enforce-guard merchant-guard)
-    (enforce-guard buyer-guard)
   )
 
   (defcap SET_READY_FOR_DELIVERY(order-id:string)
@@ -178,7 +176,9 @@
     (enforce (validate-principal merchant-guard merchant) "Invalid merchant guard")
     (enforce (validate-principal buyer-guard buyer) "Invalid buyer guard")
 
-    (with-capability (CREATE_ORDER merchant-guard buyer-guard)
+    (with-capability (CREATE_ORDER order-id)
+      (enforce-guard merchant-guard)
+      (enforce-guard buyer-guard)
       (enforce (= (floor order-price MINIMUM_PRECISION) order-price) "Order price exeeds minimum allowed precision decimals")
       (enforce (= (floor delivery-price MINIMUM_PRECISION) delivery-price) "Delivery price exeeds minimum allowed precision decimals")
       (insert order-table order-id 
