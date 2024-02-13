@@ -3,7 +3,15 @@
 import { AccountButton } from '@/components/AccountButton';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
-import { Box, Cell, Row, Table, TableBody, TableHeader } from '@kadena/react-ui';
+import {
+  Box,
+  Cell,
+  Column,
+  Row,
+  Table,
+  TableBody,
+  TableHeader,
+} from '@kadena/react-ui';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import type { Message } from '../Connection';
@@ -20,7 +28,7 @@ type MerchantProps = {
 export default function MerchantPage({ searchParams }: MerchantProps) {
   const { user } = searchParams;
   const { account } = useLoggedInAccount(user);
-  const { connect, setId, send, isLoading, messages } = useConnection();
+  const { setId, send, isLoading, messages } = useConnection();
   const { getReturnUrl } = useReturnUrl();
 
   const { status, doSubmit, tx } = useSubmit(searchParams);
@@ -49,11 +57,9 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
       </Box>
       <Table>
         <TableHeader>
-          <Row>
-            <Cell>Type</Cell>
-            <Cell>Transaction Hash</Cell>
-            <Cell>Action</Cell>
-          </Row>
+            <Column>Type</Column>
+            <Column>Transaction Hash</Column>
+            <Column>Action</Column>
         </TableHeader>
         <TableBody>
           {Array.from(
@@ -64,7 +70,7 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
               }, new Map<string, Message>())
               .values(),
           ).map((message, index) => (
-            <Row key={message.data.hash}>
+            <Row key={message.data.hash + message.type}>
               <Cell>{message.type}</Cell>
               <Cell>{message.data.hash}</Cell>
               <Cell>

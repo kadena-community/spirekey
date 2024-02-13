@@ -48,6 +48,7 @@
   ]
 
   (use coin)
+  (use webauthn-wallet)
   (defconst NS_KEYSET:string (read-string 'webauthn-keyset-name))
 
   (defcap GOVERNANCE ()
@@ -177,8 +178,14 @@
     (enforce (validate-principal buyer-guard buyer) "Invalid buyer guard")
 
     (with-capability (CREATE_ORDER order-id)
-      (enforce-guard merchant-guard)
-      (enforce-guard buyer-guard)
+      (enforce-one "Neither keyset or capability guard passed" [
+        (enforce-guard merchant-guard)
+        (webauthn-wallet.enforce-authenticated merchant)
+      ])
+      (enforce-one "Neither keyset or capability guard passed" [
+        (enforce-guard buyer-guard)
+        (webauthn-wallet.enforce-authenticated buyer)
+      ])
       (enforce (= (floor order-price MINIMUM_PRECISION) order-price) "Order price exeeds minimum allowed precision decimals")
       (enforce (= (floor delivery-price MINIMUM_PRECISION) delivery-price) "Delivery price exeeds minimum allowed precision decimals")
       (insert order-table order-id 
@@ -265,8 +272,8 @@
     (require-capability (RESERVE_FUNDS))
     (enforce (!= order-id "") "Order id can not be empty")
     (enforce (is-principal sender) "Sender can not be empty")
-    (install-capability (coin.TRANSFER sender ESCROW_ID amount))
-    (coin.transfer sender ESCROW_ID amount)
+    (install-capability (webauthn-wallet.TRANSFER sender ESCROW_ID amount))
+    (webauthn-wallet.transfer sender ESCROW_ID amount)
   )
 
   (defun pickup-delivery(order-id:string courier:string courier-guard:guard)

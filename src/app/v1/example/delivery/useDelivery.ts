@@ -83,9 +83,9 @@ const createOrder = async ({
         `(n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.create-order
           "${orderHash}"
           "${merchantAccount}"
-          (read-keyset 'm-ks)
+          (n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.get-wallet-guard "${merchantAccount}")
           "${customerAccount}"
-          (read-keyset 'c-ks)
+          (n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.get-wallet-guard "${customerAccount}")
           ${orderPrice.toFixed(12)}
           ${deliveryPrice.toFixed(12)}
          )`,
@@ -95,14 +95,6 @@ const createOrder = async ({
         senderAccount: customerAccount,
       }),
       setNetworkId(networkId),
-      addData('c-ks', {
-        keys: [customerPublicKey],
-        pred: 'keys-any',
-      }),
-      addData('m-ks', {
-        keys: [merchantPublicKey],
-        pred: 'keys-any',
-      }),
       addSigner(
         // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: customerPublicKey, scheme: 'WebAuthn' },
@@ -110,6 +102,12 @@ const createOrder = async ({
           withCap(
             'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER',
             orderHash,
+          ),
+          withCap(
+            `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.GAS_PAYER`,
+            customerAccount,
+            { int: 1 },
+            1,
           ),
         ],
       ),
@@ -120,12 +118,6 @@ const createOrder = async ({
           withCap(
             'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER',
             orderHash,
-          ),
-          withCap(
-            `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.GAS_PAYER`,
-            merchantAccount,
-            { int: 1 },
-            1,
           ),
         ],
       ),
