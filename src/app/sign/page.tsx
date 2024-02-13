@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/Button/Button';
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
+import { Surface } from '@/components/Surface/Surface';
 import { useAccounts } from '@/context/AccountsContext';
 import { useSign } from '@/hooks/useSign';
 import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
@@ -15,8 +16,14 @@ import {
   Text,
   Tooltip,
 } from '@kadena/react-ui';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+import fingerprint from '@/assets/images/fingerprint.svg';
+import { ICommandPayload } from '@kadena/types';
+import { container, step, wrapper } from './page.css';
 
 interface SignProps {
   searchParams: {
@@ -29,27 +36,23 @@ interface SignProps {
 export default function Sign(req: SignProps) {
   const { transaction, returnUrl, optimistic = false } = req.searchParams;
   const [autoRedirect, setAutoRedirect] = useState<boolean>(true);
-  const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(true);
   const [redirectLocation, setRedirectLocation] = useState<string>('');
   const router = useRouter();
   const { accounts } = useAccounts();
+
   const data = transaction
     ? Buffer.from(transaction, 'base64').toString()
     : null;
+  const [tx, setTx] = useState<any>(JSON.parse(data ?? '{}'));
+
   const { sign } = useSign();
   const [language, setLanguage] = useState('en');
 
-  const tx = JSON.parse(data ?? '{}');
-  const txData = JSON.parse(tx.cmd || '{}');
+  const txData: ICommandPayload = JSON.parse(tx.cmd || '{}');
 
   const publicKeys: string[] = txData.signers.map(
     (s: { pubKey: string }) => s.pubKey,
   );
-
-  if (publicKeys.length === 0) {
-    // @todo: deal with multiple public keys
-    throw new Error('No signers defined in transaction.');
-  }
 
   const devices = publicKeys.map((publicKey) =>
     getDeviceByPublicKey(accounts, publicKey),
@@ -59,11 +62,10 @@ export default function Sign(req: SignProps) {
     (device) => device?.pendingRegistrationTx,
   );
 
-  useEffect(() => {
-    setIsReadyToSubmit(
-      (!optimistic && !!pendingRegistrationTxs.length) || optimistic,
-    );
-  }, [devices, optimistic, setIsReadyToSubmit]);
+  const isReadyToSubmit =
+    (!optimistic && !!pendingRegistrationTxs.length) || optimistic;
+
+  const signaturesForThisWallet = tx.sigs.filter(Boolean).length;
 
   useEffect(() => {
     if (isReadyToSubmit && redirectLocation && autoRedirect) {
@@ -71,23 +73,30 @@ export default function Sign(req: SignProps) {
     }
   }, [redirectLocation, isReadyToSubmit, router, returnUrl, autoRedirect]);
 
-  const onSign = async () => {
-    const signedTx = await sign(tx, devices?.[0]?.['credential-id']!);
+  const onSign = async (deviceIndex: number) => {
+    const signedTx = await sign(tx, devices?.[deviceIndex]?.['credential-id']!);
 
-    const params = new URLSearchParams();
-    params.append(
-      'transaction',
-      Buffer.from(JSON.stringify(signedTx)).toString('base64'),
-    );
+    setTx(signedTx);
 
-    if (optimistic && pendingRegistrationTxs) {
+    // No more available signers in this wallet (we don't use `tx` here since setTx is async)
+    if (devices.length === signedTx.sigs.filter(Boolean).length) {
+      const params = new URLSearchParams();
       params.append(
-        'pendingTxIds',
-        encodeURIComponent(JSON.stringify(pendingRegistrationTxs)),
+        'transaction',
+        Buffer.from(JSON.stringify(signedTx)).toString('base64'),
       );
-    }
 
-    setRedirectLocation(`${returnUrl}?${params.toString()}`);
+      if (optimistic && pendingRegistrationTxs) {
+        params.append(
+          'pendingTxIds',
+          encodeURIComponent(JSON.stringify(pendingRegistrationTxs)),
+        );
+      }
+
+      setTimeout(() => {
+        setRedirectLocation(`${returnUrl}?${params.toString()}`);
+      }, 2000);
+    }
   };
 
   const onAutoRedirectChange = () => {
@@ -101,9 +110,7 @@ export default function Sign(req: SignProps) {
           <ProductIcon.ManageKda size="lg" />
           <Heading variant="h5">Preview and sign transaction</Heading>
         </Stack>
-
         <Heading variant="h5">Transaction details</Heading>
-
         {/* <Select
           id="lanuage"
           label="Language"
@@ -122,7 +129,6 @@ export default function Sign(req: SignProps) {
             <option value="fr">Français</option>
           </SelectItem>
         </Select> */}
-
         {getLabels(txData.signers, language).map((x) => (
           <Box key={x.label} width="100%">
             <Heading variant="h6">{x.label}</Heading>
@@ -159,7 +165,6 @@ export default function Sign(req: SignProps) {
             </Box>
           </Box>
         ))}
-
         <Box width="100%">
           <Text variant="base">
             <details>
@@ -169,27 +174,69 @@ export default function Sign(req: SignProps) {
           </Text>
         </Box>
 
-        <Button onPress={onSign}>Sign</Button>
+        <div className={wrapper}>
+          <motion.div
+            animate={{ x: `-${signaturesForThisWallet * 100}%` }}
+            transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
+            className={container}
+          >
+            {devices.map((d, i) => (
+              <Box className={step} key={d?.['credential-id']}>
+                <Surface>
+                  <Stack flexDirection="column" gap="sm">
+                    <Heading variant="h5">Sign</Heading>
+                    <Text>
+                      Sign this transaction with the following credential:{' '}
+                      {d?.['credential-id']}
+                    </Text>
+                    <Text>
+                      (Device {i + 1} of {devices.length})
+                    </Text>
+                    <Surface>
+                      <Stack
+                        flexDirection="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        gap="md"
+                      >
+                        <Image src={fingerprint} alt="fingerprint icon" />
+                        <Button onPress={() => onSign(i)}>Sign</Button>
+                      </Stack>
+                    </Surface>
+                  </Stack>
+                </Surface>
+              </Box>
+            ))}
 
-        <Stack flexDirection="column" gap="md" margin="xl">
-          {!isReadyToSubmit && <p>Minting...</p>}
-          {!redirectLocation && !isReadyToSubmit && (
-            <label>
-              <input
-                type="checkbox"
-                checked={autoRedirect}
-                onChange={onAutoRedirectChange}
-              />
-              Go back to {returnUrl} when ready
-            </label>
-          )}
+            <Box className={step}>
+              <Surface>
+                <Stack flexDirection="column" gap="md" margin="xl">
+                  {!isReadyToSubmit && <p>Minting...</p>}
+                  {!redirectLocation && !isReadyToSubmit && (
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={autoRedirect}
+                        onChange={onAutoRedirectChange}
+                      />
+                      <Text style={{ wordBreak: 'break-all' }}>
+                        Go back to {returnUrl} when ready
+                      </Text>
+                    </label>
+                  )}
 
-          {redirectLocation && isReadyToSubmit && (
-            <ButtonLink href={redirectLocation}>
-              Go back to ${returnUrl}
-            </ButtonLink>
-          )}
-        </Stack>
+                  {redirectLocation && isReadyToSubmit && !autoRedirect ? (
+                    <ButtonLink href={redirectLocation}>
+                      Go back to {returnUrl}
+                    </ButtonLink>
+                  ) : (
+                    <Text>Redirecting you back to {returnUrl}</Text>
+                  )}
+                </Stack>
+              </Surface>
+            </Box>
+          </motion.div>
+        </div>
       </Stack>
     </>
   );

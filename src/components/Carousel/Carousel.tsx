@@ -1,5 +1,4 @@
 import { Account } from '@/context/AccountsContext';
-import { Text } from '@kadena/react-ui';
 import classNames from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Children } from 'react';

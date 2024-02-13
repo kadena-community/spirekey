@@ -1,7 +1,7 @@
 'use client';
 
 import { Account } from '@/components/Account/Account';
-import { useAccounts } from '@/hooks/useProfiles';
+import { useAccounts } from '@/context/AccountsContext';
 import dynamic from 'next/dynamic';
 
 const CardCollection = dynamic(
