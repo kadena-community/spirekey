@@ -3,7 +3,7 @@ import { useRegistrationForm } from "@/hooks/useRegistrationForm";
 import { Button } from '@/components/Button/Button';
 import { AliasForm } from "./AliasForm";
 import { Box, Form, Stack } from "@kadena/react-ui";
-import { step as stepStyle } from '../../app/register/page.css';
+import { step as stepStyle } from './styles.css';
 import { atoms } from "@kadena/react-ui/styles";
 import { deviceColors } from '@/styles/tokens.css';
 import DeviceCard from "../Card/DeviceCard";
@@ -25,20 +25,24 @@ const defaultFormData = {
   credentialPubkey: '',
   credentialId: '',
   deviceType: 'security-key',
-  color: deviceColors.darkGreen,
+  color: deviceColors.purple,
 };
 
 export type FormData = typeof defaultFormData;
 
-export interface FormMethods {
+export type Direction = 'forward' | 'backward';
+
+export type FormUtils = {
   updateFields: (fields: Partial<FormData>) => void;
   onCredentialCreated?: () => void;
+  direction: Direction,
 };
 
 export default function Registration() {
   const router = useRouter();
   const { registerAccount } = useAccounts();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [direction, setDirection] = useState<Direction>('forward');
   const [data, setData] = useState<FormData>(defaultFormData);
   const updateFields = (fields: Partial<FormData>) => setData(current => ({ ...current, ...fields}));
   const onCredentialCreated = () => next();
@@ -52,15 +56,17 @@ export default function Registration() {
     previous,
     goTo,
   } = useRegistrationForm([
-    <AliasForm {...data} updateFields={updateFields} />,
-    <NetworkIdForm {...data} updateFields={updateFields} />,
-    <BiometricsForm {...data} updateFields={updateFields} onCredentialCreated={onCredentialCreated} />,
-    <DeviceTypeForm {...data} updateFields={updateFields} />,
-    <ColorForm {...data} updateFields={updateFields} />,
+    <AliasForm {...data} direction={direction} updateFields={updateFields} />,
+    <NetworkIdForm {...data} direction={direction} updateFields={updateFields} />,
+    <BiometricsForm {...data} direction={direction} updateFields={updateFields} onCredentialCreated={onCredentialCreated} />,
+    <DeviceTypeForm {...data} direction={direction} updateFields={updateFields} />,
+    <ColorForm {...data} direction={direction} updateFields={updateFields} />,
   ]);
   const { host } = useReturnUrl();
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
+
+    setDirection('forward');
 
     if (currentStepIndex === 2 && (data.accountName === '' || data.credentialId === '' || data.credentialPubkey === '')) {
       // the form was submitted on the biometrics step without creating webauthn credentials
@@ -111,6 +117,8 @@ export default function Registration() {
   }
 
   const goBack = () => {
+    setDirection('backward');
+
     if (currentStepIndex === 0) {
       router.push('/welcome');
     }
