@@ -1,6 +1,6 @@
 import type { Account, Device } from '@/context/AccountsContext';
 import { asyncPipe } from '@/utils/asyncPipe';
-import { createTransaction } from '@kadena/client';
+import { ChainId, createTransaction } from '@kadena/client';
 import {
   addData,
   addSigner,
@@ -25,7 +25,7 @@ export const addDevice = async (
       setMeta({
         senderAccount: account.accountName,
         gasLimit: 4000,
-        chainId: process.env.CHAIN_ID,
+        chainId: process.env.CHAIN_ID as ChainId,
         gasPrice: 0.00000001,
       }),
       setNetworkId(process.env.NETWORK_ID || 'fast-development'),

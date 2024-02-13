@@ -1,5 +1,5 @@
 import { asyncPipe } from '@/utils/asyncPipe';
-import { createTransaction, Pact } from '@kadena/client';
+import { ChainId, createTransaction, Pact } from '@kadena/client';
 import {
   addSigner,
   composePactCommand,
@@ -27,7 +27,7 @@ export const createOrder = async ({
         )})`,
       ),
       setMeta({
-        chainId: process.env.CHAIN_ID,
+        chainId: process.env.CHAIN_ID as ChainId,
         gasLimit: 1000,
         gasPrice: 0.0000001,
         ttl: 60000,

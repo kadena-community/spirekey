@@ -4,7 +4,7 @@ import { asyncPipe } from '@/utils/asyncPipe';
 import { l1Client } from '@/utils/client';
 import { getSig } from '@/utils/getSig';
 import { signWithKeyPair } from '@/utils/signSubmitListen';
-import { createTransaction } from '@kadena/client';
+import { ChainId, createTransaction } from '@kadena/client';
 import {
   addSigner,
   composePactCommand,
@@ -126,7 +126,7 @@ export default function DeployPage() {
         composePactCommand(
           execution(getCode(contracts, step.code, step.codeFile)),
           setMeta({
-            chainId: process.env.CHAIN_ID,
+            chainId: process.env.CHAIN_ID as ChainId,
             gasLimit: 100000,
             senderAccount: step.sender, // c:account
           }),

@@ -1,5 +1,5 @@
 import type { Account } from '@/context/AccountsContext';
-import { createTransaction } from '@kadena/client';
+import { ChainId, createTransaction } from '@kadena/client';
 import {
   composePactCommand,
   execution,
@@ -27,7 +27,7 @@ export const getAccountFrom = async ({
         ]`,
       ),
       setMeta({
-        chainId: process.env.CHAIN_ID,
+        chainId: process.env.CHAIN_ID as ChainId,
       }),
       setNetworkId(networkId),
     ),

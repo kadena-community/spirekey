@@ -6,7 +6,7 @@ import {
   getWebAuthnPubkeyFormat,
   registerAccountOnChain,
 } from '@/utils/register';
-import { ITransactionDescriptor } from '@kadena/client';
+import { ChainId, ITransactionDescriptor } from '@kadena/client';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 export type Account = {
@@ -55,17 +55,16 @@ const getAccountsFromLocalStorage = (): Account[] => {
   }
 
   try {
-    const localAccounts = JSON.parse(rawLocalAccounts) as (Account[] | Record<string, Account>);
+    const localAccounts = JSON.parse(rawLocalAccounts) as
+      | Account[]
+      | Record<string, Account>;
 
     if (Array.isArray(localAccounts)) {
       return localAccounts;
     }
 
     const mutatedAccounts = Object.values(localAccounts);
-    localStorage.setItem(
-      'localAccounts',
-      JSON.stringify(mutatedAccounts),
-    );
+    localStorage.setItem('localAccounts', JSON.stringify(mutatedAccounts));
 
     return mutatedAccounts;
   } catch (e: unknown) {
@@ -152,10 +151,7 @@ const AccountsProvider = ({ children }: Props) => {
   // - sync the accounts to local storage every time the accounts data change
   // - check pending device registration transactions
   useEffect(() => {
-    localStorage.setItem(
-      'localAccounts',
-      JSON.stringify(accounts),
-    );
+    localStorage.setItem('localAccounts', JSON.stringify(accounts));
 
     const checkPendingTxs = async () => {
       for (const account of accounts) {
@@ -163,7 +159,7 @@ const AccountsProvider = ({ children }: Props) => {
           if (device.pendingRegistrationTx) {
             listenForRegistrationTransaction({
               requestKey: device.pendingRegistrationTx,
-              chainId: process.env.CHAIN_ID,
+              chainId: process.env.CHAIN_ID as ChainId,
               networkId: account.network,
             });
           }
@@ -182,7 +178,7 @@ const AccountsProvider = ({ children }: Props) => {
   };
 
   const addAccount = (account: Account): void => {
-    setAccounts([account, ...accounts,]);
+    setAccounts([account, ...accounts]);
   };
 
   const registerAccount = async ({

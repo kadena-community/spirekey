@@ -49,6 +49,7 @@
     "react-dom": "^18.2.0",
     "react-flip-move": "^3.0.5",
     "react-hook-form": "^7.50.1",
+    "sharp": "^0.33.2",
     "swr": "^2.2.4",
     "three": "^0.161.0",
     "usehooks-ts": "^2.14.0"
