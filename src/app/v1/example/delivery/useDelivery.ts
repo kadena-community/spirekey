@@ -2,7 +2,6 @@ import { asyncPipe } from '@/utils/asyncPipe';
 import { l1Client } from '@/utils/client';
 import { createTransaction } from '@kadena/client';
 import {
-  addData,
   addSigner,
   composePactCommand,
   execution,
@@ -11,6 +10,27 @@ import {
 } from '@kadena/client/fp';
 import { hash } from '@kadena/cryptography-utils';
 import useSWR from 'swr';
+
+type Order = {
+  orderId: string;
+  courier: string;
+  merchant: string;
+  buyer: string;
+  orderPrice: number;
+  deliveryPrice: number;
+};
+
+type ChainOrder = {
+  ['order-id']: string;
+  courier: string;
+  order: {
+    buyer: string;
+    merchant: string;
+    ['order-status']: number;
+    ['order-price']: number;
+    ['delivery-price']: number;
+  };
+};
 
 const getDeliveriesByIds = async ({
   ids,
@@ -35,7 +55,14 @@ const getDeliveriesByIds = async ({
     (tx) => l1Client.local(tx, { preflight: false }),
     (tx) => {
       if (tx?.result?.status !== 'success') return null;
-      return tx.result.data;
+      return tx.result.data.map((x: ChainOrder) => ({
+        orderId: x['order-id'],
+        courier: x.courier,
+        merchant: x.order.merchant,
+        buyer: x.order.buyer,
+        orderPrice: x.order['order-price'],
+        deliveryPrice: x.order['delivery-price'],
+      }));
     },
   )({});
 
@@ -133,9 +160,9 @@ export const useDelivery = ({
   chainId?: string;
   networkId: string;
 }) => {
-  const { data, mutate } = useSWR('deliveries', async () => {
+  const { data, mutate } = useSWR<Order[]>('deliveries', async () => {
     const deliveryIds = JSON.parse(localStorage.getItem('deliveryIds') || '[]');
-    const orders = await getDeliveriesByIds({
+    const orders: Order[] = await getDeliveriesByIds({
       ids: deliveryIds,
       chainId,
       networkId,
@@ -151,7 +178,7 @@ export const useDelivery = ({
       'deliveryIds',
       JSON.stringify(Array.from(deliveryIds)),
     );
-    mutate('deliveries');
+    mutate();
   };
   const onCreateOrder = (
     orderDetails: Omit<OrderDetails, 'chainId' | 'networkId'>,

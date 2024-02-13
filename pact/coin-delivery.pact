@@ -205,10 +205,11 @@
 
   (defun get-order(order-id:string)
     (with-default-read delivery-table order-id
-      { 'courier : "No courier assigned" }
-      { 'courier := courier }
-      { 'order   : (read order-table order-id)
-      , 'courier : courier 
+      { 'courier  : "No courier assigned" }
+      { 'courier  := courier }
+      { 'order-id : order-id
+      , 'order    : (read order-table order-id)
+      , 'courier  : courier
       }
     )
   )
