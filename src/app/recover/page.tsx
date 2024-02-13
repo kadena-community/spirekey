@@ -59,7 +59,7 @@ export default function Recover() {
     );
     const authResult = await startAuthentication({
       challenge: 'doesnotreallymatter',
-      rpId: 'localhost',
+      rpId: window.location.hostname,
       allowCredentials: uniqueDevices.map((d) => ({
         id: d['credential-id'],
         type: 'public-key',
