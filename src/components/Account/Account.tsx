@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { ButtonLink } from '../ButtonLink/ButtonLink';
 import DeviceCard from '../Card/DeviceCard';
 import { Carousel } from '../Carousel/Carousel';
+import { Stack } from '@kadena/react-ui';
 
 interface AccountProps {
   account: Account;
@@ -83,10 +84,21 @@ export function Account({
               )}
             </AnimatePresence>
             {returnUrl && delayedActive && (
-              <>
-                <ButtonLink href={returnUrl}>Cancel</ButtonLink>
-
+              <Stack
+                flexDirection="row"
+                justifyContent="center"
+                gap="xl"
+                marginBlockStart="lg"
+                paddingInline="lg"
+              >
                 <ButtonLink
+                  variant="secondary"
+                  href={returnUrl}
+                >
+                  Cancel
+                </ButtonLink>
+                <ButtonLink
+                  variant="primary"
                   href={`${returnUrl}?user=${Buffer.from(
                     JSON.stringify({
                       alias: account.alias,
@@ -104,7 +116,7 @@ export function Account({
                 >
                   Login
                 </ButtonLink>
-              </>
+              </Stack>
             )}
           </div>
         );
