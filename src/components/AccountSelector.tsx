@@ -11,9 +11,10 @@ const CardCollection = dynamic(
 
 type AccountSelectorProps = {
   returnUrl?: string;
+  optimistic?: boolean;
 };
 
-export const AccountSelector = ({ returnUrl }: AccountSelectorProps) => {
+export const AccountSelector = ({ returnUrl, optimistic = false }: AccountSelectorProps) => {
   const { accounts } = useAccounts();
 
   return (
@@ -23,6 +24,7 @@ export const AccountSelector = ({ returnUrl }: AccountSelectorProps) => {
           key={account.accountName + account.network}
           account={account}
           returnUrl={returnUrl}
+          optimistic={optimistic}
         />
       ))}
     </CardCollection>

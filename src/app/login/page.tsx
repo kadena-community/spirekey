@@ -1,32 +1,32 @@
 'use client';
 
 import { AccountSelector } from '@/components/AccountSelector';
-import { Box, ContentHeader, Stack } from '@kadena/react-ui';
+import { Box, Stack } from '@kadena/react-ui';
+import dynamic from 'next/dynamic';
+
+const LoginHeader = dynamic(
+  () => import('@/components/Login/LoginHeader'),
+  {
+    ssr: false,
+  },
+);
 
 type LoginProps = {
   searchParams: {
     returnUrl: string;
     reason?: string;
+    optimistic?: boolean;
   };
 };
 
 export default function Login({ searchParams }: LoginProps) {
-  const { returnUrl, reason } = searchParams;
-
-  const displayReason =
-    reason &&
-    ` The reason provided by the dApp for this request is: ${searchParams.reason}`;
+  const { returnUrl, reason = '', optimistic = false } = searchParams;
 
   return (
     <Stack flexDirection="column" gap="lg" style={{ height: '100svh' }}>
-      <ContentHeader
-        description={`Which account do you want to use to identify on ${searchParams.returnUrl}?${displayReason}`}
-        heading="Login"
-        icon="Account"
-      />
-
+      <LoginHeader returnUrl={returnUrl} reason={reason}/>
       <Box height="100%">
-        <AccountSelector returnUrl={returnUrl} />
+        <AccountSelector returnUrl={returnUrl} optimistic={optimistic} />
       </Box>
     </Stack>
   );
