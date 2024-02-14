@@ -85,11 +85,11 @@ export function Account({
             </AnimatePresence>
             {returnUrl && delayedActive && (
               <Stack
-                flexDirection={'row'}
-                justifyContent={'center'}
-                gap={'xl'}
-                marginBlockStart={'lg'}
-                paddingInline={'lg'}
+                flexDirection="row"
+                justifyContent="center"
+                gap="xl"
+                marginBlockStart="lg"
+                paddingInline="lg"
               >
                 <ButtonLink
                   variant="secondary"
