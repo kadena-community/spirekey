@@ -1,13 +1,13 @@
 import { useAccounts, type Account } from '@/context/AccountsContext';
 
 import { calculateBalancePercentage } from '@/utils/balance';
+import { Stack } from '@kadena/react-ui';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { ButtonLink } from '../ButtonLink/ButtonLink';
 import DeviceCard from '../Card/DeviceCard';
 import { Carousel } from '../Carousel/Carousel';
-import { Stack } from '@kadena/react-ui';
 
 interface AccountProps {
   account: Account;
@@ -27,9 +27,10 @@ export function Account({
   const accountBalancesOnNetwork = accounts
     .filter((a) => a.network === account.network)
     .map((a) => parseFloat(a?.balance || '0'));
+
   const balancePercentage = calculateBalancePercentage(
     parseFloat(account?.balance || '0'),
-    accountBalancesOnNetwork || [],
+    accountBalancesOnNetwork,
   );
 
   // We want to delay the rendering of the active state to prevent the height of the cards animating in `CardCollection`
@@ -43,13 +44,17 @@ export function Account({
   }, [isActive]);
 
   return (
-    <Carousel account={account} isActive={delayedActive}>
+    <Carousel
+      account={account}
+      isActive={delayedActive}
+      hideAddDeviceCard={!!returnUrl}
+    >
       {account.devices.map((d) => {
         const caccount = encodeURIComponent(account.accountName);
         const cid = encodeURIComponent(d['credential-id']);
 
         return (
-          <div key={d['credential-id']}>
+          <Fragment key={d['credential-id']}>
             <DeviceCard
               account={account}
               balancePercentage={balancePercentage}
@@ -86,43 +91,48 @@ export function Account({
               )}
             </AnimatePresence>
             {returnUrl && delayedActive && (
-              <Stack
-                flexDirection="row"
-                justifyContent="center"
-                gap="xl"
-                marginBlockStart="lg"
-                paddingInline="lg"
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
               >
-                <ButtonLink
-                  variant="secondary"
-                  href={returnUrl}
+                <Stack
+                  flexDirection="row"
+                  justifyContent="center"
+                  gap="xl"
+                  marginBlockStart="lg"
+                  paddingInline="lg"
                 >
-                  Cancel
-                </ButtonLink>
-                {(optimistic || !d.pendingRegistrationTx) &&
-                  <ButtonLink
-                    variant="primary"
-                    href={`${returnUrl}?user=${Buffer.from(
-                      JSON.stringify({
-                        alias: account.alias,
-                        accountName: account.accountName,
-                        pendingTxIds: [d.pendingRegistrationTx].filter(Boolean),
-                        credentials: [
-                          {
-                            type: 'WebAuthn',
-                            publicKey: d.guard.keys[0],
-                            id: d['credential-id'],
-                          },
-                        ],
-                      }),
-                    ).toString('base64')}`}
-                  >
-                    Login
+                  <ButtonLink variant="secondary" href={returnUrl}>
+                    Cancel
                   </ButtonLink>
-                }
-              </Stack>
+                  {(optimistic || !d.pendingRegistrationTx) && (
+                    <ButtonLink
+                      variant="primary"
+                      href={`${returnUrl}?user=${Buffer.from(
+                        JSON.stringify({
+                          alias: account.alias,
+                          accountName: account.accountName,
+                          pendingTxIds: [d.pendingRegistrationTx].filter(
+                            Boolean,
+                          ),
+                          credentials: [
+                            {
+                              type: 'WebAuthn',
+                              publicKey: d.guard.keys[0],
+                              id: d['credential-id'],
+                            },
+                          ],
+                        }),
+                      ).toString('base64')}`}
+                    >
+                      Login
+                    </ButtonLink>
+                  )}
+                </Stack>
+              </motion.div>
             )}
-          </div>
+          </Fragment>
         );
       })}
     </Carousel>

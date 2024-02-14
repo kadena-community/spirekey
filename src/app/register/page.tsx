@@ -1,7 +1,5 @@
-'use client';
-
-import { Stack } from '@kadena/react-ui';
 import Registration from '@/components/Registration/Registration';
+import { Stack } from '@kadena/react-ui';
 
 type Props = {
   searchParams: {

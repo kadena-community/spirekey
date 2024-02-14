@@ -15,7 +15,7 @@ export default function Home() {
       style={{ height: '100svh' }}
     >
       <Stack flexDirection="column" alignItems="center" gap="sm">
-        <Image src={logo} alt="BennuKey logo" style={{ marginTop: '2rem' }} />
+        <Image src={logo} alt="SpireKey logo" style={{ marginTop: '2rem' }} />
       </Stack>
       <Stack flexDirection="row" justifyContent="center" gap="xl">
         <ButtonLink href={'/recover'} variant="secondary">

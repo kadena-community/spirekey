@@ -31,7 +31,6 @@ export default function Card({
   icons = undefined,
   center = undefined,
   cardBottom = undefined,
-  isRegistered = true,
 }: CardProps) {
   const { r, g, b } = hexadecimalToRGB(color);
   const colorStart = `rgba(${r}, ${g}, ${b}, 0)`;
@@ -39,12 +38,14 @@ export default function Card({
 
   return (
     <Box
-      className={classnames(card, 'card')}
-      style={{
-        '--card-progress': `${balancePercentage}%`,
-        '--card-progress-color-start': colorStart,
-        '--card-progress-color-end': colorEnd,
-      }}
+      className={classnames(card, 'card')} // class `card` is needed for the `CardCollection` component
+      style={
+        {
+          '--card-progress': `${balancePercentage}%`,
+          '--card-progress-color-start': colorStart,
+          '--card-progress-color-end': colorEnd,
+        } as React.CSSProperties
+      }
     >
       <Stack
         flexDirection="column"

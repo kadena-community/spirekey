@@ -4,11 +4,13 @@ import { AccountSelector } from '@/components/AccountSelector';
 import { Box, Stack } from '@kadena/react-ui';
 import dynamic from 'next/dynamic';
 
-const LoginHeader = dynamic(
-  () => import('@/components/Login/LoginHeader'),
-  {
-    ssr: false,
-  },
+const LoginHeader = dynamic(() => import('@/components/Login/LoginHeader'), {
+  ssr: false,
+});
+
+const CardCollection = dynamic(
+  () => import('@/components/CardCollection/CardCollection'),
+  { ssr: false },
 );
 
 type LoginProps = {
@@ -24,9 +26,9 @@ export default function Login({ searchParams }: LoginProps) {
 
   return (
     <Stack flexDirection="column" gap="lg" style={{ height: '100svh' }}>
-      <LoginHeader returnUrl={returnUrl} reason={reason}/>
+      <LoginHeader returnUrl={returnUrl} reason={reason} />
       <Box height="100%">
-        <AccountSelector returnUrl={returnUrl} optimistic={optimistic} />
+        <CardCollection returnUrl={returnUrl} optimistic={optimistic} />
       </Box>
     </Stack>
   );

@@ -1,14 +1,19 @@
-import { Box, Grid, GridItem } from "@kadena/react-ui";
-import { SurfaceCard } from "../SurfaceCard/SurfaceCard";
-import classNames from "classnames";
-import { deviceColors } from "@/styles/tokens.css";
-import { colorLabel, colorInput, selectedColor, colorWrapper } from './styles.css';
-import type { FormData, FormUtils } from "./Registration";
-import { AnimatePresence, motion } from "framer-motion";
+import { deviceColors } from '@/styles/tokens.css';
+import { Box, Grid, GridItem } from '@kadena/react-ui';
+import classNames from 'classnames';
+import { AnimatePresence, motion } from 'framer-motion';
+import { SurfaceCard } from '../SurfaceCard/SurfaceCard';
+import type { FormData, FormUtils } from './Registration';
+import {
+  colorInput,
+  colorLabel,
+  colorWrapper,
+  selectedColor,
+} from './styles.css';
 
 type Props = Pick<FormData, 'color'> & FormUtils;
 
-export function ColorForm({color, updateFields, direction }: Props) {
+export function ColorForm({ color, updateFields, direction }: Props) {
   const xPositionMultiplier = direction === 'forward' ? 1 : -1;
 
   return (
@@ -18,6 +23,7 @@ export function ColorForm({color, updateFields, direction }: Props) {
         initial={{ x: 300 * xPositionMultiplier, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: -300 * xPositionMultiplier, opacity: 0 }}
+        transition={{ duration: 0.3 }}
       >
         <SurfaceCard
           title="Color"
@@ -35,7 +41,9 @@ export function ColorForm({color, updateFields, direction }: Props) {
                     value={colorHex}
                     id={`color-${colorHex}`}
                     checked={color === colorHex}
-                    onChange={event => updateFields({color: event.target.value})}
+                    onChange={(event) =>
+                      updateFields({ color: event.target.value })
+                    }
                   />
                   <label
                     htmlFor={`color-${colorHex}`}
@@ -59,5 +67,5 @@ export function ColorForm({color, updateFields, direction }: Props) {
         </SurfaceCard>
       </motion.div>
     </AnimatePresence>
-  )
+  );
 }

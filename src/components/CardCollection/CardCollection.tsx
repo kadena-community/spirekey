@@ -1,17 +1,23 @@
-import { Box, Button, Stack } from '@kadena/react-ui';
+import { Box, Stack } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
-import { Children, cloneElement, useRef, useState } from 'react';
-import { useElementSize, useResizeObserver } from 'usehooks-ts';
+import { Children, useRef, useState } from 'react';
+import { useResizeObserver } from 'usehooks-ts';
 
+import { useAccounts } from '@/context/AccountsContext';
+import { Account } from '../Account/Account';
 import { card, inner, wrapper } from './CardCollection.css';
 
 interface CardCollectionProps {
-  children: any; // @TODO ReactElement/ReactNode?
+  returnUrl?: string;
+  optimistic?: boolean;
 }
 
 // Something we might be able to use for the scroll-enlarge-effect: https://codesandbox.io/p/sandbox/fervent-pasteur-dqs9ry?file=%2FApp.js%3A75%2C18-75%2C25
-
-export default function CardCollection({ children }: CardCollectionProps) {
+export default function CardCollection({
+  returnUrl,
+  optimistic,
+}: CardCollectionProps) {
+  const { accounts } = useAccounts();
   const [activeCard, setActiveCard] = useState<number | null>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef(new Array());
@@ -43,16 +49,16 @@ export default function CardCollection({ children }: CardCollectionProps) {
   const cardHeight =
     cardRefs.current[0]?.querySelector('.card')?.offsetHeight || 0;
 
-  const totalCardHeight = children.length * cardHeight;
+  const totalCardHeight = accounts.length * cardHeight;
   const excessHeight = totalCardHeight - (innerHeight - 30);
-  const cardOverlap = (excessHeight / (children.length - 1)) * -1;
+  const cardOverlap = (excessHeight / (accounts.length - 1)) * -1;
 
   const hasActiveCard = activeCard !== null;
 
   return (
     <Box className={wrapper}>
       <Stack className={inner} flexDirection="column" ref={innerRef}>
-        {Children.map(children, (child, i) => {
+        {accounts.map((account, i) => {
           const marginBlockEnd =
             collapsedCardSpacing * collapsedCardsVisible -
             (hasActiveCard && activeCard < i ? i - 1 : i) *
@@ -60,7 +66,7 @@ export default function CardCollection({ children }: CardCollectionProps) {
 
           return (
             <motion.div
-              key={i}
+              key={account.accountName + account.network}
               layout
               onClick={() => handleCardClick(i)}
               transition={{
@@ -74,21 +80,18 @@ export default function CardCollection({ children }: CardCollectionProps) {
                 marginBlockEnd: `${
                   hasActiveCard ? marginBlockEnd : cardOverlap
                 }px`,
-                // marginBlockEnd: hasActiveCard
-                // ? `${marginBlockEnd}px` // there is an active card
-                // : `${cardSpacing}px`, // no active card
                 bottom:
                   hasActiveCard && activeCard !== i ? `-${cardHeight}px` : 0,
-                // activeCard !== null && activeCard !== i // There is an active card, but it's not this one
-                //   ? `${cardHeight - collapsedCardSpacing * (i + 1)}px` // Position the card outside of the viewport, then move it up by the number (i + 1) of the card multiplied by the spacing to make them stack
-                //   : // ? `-${cardHeight - (i + 1) * 60}px` // Position the card outside of the viewport, then move it up by the number (i + 1) of the card multiplied by the spacing to make them stack
-                //     '0',
               }}
               ref={(ref) => (cardRefs.current[i] = ref)}
             >
-              {cloneElement(child, {
-                isActive: activeCard === i,
-              })}
+              <Account
+                key={account.accountName + account.network}
+                account={account}
+                returnUrl={returnUrl}
+                optimistic={optimistic}
+                isActive={activeCard === i}
+              />
             </motion.div>
           );
         })}

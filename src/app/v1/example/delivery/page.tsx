@@ -80,7 +80,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       {pendingTx && <Box margin="md">Order pending...</Box>}
       {mintedTx && <Box margin="md">Your pizza is on the way!</Box>}
       {!tx && (
-        <Stack gas="md" margin="md" flexDirection="column">
+        <Stack gap="md" margin="md" flexDirection="column">
           <Box margin="md">
             <Image src={pizza} alt="pizza" width={100} height={100} />
           </Box>

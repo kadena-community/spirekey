@@ -2,8 +2,6 @@ import { atoms } from '@kadena/react-ui/styles';
 import { globalStyle, style, styleVariants } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 
-export const carousel = style({});
-
 export const carouselItems = styleVariants({
   default: {
     display: 'flex',
