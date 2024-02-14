@@ -3,8 +3,10 @@
 import logo from '@/assets/images/bennuKey.svg';
 import { Account } from '@/components/Account/Account';
 import CardCollection from '@/components/CardCollection/CardCollection';
-import { Account as TAccount } from '@/context/AccountsContext';
-import { useAccounts } from '@/hooks/useProfiles';
+import {
+  useAccounts,
+  type Account as TAccount,
+} from '@/context/AccountsContext';
 import { Heading, Stack } from '@kadena/react-ui';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';

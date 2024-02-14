@@ -2,7 +2,6 @@ import { Account, Device, useAccounts } from '@/context/AccountsContext';
 import { getSig } from '@/utils/getSig';
 import { ICommand, addSignatures } from '@kadena/client';
 import { startAuthentication } from '@simplewebauthn/browser';
-import { useState } from 'react';
 
 const getSignParams = (tx: unknown, device: Device) => ({
   payload: Buffer.from(JSON.stringify(tx)).toString('base64'),
@@ -25,7 +24,6 @@ const getPubkey = (
 
 export const useSign = () => {
   const { accounts } = useAccounts();
-  const [signedTx, setSignedTx] = useState();
 
   const sign = async (tx: ICommand, credentialId: string) => {
     const res = await startAuthentication({
@@ -38,10 +36,8 @@ export const useSign = () => {
 
     const signedTx = addSignatures(tx, {
       ...getSig(res.response),
-      pubKey: getPubkey(accounts || [], credentialId),
+      pubKey: getPubkey(accounts, credentialId),
     });
-
-    setSignedTx(signedTx);
 
     // const unsignedSigIndex = signedTx.sigs.findIndex((x: null) => x === null);
     // if (unsignedSigIndex !== -1) {
@@ -66,6 +62,5 @@ export const useSign = () => {
 
   return {
     sign,
-    signedTx,
   };
 };

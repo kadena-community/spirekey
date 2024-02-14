@@ -7,7 +7,11 @@ import {
   genesisPubKey,
 } from '@/utils/constants';
 import { signWithKeyPair } from '@/utils/signSubmitListen';
-import { ITransactionDescriptor, createTransaction } from '@kadena/client';
+import {
+  ChainId,
+  ITransactionDescriptor,
+  createTransaction,
+} from '@kadena/client';
 import {
   addData,
   addSigner,
@@ -28,7 +32,7 @@ export const getAccountName = async (publicKey: string, networkId: string) =>
 )
 `),
       setMeta({
-        chainId: process.env.CHAIN_ID,
+        chainId: process.env.CHAIN_ID as ChainId,
         gasLimit: 1000,
         gasPrice: 0.0000001,
         ttl: 60000,
@@ -122,7 +126,7 @@ const registerAccountCommand = ({
       pred: 'keys-any',
     }),
     setMeta({
-      chainId: process.env.CHAIN_ID,
+      chainId: process.env.CHAIN_ID as ChainId,
       gasLimit: 2000,
       gasPrice: 0.0000001,
       ttl: 60000,

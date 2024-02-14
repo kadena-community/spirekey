@@ -1,5 +1,5 @@
 import { asyncPipe } from '@/utils/asyncPipe';
-import { createTransaction } from '@kadena/client';
+import { ChainId, ICommand, createTransaction } from '@kadena/client';
 import {
   addSigner,
   composePactCommand,
@@ -25,7 +25,7 @@ export const transfer = async ({
   namespace: string;
   networkId: string;
   gasPayer: string;
-}): Promise<string> => {
+}): Promise<ICommand> => {
   // TODO: make a decicion which command to get (safe/unsafe transfer)
   const receiverAcc = await getAccountFrom({
     caccount: receiver,
@@ -41,7 +41,7 @@ export const transfer = async ({
         )})`,
       ),
       setMeta({
-        chainId: process.env.CHAIN_ID,
+        chainId: process.env.CHAIN_ID as ChainId,
         gasLimit: 2000,
         gasPrice: 0.0000001,
         ttl: 60000,

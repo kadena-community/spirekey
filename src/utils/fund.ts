@@ -2,7 +2,7 @@ import { asyncPipe } from '@/utils/asyncPipe';
 import { l1Client } from '@/utils/client';
 import { genesisPrivateKey, genesisPubKey } from '@/utils/constants';
 import { signWithKeyPair } from '@/utils/signSubmitListen';
-import { createTransaction } from '@kadena/client';
+import { ChainId, createTransaction } from '@kadena/client';
 import {
   addSigner,
   composePactCommand,
@@ -54,7 +54,7 @@ const fundLocally = (account: string) =>
     `.trim(),
     ),
     setMeta({
-      chainId: process.env.CHAIN_ID,
+      chainId: process.env.CHAIN_ID as ChainId,
       gasLimit: 10000,
       gasPrice: 0.0000001,
       ttl: 60000,
@@ -75,7 +75,7 @@ const fundViaFaucet = (account: string) =>
     `.trim(),
     ),
     setMeta({
-      chainId: process.env.CHAIN_ID,
+      chainId: process.env.CHAIN_ID as ChainId,
       gasLimit: 10000,
       gasPrice: 0.0000001,
       ttl: 60000,
