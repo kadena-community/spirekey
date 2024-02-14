@@ -48,6 +48,20 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
   const [connections, setConnections] = useState<
     Record<string, DataConnection>
   >({});
+  const saveNewMessage = (message: Message) =>
+    setMessages((prev) => {
+      if (message.type === 'id') return [...prev, message];
+      if (
+        prev.some((m) => {
+          if (m.type === 'tx') return m.data.hash === message.data.hash;
+          if (m.type === 'confirm') return m.data.hash === message.data.hash;
+        })
+      )
+        return prev;
+      const newMessages = [...prev, message];
+      localStorage.setItem('messages', JSON.stringify(newMessages));
+      return newMessages;
+    });
   const connect = async (id: ConnectionId) => {
     if (!peer) return;
     const connectionId = getConnectionId(id);
@@ -60,14 +74,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
         conn.on('data', (data: any) => {
           if (!isMessage(data)) return;
           console.log('Someone send me Data', data);
-          setMessages((prev) => {
-            const newMessages = [...prev, data];
-            localStorage.setItem(
-              'messages',
-              JSON.stringify(newMessages.filter(({ type }) => type !== 'id')),
-            );
-            return newMessages;
-          });
+          saveNewMessage(data);
         });
         resolve(conn);
       });
@@ -118,14 +125,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
         conn.on('data', (data) => {
           if (!isMessage(data)) return;
           console.log('Someone send me Data', data);
-          setMessages((prev) => {
-            const newMessages = [...prev, data];
-            localStorage.setItem(
-              'messages',
-              JSON.stringify(newMessages.filter(({ type }) => type !== 'id')),
-            );
-            return newMessages;
-          });
+          saveNewMessage(data);
         });
       });
       conn.on('error', (err) => {
