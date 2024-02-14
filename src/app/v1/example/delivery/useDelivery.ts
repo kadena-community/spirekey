@@ -176,7 +176,7 @@ export const useDelivery = ({
     deliveryIds.add(id);
     localStorage.setItem(
       'deliveryIds',
-      JSON.stringify(Array.from(deliveryIds)),
+      JSON.stringify(Array.from(deliveryIds).filter(Boolean)),
     );
     mutate();
   };
