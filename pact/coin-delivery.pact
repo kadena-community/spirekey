@@ -121,18 +121,21 @@
 
   (defcap CREATE_ORDER (order-id:string)
     @doc "Capability validates that both merchant and buyer should sign an order"
+    @event
     (compose-capability (UPDATE_ORDER_STATUS))
     (compose-capability (RESERVE_FUNDS))
   )
 
   (defcap SET_READY_FOR_DELIVERY(order-id:string)
     @doc "Capability validates that the order is ready for delivery"
+    @event
     (compose-capability (UPDATE_ORDER_STATUS))
     (compose-capability (MERCHANT order-id))
   )
 
   (defcap DELIVER_ORDER (order-id:string)
     @doc "Capability validates that both courier and buyer should sign the delivery"
+    @event
     (compose-capability (UPDATE_ORDER_STATUS))
     (compose-capability (BUYER order-id))
     (compose-capability (COURIER order-id))
@@ -141,6 +144,7 @@
 
   (defcap PICKUP_DELIVERY (order-id:string courier-guard:guard)
     @doc "Capability validates that the courier has signed for the pickup"
+    @event
     (compose-capability (UPDATE_ORDER_STATUS))
     (compose-capability (RESERVE_FUNDS))
     (enforce-guard courier-guard)

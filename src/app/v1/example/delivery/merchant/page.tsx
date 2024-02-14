@@ -38,6 +38,20 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
     networkId: process.env.NETWORK_ID!,
   });
 
+  const couriers = Array.from(
+    new Map(
+      messages
+        .filter((m) => m.type === 'id')
+        .map((m) => [m.data.id + m.data.publicKey, m]),
+    ).values(),
+  );
+  useEffect(() => {
+    if (!couriers) return;
+    couriers.map((courier) =>
+      send(courier.connectionId, { type: 'orders', data: { orders } }),
+    );
+  }, [couriers, orders]);
+
   useEffect(() => {
     if (!account?.accountName) return;
     setId({ id: '1234', publicKey: account?.accountName });
@@ -69,6 +83,7 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
         <TableBody>
           {Array.from(
             messages
+              .filter((m) => m.type === 'tx')
               .reduce((s, m) => {
                 s.set(m.data.hash, m);
                 return s;
