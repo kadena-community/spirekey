@@ -52,6 +52,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
     setMessages((prev) => {
       if (message.type === 'id') return [...prev, message];
       if (
+        prev.length &&
         prev.some((m) => {
           if (m.type === 'tx') return m.data.hash === message.data.hash;
           if (m.type === 'confirm') return m.data.hash === message.data.hash;
@@ -124,7 +125,6 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
       conn.on('open', () => {
         conn.on('data', (data) => {
           if (!isMessage(data)) return;
-          console.log('Someone send me Data', data);
           saveNewMessage(data);
         });
       });

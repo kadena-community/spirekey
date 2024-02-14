@@ -62,9 +62,10 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   };
 
   useEffect(() => {
+    if (isLoading) return;
     if (!account?.accountName) return;
     setId({ id: '1234', publicKey: account?.accountName });
-  }, [isLoading]);
+  }, [account?.accountName, isLoading]);
 
   useEffect(() => {
     if (isLoading) return;

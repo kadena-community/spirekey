@@ -32,6 +32,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
       );
   }, [messages]);
   useEffect(() => {
+    if (isLoading) return;
     if (!account?.accountName) return;
     setId({ id: '1234', publicKey: account?.accountName });
   }, [account?.accountName, isLoading]);

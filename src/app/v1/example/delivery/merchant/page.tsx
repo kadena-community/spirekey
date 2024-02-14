@@ -53,9 +53,10 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
   }, [couriers, orders]);
 
   useEffect(() => {
+    if (isLoading) return;
     if (!account?.accountName) return;
     setId({ id: '1234', publicKey: account?.accountName });
-  }, []);
+  }, [account?.accountName, isLoading]);
 
   useEffect(() => {
     if (isLoading) return;
