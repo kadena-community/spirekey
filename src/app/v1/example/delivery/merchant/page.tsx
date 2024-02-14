@@ -1,6 +1,7 @@
 'use client';
 
 import { AccountButton } from '@/components/AccountButton';
+import { Button } from '@/components/Button/Button';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
 import {
@@ -13,6 +14,7 @@ import {
   TableHeader,
 } from '@kadena/react-ui';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import type { Message } from '../Connection';
 import { useConnection } from '../Connection';
@@ -31,12 +33,28 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
   const { account } = useLoggedInAccount(user);
   const { setId, send, isLoading, messages } = useConnection();
   const { getReturnUrl } = useReturnUrl();
+  const router = useRouter();
 
   const { status, doSubmit, tx } = useSubmit(searchParams);
-  const { orders, saveDelivery } = useDelivery({
+  const { orders, markOrderAsReady, saveDelivery } = useDelivery({
     chainId: process.env.CHAIN_ID!,
     networkId: process.env.NETWORK_ID!,
   });
+  const markAsReady = (orderId: string) => async () => {
+    if (!account) return;
+    const tx = await markOrderAsReady({
+      orderId,
+      merchantAccount: account?.accountName,
+      merchantPublicKey: account?.credentials[0].publicKey,
+    });
+    router.push(
+      `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
+        JSON.stringify(tx),
+      ).toString('base64')}&returnUrl=${getReturnUrl(
+        '/v1/example/delivery/merchant',
+      )}`,
+    );
+  };
 
   const couriers = Array.from(
     new Map(

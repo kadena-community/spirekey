@@ -13,6 +13,7 @@ import useSWR from 'swr';
 
 type Order = {
   orderId: string;
+  status: string;
   courier: string;
   merchant: string;
   buyer: string;
@@ -26,7 +27,7 @@ type ChainOrder = {
   order: {
     buyer: string;
     merchant: string;
-    ['order-status']: number;
+    ['order-status']: string;
     ['order-price']: number;
     ['delivery-price']: number;
   };
@@ -57,6 +58,7 @@ const getDeliveriesByIds = async ({
       if (tx?.result?.status !== 'success') return null;
       return tx.result.data.map((x: ChainOrder) => ({
         orderId: x['order-id'],
+        status: x.order['order-status'],
         courier: x.courier,
         merchant: x.order.merchant,
         buyer: x.order.buyer,
@@ -153,6 +155,50 @@ const createOrder = async ({
   )({});
 };
 
+const markOrderAsReady = async ({
+  chainId,
+  networkId,
+  orderId,
+  merchantAccount,
+  merchantPublicKey,
+}: {
+  chainId: string;
+  networkId: string;
+  orderId: string;
+  merchantAccount: string;
+  merchantPublicKey: string;
+}) => {
+  return asyncPipe(
+    composePactCommand(
+      execution(
+        `(n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.set-order-ready-for-delivery "${orderId}")`,
+      ),
+      setMeta({
+        chainId,
+        senderAccount: merchantAccount,
+      }),
+      setNetworkId(networkId),
+      addSigner(
+        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
+        { pubKey: merchantPublicKey, scheme: 'WebAuthn' },
+        (withCap) => [
+          withCap(
+            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.SET_READY_FOR_DELIVERY',
+            orderId,
+          ),
+          withCap(
+            `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.GAS_PAYER`,
+            merchantAccount,
+            { int: 1 },
+            1,
+          ),
+        ],
+      ),
+    ),
+    createTransaction,
+  )({});
+};
+
 export const useDelivery = ({
   chainId = '14',
   networkId,
@@ -183,5 +229,26 @@ export const useDelivery = ({
   const onCreateOrder = (
     orderDetails: Omit<OrderDetails, 'chainId' | 'networkId'>,
   ) => createOrder({ chainId, networkId, ...orderDetails });
-  return { orders: data, createOrder: onCreateOrder, saveDelivery };
+  const onMarkOrderAsReady = ({
+    orderId,
+    merchantAccount,
+    merchantPublicKey,
+  }: {
+    orderId: string;
+    merchantAccount: string;
+    merchantPublicKey: string;
+  }) =>
+    markOrderAsReady({
+      chainId,
+      networkId,
+      orderId,
+      merchantAccount,
+      merchantPublicKey,
+    });
+  return {
+    orders: data,
+    createOrder: onCreateOrder,
+    markOrderAsReady: onMarkOrderAsReady,
+    saveDelivery,
+  };
 };

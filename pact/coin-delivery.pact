@@ -98,24 +98,28 @@
   (defcap BUYER (order-id:string)
     @doc "Capability that validates if action is done by buyer (customer)"
     (with-read order-table order-id
-      { 'buyer-guard := buyer-guard }
-      (enforce-guard buyer-guard)
+      { 'buyer       := buyer
+      , 'buyer-guard := buyer-guard 
+      }
+      (enforce-capability-guard buyer buyer-guard)
     )
   )
 
   (defcap MERCHANT (order-id:string)
     @doc "Capability that validates if action is done by merchant"
     (with-read order-table order-id
-      { 'merchant-guard := merchant-guard }
-      (enforce-guard merchant-guard)
+      { 'merchant       := merchant
+      , 'merchant-guard := merchant-guard }
+      (enforce-capability-guard merchant merchant-guard)
     )
   )
 
   (defcap COURIER (order-id:string)
     @doc "Capability that validates if action is done by courier (delivery party)"
     (with-read delivery-table order-id
-      { 'courier-guard := courier-guard }
-      (enforce-guard courier-guard)
+      { 'courier       := courier
+      , 'courier-guard := courier-guard }
+      (enforce-capability-guard courier courier-guard)
     )
   )
 
@@ -147,7 +151,7 @@
     @event
     (compose-capability (UPDATE_ORDER_STATUS))
     (compose-capability (RESERVE_FUNDS))
-    (enforce-guard courier-guard)
+    (compose-capability (COURIER order-id))
   )
 
   (defcap UPDATE_ORDER_STATUS()
@@ -163,6 +167,14 @@
   (defcap ESCROW ()
     @doc "Capability for escrow account"
     true)
+
+  (defun enforce-capability-guard (account:string guard:guard)
+    (enforce (validate-principal guard account) "Invalid guard for the account")
+    (enforce-one "Neither keyset or capability guard passed" [
+      (enforce-guard guard)
+      (webauthn-wallet.enforce-authenticated account)
+    ])
+  )
 
   (defun create-order (
     order-id       : string
@@ -182,14 +194,8 @@
     (enforce (validate-principal buyer-guard buyer) "Invalid buyer guard")
 
     (with-capability (CREATE_ORDER order-id)
-      (enforce-one "Neither keyset or capability guard passed" [
-        (enforce-guard merchant-guard)
-        (webauthn-wallet.enforce-authenticated merchant)
-      ])
-      (enforce-one "Neither keyset or capability guard passed" [
-        (enforce-guard buyer-guard)
-        (webauthn-wallet.enforce-authenticated buyer)
-      ])
+      (enforce-capability-guard merchant merchant-guard)
+      (enforce-capability-guard buyer buyer-guard)
       (enforce (= (floor order-price MINIMUM_PRECISION) order-price) "Order price exeeds minimum allowed precision decimals")
       (enforce (= (floor delivery-price MINIMUM_PRECISION) delivery-price) "Delivery price exeeds minimum allowed precision decimals")
       (insert order-table order-id 
@@ -260,7 +266,7 @@
     )
   )
 
-  (defun set-order-ready-for-delivery(order-id:string merchant-guard:guard)
+  (defun set-order-ready-for-delivery(order-id:string)
     @doc "Allow the merchant to mark the product ready for delivery"
     (with-capability (SET_READY_FOR_DELIVERY order-id)
       (update-order-status order-id READY_FOR_DELIVERY)))
