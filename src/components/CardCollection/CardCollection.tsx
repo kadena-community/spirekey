@@ -1,7 +1,7 @@
 import { Box, Button, Stack } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import { Children, cloneElement, useRef, useState } from 'react';
-import { useElementSize } from 'usehooks-ts';
+import { useElementSize, useResizeObserver } from 'usehooks-ts';
 
 import { card, inner, wrapper } from './CardCollection.css';
 
@@ -13,8 +13,9 @@ interface CardCollectionProps {
 
 export default function CardCollection({ children }: CardCollectionProps) {
   const [activeCard, setActiveCard] = useState<number | null>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef(new Array());
-  const [innerRef, { height: innerHeight }] = useElementSize();
+  const { height: innerHeight = 0 } = useResizeObserver({ ref: innerRef });
 
   const getCardVariant = (i: number) => {
     if (activeCard === i) {

@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 
-import { IClient, createTransaction } from '@kadena/client';
+import { ChainId, IClient, createTransaction } from '@kadena/client';
 import {
   addSigner,
   composePactCommand,
@@ -16,7 +16,7 @@ import { signWithKeyPair } from './signSubmitListen';
 type ProfileConfig = {
   host: string;
   networkId: string;
-  chains: string[];
+  chains: ChainId[];
 };
 type Profiles = {
   [key: string]: ProfileConfig;
@@ -73,7 +73,7 @@ export const executeStepWith =
     { profiles, signers }: Pick<DeployConfiguration, 'profiles' | 'signers'>,
   ) =>
     await Promise.all(
-      profiles[step.profile].chains.map(async (chain) => {
+      profiles[step.profile].chains.map(async (chain: ChainId) => {
         const signer = signers[step.sender];
         const { publicKey, secretKey } = signer;
         return await asyncPipe(
