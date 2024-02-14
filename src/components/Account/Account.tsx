@@ -13,12 +13,14 @@ interface AccountProps {
   account: Account;
   isActive?: boolean;
   returnUrl?: string;
+  optimistic?: boolean;
 }
 
 export function Account({
   account,
   isActive = false,
   returnUrl,
+  optimistic = false,
 }: AccountProps) {
   const { accounts } = useAccounts();
   const [delayedActive, setDelayedActive] = useState(false);
@@ -97,25 +99,27 @@ export function Account({
                 >
                   Cancel
                 </ButtonLink>
-                <ButtonLink
-                  variant="primary"
-                  href={`${returnUrl}?user=${Buffer.from(
-                    JSON.stringify({
-                      alias: account.alias,
-                      accountName: account.accountName,
-                      pendingTxIds: [d.pendingRegistrationTx].filter(Boolean),
-                      credentials: [
-                        {
-                          type: 'WebAuthn',
-                          publicKey: d.guard.keys[0],
-                          id: d['credential-id'],
-                        },
-                      ],
-                    }),
-                  ).toString('base64')}`}
-                >
-                  Login
-                </ButtonLink>
+                {(optimistic || !d.pendingRegistrationTx) &&
+                  <ButtonLink
+                    variant="primary"
+                    href={`${returnUrl}?user=${Buffer.from(
+                      JSON.stringify({
+                        alias: account.alias,
+                        accountName: account.accountName,
+                        pendingTxIds: [d.pendingRegistrationTx].filter(Boolean),
+                        credentials: [
+                          {
+                            type: 'WebAuthn',
+                            publicKey: d.guard.keys[0],
+                            id: d['credential-id'],
+                          },
+                        ],
+                      }),
+                    ).toString('base64')}`}
+                  >
+                    Login
+                  </ButtonLink>
+                }
               </Stack>
             )}
           </div>

@@ -38,7 +38,11 @@ export type FormUtils = {
   direction: Direction,
 };
 
-export default function Registration() {
+type Props = {
+  redirectUrl?: string;
+};
+
+export default function Registration({ redirectUrl }: Props) {
   const router = useRouter();
   const { registerAccount } = useAccounts();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -63,6 +67,10 @@ export default function Registration() {
     <ColorForm {...data} direction={direction} updateFields={updateFields} />,
   ]);
   const { host } = useReturnUrl();
+  const decodedRedirectUrl = redirectUrl ? Buffer.from(redirectUrl, 'base64').toString() : '';
+  const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
+  const completeRedirectUrl = decodedRedirectUrl || '/';
+
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
@@ -96,8 +104,10 @@ export default function Registration() {
         domain: host,
         network: data.networkId,
       });
-        router.push('/');
-        return;
+
+      router.push(completeRedirectUrl);
+
+      return;
     }
 
     if (currentStepIndex === 1 && data.usedAlias === data.alias) {
@@ -120,7 +130,7 @@ export default function Registration() {
     setDirection('backward');
 
     if (currentStepIndex === 0) {
-      router.push('/welcome');
+      router.push(cancelRedirectUrl);
     }
 
     if (currentStepIndex === 3 && data.usedAlias === data.alias) {
