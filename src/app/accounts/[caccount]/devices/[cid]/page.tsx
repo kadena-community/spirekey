@@ -1,38 +1,26 @@
 'use client';
 
 import logo from '@/assets/images/bennuKey.svg';
-import { Account } from '@/components/Account/Account';
-import CardCollection from '@/components/CardCollection/CardCollection';
 import {
   useAccounts,
   type Account as TAccount,
 } from '@/context/AccountsContext';
 import { Heading, Stack } from '@kadena/react-ui';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+const CardCollection = dynamic(
+  () => import('@/components/CardCollection/CardCollection'),
+  { ssr: false },
+);
 
 export default function Cards() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeAccount, setActiveAccount] = useState<TAccount>();
   const { accounts } = useAccounts();
   const { caccount, cid } = useParams();
-
-  const sortedAccounts = [...(accounts || [])].sort((a, b) => {
-    if (
-      a.accountName === activeAccount?.accountName &&
-      a.network === activeAccount?.network
-    )
-      return -1;
-    if (
-      b.accountName === activeAccount?.accountName &&
-      b.network === activeAccount?.network
-    )
-      return 1;
-    return 0;
-  });
-
-  if (!accounts) return <div>loading...</div>;
 
   useEffect(() => {
     if (!activeAccount) {
@@ -77,22 +65,7 @@ export default function Cards() {
       >
         Wallet
       </Heading>
-      <CardCollection>
-        {sortedAccounts.map((account: any) => {
-          if (!account) return null;
-
-          const isActive =
-            account.accountName === activeAccount?.accountName &&
-            account.network === activeAccount?.network;
-          return (
-            <Account
-              key={account.accountName + account.network}
-              account={account}
-              isActive={isActive}
-            />
-          );
-        })}
-      </CardCollection>
+      <CardCollection />
     </Stack>
   );
 }
