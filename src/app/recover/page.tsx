@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/Button/Button';
 import { useAccounts, type Account } from '@/context/AccountsContext';
+import { deviceColors } from '@/styles/tokens.css';
 import { getAccountFrom } from '@/utils/account';
 import { Heading, TextField } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
@@ -66,15 +67,16 @@ export default function Recover() {
       })),
     });
 
-    results.filter(isAccount).forEach((r) => {
+    results.filter(isAccount).forEach((account) => {
+      // @TODO: Let the user fill in the alias, deviceType and color
       setAccount({
-        accountName: r.accountName,
-        network: r.network,
-        alias: 'Restored', // @todo: Provide a way to update the alias of an account
-        devices: r.devices.map((d) => ({
-          ...d,
-          deviceType: d.deviceType || r.accountName.split('_')[0],
-          color: d.color || r.accountName.split('_')[1],
+        accountName: account.accountName,
+        network: account.network,
+        alias: 'Restored',
+        devices: account.devices.map((device) => ({
+          ...device,
+          deviceType: device.deviceType || 'phone',
+          color: device.color || deviceColors.purple,
         })),
       });
     });
