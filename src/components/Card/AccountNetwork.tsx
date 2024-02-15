@@ -5,12 +5,12 @@ import { Stack, SystemIcon, Text } from '@kadena/react-ui';
 import { useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'usehooks-ts';
 import { AccountRevealer } from '../AccountRevealer/AccountRevealer';
-import { copyButton } from './AccountNetwork.css';
 import {
   account as accountStyle,
-  cardContentCenter,
-  network,
-} from './Card.css';
+  copyButton,
+  namespaceStyle,
+} from './AccountNetwork.css';
+import { cardContentCenter, network } from './Card.css';
 
 type AccountNetworkProps = {
   account: Account;
@@ -34,23 +34,16 @@ export default function AccountNetwork({
     };
   }, [hasCopied]);
 
-  if (!account.accountName) return null;
+  const [accountNamespace, accountName] = account.accountName.split(':');
 
   return (
     <Stack flexDirection="column" className={cardContentCenter}>
-      <Stack flexDirection="row" alignItems="center">
+      <Stack flexDirection="row" alignItems="center" className={accountStyle}>
+        <span className={namespaceStyle}>{accountNamespace}:</span>
         {isLoading ? (
-          <AccountRevealer
-            accountName={account.accountName}
-            className={accountStyle}
-            reveal={!isLoading}
-          />
+          <AccountRevealer accountName={accountName} reveal={!isLoading} />
         ) : (
-          <MaskedValue
-            value={account.accountName}
-            startUnmaskedValues={16}
-            className={accountStyle}
-          />
+          <MaskedValue value={accountName} />
         )}
         <button
           className={copyButton}

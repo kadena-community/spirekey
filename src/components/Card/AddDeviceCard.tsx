@@ -1,5 +1,5 @@
 import { Account } from '@/context/AccountsContext';
-import { Heading, Stack, SystemIcon } from '@kadena/react-ui';
+import { Heading, Stack } from '@kadena/react-ui';
 import Link from 'next/link';
 import { PlusCircle } from '../icons/PlusCircle';
 import Card from './Card';
