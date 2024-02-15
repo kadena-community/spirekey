@@ -68,7 +68,7 @@ const getDeliveriesByIds = async ({
     },
   )({});
 
-const createOrderId = ({
+export const createOrderId = ({
   customer,
   merchant,
   orderId,

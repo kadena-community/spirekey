@@ -12,7 +12,7 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useConnection } from './Connection';
 import pizza from './pizza.png';
-import { useDelivery } from './useDelivery';
+import { createOrderId, useDelivery } from './useDelivery';
 import { useLoggedInAccount } from './useLoggedInAccount';
 
 type DeliveryProps = {
@@ -29,7 +29,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   const { account } = useLoggedInAccount(user);
   const { messages, setId, send, isLoading } = useConnection();
   const { getReturnUrl } = useReturnUrl();
-  const { orders, createOrder } = useDelivery({
+  const { orders, createOrder, saveDelivery } = useDelivery({
     chainId: process.env.CHAIN_ID as ChainId,
     networkId: process.env.NETWORK_ID!,
   });
@@ -56,6 +56,12 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       orderPrice: getValues('amount') * price,
       orderId: '2',
     });
+    const orderId = createOrderId({
+      customer: account.accountName,
+      merchant: 'c:-BtZKCieonbuxQHJocDqdUXMZgHwN4XDNQjXXSaTJDo',
+      orderId: '2',
+    });
+    saveDelivery(orderId);
     router.push(
       `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
         JSON.stringify(tx),
@@ -82,11 +88,13 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   useEffect(() => {
     if (isLoading) return;
     if (!tx) return;
-    if (!deliverTx)
-      send(
-        { id: '1234', publicKey: getValues('receiver') },
-        { type: 'tx', data: tx },
-      );
+    if (deliverTx) return;
+    const [orderId] = JSON.parse(localStorage.getItem('deliveryIds') || '[]');
+    if (!orderId) return;
+    send(
+      { id: '1234', publicKey: getValues('receiver') },
+      { type: 'create', data: tx, orderId },
+    );
   }, [tx, isLoading, deliverTx]);
 
   useEffect(() => {
@@ -95,7 +103,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     if (!tx) return;
     if (status !== SubmitStatus.SUBMITABLE) return;
     doSubmit();
-  }, [tx, isLoading, deliverTx]);
+  }, [tx, isLoading, deliverTx, status]);
 
   const pendingTx = tx && !messages.some((m) => m.data.hash === tx.hash);
   const mintedTx = tx && messages.some((m) => m.data.hash === tx.hash);

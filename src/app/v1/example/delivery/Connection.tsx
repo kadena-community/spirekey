@@ -13,14 +13,18 @@ type ConnectionId = {
 };
 
 export type Message = {
-  type: 'tx' | 'id' | 'confirm' | 'orders';
+  type: 'tx' | 'id' | 'confirm' | 'orders' | 'create';
   data: any;
   connectionId: ConnectionId;
+  orderId?: string;
 };
 
 const ConnectionContext = createContext({
   connect: (id: ConnectionId) => {},
-  send: (id: ConnectionId, message: Pick<Message, 'type' | 'data'>) => {},
+  send: (
+    id: ConnectionId,
+    message: Pick<Message, 'type' | 'data' | 'orderId'>,
+  ) => {},
   setId: (id: ConnectionId) => {},
   isLoading: true,
   messages: [] as Message[],
@@ -33,6 +37,7 @@ const isMessage = (data: any): data is Message => {
   return (
     data.type === 'tx' ||
     data.type === 'id' ||
+    data.type === 'create' ||
     data.type === 'confirm' ||
     data.type === 'orders'
   );
@@ -55,6 +60,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
         prev.length &&
         prev.some((m) => {
           if (m.type === 'tx') return m.data.hash === message.data.hash;
+          if (m.type === 'create') return m.data.hash === message.data.hash;
           if (m.type === 'confirm') return m.data.hash === message.data.hash;
         })
       )

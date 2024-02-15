@@ -86,6 +86,7 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
     doSubmit();
     if (!originMsg) return;
     send(originMsg.connectionId, { type: 'confirm', data: tx });
+    if (originMsg.orderId) saveDelivery(originMsg.orderId);
   }, [status, isLoading, messages]);
   const pendingOrders = orders?.filter((order) => order.status === 'CREATED');
   return (
@@ -106,7 +107,7 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
         <TableBody>
           {Array.from(
             messages
-              .filter((m) => m.type === 'tx')
+              .filter((m) => m.type === 'tx' || m.type === 'create')
               .reduce((s, m) => {
                 s.set(m.data.hash, m);
                 return s;
