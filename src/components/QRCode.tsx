@@ -1,4 +1,3 @@
-import { sprinkles } from '@kadena/react-ui/styles';
 import * as base64url from 'base64url-universal';
 import { Encoder } from 'qram';
 import { toCanvas } from 'qrcode';
@@ -44,9 +43,9 @@ export const QRCode = ({ url }: QRCodeProps) => {
   return (
     <canvas
       ref={canvasRef}
-      className={sprinkles({
+      style={{
         width: '100%',
-      })}
+      }}
     />
   );
 };

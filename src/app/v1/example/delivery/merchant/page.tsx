@@ -3,7 +3,7 @@
 import { AccountButton } from '@/components/AccountButton';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
-import { Box, Table } from '@kadena/react-ui';
+import { Box, Cell, Row, Table, TableBody, TableHeader } from '@kadena/react-ui';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import type { Message } from '../Connection';
@@ -47,8 +47,15 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
           returnPath="/v1/example/delivery/merchant"
         />
       </Box>
-      <Table.Root>
-        <Table.Body>
+      <Table>
+        <TableHeader>
+          <Row>
+            <Cell>Type</Cell>
+            <Cell>Transaction Hash</Cell>
+            <Cell>Action</Cell>
+          </Row>
+        </TableHeader>
+        <TableBody>
           {Array.from(
             messages
               .reduce((s, m) => {
@@ -57,10 +64,10 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
               }, new Map<string, Message>())
               .values(),
           ).map((message, index) => (
-            <Table.Tr key={message.data.hash}>
-              <Table.Td>{message.type}</Table.Td>
-              <Table.Td>{message.data.hash}</Table.Td>
-              <Table.Td>
+            <Row key={message.data.hash}>
+              <Cell>{message.type}</Cell>
+              <Cell>{message.data.hash}</Cell>
+              <Cell>
                 <Link
                   href={`${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
                     JSON.stringify(message.data),
@@ -70,11 +77,11 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
                 >
                   sign
                 </Link>
-              </Table.Td>
-            </Table.Tr>
+              </Cell>
+            </Row>
           ))}
-        </Table.Body>
-      </Table.Root>
+        </TableBody>
+      </Table>
     </div>
   );
 }

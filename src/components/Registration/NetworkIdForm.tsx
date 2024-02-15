@@ -1,12 +1,12 @@
-import { Text } from "@kadena/react-ui";
-import { SurfaceCard } from "../SurfaceCard/SurfaceCard";
 import { NetworkDevnet } from '@/components/icons/NetworkDevnet';
 import { NetworkMainnet } from '@/components/icons/NetworkMainnet';
 import { NetworkTestnet } from '@/components/icons/NetworkTestnet';
-import { getNetworkDisplayName } from "@/utils/getNetworkDisplayName";
-import { descriptionEmphasis, item, itemContainer } from "./styles.css";
-import { FormData, FormUtils } from "./Registration";
-import { AnimatePresence, motion } from "framer-motion";
+import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
+import { Text } from '@kadena/react-ui';
+import { AnimatePresence, motion } from 'framer-motion';
+import { SurfaceCard } from '../SurfaceCard/SurfaceCard';
+import { FormData, FormUtils } from './Registration';
+import { descriptionEmphasis, item, itemContainer } from './styles.css';
 
 type Props = Pick<FormData, 'networkId'> & FormUtils;
 
@@ -20,14 +20,12 @@ const getDescription = (networkId: string) => {
         {getNetworkDisplayName(networkId)}
       </Text>{' '}
       selected.
-      {['testnet04', 'fast-development'].includes(networkId)
-        ? dev
-        : main}
+      {['testnet04', 'fast-development'].includes(networkId) ? dev : main}
     </Text>
   );
 };
 
-export function NetworkIdForm({networkId, updateFields, direction }: Props) {
+export function NetworkIdForm({ networkId, updateFields, direction }: Props) {
   const xPositionMultiplier = direction === 'forward' ? 1 : -1;
 
   return (
@@ -37,6 +35,7 @@ export function NetworkIdForm({networkId, updateFields, direction }: Props) {
         initial={{ x: 300 * xPositionMultiplier, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: -300 * xPositionMultiplier, opacity: 0 }}
+        transition={{ duration: 0.3 }}
       >
         <SurfaceCard title="Network" description={getDescription(networkId)}>
           <div className={itemContainer}>
@@ -48,7 +47,9 @@ export function NetworkIdForm({networkId, updateFields, direction }: Props) {
                 id="network-mainnet"
                 name="networkId"
                 checked={networkId === 'mainnet01'}
-                onChange={event => updateFields({networkId: event.target.value})}
+                onChange={(event) =>
+                  updateFields({ networkId: event.target.value })
+                }
               />
               <label htmlFor="network-mainnet" className={item}>
                 <NetworkMainnet />
@@ -62,7 +63,9 @@ export function NetworkIdForm({networkId, updateFields, direction }: Props) {
                 id="network-testnet"
                 name="networkId"
                 checked={networkId === 'testnet04'}
-                onChange={event => updateFields({networkId: event.target.value})}
+                onChange={(event) =>
+                  updateFields({ networkId: event.target.value })
+                }
               />
               <label htmlFor="network-testnet" className={item}>
                 <NetworkTestnet />
@@ -76,7 +79,9 @@ export function NetworkIdForm({networkId, updateFields, direction }: Props) {
                 id="network-devnet"
                 name="networkId"
                 checked={networkId === 'fast-development'}
-                onChange={event => updateFields({networkId: event.target.value})}
+                onChange={(event) =>
+                  updateFields({ networkId: event.target.value })
+                }
               />
               <label htmlFor="network-devnet" className={item}>
                 <NetworkDevnet />
@@ -86,5 +91,5 @@ export function NetworkIdForm({networkId, updateFields, direction }: Props) {
         </SurfaceCard>
       </motion.div>
     </AnimatePresence>
-  )
+  );
 }

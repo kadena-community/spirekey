@@ -1,5 +1,4 @@
 import { Card } from '@kadena/react-ui';
-import { sprinkles } from '@kadena/react-ui/styles';
 import * as base64url from 'base64url-universal';
 import { useRouter } from 'next/navigation';
 import QRScanner from 'qr-scanner';
@@ -107,12 +106,15 @@ export const Scan = () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     if (!video || !canvas) return;
+
     return setupCamera(video, canvas, setResult);
   }, [shouldLoad]);
+  
   useEffect(() => {
     if (!result) return;
     router.push(result);
-  }, [result]);
+  }, [result])
+
   return (
     <Card fullWidth>
       <button onClick={toggleLoad}>{!shouldLoad ? 'Scan' : 'Stop'}</button>
@@ -122,9 +124,9 @@ export const Scan = () => {
           <video ref={videoRef} />
           <canvas
             ref={canvasRef}
-            className={sprinkles({
+            style={{
               position: 'absolute',
-            })}
+            }}
           />
         </div>
       )}

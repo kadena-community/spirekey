@@ -1,10 +1,15 @@
 'use client';
 
-import { AccountSelector } from '@/components/AccountSelector';
 import { useAccounts } from '@/context/AccountsContext';
 import { Heading, Stack, SystemIcon } from '@kadena/react-ui';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+
+const CardCollection = dynamic(
+  () => import('@/components/CardCollection/CardCollection'),
+  { ssr: false },
+);
 
 export default function Accounts() {
   const { accounts } = useAccounts();
@@ -34,7 +39,7 @@ export default function Accounts() {
         <Heading variant="h5">Accounts</Heading>
         <SystemIcon.Application />
       </Stack>
-      <AccountSelector />
+      <CardCollection />
     </Stack>
   );
 }

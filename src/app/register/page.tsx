@@ -1,7 +1,7 @@
 'use client';
 
-import { Stack } from '@kadena/react-ui';
 import Registration from '@/components/Registration/Registration';
+import { Stack } from '@kadena/react-ui';
 
 type Props = {
   searchParams: {
@@ -10,7 +10,7 @@ type Props = {
 };
 
 export default function Register({ searchParams }: Props) {
-  const redirectUrl = searchParams.redirectUrl
+  const redirectUrl = searchParams.redirectUrl;
   return (
     <Stack flexDirection="column" gap="md">
       <Registration redirectUrl={redirectUrl} />

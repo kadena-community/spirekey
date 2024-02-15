@@ -1,21 +1,23 @@
-import { FormEvent, useState } from "react";
-import { useRegistrationForm } from "@/hooks/useRegistrationForm";
+'use client';
+
 import { Button } from '@/components/Button/Button';
-import { AliasForm } from "./AliasForm";
-import { Box, Form, Stack } from "@kadena/react-ui";
-import { step as stepStyle } from './styles.css';
-import { atoms } from "@kadena/react-ui/styles";
+import { useAccounts } from '@/context/AccountsContext';
+import { useRegistrationForm } from '@/hooks/useRegistrationForm';
+import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { deviceColors } from '@/styles/tokens.css';
-import DeviceCard from "../Card/DeviceCard";
-import { useReturnUrl } from "@/hooks/useReturnUrl";
-import { NetworkIdForm } from "./NetworkIdForm";
-import { BiometricsForm } from "./BiometricsForm";
-import { useRouter } from "next/navigation";
-import { useAccounts } from "@/context/AccountsContext";
-import { getAccountName } from "@/utils/register";
-import { getNewWebauthnKey } from "@/utils/webauthnKey";
-import { DeviceTypeForm } from "./DeviceTypeForm";
-import { ColorForm } from "./ColorForm";
+import { getAccountName } from '@/utils/register';
+import { getNewWebauthnKey } from '@/utils/webauthnKey';
+import { Box, Form, Stack } from '@kadena/react-ui';
+import { atoms } from '@kadena/react-ui/styles';
+import { useRouter } from 'next/navigation';
+import { FormEvent, useState } from 'react';
+import DeviceCard from '../Card/DeviceCard';
+import { AliasForm } from './AliasForm';
+import { BiometricsForm } from './BiometricsForm';
+import { ColorForm } from './ColorForm';
+import { DeviceTypeForm } from './DeviceTypeForm';
+import { NetworkIdForm } from './NetworkIdForm';
+import { step as stepStyle } from './styles.css';
 
 const defaultFormData = {
   alias: '',
@@ -35,7 +37,7 @@ export type Direction = 'forward' | 'backward';
 export type FormUtils = {
   updateFields: (fields: Partial<FormData>) => void;
   onCredentialCreated?: () => void;
-  direction: Direction,
+  direction: Direction;
 };
 
 type Props = {
@@ -48,8 +50,10 @@ export default function Registration({ redirectUrl }: Props) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [direction, setDirection] = useState<Direction>('forward');
   const [data, setData] = useState<FormData>(defaultFormData);
-  const updateFields = (fields: Partial<FormData>) => setData(current => ({ ...current, ...fields}));
+  const updateFields = (fields: Partial<FormData>) =>
+    setData((current) => ({ ...current, ...fields }));
   const onCredentialCreated = () => next();
+  const { host } = useReturnUrl();
   const {
     step,
     steps,
@@ -61,13 +65,28 @@ export default function Registration({ redirectUrl }: Props) {
     goTo,
   } = useRegistrationForm([
     <AliasForm {...data} direction={direction} updateFields={updateFields} />,
-    <NetworkIdForm {...data} direction={direction} updateFields={updateFields} />,
-    <BiometricsForm {...data} direction={direction} updateFields={updateFields} onCredentialCreated={onCredentialCreated} />,
-    <DeviceTypeForm {...data} direction={direction} updateFields={updateFields} />,
+    <NetworkIdForm
+      {...data}
+      direction={direction}
+      updateFields={updateFields}
+    />,
+    <BiometricsForm
+      {...data}
+      direction={direction}
+      updateFields={updateFields}
+      onCredentialCreated={onCredentialCreated}
+    />,
+    <DeviceTypeForm
+      {...data}
+      direction={direction}
+      updateFields={updateFields}
+    />,
     <ColorForm {...data} direction={direction} updateFields={updateFields} />,
   ]);
-  const { host } = useReturnUrl();
-  const decodedRedirectUrl = redirectUrl ? Buffer.from(redirectUrl, 'base64').toString() : '';
+
+  const decodedRedirectUrl = redirectUrl
+    ? Buffer.from(redirectUrl, 'base64').toString()
+    : '';
   const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
   const completeRedirectUrl = decodedRedirectUrl || '/';
 
@@ -76,7 +95,12 @@ export default function Registration({ redirectUrl }: Props) {
 
     setDirection('forward');
 
-    if (currentStepIndex === 2 && (data.accountName === '' || data.credentialId === '' || data.credentialPubkey === '')) {
+    if (
+      currentStepIndex === 2 &&
+      (data.accountName === '' ||
+        data.credentialId === '' ||
+        data.credentialPubkey === '')
+    ) {
       // the form was submitted on the biometrics step without creating webauthn credentials
       const { credentialId, publicKey } = await getNewWebauthnKey(data.alias);
       const accountName = await getAccountName(publicKey, data.networkId);
@@ -124,7 +148,7 @@ export default function Registration({ redirectUrl }: Props) {
     }
 
     next();
-  }
+  };
 
   const goBack = () => {
     setDirection('backward');
@@ -135,7 +159,7 @@ export default function Registration({ redirectUrl }: Props) {
 
     if (currentStepIndex === 3 && data.usedAlias === data.alias) {
       // skip the fingerprint step when we already have an account for the same alias
-      return goTo(1)
+      return goTo(1);
     }
 
     previous();
@@ -166,32 +190,32 @@ export default function Registration({ redirectUrl }: Props) {
         />
       </Box>
       <Form onSubmit={onSubmit}>
-        <Box className={stepStyle}>
-          {step}
-        </Box>
-        {!isSubmitting && <Stack
-          flexDirection={'row'}
-          gap={'xl'}
-          marginBlock={'lg'}
-          paddingInline={'lg'}
-        >
-          <Button
-            variant="secondary"
-            onPress={goBack}
-            className={atoms({ flex: 1 })}
+        <Box className={stepStyle}>{step}</Box>
+        {!isSubmitting && (
+          <Stack
+            flexDirection={'row'}
+            gap={'xl'}
+            marginBlock={'lg'}
+            paddingInline={'lg'}
           >
-            {isFirstStep ? 'Cancel' : 'Previous'}
-          </Button>
+            <Button
+              variant="secondary"
+              onPress={goBack}
+              className={atoms({ flex: 1 })}
+            >
+              {isFirstStep ? 'Cancel' : 'Previous'}
+            </Button>
 
-          <Button
-            variant="progress"
-            progress={((currentStepIndex + 1) / steps.length) * 100}
-            className={atoms({ flex: 1 })}
-            type="submit"
-          >
-            {isLastStep ? 'Complete' : 'Next'}
-          </Button>
-        </Stack>}
+            <Button
+              variant="progress"
+              progress={((currentStepIndex + 1) / steps.length) * 100}
+              className={atoms({ flex: 1 })}
+              type="submit"
+            >
+              {isLastStep ? 'Complete' : 'Next'}
+            </Button>
+          </Stack>
+        )}
       </Form>
     </Stack>
   );

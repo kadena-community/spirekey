@@ -1,11 +1,11 @@
-import { SurfaceCard } from "../SurfaceCard/SurfaceCard";
 import { DeviceDesktop } from '@/components/icons/DeviceDesktop';
 import { DevicePhone } from '@/components/icons/DevicePhone';
 import { DeviceSecurityKey } from '@/components/icons/DeviceSecurityKey';
-import { descriptionEmphasis, item, itemContainer } from "./styles.css";
-import { FormData, FormUtils } from "./Registration";
-import { Text } from "@kadena/react-ui";
-import { AnimatePresence, motion } from "framer-motion";
+import { Text } from '@kadena/react-ui';
+import { AnimatePresence, motion } from 'framer-motion';
+import { SurfaceCard } from '../SurfaceCard/SurfaceCard';
+import { FormData, FormUtils } from './Registration';
+import { descriptionEmphasis, item, itemContainer } from './styles.css';
 
 type Props = Pick<FormData, 'deviceType'> & FormUtils;
 
@@ -18,15 +18,13 @@ const deviceTypes: Record<string, string> = {
 const getDescription = (deviceType: string) => {
   return (
     <Text>
-      <Text className={descriptionEmphasis}>
-        {deviceTypes[deviceType]}
-      </Text>{' '}
+      <Text className={descriptionEmphasis}>{deviceTypes[deviceType]}</Text>{' '}
       selected as device type.
     </Text>
   );
 };
 
-export function DeviceTypeForm({deviceType, updateFields, direction }: Props) {
+export function DeviceTypeForm({ deviceType, updateFields, direction }: Props) {
   const xPositionMultiplier = direction === 'forward' ? 1 : -1;
 
   return (
@@ -36,8 +34,12 @@ export function DeviceTypeForm({deviceType, updateFields, direction }: Props) {
         initial={{ x: 300 * xPositionMultiplier, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: -300 * xPositionMultiplier, opacity: 0 }}
+        transition={{ duration: 0.3 }}
       >
-        <SurfaceCard title="Device Type" description={getDescription(deviceType)}>
+        <SurfaceCard
+          title="Device Type"
+          description={getDescription(deviceType)}
+        >
           <div className={itemContainer}>
             <div>
               <input
@@ -46,7 +48,9 @@ export function DeviceTypeForm({deviceType, updateFields, direction }: Props) {
                 value="security-key"
                 id="deviceType-security-key"
                 checked={deviceType === 'security-key'}
-                onChange={event => updateFields({deviceType: event.target.value})}
+                onChange={(event) =>
+                  updateFields({ deviceType: event.target.value })
+                }
               />
               <label htmlFor="deviceType-security-key" className={item}>
                 <DeviceSecurityKey />
@@ -59,7 +63,9 @@ export function DeviceTypeForm({deviceType, updateFields, direction }: Props) {
               value="phone"
               id="deviceType-phone"
               checked={deviceType === 'phone'}
-              onChange={event => updateFields({deviceType: event.target.value})}
+              onChange={(event) =>
+                updateFields({ deviceType: event.target.value })
+              }
             />
             <label htmlFor="deviceType-phone" className={item}>
               <DevicePhone />
@@ -71,7 +77,9 @@ export function DeviceTypeForm({deviceType, updateFields, direction }: Props) {
               value="desktop"
               id="deviceType-desktop"
               checked={deviceType === 'desktop'}
-              onChange={event => updateFields({deviceType: event.target.value})}
+              onChange={(event) =>
+                updateFields({ deviceType: event.target.value })
+              }
             />
             <label htmlFor="deviceType-desktop" className={item}>
               <DeviceDesktop />
@@ -80,5 +88,5 @@ export function DeviceTypeForm({deviceType, updateFields, direction }: Props) {
         </SurfaceCard>
       </motion.div>
     </AnimatePresence>
-  )
+  );
 }

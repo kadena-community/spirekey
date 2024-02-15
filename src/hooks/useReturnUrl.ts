@@ -1,17 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
-
 export const useReturnUrl = () => {
-  const [host, setHost] = useState('');
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    setHost(window.location.origin);
-  }, []);
-  const getReturnUrl = useCallback(
-    (path: string) => {
-      return host + path;
-    },
-    [host],
-  );
+  const host = typeof window === 'undefined' ? '' : window.location.origin;
+
+  const getReturnUrl = (path: string) => {
+    return host + path;
+  };
+
   return {
     host,
     getReturnUrl,
