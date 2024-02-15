@@ -259,6 +259,61 @@ const pickupDelivery = async ({
   )({});
 };
 
+const completeDelivery = async ({
+  chainId,
+  networkId,
+  orderId,
+  courierPublicKey,
+  buyerAccount,
+  buyerPublicKey,
+}: {
+  chainId: string;
+  networkId: string;
+  orderId: string;
+  courierPublicKey: string;
+  buyerAccount: string;
+  buyerPublicKey: string;
+}) =>
+  asyncPipe(
+    composePactCommand(
+      execution(
+        `(n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.deliver-order "${orderId}")`,
+      ),
+      setMeta({
+        chainId,
+        senderAccount: buyerAccount,
+      }),
+      setNetworkId(networkId),
+      addSigner(
+        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
+        { pubKey: buyerPublicKey, scheme: 'WebAuthn' },
+        (withCap) => [
+          withCap(
+            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.DELIVER_ORDER',
+            orderId,
+          ),
+          withCap(
+            `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.GAS_PAYER`,
+            buyerAccount,
+            { int: 1 },
+            1,
+          ),
+        ],
+      ),
+      addSigner(
+        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
+        { pubKey: courierPublicKey, scheme: 'WebAuthn' },
+        (withCap) => [
+          withCap(
+            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.DELIVER_ORDER',
+            orderId,
+          ),
+        ],
+      ),
+    ),
+    createTransaction,
+  )({});
+
 export const useDelivery = ({
   chainId = '14',
   networkId,
@@ -324,11 +379,31 @@ export const useDelivery = ({
       courierPublicKey,
       merchantPublicKey,
     });
+  const onDeliverOrder = ({
+    orderId,
+    courierPublicKey,
+    buyerAccount,
+    buyerPublicKey,
+  }: {
+    orderId: string;
+    courierPublicKey: string;
+    buyerAccount: string;
+    buyerPublicKey: string;
+  }) =>
+    completeDelivery({
+      chainId,
+      networkId,
+      orderId,
+      courierPublicKey,
+      buyerAccount,
+      buyerPublicKey,
+    });
   return {
     orders: data,
     createOrder: onCreateOrder,
     markOrderAsReady: onMarkOrderAsReady,
     pickupDelivery: onPickupDelivery,
+    deliverOrder: onDeliverOrder,
     saveDelivery,
   };
 };

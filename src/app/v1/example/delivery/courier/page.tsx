@@ -20,7 +20,7 @@ type CourierProps = {
 export default function CourierPage({ searchParams }: CourierProps) {
   const { user, transaction } = searchParams;
   const { account } = useLoggedInAccount(user);
-  const { orders, saveDelivery, pickupDelivery } = useDelivery({
+  const { orders, saveDelivery, pickupDelivery, deliverOrder } = useDelivery({
     chainId: process.env.CHAIN_ID!,
     networkId: process.env.NETWORK_ID!,
   });
@@ -82,21 +82,58 @@ export default function CourierPage({ searchParams }: CourierProps) {
       );
     };
 
+  const onDeliver =
+    ({ buyer, orderId }: { buyer: string; orderId: string }) =>
+    async () => {
+      if (!account) return;
+      const buyerAccount = await getAccountFrom({
+        caccount: buyer,
+        networkId: process.env.NETWORK_ID!,
+      });
+      const tx = await deliverOrder({
+        orderId,
+        buyerAccount: buyer,
+        buyerPublicKey: buyerAccount?.devices[0].guard.keys[0],
+        courierPublicKey: account.credentials[0].publicKey,
+      });
+      router.push(
+        `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
+          JSON.stringify(tx),
+        ).toString('base64')}&returnUrl=${getReturnUrl(
+          '/v1/example/delivery/courier',
+        )}`,
+      );
+    };
+
   useEffect(() => {
     if (!account?.accountName) return;
     if (isLoading) return;
     if (!transaction) return;
     const tx = JSON.parse(Buffer.from(transaction, 'base64').toString());
-    send(
-      {
-        id: '1234',
-        publicKey: 'c:-BtZKCieonbuxQHJocDqdUXMZgHwN4XDNQjXXSaTJDo',
-      },
-      {
-        type: 'tx',
-        data: tx,
-      },
-    );
+    const cmd = JSON.parse(tx.cmd);
+    if (cmd.meta.sender !== account.accountName) {
+      send(
+        {
+          id: '1234',
+          publicKey: cmd.meta.sender,
+        },
+        {
+          type: 'tx',
+          data: tx,
+        },
+      );
+    } else {
+      send(
+        {
+          id: '1234',
+          publicKey: 'c:-BtZKCieonbuxQHJocDqdUXMZgHwN4XDNQjXXSaTJDo',
+        },
+        {
+          type: 'tx',
+          data: tx,
+        },
+      );
+    }
   }, [isLoading, transaction, account?.accountName]);
 
   return (
@@ -150,7 +187,19 @@ export default function CourierPage({ searchParams }: CourierProps) {
                         Pickup
                       </Button>
                     )}
-                    {status !== 'READY_FOR_DELIVERY' && courier}
+                    {(status === 'READY_FOR_DELIVERY' ||
+                      status === 'CREATED') &&
+                      courier}
+                    {status === 'IN_TRANSIT' && (
+                      <Button
+                        onPress={onDeliver({
+                          buyer,
+                          orderId,
+                        })}
+                      >
+                        Deliver
+                      </Button>
+                    )}
                   </Table.Td>
                   <Table.Td>{maskValue(merchant)}</Table.Td>
                 </Table.Tr>
