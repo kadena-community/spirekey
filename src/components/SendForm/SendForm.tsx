@@ -8,7 +8,6 @@ import { isSignedTransaction } from '@kadena/client';
 import {
   Button,
   Stack,
-  Text,
   TextField,
 } from '@kadena/react-ui';
 import { useParams, useRouter } from 'next/navigation';
@@ -114,6 +113,7 @@ export default function SendForm() {
           type="number"
           label="Amount"
           info={amountInfo}
+          value={amount.toString()}
           description={
             <Stack gap="xs" alignItems="center">
               <Button
