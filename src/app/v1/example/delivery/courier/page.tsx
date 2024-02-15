@@ -14,6 +14,7 @@ import {
   TableHeader,
   maskValue,
 } from '@kadena/react-ui';
+import { ChainId } from '@kadena/types';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useConnection } from '../Connection';
@@ -31,7 +32,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
   const { user, transaction } = searchParams;
   const { account } = useLoggedInAccount(user);
   const { orders, saveDelivery, pickupDelivery, deliverOrder } = useDelivery({
-    chainId: process.env.CHAIN_ID!,
+    chainId: process.env.CHAIN_ID as ChainId,
     networkId: process.env.NETWORK_ID!,
   });
   const { isLoading, messages, setId, connect, send } = useConnection();

@@ -5,6 +5,7 @@ import { Button } from '@/components/Button/Button';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
 import { Box, Stack, Text, TextField } from '@kadena/react-ui';
+import { ChainId } from '@kadena/types';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
@@ -29,7 +30,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   const { messages, setId, send, isLoading } = useConnection();
   const { getReturnUrl } = useReturnUrl();
   const { orders, createOrder } = useDelivery({
-    chainId: process.env.CHAIN_ID!,
+    chainId: process.env.CHAIN_ID as ChainId,
     networkId: process.env.NETWORK_ID!,
   });
   const { status, doSubmit } = useSubmit(searchParams);

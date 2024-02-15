@@ -1,6 +1,6 @@
 import { asyncPipe } from '@/utils/asyncPipe';
 import { l1Client } from '@/utils/client';
-import { createTransaction } from '@kadena/client';
+import { ChainId, createTransaction } from '@kadena/client';
 import {
   addSigner,
   composePactCommand,
@@ -39,7 +39,7 @@ const getDeliveriesByIds = async ({
   networkId,
 }: {
   ids: string[];
-  chainId: string;
+  chainId: ChainId;
   networkId: string;
 }) =>
   asyncPipe(
@@ -78,7 +78,7 @@ const createOrderId = ({
   orderId: string;
 }) => hash(`${customer}-${merchant}-${orderId}`);
 type OrderDetails = {
-  chainId: string;
+  chainId: ChainId;
   networkId: string;
   customerAccount: string;
   customerPublicKey: string;
@@ -162,7 +162,7 @@ const markOrderAsReady = async ({
   merchantAccount,
   merchantPublicKey,
 }: {
-  chainId: string;
+  chainId: ChainId;
   networkId: string;
   orderId: string;
   merchantAccount: string;
@@ -207,7 +207,7 @@ const pickupDelivery = async ({
   courierPublicKey,
   merchantPublicKey,
 }: {
-  chainId: string;
+  chainId: ChainId;
   networkId: string;
   orderId: string;
   courierAccount: string;
@@ -267,7 +267,7 @@ const completeDelivery = async ({
   buyerAccount,
   buyerPublicKey,
 }: {
-  chainId: string;
+  chainId: ChainId;
   networkId: string;
   orderId: string;
   courierPublicKey: string;
@@ -318,7 +318,7 @@ export const useDelivery = ({
   chainId = '14',
   networkId,
 }: {
-  chainId?: string;
+  chainId: ChainId;
   networkId: string;
 }) => {
   const { data, mutate } = useSWR<Order[]>('deliveries', async () => {

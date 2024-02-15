@@ -9,10 +9,12 @@ import {
   Cell,
   Column,
   Row,
+  Stack,
   Table,
   TableBody,
   TableHeader,
 } from '@kadena/react-ui';
+import { ChainId } from '@kadena/types';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -37,7 +39,7 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
 
   const { status, doSubmit, tx } = useSubmit(searchParams);
   const { orders, markOrderAsReady, saveDelivery } = useDelivery({
-    chainId: process.env.CHAIN_ID!,
+    chainId: process.env.CHAIN_ID as ChainId,
     networkId: process.env.NETWORK_ID!,
   });
   const markAsReady = (orderId: string) => async () => {
@@ -85,6 +87,7 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
     if (!originMsg) return;
     send(originMsg.connectionId, { type: 'confirm', data: tx });
   }, [status, isLoading, messages]);
+  const pendingOrders = orders?.filter((order) => order.status === 'CREATED');
   return (
     <div>
       <Box margin="md">
@@ -128,6 +131,39 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
           ))}
         </TableBody>
       </Table>
+      {!!pendingOrders?.length && (
+        <Stack margin="md" gap="md" flexDirection="column">
+          <h2>Pending Orders</h2>
+          <Table>
+            <TableHeader>
+              <Column>Order Id</Column>
+              <Column>Buyer</Column>
+              <Column>Order Price</Column>
+              <Column>Delivery Price</Column>
+              <Column>Courier</Column>
+              <Column>Merchant</Column>
+              <Column>Action</Column>
+            </TableHeader>
+            <TableBody>
+              {pendingOrders.map((order) => (
+                <Row key={order.orderId}>
+                  <Cell>{order.orderId}</Cell>
+                  <Cell>{order.buyer}</Cell>
+                  <Cell>{order.orderPrice}</Cell>
+                  <Cell>{order.deliveryPrice}</Cell>
+                  <Cell>{order.courier}</Cell>
+                  <Cell>{order.merchant}</Cell>
+                  <Cell>
+                    <Button onPress={markAsReady(order.orderId)}>
+                      Mark as Ready
+                    </Button>
+                  </Cell>
+                </Row>
+              ))}
+            </TableBody>
+          </Table>
+        </Stack>
+      )}
     </div>
   );
 }
