@@ -1,61 +1,53 @@
 import { atoms } from '@kadena/react-ui/styles';
 import { style } from '@vanilla-extract/css';
 
-export const card = style([
-  atoms({
-    position: 'relative',
-    overflow: 'hidden',
-  }),
-  {
-    maxWidth: '600px',
-    color: 'black',
-    margin: '0 auto',
-    aspectRatio: '8560 / 5398',
-    height: 'auto',
-    flexShrink: 0,
-    background: "url('/images/card-background.svg') no-repeat center center",
-    backdropFilter: 'blur(16px)',
-    borderRadius: '1rem',
-    backgroundSize: 'cover',
-    selectors: {
-      '&:before': {
-        content: '',
-        position: 'absolute',
-        width: '100%',
-        height: '50%',
-        inset: 0,
-        borderRadius: '1rem',
-        padding: '1rem',
-        border: '0.25rem solid transparent',
-        background:
-          'linear-gradient(0deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0), rgba(255, 255, 255, 1)) border-box',
-        mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
-        maskComposite: 'xor, exclude',
-        zIndex: '-1',
-      },
-      '&:after': {
-        content: '',
-        position: 'absolute',
-        width: '100%',
-        height: '50%',
-        inset: 0,
-        borderRadius: '1rem',
-        padding: '1rem',
-        border: '0.25rem solid transparent',
-        background:
-          'linear-gradient(0deg, var(--card-progress-color-start), var(--card-progress-color-start), var(--card-progress-color-end)) border-box',
-        mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
-        maskComposite: 'xor, exclude',
-        zIndex: '-1',
-        clipPath:
-          'polygon(0 0, var(--card-progress) 0%, var(--card-progress) 100%, 0 100%)',
-      },
+export const card = style({
+  position: 'relative',
+  overflow: 'hidden',
+  maxWidth: '600px',
+  color: 'black',
+  margin: '0 auto',
+  aspectRatio: '8560 / 5398',
+  height: 'auto',
+  flexShrink: 0,
+  background: "url('/images/card-background.svg') no-repeat center center",
+  backdropFilter: 'blur(16px)',
+  borderRadius: '1rem',
+  backgroundSize: 'cover',
+  selectors: {
+    '&:before': {
+      content: '',
+      position: 'absolute',
+      width: '100%',
+      height: '50%',
+      inset: 0,
+      borderRadius: '1rem',
+      padding: '1rem',
+      border: '0.25rem solid transparent',
+      background:
+        'linear-gradient(0deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0), rgba(255, 255, 255, 1)) border-box',
+      mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+      maskComposite: 'xor, exclude',
+      zIndex: '-1',
+    },
+    '&:after': {
+      content: '',
+      position: 'absolute',
+      width: '100%',
+      height: '50%',
+      inset: 0,
+      borderRadius: '1rem',
+      padding: '1rem',
+      border: '0.25rem solid transparent',
+      background:
+        'linear-gradient(0deg, var(--card-progress-color-start), var(--card-progress-color-start), var(--card-progress-color-end)) border-box',
+      mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+      maskComposite: 'xor, exclude',
+      zIndex: '-1',
+      clipPath:
+        'polygon(0 0, var(--card-progress) 0%, var(--card-progress) 100%, 0 100%)',
     },
   },
-]);
-
-export const cardCollapsed = style({
-  maxHeight: '10rem',
 });
 
 export const cardBackground = style([
@@ -105,44 +97,25 @@ export const accountAlias = style([
   },
 ]);
 
-export const accountAliasContainer = style([
-  atoms({
-    flexGrow: 1,
-  }),
-  {
-    minWidth: 0,
-  },
-]);
+export const accountAliasContainer = style({
+  flexGrow: 1,
+  minWidth: 0,
+});
 
-export const account = style([
-  {
-    color: 'black',
-    fontSize: 'clamp(.9rem, 5vw, 1.5rem)',
-  },
-]);
+export const accountIcon = style({
+  color: 'black',
+  marginInline: 'clamp(0.1rem, 2vw, 1rem)',
+});
 
-export const accountIcon = style([
-  {
-    color: 'black',
-    marginInline: 'clamp(0.1rem, 2vw, 1rem)',
-  },
-]);
+export const accountIconInner = style({
+  height: '100%',
+  display: 'block',
+  color: 'black',
+});
 
-export const accountIconInner = style([
-  atoms({
-    height: '100%',
-    display: 'block',
-  }),
-  {
-    color: 'black',
-  },
-]);
-
-export const devicesContainer = style([
-  atoms({
-    flexGrow: 1,
-  }),
-]);
+export const devicesContainer = style({
+  flexGrow: 1,
+});
 
 export const device = style({
   marginInlineStart: 'clamp(0.1rem, 2vw, 1rem)',
@@ -163,24 +136,18 @@ export const network = style([
   },
 ]);
 
-export const cardContentBottom = style([
-  {
-    color: 'black',
-  },
-]);
+export const cardContentBottom = style({
+  color: 'black',
+});
 
-export const txAndBalance = style([
-  {
-    gap: 'clamp(0.3rem, 2vw, 0.9rem)',
-  },
-]);
+export const txAndBalance = style({
+  gap: 'clamp(0.3rem, 2vw, 0.9rem)',
+});
 
-export const balanceLabel = style([
-  {
-    fontSize: 'clamp(.75rem, 4vw, 1.125rem)',
-    lineHeight: 1,
-  },
-]);
+export const balanceLabel = style({
+  fontSize: 'clamp(.75rem, 4vw, 1.125rem)',
+  lineHeight: 1,
+});
 
 export const balance = style([
   atoms({
@@ -194,12 +161,10 @@ export const balance = style([
   },
 ]);
 
-export const transactionsLabel = style([
-  {
-    fontSize: 'clamp(.75rem, 4vw, 1.125rem)',
-    lineHeight: 1,
-  },
-]);
+export const transactionsLabel = style({
+  fontSize: 'clamp(.75rem, 4vw, 1.125rem)',
+  lineHeight: 1,
+});
 
 export const transactions = style([
   atoms({
@@ -213,14 +178,10 @@ export const transactions = style([
   },
 ]);
 
-export const plusIconContainer = style([
-  atoms({
-    width: '100%',
-  }),
-]);
+export const plusIconContainer = style({
+  width: '100%',
+});
 
-export const cardLink = style([
-  atoms({
-    textDecoration: 'none',
-  }),
-]);
+export const cardLink = style({
+  textDecoration: 'none',
+});
