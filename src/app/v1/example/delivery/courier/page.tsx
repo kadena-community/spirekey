@@ -28,6 +28,43 @@ type CourierProps = {
   };
 };
 
+const CourierActionCell = ({
+  transaction,
+  onPickupDelivery,
+  courier,
+  buyer,
+  orderId,
+  status,
+  merchant,
+  onDeliver,
+}: any) => {
+  if (transaction && status === 'READY_FOR_DELIVERY')
+    return <span>Pending approval from merchant</span>;
+  if (!transaction && status === 'READY_FOR_DELIVERY')
+    return (
+      <Button
+        onPress={onPickupDelivery({
+          orderId,
+          merchant,
+        })}
+      >
+        Pickup
+      </Button>
+    );
+  if (status === 'IN_TRANSIT')
+    return (
+      <Button
+        onPress={onDeliver({
+          buyer,
+          orderId,
+        })}
+      >
+        Deliver
+      </Button>
+    );
+  return courier;
+};
+
 export default function CourierPage({ searchParams }: CourierProps) {
   const { user, transaction } = searchParams;
   const { account } = useLoggedInAccount(user);
@@ -42,7 +79,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
   useEffect(() => {
     if (!messages.length) return;
     messages
-      .filter((m) => m.type === 'orders')
+      .filter((m) => m.type === 'orders' && m.data?.orders?.length)
       .flatMap((m) =>
         m.data.orders.map((order: any) => saveDelivery(order.orderId)),
       );
@@ -177,38 +214,22 @@ export default function CourierPage({ searchParams }: CourierProps) {
                 deliveryPrice,
                 orderPrice,
               }) => (
-                <Row key={orderId}>
+                <Row key={orderId + status}>
                   <Cell>{maskValue(orderId)}</Cell>
                   <Cell>{maskValue(buyer)}</Cell>
                   <Cell>{orderPrice}</Cell>
                   <Cell>{deliveryPrice}</Cell>
                   <Cell>
-                    {transaction &&
-                      status === 'READY_FOR_DELIVERY' &&
-                      'Pending approval from merchant'}
-                    {!transaction && status === 'READY_FOR_DELIVERY' && (
-                      <Button
-                        onPress={onPickupDelivery({
-                          orderId,
-                          merchant,
-                        })}
-                      >
-                        Pickup
-                      </Button>
-                    )}
-                    {(status === 'READY_FOR_DELIVERY' ||
-                      status === 'CREATED') &&
-                      courier}
-                    {status === 'IN_TRANSIT' && (
-                      <Button
-                        onPress={onDeliver({
-                          buyer,
-                          orderId,
-                        })}
-                      >
-                        Deliver
-                      </Button>
-                    )}
+                    <CourierActionCell
+                      transaction={transaction}
+                      onPickupDelivery={onPickupDelivery}
+                      courier={courier}
+                      buyer={buyer}
+                      orderId={orderId}
+                      status={status}
+                      merchant={merchant}
+                      onDeliver={onDeliver}
+                    />
                   </Cell>
                   <Cell>{maskValue(merchant)}</Cell>
                 </Row>

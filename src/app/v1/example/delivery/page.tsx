@@ -46,6 +46,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
 
   const onSend = async () => {
     if (!account) return;
+    const id = Date.now().toString();
     const tx = await createOrder({
       customerAccount: account.accountName,
       customerPublicKey: account.credentials[0].publicKey,
@@ -54,12 +55,12 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
         'WEBAUTHN-a5010203262001215820c4518d145cd1ca74d6371dfd24fec692d770ef13335e299533e0cf2bd11286a2225820b956dd1d7d48d3bb4e3a47c0a1cd70c7e3751f0e3fabf50c58ab22fc07033950',
       deliveryPrice: 3.25,
       orderPrice: getValues('amount') * price,
-      orderId: '2',
+      orderId: id,
     });
     const orderId = createOrderId({
       customer: account.accountName,
       merchant: 'c:-BtZKCieonbuxQHJocDqdUXMZgHwN4XDNQjXXSaTJDo',
-      orderId: '2',
+      orderId: id,
     });
     saveDelivery(orderId);
     router.push(
@@ -69,7 +70,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     );
   };
 
-  const deliverTx = tx && messages.find((m) => m.type === 'tx');
+  const deliverTx = [...messages].reverse().find((m) => m.type === 'tx');
   const onAcceptDelivery = async () => {
     if (!deliverTx) return;
     router.push(
@@ -89,7 +90,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     if (isLoading) return;
     if (!tx) return;
     if (deliverTx) return;
-    const [orderId] = JSON.parse(localStorage.getItem('deliveryIds') || '[]');
+    const orderId = localStorage.getItem('newOrderId');
     if (!orderId) return;
     send(
       { id: '1234', publicKey: getValues('receiver') },
@@ -97,22 +98,42 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     );
   }, [tx, isLoading, deliverTx]);
 
+  const isAcceptingOrder = tx && deliverTx?.data?.hash !== tx.hash;
+
   useEffect(() => {
     if (isLoading) return;
-    if (!deliverTx) return;
-    if (!tx) return;
     if (status !== SubmitStatus.SUBMITABLE) return;
+    if (isAcceptingOrder) return;
     doSubmit();
   }, [tx, isLoading, deliverTx, status]);
 
   const pendingTx = tx && !messages.some((m) => m.data.hash === tx.hash);
   const mintedTx = tx && messages.some((m) => m.data.hash === tx.hash);
+
+  if (
+    orders?.find((o) => o.orderId === localStorage.getItem('newOrderId'))
+      ?.status === 'DELIVERED' &&
+    tx
+  )
+    return (
+      <Box margin="md">
+        <div>Enjoy your pizza!</div>
+      </Box>
+    );
+
   if (status === SubmitStatus.SUCCESS)
     return (
       <Box margin="md">
         <div>Enjoy your pizza!</div>
       </Box>
     );
+  if (status === SubmitStatus.LOADING)
+    return (
+      <Box margin="md">
+        <div>Signing off...</div>
+      </Box>
+    );
+
   return (
     <div>
       <Box margin="md">
@@ -121,7 +142,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       </Box>
       {pendingTx && <Box margin="md">Order pending...</Box>}
       {mintedTx && <Box margin="md">Your pizza is on the way!</Box>}
-      {deliverTx && (
+      {isAcceptingOrder && deliverTx && (
         <Box margin="md">
           Sign off to receive your pizza!
           <Button onPress={onAcceptDelivery}>Sign off</Button>

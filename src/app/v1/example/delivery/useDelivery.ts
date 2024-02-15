@@ -45,7 +45,10 @@ const getDeliveriesByIds = async ({
   asyncPipe(
     composePactCommand(
       execution(
-        `(map (n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.get-order) [${ids.map((x) => `"${x}"`).join(' ')}])`,
+        `(map (lambda (x) (try 
+          { 'order-id: x }
+          (n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.get-order x)
+        )) [${ids.map((x) => `"${x}"`).join(' ')}])`,
       ),
       setMeta({
         chainId,
@@ -55,16 +58,20 @@ const getDeliveriesByIds = async ({
     createTransaction,
     (tx) => l1Client.local(tx, { preflight: false }),
     (tx) => {
+      console.log('tx', tx);
       if (tx?.result?.status !== 'success') return null;
-      return tx.result.data.map((x: ChainOrder) => ({
-        orderId: x['order-id'],
-        status: x.order['order-status'],
-        courier: x.courier,
-        merchant: x.order.merchant,
-        buyer: x.order.buyer,
-        orderPrice: x.order['order-price'],
-        deliveryPrice: x.order['delivery-price'],
-      }));
+      return tx.result.data.map((x: ChainOrder) => {
+        if (!x.order) return x;
+        return {
+          orderId: x['order-id'],
+          status: x.order['order-status'],
+          courier: x.courier,
+          merchant: x.order.merchant,
+          buyer: x.order.buyer,
+          orderPrice: x.order['order-price'],
+          deliveryPrice: x.order['delivery-price'],
+        };
+      });
     },
   )({});
 
@@ -105,6 +112,8 @@ const createOrder = async ({
     merchant: merchantAccount,
     orderId,
   });
+
+  localStorage.setItem('newOrderId', orderHash);
 
   return asyncPipe(
     composePactCommand(
@@ -323,13 +332,16 @@ export const useDelivery = ({
 }) => {
   const { data, mutate } = useSWR<Order[]>('deliveries', async () => {
     const deliveryIds = JSON.parse(localStorage.getItem('deliveryIds') || '[]');
+    console.log('ok ok');
     const orders: Order[] = await getDeliveriesByIds({
       ids: deliveryIds,
       chainId,
       networkId,
     });
+    console.log('orders', orders);
     return orders;
   });
+  console.log('data', data);
   const saveDelivery = (id: string) => {
     const deliveryIds = new Set<string>(
       JSON.parse(localStorage.getItem('deliveryIds') || '[]'),
@@ -405,5 +417,6 @@ export const useDelivery = ({
     pickupDelivery: onPickupDelivery,
     deliverOrder: onDeliverOrder,
     saveDelivery,
+    refreshOrders: mutate,
   };
 };
