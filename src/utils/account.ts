@@ -37,7 +37,7 @@ export const getAccountFrom = async ({
       if (tx?.result?.status !== 'success') return null;
       const [devices, balance] = tx.result.data;
       return {
-        name: caccount,
+        accountName: caccount,
         devices: devices.devices || [],
         balance,
       };
