@@ -5,6 +5,7 @@ import { Grid, GridItem } from '@kadena/react-ui';
 import useSWR from 'swr';
 import { details, transactionAddress, transactionAmount, transactionAmountVariants, transactionDate } from './AccountDetails.css';
 import classNames from 'classnames';
+import { Fragment } from 'react';
 
 interface AccountDetailsProps {
   account: Account;
@@ -33,7 +34,7 @@ export function AccountDetails({ account }: AccountDetailsProps) {
       }}
     >
       {data?.map((tx: any, index: number) => (
-        <>
+        <Fragment key={index}>
           <GridItem columnSpan={2}>
             <MaskedValue
               className={transactionAddress}
@@ -53,7 +54,7 @@ export function AccountDetails({ account }: AccountDetailsProps) {
           >
             {parseFloat(tx.amount).toFixed(2)}
           </GridItem>
-        </>
+        </Fragment>
       ))}
     </Grid>
   );
