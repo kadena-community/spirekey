@@ -1,22 +1,11 @@
 'use client';
 
-import { Breadcrumbs, BreadcrumbsItem, Heading } from '@kadena/react-ui';
-import { useParams } from 'next/navigation';
+import { Box, Heading } from '@kadena/react-ui';
 
 export default function AddDevice() {
-  const params = useParams();
-
   return (
-    <>
-      <Breadcrumbs>
-        <BreadcrumbsItem href={`/accounts/${params.caccount}`}>
-          {decodeURIComponent(params.caccount.toString())}
-        </BreadcrumbsItem>
-        <BreadcrumbsItem>
-          Add device
-        </BreadcrumbsItem>
-      </Breadcrumbs>
+    <Box margin={'lg'}>
       <Heading>Add Device</Heading>
-    </>
+    </Box>
   );
 }

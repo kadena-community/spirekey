@@ -4,8 +4,7 @@ import { useAccounts } from '@/context/AccountsContext';
 import { useSign } from '@/hooks/useSign';
 import { transfer } from '@/utils/transfer';
 import {
-  Breadcrumbs,
-  BreadcrumbsItem,
+  Box,
   Button,
   Select,
   SelectItem,
@@ -72,17 +71,7 @@ export default function SendPage() {
   };
 
   return (
-    <div>
-      <Breadcrumbs>
-        <BreadcrumbsItem href={`/accounts/${params.caccount}`}>
-          {decodeURIComponent(params.caccount.toString())}
-        </BreadcrumbsItem>
-        <BreadcrumbsItem href={`/accounts/${params.caccount}/devices/${cid}`}>
-          {decodeURIComponent(cid.toString())}
-        </BreadcrumbsItem>
-        <BreadcrumbsItem>Send</BreadcrumbsItem>
-      </Breadcrumbs>
-
+    <Box margin={'lg'}>
       <h1>Send</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
@@ -136,6 +125,6 @@ export default function SendPage() {
 
         <Button type="submit">{isLoading ? 'Loading' : 'Send'}</Button>
       </form>
-    </div>
+    </Box>
   );
 }
