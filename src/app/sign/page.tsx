@@ -82,10 +82,11 @@ export default function Sign(req: SignProps) {
     const signedTx = await sign(tx, devices?.[deviceIndex]?.['credential-id']!);
 
     setTx(signedTx);
-    setSignaturesToSign(signaturesToSign - 1);
+    const newAmountOfSigsToSign = signaturesToSign - 1;
+    setSignaturesToSign(newAmountOfSigsToSign);
 
     // No more available signers in this wallet (we don't use `tx` here since setTx is async)
-    if (signaturesToSign === 1) {
+    if (newAmountOfSigsToSign === 0) {
       const params = new URLSearchParams();
       params.append(
         'transaction',
