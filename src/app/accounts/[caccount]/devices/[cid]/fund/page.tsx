@@ -3,8 +3,7 @@
 import { useNetwork } from '@/context/NetworkContext';
 import { fundAccount } from '@/utils/fund';
 import {
-  Breadcrumbs,
-  BreadcrumbsItem,
+  Box,
   Button,
   Card,
   ContentHeader,
@@ -41,18 +40,7 @@ export default function FundPage() {
   };
 
   return (
-    <>
-      <Breadcrumbs>
-        <BreadcrumbsItem href={`/accounts/${params.caccount}`}>
-          {decodeURIComponent(params.caccount.toString())}
-        </BreadcrumbsItem>
-        <BreadcrumbsItem
-          href={`/accounts/${params.caccount}/devices/${params.cid}`}
-        >
-          {decodeURIComponent(params.cid.toString())}
-        </BreadcrumbsItem>
-        <BreadcrumbsItem>Fund</BreadcrumbsItem>
-      </Breadcrumbs>
+    <Box margin="lg">
       <Card fullWidth>
         <Stack flexDirection="column" gap="md" margin="md">
           <ContentHeader
@@ -66,6 +54,6 @@ export default function FundPage() {
           {error && <p style={{ color: 'red' }}>{error}</p>}
         </Stack>
       </Card>
-    </>
+    </Box>
   );
 }

@@ -1,3 +1,4 @@
+import { customTokens } from '@/styles/tokens.css';
 import { atoms } from '@kadena/react-ui/styles';
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
@@ -8,16 +9,14 @@ export const details = style([
     paddingInline: 'md',
   }),
   {
-    width: '100vw',
+    width: '100%',
   },
 ]);
 
 export const transactionAddress = style([
-  atoms({
-    fontWeight: 'bodyFont.bold',
-  }),
   {
-    color: 'white',
+    color: customTokens.color.white,
+    fontWeight: 'bold',
   },
 ]);
 
