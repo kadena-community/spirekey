@@ -1,7 +1,10 @@
 'use client';
 
 import { AccountButton } from '@/components/AccountButton';
-import { Box, Table, maskValue } from '@kadena/react-ui';
+import { useReturnUrl } from '@/hooks/useReturnUrl';
+import { getAccountFrom } from '@/utils/account';
+import { Box, Button, Table, maskValue } from '@kadena/react-ui';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useConnection } from '../Connection';
 import { useDelivery } from '../useDelivery';
@@ -15,13 +18,15 @@ type CourierProps = {
 };
 
 export default function CourierPage({ searchParams }: CourierProps) {
-  const { user } = searchParams;
+  const { user, transaction } = searchParams;
   const { account } = useLoggedInAccount(user);
-  const { orders, saveDelivery } = useDelivery({
+  const { orders, saveDelivery, pickupDelivery } = useDelivery({
     chainId: process.env.CHAIN_ID!,
     networkId: process.env.NETWORK_ID!,
   });
   const { isLoading, messages, setId, connect, send } = useConnection();
+  const router = useRouter();
+  const { getReturnUrl } = useReturnUrl();
 
   useEffect(() => {
     if (!messages.length) return;
@@ -54,6 +59,46 @@ export default function CourierPage({ searchParams }: CourierProps) {
     );
   }, [account?.accountName, isLoading]);
 
+  const onPickupDelivery =
+    ({ merchant, orderId }: { merchant: string; orderId: string }) =>
+    async () => {
+      if (!account) return;
+      const merchantAcc = await getAccountFrom({
+        caccount: merchant,
+        networkId: process.env.NETWORK_ID!,
+      });
+      const tx = await pickupDelivery({
+        orderId,
+        merchantPublicKey: merchantAcc?.devices[0].guard.keys[0],
+        courierAccount: account.accountName,
+        courierPublicKey: account.credentials[0].publicKey,
+      });
+      router.push(
+        `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
+          JSON.stringify(tx),
+        ).toString('base64')}&returnUrl=${getReturnUrl(
+          '/v1/example/delivery/courier',
+        )}`,
+      );
+    };
+
+  useEffect(() => {
+    if (!account?.accountName) return;
+    if (isLoading) return;
+    if (!transaction) return;
+    const tx = JSON.parse(Buffer.from(transaction, 'base64').toString());
+    send(
+      {
+        id: '1234',
+        publicKey: 'c:-BtZKCieonbuxQHJocDqdUXMZgHwN4XDNQjXXSaTJDo',
+      },
+      {
+        type: 'tx',
+        data: tx,
+      },
+    );
+  }, [isLoading, transaction, account?.accountName]);
+
   return (
     <div>
       <Box margin="md">
@@ -63,7 +108,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
           returnPath="/v1/example/delivery/courier"
         />
       </Box>
-      {!!orders?.length && (
+      {account && !!orders?.length && (
         <Table.Root>
           <Table.Head>
             <Table.Tr>
@@ -79,6 +124,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
             {orders.map(
               ({
                 orderId,
+                status,
                 buyer,
                 merchant,
                 courier,
@@ -90,7 +136,22 @@ export default function CourierPage({ searchParams }: CourierProps) {
                   <Table.Td>{maskValue(buyer)}</Table.Td>
                   <Table.Td>{orderPrice}</Table.Td>
                   <Table.Td>{deliveryPrice}</Table.Td>
-                  <Table.Td>{courier}</Table.Td>
+                  <Table.Td>
+                    {transaction &&
+                      status === 'READY_FOR_DELIVERY' &&
+                      'Pending approval from merchant'}
+                    {!transaction && status === 'READY_FOR_DELIVERY' && (
+                      <Button
+                        onPress={onPickupDelivery({
+                          orderId,
+                          merchant,
+                        })}
+                      >
+                        Pickup
+                      </Button>
+                    )}
+                    {status !== 'READY_FOR_DELIVERY' && courier}
+                  </Table.Td>
                   <Table.Td>{maskValue(merchant)}</Table.Td>
                 </Table.Tr>
               ),

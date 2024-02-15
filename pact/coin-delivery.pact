@@ -146,12 +146,12 @@
     (compose-capability (ESCROW))
   )
 
-  (defcap PICKUP_DELIVERY (order-id:string courier-guard:guard)
+  (defcap PICKUP_DELIVERY (order-id:string)
     @doc "Capability validates that the courier has signed for the pickup"
     @event
     (compose-capability (UPDATE_ORDER_STATUS))
     (compose-capability (RESERVE_FUNDS))
-    (compose-capability (COURIER order-id))
+    (compose-capability (MERCHANT order-id))
   )
 
   (defcap UPDATE_ORDER_STATUS()
@@ -292,14 +292,14 @@
       (property (= READY_FOR_DELIVERY (current-order-status order-id)))
       (property (= IN_TRANSIT (current-order-status-after order-id)))
     ]
-    (with-capability (PICKUP_DELIVERY order-id courier-guard)
+    (with-capability (PICKUP_DELIVERY order-id)
       (with-read order-table order-id
         { 'order-status := order-status
         , 'order-price  := order-price }
         (enforce (= order-status READY_FOR_DELIVERY) "Order status is not READY_FOR_DELIVERY")
         (reserve-funds order-id courier (get-courier-deposit-amount order-price))
         (update-order-status order-id IN_TRANSIT)
-        (validate-principal courier-guard courier)
+        (enforce-capability-guard courier courier-guard)
         (insert delivery-table order-id
           { 'courier        : courier
           , 'courier-guard  : courier-guard
