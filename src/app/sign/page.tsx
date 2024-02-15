@@ -54,10 +54,13 @@ export default function Sign(req: SignProps) {
     (s: { pubKey: string }) => s.pubKey,
   );
 
-  const devices = publicKeys.map((publicKey) =>
-    getDeviceByPublicKey(accounts, publicKey),
-  );
-
+  const devices = publicKeys
+    .filter((key) =>
+      accounts.some((account) =>
+        account.devices.some((device) => device.guard.keys.includes(key)),
+      ),
+    )
+    .map((publicKey) => getDeviceByPublicKey(accounts, publicKey));
   const pendingRegistrationTxs = devices.map(
     (device) => device?.pendingRegistrationTx,
   );
@@ -65,7 +68,9 @@ export default function Sign(req: SignProps) {
   const isReadyToSubmit =
     (!optimistic && !!pendingRegistrationTxs.length) || optimistic;
 
-  const signaturesForThisWallet = tx.sigs.filter(Boolean).length;
+  const [signaturesToSign, setSignaturesToSign] = useState<number>(
+    devices.length,
+  );
 
   useEffect(() => {
     if (isReadyToSubmit && redirectLocation && autoRedirect) {
@@ -77,9 +82,10 @@ export default function Sign(req: SignProps) {
     const signedTx = await sign(tx, devices?.[deviceIndex]?.['credential-id']!);
 
     setTx(signedTx);
+    setSignaturesToSign(signaturesToSign - 1);
 
     // No more available signers in this wallet (we don't use `tx` here since setTx is async)
-    if (devices.length === signedTx.sigs.filter(Boolean).length) {
+    if (signaturesToSign === 1) {
       const params = new URLSearchParams();
       params.append(
         'transaction',
@@ -176,7 +182,7 @@ export default function Sign(req: SignProps) {
 
         <div className={wrapper}>
           <motion.div
-            animate={{ x: `-${signaturesForThisWallet * 100}%` }}
+            animate={{ x: `-${(devices.length - signaturesToSign) * 100}%` }}
             transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
             className={container}
           >
