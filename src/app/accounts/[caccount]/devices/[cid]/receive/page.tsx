@@ -21,7 +21,7 @@ export default function ReceivePage() {
     console.log(data);
   };
   return (
-    <Box margin={'lg'}>
+    <Box margin="lg">
       <h1>Receive</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField

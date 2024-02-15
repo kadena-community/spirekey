@@ -13,7 +13,7 @@ export default function TransactionsPage() {
   const account = accounts?.find(a => a.accountName === caccount);
 
   return (
-    <Box margin={'lg'}>
+    <Box margin="lg">
       <h1>Transactions</h1>
       {account && <AccountDetails account={account} />}
     </Box>

@@ -40,7 +40,7 @@ export default function FundPage() {
   };
 
   return (
-    <Box margin={'lg'}>
+    <Box margin="lg">
       <Card fullWidth>
         <Stack flexDirection="column" gap="md" margin="md">
           <ContentHeader

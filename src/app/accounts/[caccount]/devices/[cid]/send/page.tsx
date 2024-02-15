@@ -71,7 +71,7 @@ export default function SendPage() {
   };
 
   return (
-    <Box margin={'lg'}>
+    <Box margin="lg">
       <h1>Send</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
