@@ -96,12 +96,14 @@ export function Account({
                       title="Request"
                       description="Account"
                     />
-                    <AccountButton
-                      href={`/accounts/${caccount}/devices/${cid}/fund`}
-                      icon={<Fund />}
-                      title="Fund"
-                      description="Account"
-                    />
+                    {['testnet04', 'fast-development'].includes(account.network) &&
+                      <AccountButton
+                        href={`/accounts/${caccount}/devices/${cid}/fund`}
+                        icon={<Fund />}
+                        title="Fund"
+                        description="Account"
+                      />
+                    }
                   </Stack>
                   <Stack
                     marginBlock="lg"
