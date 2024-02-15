@@ -1,6 +1,6 @@
 import cn from 'classnames';
 import Link from 'next/link';
-import type { ComponentProps, ForwardedRef } from 'react';
+import type { ComponentProps } from 'react';
 import type { Variants } from '../Button/SharedButton.css';
 import { button } from '../Button/SharedButton.css';
 

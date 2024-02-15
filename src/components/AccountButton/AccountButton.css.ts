@@ -1,11 +1,11 @@
-import { atoms } from '@kadena/react-ui/styles';
+import { customTokens } from '@/styles/tokens.css';
+import { atoms, tokens } from '@kadena/react-ui/styles';
 import { style } from '@vanilla-extract/css';
 
 export const button = style([
   atoms({
     position: 'relative',
     borderRadius: 'sm',
-    display: 'inline-flex',
     textDecoration: 'none',
     textAlign: 'center',
   }),
@@ -46,11 +46,10 @@ export const iconContainer = style([
     alignItems: 'center',
   }),
   {
-    display: 'flex',
-    borderTopLeftRadius: '4px',
-    borderTopRightRadius: '4px',
+    borderTopLeftRadius: tokens.kda.foundation.radius.sm,
+    borderTopRightRadius: tokens.kda.foundation.radius.sm,
     background: 'rgba(255, 255, 255, 0.3)',
-    color: 'white',
+    color: customTokens.color.white,
   },
 ]);
 
@@ -59,7 +58,7 @@ export const title = style([
     marginInline: 'sm',
   }),
   {
-    color: 'white',
+    color: customTokens.color.white,
     fontWeight: 'bold',
     fontSize: '0.9rem',
     lineHeight: '1.5',
@@ -71,7 +70,7 @@ export const description = style([
     marginInline: 'sm',
   }),
   {
-    color: 'white',
+    color: customTokens.color.white,
     opacity: 0.6,
     fontSize: '0.75rem',
     lineHeight: '1.5',

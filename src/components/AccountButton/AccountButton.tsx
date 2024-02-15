@@ -1,13 +1,7 @@
 import Link from 'next/link';
 import type { ComponentProps, ReactElement } from 'react';
-import {
-  button,
-  buttonContent,
-  description as descriptionStyle,
-  iconContainer,
-  title as titleStyle,
-} from './AccountButton.css';
-import { Box, Stack, Text } from '@kadena/react-ui';
+import * as style from './AccountButton.css';
+import { Stack, Text } from '@kadena/react-ui';
 
 interface Props extends Omit<ComponentProps<typeof Link>, 'color'> {
   icon: ReactElement,
@@ -18,15 +12,14 @@ interface Props extends Omit<ComponentProps<typeof Link>, 'color'> {
 export function AccountButton(props: Props) {
   const {icon, title, description, ...restProps} = props
   return (
-    <Link className={button} {...restProps}>
-      <Stack flexDirection="column" className={buttonContent}>
-        <Box className={iconContainer}>
+    <Link className={style.button} {...restProps}>
+      <Stack flexDirection="column" className={style.buttonContent}>
+        <Stack className={style.iconContainer}>
           {icon}
-        </Box>
-        <Stack flexDirection="column" paddingBlock="xs" style={{
-        }}>
-          <Text className={titleStyle}>{title}</Text>
-          <Text className={descriptionStyle}>{description}</Text>
+        </Stack>
+        <Stack flexDirection="column" paddingBlock="xs">
+          <Text className={style.title}>{title}</Text>
+          <Text className={style.description}>{description}</Text>
         </Stack>
       </Stack>
     </Link>

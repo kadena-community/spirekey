@@ -13,6 +13,7 @@ import { Fund } from '../icons/Fund';
 import { Transactions } from '../icons/Transactions';
 import { Send } from '../icons/Send';
 import { Request } from '../icons/Request';
+import { detailLink } from './Account.css';
 
 interface AccountProps {
   account: Account;
@@ -109,10 +110,7 @@ export function Account({
                   >
                     <Link
                       href={`/accounts/${caccount}/devices/${cid}#${cid}`}
-                      style={{
-                        color: 'rgba(255, 255, 255, 0.6)',
-                        fontSize: '0.9rem',
-                      }}
+                      className={detailLink}
                     >
                       Account details
                     </Link>
