@@ -8,6 +8,12 @@ import { Fragment, useEffect, useState } from 'react';
 import { ButtonLink } from '../ButtonLink/ButtonLink';
 import DeviceCard from '../Card/DeviceCard';
 import { Carousel } from '../Carousel/Carousel';
+import { AccountButton } from '../AccountButton/AccountButton';
+import { Fund } from '../icons/Fund';
+import { Transactions } from '../icons/Transactions';
+import { Send } from '../icons/Send';
+import { Request } from '../icons/Request';
+import { detailLink } from './Account.css';
 
 interface AccountProps {
   account: Account;
@@ -66,27 +72,49 @@ export function Account({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Link href={`/accounts/${caccount}/devices/${cid}/fund`}>
-                    fund
-                  </Link>{' '}
-                  -
-                  <Link href={`/accounts/${caccount}/devices/${cid}/send`}>
-                    send
-                  </Link>{' '}
-                  -
-                  <Link href={`/accounts/${caccount}/devices/${cid}/receive`}>
-                    receive
-                  </Link>{' '}
-                  -
-                  <Link
-                    href={`/accounts/${caccount}/devices/${cid}/transactions`}
+                  <Stack
+                    flexDirection="row"
+                    justifyContent="center"
+                    gap="md"
+                    marginBlockStart="md"
                   >
-                    transactions
-                  </Link>{' '}
-                  -
-                  <Link href={`/accounts/${caccount}/devices/${cid}#${cid}`}>
-                    details
-                  </Link>
+                    <AccountButton
+                      href={`/accounts/${caccount}/devices/${cid}/transactions`}
+                      icon={<Transactions />}
+                      title="Overview"
+                      description="Account"
+                    />
+                    <AccountButton
+                      href={`/accounts/${caccount}/devices/${cid}/send`}
+                      icon={<Send />}
+                      title="Send"
+                      description="Account"
+                    />
+                    <AccountButton
+                      href={`/accounts/${caccount}/devices/${cid}/receive`}
+                      icon={<Request />}
+                      title="Request"
+                      description="Account"
+                    />
+                    <AccountButton
+                      href={`/accounts/${caccount}/devices/${cid}/fund`}
+                      icon={<Fund />}
+                      title="Fund"
+                      description="Account"
+                    />
+                  </Stack>
+                  <Stack
+                    marginBlock="lg"
+                    flexDirection="row"
+                    justifyContent="center"
+                  >
+                    <Link
+                      href={`/accounts/${caccount}/devices/${cid}#${cid}`}
+                      className={detailLink}
+                    >
+                      Account details
+                    </Link>
+                  </Stack>
                 </motion.div>
               )}
             </AnimatePresence>

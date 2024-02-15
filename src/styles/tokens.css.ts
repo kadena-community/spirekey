@@ -25,5 +25,6 @@ export const customTokens = createGlobalTheme(':root', {
     border: 'white',
     buttonText: 'rgba(255, 255, 255, 0.60)',
     device: deviceColors,
+    white: '#FFFFFF',
   },
 });
