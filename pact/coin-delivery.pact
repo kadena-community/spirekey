@@ -48,6 +48,7 @@
   ]
 
   (use coin)
+  (use webauthn-wallet)
   (defconst NS_KEYSET:string (read-string 'webauthn-keyset-name))
 
   (defcap GOVERNANCE ()
@@ -97,54 +98,60 @@
   (defcap BUYER (order-id:string)
     @doc "Capability that validates if action is done by buyer (customer)"
     (with-read order-table order-id
-      { 'buyer-guard := buyer-guard }
-      (enforce-guard buyer-guard)
+      { 'buyer       := buyer
+      , 'buyer-guard := buyer-guard 
+      }
+      (enforce-capability-guard buyer buyer-guard)
     )
   )
 
   (defcap MERCHANT (order-id:string)
     @doc "Capability that validates if action is done by merchant"
     (with-read order-table order-id
-      { 'merchant-guard := merchant-guard }
-      (enforce-guard merchant-guard)
+      { 'merchant       := merchant
+      , 'merchant-guard := merchant-guard }
+      (enforce-capability-guard merchant merchant-guard)
     )
   )
 
   (defcap COURIER (order-id:string)
     @doc "Capability that validates if action is done by courier (delivery party)"
     (with-read delivery-table order-id
-      { 'courier-guard := courier-guard }
-      (enforce-guard courier-guard)
+      { 'courier       := courier
+      , 'courier-guard := courier-guard }
+      (enforce-capability-guard courier courier-guard)
     )
   )
 
-  (defcap CREATE_ORDER (merchant-guard:guard buyer-guard:guard)
+  (defcap CREATE_ORDER (order-id:string)
     @doc "Capability validates that both merchant and buyer should sign an order"
+    @event
     (compose-capability (UPDATE_ORDER_STATUS))
     (compose-capability (RESERVE_FUNDS))
-    (enforce-guard merchant-guard)
-    (enforce-guard buyer-guard)
   )
 
   (defcap SET_READY_FOR_DELIVERY(order-id:string)
     @doc "Capability validates that the order is ready for delivery"
+    @event
     (compose-capability (UPDATE_ORDER_STATUS))
     (compose-capability (MERCHANT order-id))
   )
 
   (defcap DELIVER_ORDER (order-id:string)
     @doc "Capability validates that both courier and buyer should sign the delivery"
+    @event
     (compose-capability (UPDATE_ORDER_STATUS))
     (compose-capability (BUYER order-id))
     (compose-capability (COURIER order-id))
     (compose-capability (ESCROW))
   )
 
-  (defcap PICKUP_DELIVERY (order-id:string courier-guard:guard)
+  (defcap PICKUP_DELIVERY (order-id:string)
     @doc "Capability validates that the courier has signed for the pickup"
+    @event
     (compose-capability (UPDATE_ORDER_STATUS))
     (compose-capability (RESERVE_FUNDS))
-    (enforce-guard courier-guard)
+    (compose-capability (MERCHANT order-id))
   )
 
   (defcap UPDATE_ORDER_STATUS()
@@ -160,6 +167,14 @@
   (defcap ESCROW ()
     @doc "Capability for escrow account"
     true)
+
+  (defun enforce-capability-guard (account:string guard:guard)
+    (enforce (validate-principal guard account) "Invalid guard for the account")
+    (enforce-one "Neither keyset or capability guard passed" [
+      (enforce-guard guard)
+      (webauthn-wallet.enforce-authenticated account)
+    ])
+  )
 
   (defun create-order (
     order-id       : string
@@ -178,7 +193,9 @@
     (enforce (validate-principal merchant-guard merchant) "Invalid merchant guard")
     (enforce (validate-principal buyer-guard buyer) "Invalid buyer guard")
 
-    (with-capability (CREATE_ORDER merchant-guard buyer-guard)
+    (with-capability (CREATE_ORDER order-id)
+      (enforce-capability-guard merchant merchant-guard)
+      (enforce-capability-guard buyer buyer-guard)
       (enforce (= (floor order-price MINIMUM_PRECISION) order-price) "Order price exeeds minimum allowed precision decimals")
       (enforce (= (floor delivery-price MINIMUM_PRECISION) delivery-price) "Delivery price exeeds minimum allowed precision decimals")
       (insert order-table order-id 
@@ -193,6 +210,17 @@
       )
       (reserve-funds order-id buyer (+ order-price delivery-price))
       (reserve-funds order-id merchant (get-merchant-deposit-amount order-price))
+    )
+  )
+
+  (defun get-order(order-id:string)
+    (with-default-read delivery-table order-id
+      { 'courier  : "No courier assigned" }
+      { 'courier  := courier }
+      { 'order-id : order-id
+      , 'order    : (read order-table order-id)
+      , 'courier  : courier
+      }
     )
   )
 
@@ -238,7 +266,7 @@
     )
   )
 
-  (defun set-order-ready-for-delivery(order-id:string merchant-guard:guard)
+  (defun set-order-ready-for-delivery(order-id:string)
     @doc "Allow the merchant to mark the product ready for delivery"
     (with-capability (SET_READY_FOR_DELIVERY order-id)
       (update-order-status order-id READY_FOR_DELIVERY)))
@@ -255,8 +283,8 @@
     (require-capability (RESERVE_FUNDS))
     (enforce (!= order-id "") "Order id can not be empty")
     (enforce (is-principal sender) "Sender can not be empty")
-    (install-capability (coin.TRANSFER sender ESCROW_ID amount))
-    (coin.transfer sender ESCROW_ID amount)
+    (install-capability (webauthn-wallet.TRANSFER sender ESCROW_ID amount))
+    (webauthn-wallet.transfer sender ESCROW_ID amount)
   )
 
   (defun pickup-delivery(order-id:string courier:string courier-guard:guard)
@@ -264,14 +292,14 @@
       (property (= READY_FOR_DELIVERY (current-order-status order-id)))
       (property (= IN_TRANSIT (current-order-status-after order-id)))
     ]
-    (with-capability (PICKUP_DELIVERY order-id courier-guard)
+    (with-capability (PICKUP_DELIVERY order-id)
       (with-read order-table order-id
         { 'order-status := order-status
         , 'order-price  := order-price }
         (enforce (= order-status READY_FOR_DELIVERY) "Order status is not READY_FOR_DELIVERY")
         (reserve-funds order-id courier (get-courier-deposit-amount order-price))
         (update-order-status order-id IN_TRANSIT)
-        (validate-principal courier-guard courier)
+        (enforce-capability-guard courier courier-guard)
         (insert delivery-table order-id
           { 'courier        : courier
           , 'courier-guard  : courier-guard

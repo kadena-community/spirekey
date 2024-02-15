@@ -13,7 +13,7 @@
   )
   
   (defcap DEBIT(account:string)
-    (enforce-authenticated account)
+    (webauthn-guard.enforce-authenticated account)
   )
 
   (defcap ADD_DEVICE(account:string)
@@ -183,6 +183,13 @@
     )
     (step
       (continue (coin.transfer-crosschain sender receiver receiver-guard target-chain amount))
+    )
+  )
+
+  (defun enforce-authenticated(account:string)
+    (with-read guard-lookup-table account
+      { 'webauthn-guard-name := guard-name }
+      (webauthn-guard.enforce-authenticated guard-name)
     )
   )
 

@@ -13,7 +13,7 @@ type ConnectionId = {
 };
 
 export type Message = {
-  type: 'tx' | 'id' | 'confirm';
+  type: 'tx' | 'id' | 'confirm' | 'orders';
   data: any;
   connectionId: ConnectionId;
 };
@@ -30,7 +30,12 @@ const getConnectionId = (id: ConnectionId) =>
   hash(id.publicKey + id.id).replace(/_/g, '-');
 
 const isMessage = (data: any): data is Message => {
-  return data.type === 'tx' || data.type === 'id' || data.type === 'confirm';
+  return (
+    data.type === 'tx' ||
+    data.type === 'id' ||
+    data.type === 'confirm' ||
+    data.type === 'orders'
+  );
 };
 
 const ConnectionProvider = ({ children }: { children: ReactNode }) => {
@@ -43,6 +48,21 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
   const [connections, setConnections] = useState<
     Record<string, DataConnection>
   >({});
+  const saveNewMessage = (message: Message) =>
+    setMessages((prev) => {
+      if (message.type === 'id') return [...prev, message];
+      if (
+        prev.length &&
+        prev.some((m) => {
+          if (m.type === 'tx') return m.data.hash === message.data.hash;
+          if (m.type === 'confirm') return m.data.hash === message.data.hash;
+        })
+      )
+        return prev;
+      const newMessages = [...prev, message];
+      localStorage.setItem('messages', JSON.stringify(newMessages));
+      return newMessages;
+    });
   const connect = async (id: ConnectionId) => {
     if (!peer) return;
     const connectionId = getConnectionId(id);
@@ -53,7 +73,9 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
       conn.on('open', () => {
         setConnections((prev) => ({ ...prev, [connectionId]: conn }));
         conn.on('data', (data: any) => {
-          console.log('Received data from peer connected I connected to', data);
+          if (!isMessage(data)) return;
+          console.log('Someone send me Data', data);
+          saveNewMessage(data);
         });
         resolve(conn);
       });
@@ -103,12 +125,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
       conn.on('open', () => {
         conn.on('data', (data) => {
           if (!isMessage(data)) return;
-          console.log('Someone send me Data', data);
-          setMessages((prev) => {
-            const newMessages = [...prev, data];
-            localStorage.setItem('messages', JSON.stringify(newMessages));
-            return newMessages;
-          });
+          saveNewMessage(data);
         });
       });
       conn.on('error', (err) => {

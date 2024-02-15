@@ -13,6 +13,7 @@
     "lint": "next lint",
     "start": "next start --port 1337",
     "update": "tsx pact/deploy/update-contracts.mts",
+    "update:del": "tsx src/utils/deploy.ts ./pact/deploy/local-delivery.json",
     "update:dev": "tsx src/utils/deploy.ts ./pact/deploy/local-update.json",
     "update:test": "tsx src/utils/deploy.ts ./pact/deploy/testnet-update.json"
   },
