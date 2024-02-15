@@ -3,7 +3,7 @@
 import { AccountButton } from '@/components/AccountButton';
 import { Button } from '@/components/Button/Button';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { useSubmit } from '@/hooks/useSubmit';
+import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
 import { Box, Stack, Text, TextField } from '@kadena/react-ui';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -32,6 +32,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     chainId: process.env.CHAIN_ID!,
     networkId: process.env.NETWORK_ID!,
   });
+  const { status, doSubmit } = useSubmit(searchParams);
 
   const router = useRouter();
   const { register, getValues, watch } = useForm({
@@ -61,6 +62,16 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     );
   };
 
+  const deliverTx = tx && messages.find((m) => m.type === 'tx');
+  const onAcceptDelivery = async () => {
+    if (!deliverTx) return;
+    router.push(
+      `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
+        JSON.stringify(deliverTx.data),
+      ).toString('base64')}&returnUrl=${getReturnUrl('/v1/example/delivery')}`,
+    );
+  };
+
   useEffect(() => {
     if (isLoading) return;
     if (!account?.accountName) return;
@@ -70,13 +81,29 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   useEffect(() => {
     if (isLoading) return;
     if (!tx) return;
-    send(
-      { id: '1234', publicKey: getValues('receiver') },
-      { type: 'tx', data: tx },
-    );
-  }, [tx, isLoading]);
+    if (!deliverTx)
+      send(
+        { id: '1234', publicKey: getValues('receiver') },
+        { type: 'tx', data: tx },
+      );
+  }, [tx, isLoading, deliverTx]);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!deliverTx) return;
+    if (!tx) return;
+    if (status !== SubmitStatus.SUBMITABLE) return;
+    doSubmit();
+  }, [tx, isLoading, deliverTx]);
+
   const pendingTx = tx && !messages.some((m) => m.data.hash === tx.hash);
   const mintedTx = tx && messages.some((m) => m.data.hash === tx.hash);
+  if (status === SubmitStatus.SUCCESS)
+    return (
+      <Box margin="md">
+        <div>Enjoy your pizza!</div>
+      </Box>
+    );
   return (
     <div>
       <Box margin="md">
@@ -85,6 +112,12 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       </Box>
       {pendingTx && <Box margin="md">Order pending...</Box>}
       {mintedTx && <Box margin="md">Your pizza is on the way!</Box>}
+      {deliverTx && (
+        <Box margin="md">
+          Sign off to receive your pizza!
+          <Button onPress={onAcceptDelivery}>Sign off</Button>
+        </Box>
+      )}
       {!tx && (
         <Stack gap="md" margin="md" flexDirection="column">
           <Box margin="md">

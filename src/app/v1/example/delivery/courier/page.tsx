@@ -3,7 +3,17 @@
 import { AccountButton } from '@/components/AccountButton';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getAccountFrom } from '@/utils/account';
-import { Box, Button, Table, maskValue } from '@kadena/react-ui';
+import {
+  Box,
+  Button,
+  Cell,
+  Column,
+  Row,
+  Table,
+  TableBody,
+  TableHeader,
+  maskValue,
+} from '@kadena/react-ui';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useConnection } from '../Connection';
@@ -146,18 +156,16 @@ export default function CourierPage({ searchParams }: CourierProps) {
         />
       </Box>
       {account && !!orders?.length && (
-        <Table.Root>
-          <Table.Head>
-            <Table.Tr>
-              <Table.Th>Order Id</Table.Th>
-              <Table.Th>Buyer</Table.Th>
-              <Table.Th>Order Price</Table.Th>
-              <Table.Th>Delivery Price</Table.Th>
-              <Table.Th>Courier</Table.Th>
-              <Table.Th>Merchant</Table.Th>
-            </Table.Tr>
-          </Table.Head>
-          <Table.Body>
+        <Table>
+          <TableHeader>
+            <Column>Order Id</Column>
+            <Column>Buyer</Column>
+            <Column>Order Price</Column>
+            <Column>Delivery Price</Column>
+            <Column>Courier</Column>
+            <Column>Merchant</Column>
+          </TableHeader>
+          <TableBody>
             {orders.map(
               ({
                 orderId,
@@ -168,12 +176,12 @@ export default function CourierPage({ searchParams }: CourierProps) {
                 deliveryPrice,
                 orderPrice,
               }) => (
-                <Table.Tr key={orderId}>
-                  <Table.Td>{maskValue(orderId)}</Table.Td>
-                  <Table.Td>{maskValue(buyer)}</Table.Td>
-                  <Table.Td>{orderPrice}</Table.Td>
-                  <Table.Td>{deliveryPrice}</Table.Td>
-                  <Table.Td>
+                <Row key={orderId}>
+                  <Cell>{maskValue(orderId)}</Cell>
+                  <Cell>{maskValue(buyer)}</Cell>
+                  <Cell>{orderPrice}</Cell>
+                  <Cell>{deliveryPrice}</Cell>
+                  <Cell>
                     {transaction &&
                       status === 'READY_FOR_DELIVERY' &&
                       'Pending approval from merchant'}
@@ -200,13 +208,13 @@ export default function CourierPage({ searchParams }: CourierProps) {
                         Deliver
                       </Button>
                     )}
-                  </Table.Td>
-                  <Table.Td>{maskValue(merchant)}</Table.Td>
-                </Table.Tr>
+                  </Cell>
+                  <Cell>{maskValue(merchant)}</Cell>
+                </Row>
               ),
             )}
-          </Table.Body>
-        </Table.Root>
+          </TableBody>
+        </Table>
       )}
     </div>
   );

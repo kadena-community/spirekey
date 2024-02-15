@@ -64,11 +64,12 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
     ).values(),
   );
   useEffect(() => {
+    if (isLoading) return;
     if (!couriers) return;
     couriers.map((courier) =>
       send(courier.connectionId, { type: 'orders', data: { orders } }),
     );
-  }, [couriers, orders]);
+  }, [isLoading, couriers, orders]);
 
   useEffect(() => {
     if (isLoading) return;
@@ -95,9 +96,9 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
       </Box>
       <Table>
         <TableHeader>
-            <Column>Type</Column>
-            <Column>Transaction Hash</Column>
-            <Column>Action</Column>
+          <Column>Type</Column>
+          <Column>Transaction Hash</Column>
+          <Column>Action</Column>
         </TableHeader>
         <TableBody>
           {Array.from(
