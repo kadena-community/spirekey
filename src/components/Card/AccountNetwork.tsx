@@ -39,13 +39,15 @@ export default function AccountNetwork({
   return (
     <Stack flexDirection="column" className={cardContentCenter}>
       <Stack flexDirection="row" alignItems="center" className={accountStyle}>
-        <span data-testid="accountName" className={namespaceStyle}>
-          {accountNamespace}:
-        </span>
+        <span className={namespaceStyle}>{accountNamespace}:</span>
         {isLoading ? (
-          <AccountRevealer accountName={accountName} reveal={!isLoading} />
+          <AccountRevealer
+            data-testid="accountName"
+            accountName={accountName}
+            reveal={!isLoading}
+          />
         ) : (
-          <MaskedValue value={accountName} />
+          <MaskedValue data-testid="accountName" value={accountName} />
         )}
         <button
           className={copyButton}
