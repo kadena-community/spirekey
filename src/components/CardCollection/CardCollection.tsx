@@ -1,6 +1,6 @@
 import { Box, Stack } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
-import { Children, useRef, useState } from 'react';
+import { Children, useEffect, useRef, useState } from 'react';
 import { useResizeObserver } from 'usehooks-ts';
 
 import { useAccounts } from '@/context/AccountsContext';
@@ -18,7 +18,9 @@ export default function CardCollection({
   optimistic,
 }: CardCollectionProps) {
   const { accounts } = useAccounts();
-  const [activeCard, setActiveCard] = useState<number | null>(null);
+  const [activeCard, setActiveCard] = useState<number | null>(
+    accounts.length === 1 ? 0 : null,
+  );
   const innerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef(new Array());
   const { height: innerHeight = 0 } = useResizeObserver({ ref: innerRef });

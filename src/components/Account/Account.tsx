@@ -5,14 +5,14 @@ import { Stack } from '@kadena/react-ui';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { Fragment, useEffect, useState } from 'react';
+import { AccountButton } from '../AccountButton/AccountButton';
 import { ButtonLink } from '../ButtonLink/ButtonLink';
 import DeviceCard from '../Card/DeviceCard';
 import { Carousel } from '../Carousel/Carousel';
-import { AccountButton } from '../AccountButton/AccountButton';
 import { Fund } from '../icons/Fund';
-import { Transactions } from '../icons/Transactions';
-import { Send } from '../icons/Send';
 import { Request } from '../icons/Request';
+import { Send } from '../icons/Send';
+import { Transactions } from '../icons/Transactions';
 import { detailLink } from './Account.css';
 
 interface AccountProps {
@@ -29,7 +29,7 @@ export function Account({
   optimistic = false,
 }: AccountProps) {
   const { accounts } = useAccounts();
-  const [delayedActive, setDelayedActive] = useState(false);
+  const [delayedIsActive, setDelayedIsActive] = useState(false);
   const accountBalancesOnNetwork = accounts
     .filter((a) => a.network === account.network)
     .map((a) => parseFloat(a?.balance || '0'));
@@ -42,17 +42,18 @@ export function Account({
   // We want to delay the rendering of the active state to prevent the height of the cards animating in `CardCollection`
   useEffect(() => {
     if (isActive) {
-      setTimeout(() => setDelayedActive(true), 500);
+      setTimeout(() => setDelayedIsActive(true), 500);
     } else {
-      setDelayedActive(false);
+      setDelayedIsActive(false);
     }
-    () => setDelayedActive(false);
+    () => setDelayedIsActive(false);
   }, [isActive]);
 
   return (
     <Carousel
       account={account}
-      isActive={delayedActive}
+      delayedIsActive={delayedIsActive}
+      isActive={isActive}
       hideAddDeviceCard={!!returnUrl}
     >
       {account.devices.map((d) => {
@@ -66,7 +67,7 @@ export function Account({
               balancePercentage={balancePercentage}
             />
             <AnimatePresence>
-              {!returnUrl && delayedActive && (
+              {!returnUrl && delayedIsActive && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -96,14 +97,16 @@ export function Account({
                       title="Request"
                       description="Account"
                     />
-                    {['testnet04', 'fast-development'].includes(account.network) &&
+                    {['testnet04', 'fast-development'].includes(
+                      account.network,
+                    ) && (
                       <AccountButton
                         href={`/accounts/${caccount}/devices/${cid}/fund`}
                         icon={<Fund />}
                         title="Fund"
                         description="Account"
                       />
-                    }
+                    )}
                   </Stack>
                   <Stack
                     marginBlock="lg"
@@ -120,7 +123,7 @@ export function Account({
                 </motion.div>
               )}
             </AnimatePresence>
-            {returnUrl && delayedActive && (
+            {returnUrl && delayedIsActive && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}

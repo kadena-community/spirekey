@@ -11,6 +11,19 @@ export const carouselItems = styleVariants({
     whiteSpace: 'nowrap',
     columnGap: '1em',
     '::-webkit-scrollbar': { display: 'none' },
+    selectors: {
+      // https://stackoverflow.com/questions/75509058/safari-does-not-include-margins-to-the-scroll-width
+      '&:before': {
+        content: '',
+        minHeight: '100%',
+        minWidth: '10%',
+      },
+      '&:after': {
+        content: '',
+        minHeight: '100%',
+        minWidth: '10%',
+      },
+    },
   },
   nonScrollable: {
     overflowX: 'hidden',
@@ -22,14 +35,6 @@ export const carouselItem = recipe({
     scrollSnapAlign: 'center',
     flexShrink: 0,
     width: '80%',
-    selectors: {
-      '&:first-child': {
-        marginLeft: '10%',
-      },
-      '&:last-child': {
-        marginRight: '10%',
-      },
-    },
   },
   variants: {
     variant: {
@@ -44,27 +49,20 @@ export const carouselItem = recipe({
   },
 });
 
-export const carouselNav = styleVariants({
-  default: [
-    atoms({
-      paddingBlock: 'md',
-    }),
-    {
-      display: 'flex',
-      gap: '0.5em',
-      justifyContent: 'center',
-      listStyle: 'none',
-      width: '80%',
-      margin: '0 auto',
-      paddingInline: 0,
-    },
-  ],
-  hidden: [
-    {
-      display: 'none',
-    },
-  ],
-});
+export const carouselNav = style([
+  atoms({
+    paddingBlock: 'md',
+  }),
+  {
+    display: 'flex',
+    gap: '0.5em',
+    justifyContent: 'center',
+    listStyle: 'none',
+    width: '80%',
+    margin: '0 auto',
+    paddingInline: 0,
+  },
+]);
 
 export const carouselAddItem = style({
   width: '0.7em',
