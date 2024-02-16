@@ -29,6 +29,11 @@ export const MaskedValue: FC<IMaskedValueProps> = ({
   });
 
   return (
-    <div className={classNames(className, valueContainer)}>{maskedValue}</div>
+    <div
+      data-testid="accountName"
+      className={classNames(className, valueContainer)}
+    >
+      {maskedValue}
+    </div>
   );
 };

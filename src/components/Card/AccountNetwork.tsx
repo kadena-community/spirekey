@@ -41,13 +41,9 @@ export default function AccountNetwork({
       <Stack flexDirection="row" alignItems="center" className={accountStyle}>
         <span className={namespaceStyle}>{accountNamespace}:</span>
         {isLoading ? (
-          <AccountRevealer
-            data-testid="accountName"
-            accountName={accountName}
-            reveal={!isLoading}
-          />
+          <AccountRevealer accountName={accountName} reveal={!isLoading} />
         ) : (
-          <MaskedValue data-testid="accountName" value={accountName} />
+          <MaskedValue value={accountName} />
         )}
         <button
           className={copyButton}
