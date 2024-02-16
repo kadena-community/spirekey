@@ -39,7 +39,9 @@ export default function AccountNetwork({
   return (
     <Stack flexDirection="column" className={cardContentCenter}>
       <Stack flexDirection="row" alignItems="center" className={accountStyle}>
-        <span className={namespaceStyle}>{accountNamespace}:</span>
+        <span data-testid="accountName" className={namespaceStyle}>
+          {accountNamespace}:
+        </span>
         {isLoading ? (
           <AccountRevealer accountName={accountName} reveal={!isLoading} />
         ) : (

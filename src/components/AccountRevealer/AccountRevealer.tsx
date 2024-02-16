@@ -48,7 +48,6 @@ export const AccountRevealer = ({
 
   return (
     <MaskedValue
-      data-testid="account-name"
       value={`c:${displayName}`}
       startUnmaskedValues={16}
       className={className}
