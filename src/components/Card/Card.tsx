@@ -38,6 +38,7 @@ export default function Card({
 
   return (
     <Box
+      data-testid="card"
       className={classnames(card, 'card')} // class `card` is needed for the `CardCollection` component
       style={
         {
@@ -56,6 +57,7 @@ export default function Card({
           <Stack
             flexDirection="row"
             alignItems="center"
+            data-testid="account-alias"
             className={accountAliasContainer}
           >
             {title}
