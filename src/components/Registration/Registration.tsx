@@ -118,7 +118,7 @@ export default function Registration({ redirectUrl }: Props) {
       if (isSubmitting) return;
       setIsSubmitting(true);
 
-      registerAccount({
+      await registerAccount({
         caccount: data.accountName,
         alias: data.alias,
         color: data.color,
