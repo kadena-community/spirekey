@@ -67,7 +67,6 @@ export default function Card({
         </Stack>
         {center}
         <Stack
-          data-testid="card-bottom"
           flexDirection="row"
           justifyContent="space-between"
           alignItems="flex-end"
