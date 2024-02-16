@@ -17,6 +17,7 @@ export const transactionAddress = style([
   {
     color: customTokens.color.white,
     fontWeight: 'bold',
+    whiteSpace: 'nowrap',
   },
 ]);
 

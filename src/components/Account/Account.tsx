@@ -83,19 +83,19 @@ export function Account({
                       href={`/accounts/${caccount}/devices/${cid}/transactions`}
                       icon={<Transactions />}
                       title="Overview"
-                      description="Account"
+                      description="Transfers"
                     />
                     <AccountButton
                       href={`/accounts/${caccount}/devices/${cid}/send`}
                       icon={<Send />}
                       title="Send"
-                      description="Account"
+                      description="Transfers"
                     />
                     <AccountButton
                       href={`/accounts/${caccount}/devices/${cid}/receive`}
                       icon={<Request />}
                       title="Request"
-                      description="Account"
+                      description="Transfers"
                     />
                     {['testnet04', 'fast-development'].includes(
                       account.network,
