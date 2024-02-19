@@ -23,7 +23,7 @@ export const AccountButton = ({
 }: {
   user?: LoginAccount | null;
   returnPath: string;
-  className: string;
+  className?: string;
 }) => {
   const router = useRouter();
   const { getReturnUrl } = useReturnUrl();
