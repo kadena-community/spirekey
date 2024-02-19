@@ -12,8 +12,15 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useConnection } from './Connection';
 import pizza from './pizza.png';
+import margherita from './margherita.webp';
+import pepperoni from './pepperoni.webp';
+import veggie from './veggie.webp';
+import hawaii from './hawaii.webp';
+import pizzaHero from './pizza.webp';
 import { createOrderId, useDelivery } from './useDelivery';
 import { useLoggedInAccount } from './useLoggedInAccount';
+import {pizzas, pizzasDeals, pizzasHero, pizzasHeroImg, pizzaOrder, pizzaButton, pizzasDealsList} from './order.css';
+import pizzaBackground from "@/app/v1/example/delivery/pizzabackground.jpg";
 
 type DeliveryProps = {
   searchParams: {
@@ -53,8 +60,8 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       merchantAccount: 'c:-BtZKCieonbuxQHJocDqdUXMZgHwN4XDNQjXXSaTJDo',
       merchantPublicKey:
         'WEBAUTHN-a5010203262001215820c4518d145cd1ca74d6371dfd24fec692d770ef13335e299533e0cf2bd11286a2225820b956dd1d7d48d3bb4e3a47c0a1cd70c7e3751f0e3fabf50c58ab22fc07033950',
-      deliveryPrice: 3.25,
-      orderPrice: getValues('amount') * price,
+      deliveryPrice: 2.55,
+      orderPrice: 2.55,
       orderId: id,
     });
     const orderId = createOrderId({
@@ -136,10 +143,25 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
 
   return (
     <div>
-      <Box margin="md">
-        <h1>Delivery Page</h1>
-        <AccountButton user={account} returnPath="/v1/example/delivery" />
-      </Box>
+      <style jsx global>
+        {
+          `
+          body {
+            background-color: #000;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-image: url(${pizzaBackground.src});
+          }
+          `
+        }
+      </style>
+      <header className={pizzasHero}>
+        <img src="https://images.jsworldconference.com/devworld_b41c690105.png?width=60" alt="devworld pizza" />
+        <h1>PIZZAWORLD</h1>
+        <AccountButton className={pizzaButton} user={account} returnPath="/v1/example/delivery" />
+      </header>
       {pendingTx && <Box margin="md">Order pending...</Box>}
       {mintedTx && <Box margin="md">Your pizza is on the way!</Box>}
       {isAcceptingOrder && deliverTx && (
@@ -149,22 +171,44 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
         </Box>
       )}
       {!tx && (
-        <Stack gap="md" margin="md" flexDirection="column">
-          <Box margin="md">
-            <Image src={pizza} alt="pizza" width={100} height={100} />
-          </Box>
-          <TextField
-            defaultValue="1"
-            {...register('amount', {
-              valueAsNumber: true,
-              min: 1,
-            })}
-            label="Amount of slices"
-            type="number"
-          />
-          <Text>Price: {watch('amount') * price}</Text>
-          <Button onPress={onSend}>order</Button>
-        </Stack>
+        <article className={pizzaOrder}>
+          <section>
+             <h2>Delicious Pizzas Delivered Hot & Fresh</h2>
+          </section>
+          <section className={pizzasDeals}>
+            <h3>Today's Specials</h3>
+            <ul className={pizzas}>
+              <li  className={pizzasDealsList}>
+                <Image className={pizzasHeroImg} src={margherita} alt="Delicious peperoni Pizza"/>
+                <div>$ 2.55</div>
+              </li>
+              <li className={pizzasDealsList}>
+                <Image className={pizzasHeroImg} src={pepperoni} alt="Delicious margherita Pizza"/>
+                <div>$ 2.55</div>
+              </li>
+              <li className={pizzasDealsList}>
+                <Image className={pizzasHeroImg} src={veggie} alt="Delicious hawaii Pizza"/>
+                <div>$ 2.55</div>
+              </li>
+              <li className={pizzasDealsList}>
+                <Image className={pizzasHeroImg} src={hawaii} alt="Delicious veggie Pizza"/>
+                <div>$ 2.55</div>
+              </li>
+            </ul>
+          </section>
+          <section className="how-it-works">
+            <h3>How It Works</h3>
+            <div className="steps">
+              <div>1. Choose Your Pizza</div>
+              <div>2. Sign for your order</div>
+              <div>3. We Deliver</div>
+              <div>4. Sign for your Delivery</div>
+            </div>
+          </section>
+          <Stack gap="md" margin="md" flexDirection="column">
+            <Button className={pizzaButton} onPress={onSend}>Place your order</Button>
+          </Stack>
+        </article>
       )}
     </div>
   );

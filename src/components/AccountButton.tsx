@@ -19,9 +19,11 @@ export interface LoginAccount {
 export const AccountButton = ({
   user,
   returnPath,
+  className,
 }: {
   user?: LoginAccount | null;
   returnPath: string;
+  className?: string;
 }) => {
   const router = useRouter();
   const { getReturnUrl } = useReturnUrl();
@@ -32,7 +34,7 @@ export const AccountButton = ({
     );
   }, [getReturnUrl, returnPath]);
 
-  if (!user) return <Button onPress={onLogin}>Login</Button>;
+  if (!user) return <Button className={className} onPress={onLogin}>Login</Button>;
 
   return (
     <>
