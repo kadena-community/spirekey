@@ -130,6 +130,19 @@ export default function Registration({ redirectUrl }: Props) {
         network: data.networkId,
       });
 
+      if (Boolean(process.env.AUTO_REGISTER_MAINNET)) {
+        registerAccount({
+          caccount: data.accountName,
+          alias: data.alias,
+          color: data.color,
+          deviceType: data.deviceType,
+          credentialPubkey: data.credentialPubkey,
+          credentialId: data.credentialId,
+          domain: host,
+          network: 'mainnet01',
+        })
+      }
+
       router.push(completeRedirectUrl);
 
       return;
