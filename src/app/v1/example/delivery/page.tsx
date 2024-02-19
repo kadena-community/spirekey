@@ -19,7 +19,8 @@ import hawaii from './hawaii.webp';
 import pizzaHero from './pizza.webp';
 import { createOrderId, useDelivery } from './useDelivery';
 import { useLoggedInAccount } from './useLoggedInAccount';
-import {pizzas, pizzasDeals, pizzasHero, pizzasHeroImg, pizzaOrder, pizzaButton} from './order.css';
+import {pizzas, pizzasDeals, pizzasHero, pizzasHeroImg, pizzaOrder, pizzaButton, pizzasDealsList} from './order.css';
+import pizzaBackground from "@/app/v1/example/delivery/pizzabackground.jpg";
 
 type DeliveryProps = {
   searchParams: {
@@ -142,6 +143,20 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
 
   return (
     <div>
+      <style jsx global>
+        {
+          `
+          body {
+            background-color: #000;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-image: url(${pizzaBackground.src});
+          }
+          `
+        }
+      </style>
       <header className={pizzasHero}>
         <img src="https://images.jsworldconference.com/devworld_b41c690105.png?width=60" alt="devworld pizza" />
         <h1>Pizza place</h1>
@@ -163,21 +178,21 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
           <section className={pizzasDeals}>
             <h3>Today's Specials</h3>
             <ul className={pizzas}>
-              <li>
+              <li  className={pizzasDealsList}>
                 <Image className={pizzasHeroImg} src={margherita} alt="Delicious peperoni Pizza"/>
-                <div>$ 4.90</div>
+                <div>$ 2.55</div>
               </li>
-              <li>
+              <li className={pizzasDealsList}>
                 <Image className={pizzasHeroImg} src={pepperoni} alt="Delicious margherita Pizza"/>
-                <div>$ 3.90</div>
+                <div>$ 2.55</div>
               </li>
-              <li>
+              <li className={pizzasDealsList}>
                 <Image className={pizzasHeroImg} src={veggie} alt="Delicious hawaii Pizza"/>
-                <div>$ 1.90</div>
+                <div>$ 2.55</div>
               </li>
-              <li>
+              <li className={pizzasDealsList}>
                 <Image className={pizzasHeroImg} src={hawaii} alt="Delicious veggie Pizza"/>
-                <div>$ 4.90</div>
+                <div>$ 2.55</div>
               </li>
             </ul>
           </section>
@@ -191,20 +206,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
             </div>
           </section>
           <Stack gap="md" margin="md" flexDirection="column">
-            <Box margin="md">
-              <Image src={pizza} alt="pizza" width={100} height={100} />
-            </Box>
-            <TextField
-              defaultValue="1"
-              {...register('amount', {
-                valueAsNumber: true,
-                min: 1,
-              })}
-              label="Amount of slices"
-              type="number"
-            />
-            <Text>Price: {watch('amount') * price}</Text>
-            <Button onPress={onSend}>order</Button>
+            <Button className={pizzaButton} onPress={onSend}>Place your order</Button>
           </Stack>
         </article>
       )}
