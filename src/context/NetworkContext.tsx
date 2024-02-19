@@ -1,5 +1,6 @@
 'use client';
 
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import {
   ReactNode,
   createContext,
@@ -9,7 +10,7 @@ import {
 } from 'react';
 
 const NetworkContext = createContext({
-  network: process.env.NETWORK_ID || 'fast-development',
+  network: process.env.NETWORK_ID || getDevnetNetworkId(),
   chainwebDataUrl: process.env.CHAINWEB_DATA_URL || '',
   setNetwork: (network: string) => {},
 });
@@ -22,7 +23,7 @@ type Props = {
 export const getChainwebDataUrl = (network: string) => {
   if (network === 'mainnet01')
     throw new Error('mainnet01 is not supported yet');
-  if (network === 'fast-development') return 'http://localhost:8080';
+  if (network === getDevnetNetworkId()) return 'http://localhost:8080';
   return 'https://estats.testnet.chainweb.com';
 };
 

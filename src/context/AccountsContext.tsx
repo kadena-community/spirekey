@@ -2,6 +2,7 @@
 
 import { getAccountFrom } from '@/utils/account';
 import { l1Client } from '@/utils/client';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import {
   getWebAuthnPubkeyFormat,
   registerAccountOnChain,
@@ -73,7 +74,7 @@ const getAccountsFromLocalStorage = (): Account[] => {
 };
 
 const defaultState = {
-  networks: ['mainnet01', 'testnet04', 'fast-development'],
+  networks: ['mainnet01', 'testnet04', getDevnetNetworkId()],
   accounts: getAccountsFromLocalStorage(),
   registerAccount: async (
     data: AccountRegistration,
@@ -81,7 +82,7 @@ const defaultState = {
   setAccount: (account: Account): void => undefined,
 };
 
-const networks = ['mainnet01', 'testnet04', 'fast-development'];
+const networks = ['mainnet01', 'testnet04', getDevnetNetworkId()];
 
 export const AccountsContext = createContext(defaultState);
 

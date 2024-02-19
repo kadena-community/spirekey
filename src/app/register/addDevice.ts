@@ -1,5 +1,6 @@
 import type { Account, Device } from '@/context/AccountsContext';
 import { asyncPipe } from '@/utils/asyncPipe';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { ChainId, createTransaction } from '@kadena/client';
 import {
   addData,
@@ -28,7 +29,7 @@ export const addDevice = async (
         chainId: process.env.CHAIN_ID as ChainId,
         gasPrice: 0.00000001,
       }),
-      setNetworkId(process.env.NETWORK_ID || 'fast-development'),
+      setNetworkId(process.env.NETWORK_ID || getDevnetNetworkId()),
       addSigner(
         // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
         {

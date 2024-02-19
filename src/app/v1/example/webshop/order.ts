@@ -1,4 +1,5 @@
 import { asyncPipe } from '@/utils/asyncPipe';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { ChainId, createTransaction, Pact } from '@kadena/client';
 import {
   addSigner,
@@ -33,7 +34,7 @@ export const createOrder = async ({
         ttl: 60000,
         senderAccount: accountName,
       }),
-      setNetworkId(process.env.NETWORK_ID || 'fast-development'),
+      setNetworkId(process.env.NETWORK_ID || getDevnetNetworkId()),
       addSigner(
         // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
         {

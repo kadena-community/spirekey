@@ -10,6 +10,7 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
+import { getDevnetNetworkId } from './getDevnetNetworkId';
 
 export const fundAccount = async ({
   account,
@@ -37,7 +38,7 @@ const getCommand = ({
   account: string;
   network: string;
 }) => {
-  if (network === 'fast-development') return fundLocally(account);
+  if (network === getDevnetNetworkId()) return fundLocally(account);
   if (network === 'testnet04') return fundViaFaucet(account);
   throw new Error(`Unsupported network: ${network}`);
 };
@@ -64,7 +65,7 @@ const fundLocally = (account: string) =>
       withCap('coin.GAS'),
       withCap('coin.TRANSFER', 'sender00', account, 100),
     ]),
-    setNetworkId('fast-development'),
+    setNetworkId(getDevnetNetworkId()),
   );
 
 const fundViaFaucet = (account: string) =>

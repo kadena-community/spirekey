@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { transfer } from '@/utils/transfer';
 import { useRouter } from 'next/navigation';
 
@@ -23,7 +24,7 @@ export default function Transfer() {
       gasPayer: receiver.accountName,
       publicKey: sender.devices[0].guard.keys[0],
       namespace: process.env.NAMESPACE!,
-      networkId: 'fast-development',
+      networkId: getDevnetNetworkId(),
     });
 
     router.push(

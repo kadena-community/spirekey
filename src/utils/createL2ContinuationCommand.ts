@@ -8,6 +8,7 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
+import { getDevnetNetworkId } from './getDevnetNetworkId';
 
 export function createL2ContinuationCommand(
   options: IContinuationPayloadObject['cont'],
@@ -26,6 +27,6 @@ export function createL2ContinuationCommand(
       withCapabilities('coin.GAS'),
       withCapabilities(`${process.env.NAMESPACE}.l2.GOVERNANCE`),
     ]),
-    setNetworkId(process.env.NETWORK_ID || 'fast-development'),
+    setNetworkId(process.env.NETWORK_ID || getDevnetNetworkId()),
   )();
 }
