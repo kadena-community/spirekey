@@ -156,9 +156,8 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       )}
       {!tx && (
         <>
-          <section className={pizzasHero}>
-            <Image className={pizzasHeroImg} src={pizzaHero}  alt="Delicious Pizza" />
-            <h2>Delicious Pizzas Delivered Hot & Fresh</h2>
+          <section>
+             <h2>Delicious Pizzas Delivered Hot & Fresh</h2>
           </section>
           <section className={pizzasDeals}>
             <h3>Today's Specials</h3>
