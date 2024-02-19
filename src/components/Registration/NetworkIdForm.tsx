@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { SurfaceCard } from '../SurfaceCard/SurfaceCard';
 import { FormData, FormUtils } from './Registration';
 import { descriptionEmphasis, item, itemContainer } from './styles.css';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 
 type Props = Pick<FormData, 'networkId'> & FormUtils;
 
@@ -20,7 +21,7 @@ const getDescription = (networkId: string) => {
         {getNetworkDisplayName(networkId)}
       </Text>{' '}
       selected.
-      {['testnet04', 'fast-development'].includes(networkId) ? dev : main}
+      {['testnet04', getDevnetNetworkId()].includes(networkId) ? dev : main}
     </Text>
   );
 };
@@ -75,10 +76,10 @@ export function NetworkIdForm({ networkId, updateFields, direction }: Props) {
               <input
                 aria-label="Devnet"
                 type="radio"
-                value="fast-development"
+                value={getDevnetNetworkId()}
                 id="network-devnet"
                 name="networkId"
-                checked={networkId === 'fast-development'}
+                checked={networkId === getDevnetNetworkId()}
                 onChange={(event) =>
                   updateFields({ networkId: event.target.value })
                 }

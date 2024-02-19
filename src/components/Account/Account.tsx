@@ -14,6 +14,7 @@ import { Request } from '../icons/Request';
 import { Send } from '../icons/Send';
 import { Transactions } from '../icons/Transactions';
 import { detailLink } from './Account.css';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 
 interface AccountProps {
   account: Account;
@@ -97,7 +98,7 @@ export function Account({
                       title="Request"
                       description="Transfers"
                     />
-                    {['testnet04', 'fast-development'].includes(
+                    {['testnet04', getDevnetNetworkId()].includes(
                       account.network,
                     ) && (
                       <AccountButton

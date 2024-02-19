@@ -18,11 +18,12 @@ import { ColorForm } from './ColorForm';
 import { DeviceTypeForm } from './DeviceTypeForm';
 import { NetworkIdForm } from './NetworkIdForm';
 import { step as stepStyle } from './styles.css';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 
 const defaultFormData = {
   alias: '',
   usedAlias: '',
-  networkId: 'fast-development',
+  networkId: getDevnetNetworkId(),
   accountName: 'c:...',
   credentialPubkey: '',
   credentialId: '',

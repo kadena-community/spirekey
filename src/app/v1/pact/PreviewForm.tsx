@@ -25,10 +25,11 @@ import {
   uploadModuleTransaction,
   validateJson,
 } from './pact.utils';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 
 const FORM_DEFAULT = {
   chainId: process.env.CHAIN_ID!,
-  networkdId: process.env.NETWORK_ID || 'fast-development',
+  networkdId: process.env.NETWORK_ID || getDevnetNetworkId(),
   code: '',
   file: null as FileList | null,
   contractData: JSON.stringify({}),
@@ -264,7 +265,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
           rules={{ required: true }}
           render={({ field }) => (
             <Select id="select-network-id" label="Network ID" {...field}>
-              {['fast-development', 'testnet04', 'mainnet01'].map((i) => (
+              {[getDevnetNetworkId(), 'testnet04', 'mainnet01'].map((i) => (
                 <option key={i} value={i}>
                   {i}
                 </option>

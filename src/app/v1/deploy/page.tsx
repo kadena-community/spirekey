@@ -130,7 +130,7 @@ export default function DeployPage() {
             gasLimit: 100000,
             senderAccount: step.sender, // c:account
           }),
-          setNetworkId(orchestrationData.profiles[step.profile].networkId), // fast-development
+          setNetworkId(orchestrationData.profiles[step.profile].networkId),
           (cmd) => {
             cmd.payload.exec.data = step.data || {};
             return cmd;

@@ -4,6 +4,7 @@ import { Button } from '@/components/Button/Button';
 import { useAccounts, type Account } from '@/context/AccountsContext';
 import { deviceColors } from '@/styles/tokens.css';
 import { getAccountFrom } from '@/utils/account';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { Heading, TextField } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
 import { startAuthentication } from '@simplewebauthn/browser';
@@ -28,7 +29,7 @@ export default function Recover() {
     reValidateMode: 'onBlur',
   });
 
-  const networks = ['mainnet01', 'testnet04', 'fast-development'];
+  const networks = ['mainnet01', 'testnet04', getDevnetNetworkId()];
 
   const onSubmit = async () => {
     const { account } = getValues();

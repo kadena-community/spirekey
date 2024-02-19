@@ -14,6 +14,7 @@ const nextConfig = {
     GAS_STATION: process.env.GAS_STATION,
     INSTA_FUND: process.env.INSTA_FUND,
     CHAIN_ID: process.env.CHAIN_ID,
+    DEVNET_NETWORK_ID: process.env.DEVNET_NETWORK_ID,
   },
 };
 
