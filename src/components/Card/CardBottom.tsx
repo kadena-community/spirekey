@@ -26,7 +26,7 @@ export default function CardBottom({
       </Stack>
       <Stack>
         <span className={balanceLabel}>Balance</span>
-        <span className={balance}>{account.balance}</span>
+        <span className={balance}>{account.balance || 0}</span>
       </Stack>
     </>
   );
