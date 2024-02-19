@@ -59,3 +59,14 @@ export const pizzasDeals:string = style({
   height: 'auto',
   padding: '20px',
 });
+
+export const pizzaOrder:string = style({
+  background: 'rgba(0,0,0,.7)',
+  margin: '25px',
+  padding: '20px 10px',
+});
+
+export const pizzaButton:string = style({
+  background: '#00AD50',
+  color: '#fff',
+});

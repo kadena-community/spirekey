@@ -19,7 +19,7 @@ import hawaii from './hawaii.webp';
 import pizzaHero from './pizza.webp';
 import { createOrderId, useDelivery } from './useDelivery';
 import { useLoggedInAccount } from './useLoggedInAccount';
-import {pizzas, pizzasDeals, pizzasHero, pizzasHeroImg} from './order.css';
+import {pizzas, pizzasDeals, pizzasHero, pizzasHeroImg, pizzaOrder, pizzaButton} from './order.css';
 
 type DeliveryProps = {
   searchParams: {
@@ -143,8 +143,9 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   return (
     <div>
       <header className={pizzasHero}>
+        <img src="https://images.jsworldconference.com/devworld_b41c690105.png?width=60" alt="devworld pizza" />
         <h1>Pizza place</h1>
-        <AccountButton user={account} returnPath="/v1/example/delivery" />
+        <AccountButton className={pizzaButton} user={account} returnPath="/v1/example/delivery" />
       </header>
       {pendingTx && <Box margin="md">Order pending...</Box>}
       {mintedTx && <Box margin="md">Your pizza is on the way!</Box>}
@@ -155,7 +156,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
         </Box>
       )}
       {!tx && (
-        <>
+        <article className={pizzaOrder}>
           <section>
              <h2>Delicious Pizzas Delivered Hot & Fresh</h2>
           </section>
@@ -205,7 +206,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
             <Text>Price: {watch('amount') * price}</Text>
             <Button onPress={onSend}>order</Button>
           </Stack>
-        </>
+        </article>
       )}
     </div>
   );
