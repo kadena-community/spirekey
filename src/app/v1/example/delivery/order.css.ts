@@ -22,3 +22,9 @@ export const pizzasHeroImg:string = style({
   width: '100%',
   height: 'auto',
 });
+
+export const pizzasDeals:string = style({
+  width: '100%',
+  height: 'auto',
+  padding: '20px',
+});

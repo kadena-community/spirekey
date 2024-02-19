@@ -19,7 +19,7 @@ import hawaii from './hawaii.webp';
 import pizzaHero from './pizza.webp';
 import { createOrderId, useDelivery } from './useDelivery';
 import { useLoggedInAccount } from './useLoggedInAccount';
-import {pizzas, pizzasHero, pizzasHeroImg} from './order.css';
+import {pizzas, pizzasDeals, pizzasHero, pizzasHeroImg} from './order.css';
 
 type DeliveryProps = {
   searchParams: {
@@ -160,13 +160,25 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
             <Image className={pizzasHeroImg} src={pizzaHero}  alt="Delicious Pizza" />
             <h2>Delicious Pizzas Delivered Hot & Fresh</h2>
           </section>
-          <section className="deals">
+          <section className={pizzasDeals}>
             <h3>Today's Specials</h3>
             <ul className={pizzas}>
-              <li><Image className={pizzasHeroImg} src={margherita} alt="Delicious peperoni Pizza"/></li>
-              <li><Image className={pizzasHeroImg} src={pepperoni} alt="Delicious margherita Pizza"/></li>
-              <li><Image className={pizzasHeroImg} src={veggie} alt="Delicious hawaii Pizza"/></li>
-              <li><Image className={pizzasHeroImg} src={hawaii} alt="Delicious veggie Pizza"/></li>
+              <li>
+                <Image className={pizzasHeroImg} src={margherita} alt="Delicious peperoni Pizza"/>
+                <div>$ 4.90</div>
+              </li>
+              <li>
+                <Image className={pizzasHeroImg} src={pepperoni} alt="Delicious margherita Pizza"/>
+                <div>$ 3.90</div>
+              </li>
+              <li>
+                <Image className={pizzasHeroImg} src={veggie} alt="Delicious hawaii Pizza"/>
+                <div>$ 1.90</div>
+              </li>
+              <li>
+                <Image className={pizzasHeroImg} src={hawaii} alt="Delicious veggie Pizza"/>
+                <div>$ 4.90</div>
+              </li>
             </ul>
           </section>
           <section className="how-it-works">
