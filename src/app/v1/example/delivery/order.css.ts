@@ -81,8 +81,8 @@ export const pizzaLoader:string = style({
   top: '100px',
 });
 
-
-const animations: any = {};
+type AnimationsType = Record<string, string>;
+const animations: AnimationsType = {};
 
 for (let i = 6; i > 0; i--) {
   animations['slideIn' + i] = keyframes({
