@@ -21,7 +21,6 @@ type CardProps = {
   icons?: ReactNode;
   center?: ReactNode;
   cardBottom?: ReactNode;
-  isRegistered?: boolean;
 };
 
 export default function Card({

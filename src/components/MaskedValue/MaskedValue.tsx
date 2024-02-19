@@ -1,7 +1,6 @@
 'use client';
 
 import { KodeMono } from '@kadena/fonts';
-import { maskValue } from '@kadena/react-ui';
 import classNames from 'classnames';
 import type { FC } from 'react';
 import React from 'react';
@@ -22,18 +21,15 @@ export const MaskedValue: FC<IMaskedValueProps> = ({
   endUnmaskedValues = 4,
   className = '',
 }): JSX.Element => {
-  const maskedValue = maskValue(value, {
-    headLength: startUnmaskedValues,
-    tailLength: endUnmaskedValues,
-    character: '.',
-  });
+  const start = value.slice(0, startUnmaskedValues);
+  const end = value.slice(-endUnmaskedValues);
 
   return (
     <div
       data-testid="accountName"
       className={classNames(className, valueContainer)}
     >
-      {maskedValue}
+      {start}...{end}
     </div>
   );
 };

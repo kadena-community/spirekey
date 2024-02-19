@@ -13,28 +13,23 @@ export const details = style([
   },
 ]);
 
-export const transactionAddress = style([
-  {
-    color: customTokens.color.white,
-    fontWeight: 'bold',
-    whiteSpace: 'nowrap',
-  },
-]);
+export const transactionAddress = style({
+  color: customTokens.color.white,
+  fontWeight: 'bold',
+  whiteSpace: 'nowrap',
+});
 
-export const transactionAmount = style([
-  atoms({
-    fontWeight: 'bodyFont.bold',
-    fontFamily: 'codeFont',
-  }),
-]);
+export const transactionAmount = atoms({
+  fontWeight: 'bodyFont.bold',
+  fontFamily: 'codeFont',
+});
 
 export const transactionDate = style([
   atoms({
-    alignItems: 'center',
-    display: 'flex',
     fontFamily: 'codeFont',
     fontSize: 'xs',
   }),
+  { alignItems: 'center', display: 'flex' },
 ]);
 
 export const transactionAmountVariants = recipe({

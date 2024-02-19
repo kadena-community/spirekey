@@ -1,4 +1,5 @@
 import { Account } from '@/context/AccountsContext';
+import { useState } from 'react';
 import AccountNetwork from './AccountNetwork';
 import Alias from './Alias';
 import Card from './Card';
@@ -8,19 +9,18 @@ import DeviceIcons from './DeviceIcons';
 type CardProps = {
   account: Account;
   balancePercentage?: number;
+  isLoading?: boolean;
 };
 
 export default function DeviceCard({
   account,
   balancePercentage = 10,
+  isLoading,
 }: CardProps) {
-  const uniqueDeviceTypes = new Set();
-  account.devices.map((d) => uniqueDeviceTypes.add(d.deviceType));
-
   // @todo: use the color of a specific device
   const color = account.devices[0].color;
   // @todo: check isRegistered for a specific device
-  const isRegistered = !!account.devices[0].pendingRegistrationTx;
+  const hasPendingTX = !!account.devices[0].pendingRegistrationTx;
 
   return (
     <Card
@@ -28,9 +28,13 @@ export default function DeviceCard({
       balancePercentage={balancePercentage}
       title={<Alias title={account.alias} />}
       icons={<DeviceIcons account={account} />}
-      center={<AccountNetwork account={account} isLoading={isRegistered} />}
+      center={
+        <AccountNetwork
+          account={account}
+          isLoading={isLoading || hasPendingTX}
+        />
+      }
       cardBottom={<CardBottom account={account} />}
-      isRegistered={isRegistered}
     />
   );
 }

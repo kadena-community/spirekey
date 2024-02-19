@@ -13,36 +13,35 @@ export default function DeviceIcons({ account }: DeviceIconsProps) {
   const uniqueDeviceTypes = new Set();
   account.devices.map((d) => uniqueDeviceTypes.add(d.deviceType));
 
-  return (
-    <>
-      {Array.from(uniqueDeviceTypes).map((type, i) => {
-        switch (type) {
-          case 'security-key':
-            return (
-              <Box key={i} className={device}>
-                <DeviceSecurityKey />
-              </Box>
-            );
-          case 'phone':
-            return (
-              <Box key={i} className={device}>
-                <DevicePhone />
-              </Box>
-            );
-          case 'desktop':
-            return (
-              <Box key={i} className={device}>
-                <DeviceDesktop />
-              </Box>
-            );
-          default:
-            return (
-              <Box key={i} className={device}>
-                <SystemIcon.Information />
-              </Box>
-            );
-        }
-      })}
-    </>
-  );
+  return Array.from(uniqueDeviceTypes).map((type, i) => {
+    switch (type) {
+      case 'security-key':
+        return (
+          <Box key={i} className={device}>
+            <DeviceSecurityKey />
+          </Box>
+        );
+
+      case 'phone':
+        return (
+          <Box key={i} className={device}>
+            <DevicePhone />
+          </Box>
+        );
+
+      case 'desktop':
+        return (
+          <Box key={i} className={device}>
+            <DeviceDesktop />
+          </Box>
+        );
+
+      default:
+        return (
+          <Box key={i} className={device}>
+            <SystemIcon.Information />
+          </Box>
+        );
+    }
+  });
 }

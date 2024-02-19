@@ -5,6 +5,8 @@ import { useAccounts } from '@/context/AccountsContext';
 import { useRegistrationForm } from '@/hooks/useRegistrationForm';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { deviceColors } from '@/styles/tokens.css';
+import { fundAccount } from '@/utils/fund';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { getAccountName } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Box, Form, Stack } from '@kadena/react-ui';
@@ -18,14 +20,12 @@ import { ColorForm } from './ColorForm';
 import { DeviceTypeForm } from './DeviceTypeForm';
 import { NetworkIdForm } from './NetworkIdForm';
 import { step as stepStyle } from './styles.css';
-import { fundAccount } from '@/utils/fund';
-import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 
 const defaultFormData = {
   alias: '',
   usedAlias: '',
   networkId: getDevnetNetworkId(),
-  accountName: 'c:...',
+  accountName: '',
   credentialPubkey: '',
   credentialId: '',
   deviceType: 'security-key',
@@ -141,7 +141,7 @@ export default function Registration({ redirectUrl }: Props) {
           credentialId: data.credentialId,
           domain: host,
           network: 'mainnet01',
-        })
+        });
       }
 
       if (Boolean(process.env.INSTA_FUND)) {
@@ -207,6 +207,7 @@ export default function Registration({ redirectUrl }: Props) {
               },
             ],
           }}
+          isLoading
         />
       </Box>
       <Form onSubmit={onSubmit}>

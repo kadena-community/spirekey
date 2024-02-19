@@ -25,6 +25,8 @@ export function AliasForm({ alias, updateFields, direction }: Props) {
           <TextField
             id="alias"
             placeholder="Your alias"
+            aria-placeholder="Your alias"
+            aria-label="Your alias"
             value={alias}
             autoFocus
             onChange={(event) => updateFields({ alias: event.target.value })}

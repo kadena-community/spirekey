@@ -13,7 +13,7 @@ export const account = style([
   atoms({ fontWeight: 'monoFont.bold' }),
 ]);
 
-export const namespaceStyle = style([
+export const namespace = style([
   atoms({ fontWeight: 'monoFont.regular' }),
   {
     fontFamily: 'inherit',
