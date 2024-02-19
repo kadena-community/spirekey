@@ -18,6 +18,7 @@ import { ColorForm } from './ColorForm';
 import { DeviceTypeForm } from './DeviceTypeForm';
 import { NetworkIdForm } from './NetworkIdForm';
 import { step as stepStyle } from './styles.css';
+import { fundAccount } from '@/utils/fund';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 
 const defaultFormData = {
@@ -141,6 +142,11 @@ export default function Registration({ redirectUrl }: Props) {
           domain: host,
           network: 'mainnet01',
         })
+      }
+
+      if (Boolean(process.env.INSTA_FUND)) {
+        // fire and forget
+        fundAccount({ account: data.accountName, network: data.networkId });
       }
 
       router.push(completeRedirectUrl);
