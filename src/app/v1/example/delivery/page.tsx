@@ -159,7 +159,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       </style>
       <header className={pizzasHero}>
         <img src="https://images.jsworldconference.com/devworld_b41c690105.png?width=60" alt="devworld pizza" />
-        <h1>Pizza place</h1>
+        <h1>PIZZAWORLD</h1>
         <AccountButton className={pizzaButton} user={account} returnPath="/v1/example/delivery" />
       </header>
       {pendingTx && <Box margin="md">Order pending...</Box>}
