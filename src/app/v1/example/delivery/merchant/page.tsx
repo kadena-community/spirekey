@@ -38,10 +38,12 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
   const router = useRouter();
 
   const { status, doSubmit, tx } = useSubmit(searchParams);
-  const { orders, markOrderAsReady, saveDelivery } = useDelivery({
-    chainId: process.env.CHAIN_ID as ChainId,
-    networkId: process.env.NETWORK_ID!,
-  });
+  const { orders, markOrderAsReady, saveDelivery, refreshOrders } = useDelivery(
+    {
+      chainId: process.env.CHAIN_ID as ChainId,
+      networkId: process.env.NETWORK_ID!,
+    },
+  );
   const markAsReady = (orderId: string) => async () => {
     if (!account) return;
     const tx = await markOrderAsReady({
@@ -83,10 +85,14 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
     if (isLoading) return;
     if (status !== SubmitStatus.SUBMITABLE) return;
     const originMsg = messages.find((m) => m.data.hash === tx.hash);
-    doSubmit();
-    if (!originMsg) return;
-    send(originMsg.connectionId, { type: 'confirm', data: tx });
+    if (!originMsg) {
+      doSubmit();
+      return;
+    }
     if (originMsg.orderId) saveDelivery(originMsg.orderId);
+    doSubmit();
+    send(originMsg.connectionId, { type: 'confirm', data: tx });
+    refreshOrders();
   }, [status, isLoading, messages]);
   const pendingOrders = orders?.filter((order) => order.status === 'CREATED');
   return (

@@ -55,6 +55,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
   >({});
   const saveNewMessage = (message: Message) =>
     setMessages((prev) => {
+      if (message.type === 'orders') return [...prev, message];
       if (message.type === 'id') return [...prev, message];
       if (
         prev.length &&
@@ -79,8 +80,8 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
       conn.on('open', () => {
         setConnections((prev) => ({ ...prev, [connectionId]: conn }));
         conn.on('data', (data: any) => {
-          if (!isMessage(data)) return;
           console.log('Someone send me Data', data);
+          if (!isMessage(data)) return;
           saveNewMessage(data);
         });
         resolve(conn);
@@ -130,6 +131,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
       setConnections((prev) => ({ ...prev, [conn.peer]: conn }));
       conn.on('open', () => {
         conn.on('data', (data) => {
+          console.log('Someone send me Data', data);
           if (!isMessage(data)) return;
           saveNewMessage(data);
         });
