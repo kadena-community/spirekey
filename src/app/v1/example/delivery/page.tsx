@@ -19,7 +19,16 @@ import hawaii from './hawaii.webp';
 import pizzaHero from './pizza.webp';
 import { createOrderId, useDelivery } from './useDelivery';
 import { useLoggedInAccount } from './useLoggedInAccount';
-import {pizzas, pizzasDeals, pizzasHero, pizzasHeroImg, pizzaOrder, pizzaButton, pizzasDealsList} from './order.css';
+import {
+  pizzas,
+  pizzasDeals,
+  pizzasHero,
+  pizzasHeroImg,
+  pizzaOrder,
+  pizzaButton,
+  pizzasDealsList,
+  pizzaLoader, pizzaLoaderSlice, pizzaLoaderSliceTomato, pizzaLoaderWrapper
+} from './order.css';
 import pizzaBackground from "@/app/v1/example/delivery/pizzabackground.jpg";
 
 type DeliveryProps = {
@@ -162,7 +171,37 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
         <h1>PIZZAWORLD</h1>
         <AccountButton className={pizzaButton} user={account} returnPath="/v1/example/delivery" />
       </header>
-      {pendingTx && <Box margin="md">Order pending...</Box>}
+      {pendingTx && (
+        <article className={pizzaLoaderWrapper}>
+          <h2>We are crafting your pizza!</h2>
+          <div className={pizzaLoader}>
+            <div className={pizzaLoaderSlice}>
+              <div className={pizzaLoaderSliceTomato}></div>
+              <div className={pizzaLoaderSliceTomato}></div>
+            </div>
+            <div className={pizzaLoaderSlice}>
+              <div className={pizzaLoaderSliceTomato}></div>
+              <div className={pizzaLoaderSliceTomato}></div>
+            </div>
+            <div className={pizzaLoaderSlice}>
+              <div className={pizzaLoaderSliceTomato}></div>
+              <div className={pizzaLoaderSliceTomato}></div>
+            </div>
+            <div className={pizzaLoaderSlice}>
+              <div className={pizzaLoaderSliceTomato}></div>
+              <div className={pizzaLoaderSliceTomato}></div>
+            </div>
+            <div className={pizzaLoaderSlice}>
+              <div className={pizzaLoaderSliceTomato}></div>
+              <div className={pizzaLoaderSliceTomato}></div>
+            </div>
+            <div className={pizzaLoaderSlice}>
+              <div className={pizzaLoaderSliceTomato}></div>
+              <div className={pizzaLoaderSliceTomato}></div>
+            </div>
+          </div>
+        </article>
+      )}
       {mintedTx && <Box margin="md">Your pizza is on the way!</Box>}
       {isAcceptingOrder && deliverTx && (
         <Box margin="md">
