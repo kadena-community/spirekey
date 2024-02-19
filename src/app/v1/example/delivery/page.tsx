@@ -12,8 +12,14 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useConnection } from './Connection';
 import pizza from './pizza.png';
+import margherita from './margherita.webp';
+import pepperoni from './pepperoni.webp';
+import veggie from './veggie.webp';
+import hawaii from './hawaii.webp';
+import pizzaHero from './pizza.webp';
 import { createOrderId, useDelivery } from './useDelivery';
 import { useLoggedInAccount } from './useLoggedInAccount';
+import {pizzas, pizzasHero, pizzasHeroImg} from './order.css';
 
 type DeliveryProps = {
   searchParams: {
@@ -136,10 +142,10 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
 
   return (
     <div>
-      <Box margin="md">
-        <h1>Delivery Page</h1>
+      <header className={pizzasHero}>
+        <h1>Pizza place</h1>
         <AccountButton user={account} returnPath="/v1/example/delivery" />
-      </Box>
+      </header>
       {pendingTx && <Box margin="md">Order pending...</Box>}
       {mintedTx && <Box margin="md">Your pizza is on the way!</Box>}
       {isAcceptingOrder && deliverTx && (
@@ -149,22 +155,46 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
         </Box>
       )}
       {!tx && (
-        <Stack gap="md" margin="md" flexDirection="column">
-          <Box margin="md">
-            <Image src={pizza} alt="pizza" width={100} height={100} />
-          </Box>
-          <TextField
-            defaultValue="1"
-            {...register('amount', {
-              valueAsNumber: true,
-              min: 1,
-            })}
-            label="Amount of slices"
-            type="number"
-          />
-          <Text>Price: {watch('amount') * price}</Text>
-          <Button onPress={onSend}>order</Button>
-        </Stack>
+        <>
+          <section className={pizzasHero}>
+            <Image className={pizzasHeroImg} src={pizzaHero}  alt="Delicious Pizza" />
+            <h2>Delicious Pizzas Delivered Hot & Fresh</h2>
+          </section>
+          <section className="deals">
+            <h3>Today's Specials</h3>
+            <ul className={pizzas}>
+              <li><Image className={pizzasHeroImg} src={margherita} alt="Delicious peperoni Pizza"/></li>
+              <li><Image className={pizzasHeroImg} src={pepperoni} alt="Delicious margherita Pizza"/></li>
+              <li><Image className={pizzasHeroImg} src={veggie} alt="Delicious hawaii Pizza"/></li>
+              <li><Image className={pizzasHeroImg} src={hawaii} alt="Delicious veggie Pizza"/></li>
+            </ul>
+          </section>
+          <section className="how-it-works">
+            <h3>How It Works</h3>
+            <div className="steps">
+              <div>1. Choose Your Pizza</div>
+              <div>2. Sign for your order</div>
+              <div>3. We Deliver</div>
+              <div>4. Sign for your Delivery</div>
+            </div>
+          </section>
+          <Stack gap="md" margin="md" flexDirection="column">
+            <Box margin="md">
+              <Image src={pizza} alt="pizza" width={100} height={100} />
+            </Box>
+            <TextField
+              defaultValue="1"
+              {...register('amount', {
+                valueAsNumber: true,
+                min: 1,
+              })}
+              label="Amount of slices"
+              type="number"
+            />
+            <Text>Price: {watch('amount') * price}</Text>
+            <Button onPress={onSend}>order</Button>
+          </Stack>
+        </>
       )}
     </div>
   );
