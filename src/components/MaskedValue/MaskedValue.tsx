@@ -29,7 +29,9 @@ export const MaskedValue: FC<IMaskedValueProps> = ({
       data-testid="accountName"
       className={classNames(className, valueContainer)}
     >
-      {value.length <= 8 ? value : `${start}...${end}`}
+      {value.length <= startUnmaskedValues + endUnmaskedValues
+        ? value
+        : `${start}...${end}`}
     </span>
   );
 };
