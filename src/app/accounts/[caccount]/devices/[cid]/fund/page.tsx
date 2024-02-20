@@ -2,13 +2,7 @@
 
 import { useNetwork } from '@/context/NetworkContext';
 import { fundAccount } from '@/utils/fund';
-import {
-  Box,
-  Button,
-  Card,
-  ContentHeader,
-  Stack,
-} from '@kadena/react-ui';
+import { Box, Button, Card, ContentHeader, Stack } from '@kadena/react-ui';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 

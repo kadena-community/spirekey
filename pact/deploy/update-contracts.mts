@@ -3,8 +3,8 @@ import {
   getL2DeploymentSettings,
   getNameSpaceAndKeysetSettings,
   getWalletSettings,
-} from "./deploy-settings.mjs";
-import deploy, { local } from "./deploy.mjs";
+} from './deploy-settings.mjs';
+import deploy, { local } from './deploy.mjs';
 
 const IS_UPGRADE = true;
 

@@ -1,13 +1,13 @@
 import { NetworkDevnet } from '@/components/icons/NetworkDevnet';
 import { NetworkMainnet } from '@/components/icons/NetworkMainnet';
 import { NetworkTestnet } from '@/components/icons/NetworkTestnet';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { Text } from '@kadena/react-ui';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SurfaceCard } from '../SurfaceCard/SurfaceCard';
 import { FormData, FormUtils } from './Registration';
 import { descriptionEmphasis, item, itemContainer } from './styles.css';
-import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 
 type Props = Pick<FormData, 'networkId'> & FormUtils;
 

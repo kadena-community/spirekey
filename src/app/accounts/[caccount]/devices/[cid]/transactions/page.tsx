@@ -10,7 +10,7 @@ export default function TransactionsPage() {
   const params = useParams();
   const { accounts } = useAccounts();
   const caccount = decodeURIComponent(params.caccount.toString());
-  const account = accounts?.find(a => a.accountName === caccount);
+  const account = accounts?.find((a) => a.accountName === caccount);
 
   return (
     <Box margin="lg">

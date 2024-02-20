@@ -1,6 +1,7 @@
 import { useAccounts, type Account } from '@/context/AccountsContext';
 
 import { calculateBalancePercentage } from '@/utils/balance';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { Stack } from '@kadena/react-ui';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
@@ -14,7 +15,6 @@ import { Request } from '../icons/Request';
 import { Send } from '../icons/Send';
 import { Transactions } from '../icons/Transactions';
 import { detailLink } from './Account.css';
-import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 
 interface AccountProps {
   account: Account;

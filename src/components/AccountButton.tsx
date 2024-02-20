@@ -34,7 +34,12 @@ export const AccountButton = ({
     );
   }, [getReturnUrl, returnPath]);
 
-  if (!user) return <Button className={className} onPress={onLogin}>Login</Button>;
+  if (!user)
+    return (
+      <Button className={className} onPress={onLogin}>
+        Login
+      </Button>
+    );
 
   return (
     <>
