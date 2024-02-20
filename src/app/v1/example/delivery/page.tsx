@@ -1,35 +1,25 @@
 'use client';
 
+import pizzaBackground from '@/app/v1/example/delivery/pizzabackground.jpg';
 import { AccountButton } from '@/components/AccountButton';
 import { Button } from '@/components/Button/Button';
+import { PizzaLoader } from '@/components/PizzaLoader/PizzaLoader';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
-import { Box, Stack, Text, TextField } from '@kadena/react-ui';
+import { Box, Stack } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useConnection } from './Connection';
-import pizza from './pizza.png';
-import margherita from './margherita.webp';
-import pepperoni from './pepperoni.webp';
-import veggie from './veggie.webp';
-import hawaii from './hawaii.webp';
-import pizzaHero from './pizza.webp';
+import hawaiiImg from './hawaii.webp';
+import margheritaImg from './margherita.webp';
+import * as styles from './order.css';
+import pepperoniImg from './pepperoni.webp';
 import { createOrderId, useDelivery } from './useDelivery';
 import { useLoggedInAccount } from './useLoggedInAccount';
-import {
-  pizzas,
-  pizzasDeals,
-  pizzasHero,
-  pizzasHeroImg,
-  pizzaOrder,
-  pizzaButton,
-  pizzasDealsList,
-  pizzaLoader, pizzaLoaderSlice, pizzaLoaderSliceTomato, pizzaLoaderWrapper
-} from './order.css';
-import pizzaBackground from "@/app/v1/example/delivery/pizzabackground.jpg";
+import veggieImg from './veggie.webp';
 
 type DeliveryProps = {
   searchParams: {
@@ -38,7 +28,6 @@ type DeliveryProps = {
   };
 };
 
-const price = 2.55;
 export default function DeliveryPage({ searchParams }: DeliveryProps) {
   const { user } = searchParams;
   const { tx } = useSubmit(searchParams);
@@ -153,8 +142,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   return (
     <div>
       <style jsx global>
-        {
-          `
+        {`
           body {
             background-color: #000;
             background-size: cover;
@@ -163,43 +151,24 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
             background-attachment: fixed;
             background-image: url(${pizzaBackground.src});
           }
-          `
-        }
+        `}
       </style>
-      <header className={pizzasHero}>
-        <img src="https://images.jsworldconference.com/devworld_b41c690105.png?width=60" alt="devworld pizza" />
+      <header className={styles.hero}>
+        <img
+          src="https://images.jsworldconference.com/devworld_b41c690105.png?width=60"
+          alt="devworld pizza"
+        />
         <h1>PIZZAWORLD</h1>
-        <AccountButton className={pizzaButton} user={account} returnPath="/v1/example/delivery" />
+        <AccountButton
+          className={styles.button}
+          user={account}
+          returnPath="/v1/example/delivery"
+        />
       </header>
       {pendingTx && (
-        <article className={pizzaLoaderWrapper}>
+        <article className={styles.loadingWrapper}>
           <h2>We are crafting your pizza!</h2>
-          <div className={pizzaLoader}>
-            <div className={pizzaLoaderSlice}>
-              <div className={pizzaLoaderSliceTomato}></div>
-              <div className={pizzaLoaderSliceTomato}></div>
-            </div>
-            <div className={pizzaLoaderSlice}>
-              <div className={pizzaLoaderSliceTomato}></div>
-              <div className={pizzaLoaderSliceTomato}></div>
-            </div>
-            <div className={pizzaLoaderSlice}>
-              <div className={pizzaLoaderSliceTomato}></div>
-              <div className={pizzaLoaderSliceTomato}></div>
-            </div>
-            <div className={pizzaLoaderSlice}>
-              <div className={pizzaLoaderSliceTomato}></div>
-              <div className={pizzaLoaderSliceTomato}></div>
-            </div>
-            <div className={pizzaLoaderSlice}>
-              <div className={pizzaLoaderSliceTomato}></div>
-              <div className={pizzaLoaderSliceTomato}></div>
-            </div>
-            <div className={pizzaLoaderSlice}>
-              <div className={pizzaLoaderSliceTomato}></div>
-              <div className={pizzaLoaderSliceTomato}></div>
-            </div>
-          </div>
+          <PizzaLoader />
         </article>
       )}
       {mintedTx && <Box margin="md">Your pizza is on the way!</Box>}
@@ -210,42 +179,60 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
         </Box>
       )}
       {!tx && (
-        <article className={pizzaOrder}>
+        <article className={styles.order}>
           <section>
-             <h2>Delicious Pizzas Delivered Hot & Fresh</h2>
+            <h2>Delicious Pizzas Delivered Hot & Fresh</h2>
           </section>
-          <section className={pizzasDeals}>
+          <section className={styles.deals}>
             <h3>Today's Specials</h3>
-            <ul className={pizzas}>
-              <li  className={pizzasDealsList}>
-                <Image className={pizzasHeroImg} src={margherita} alt="Delicious peperoni Pizza"/>
+            <ul className={styles.list}>
+              <li>
+                <Image
+                  className={styles.dealImg}
+                  src={margheritaImg}
+                  alt="Delicious Peperroni Pizza"
+                />
                 <div>$ 2.55</div>
               </li>
-              <li className={pizzasDealsList}>
-                <Image className={pizzasHeroImg} src={pepperoni} alt="Delicious margherita Pizza"/>
+              <li>
+                <Image
+                  className={styles.dealImg}
+                  src={pepperoniImg}
+                  alt="Delicious margherita Pizza"
+                />
                 <div>$ 2.55</div>
               </li>
-              <li className={pizzasDealsList}>
-                <Image className={pizzasHeroImg} src={veggie} alt="Delicious hawaii Pizza"/>
+              <li>
+                <Image
+                  className={styles.dealImg}
+                  src={veggieImg}
+                  alt="Delicious hawaii Pizza"
+                />
                 <div>$ 2.55</div>
               </li>
-              <li className={pizzasDealsList}>
-                <Image className={pizzasHeroImg} src={hawaii} alt="Delicious veggie Pizza"/>
+              <li>
+                <Image
+                  className={styles.dealImg}
+                  src={hawaiiImg}
+                  alt="Delicious veggie Pizza"
+                />
                 <div>$ 2.55</div>
               </li>
             </ul>
           </section>
-          <section className="how-it-works">
+          <section>
             <h3>How It Works</h3>
-            <div className="steps">
-              <div>1. Choose Your Pizza</div>
-              <div>2. Sign for your order</div>
-              <div>3. We Deliver</div>
-              <div>4. Sign for your Delivery</div>
-            </div>
+            <ol>
+              <li>Choose Your pizza</li>
+              <li>Sign for your order</li>
+              <li>We deliver</li>
+              <li>Sign for your delivery</li>
+            </ol>
           </section>
           <Stack gap="md" margin="md" flexDirection="column">
-            <Button className={pizzaButton} onPress={onSend}>Place your order</Button>
+            <Button className={styles.button} onPress={onSend}>
+              Place your order
+            </Button>
           </Stack>
         </article>
       )}
