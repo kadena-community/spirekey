@@ -22,6 +22,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import fingerprint from '@/assets/images/fingerprint.svg';
+import { l1Client } from '@/utils/client';
 import { ICommandPayload } from '@kadena/types';
 import { container, step, wrapper } from './page.css';
 
@@ -77,6 +78,14 @@ export default function Sign(req: SignProps) {
       router.push(redirectLocation);
     }
   }, [redirectLocation, isReadyToSubmit, router, returnUrl, autoRedirect]);
+
+  useEffect(() => {
+    l1Client
+      .local(tx, { preflight: true, signatureVerification: false })
+      .then((res) => {
+        console.log('res', res);
+      });
+  }, []);
 
   const onSign = async (deviceIndex: number) => {
     const signedTx = await sign(tx, devices?.[deviceIndex]?.['credential-id']!);
@@ -136,8 +145,8 @@ export default function Sign(req: SignProps) {
             <option value="fr">Français</option>
           </SelectItem>
         </Select> */}
-        {getLabels(txData.signers, language).map((x) => (
-          <Box key={x.label} width="100%">
+        {getLabels(txData.signers, language).map((x, index) => (
+          <Box key={x.label + index} width="100%">
             <Heading variant="h6">{x.label}</Heading>
             <Stack alignItems="center" gap="sm">
               <Text>{x.description ?? 'No description available'}</Text>
