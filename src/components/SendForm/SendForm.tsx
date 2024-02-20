@@ -1,14 +1,12 @@
 'use client';
 
 import { useAccounts } from '@/context/AccountsContext';
-import { useSign } from '@/hooks/useSign';
-import { l1Client } from '@/utils/client';
+import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { transfer } from '@/utils/transfer';
-import { isSignedTransaction } from '@kadena/client';
 import { Button, Stack, TextField } from '@kadena/react-ui';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { ButtonLink } from '../ButtonLink/ButtonLink';
 import * as style from './SendForm.css';
 
 const isCAccount = (account: string | string[]): account is string =>
@@ -19,8 +17,7 @@ export default function SendForm() {
   const params = useParams();
   const { caccount, cid } = useParams();
   const { accounts } = useAccounts();
-  const [isLoading, setIsLoading] = useState(false);
-  const [amountInfo, setAmountInfo] = useState('');
+  const { getReturnUrl } = useReturnUrl();
 
   const account = accounts.find(
     (a) => a.accountName === decodeURIComponent(params.caccount as string),
@@ -51,13 +48,11 @@ export default function SendForm() {
     reValidateMode: 'onChange',
   });
 
-  const { sign } = useSign();
-
   const onSubmit = async (data: FormValues) => {
     if (!isCAccount(data.sender)) return;
     if (!process.env.NAMESPACE) return;
     if (!device) return;
-    setIsLoading(true);
+
     const caccount = decodeURIComponent(data.sender);
     const command = await transfer({
       sender: caccount,
@@ -69,31 +64,27 @@ export default function SendForm() {
       publicKey,
     });
 
-    const signedTx = await sign(command, device['credential-id']);
-    if (isSignedTransaction(signedTx)) {
-      const transactiionDescriptor = await l1Client.submitOne(signedTx);
-      await l1Client.listen(transactiionDescriptor);
-    }
-
-    setIsLoading(false);
-
-    router.push(`/accounts/${caccount}/devices/${cid}/transactions`);
+    router.push(
+      `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
+        JSON.stringify(command),
+      ).toString('base64')}&returnUrl=${getReturnUrl('/submit')}`,
+    );
   };
 
   const amount = watch('amount');
   const gasPayer = watch('gasPayer');
 
-  useEffect(() => {
-    if (
-      gasPayer !== account?.accountName ||
-      amount !== parseFloat(account.balance || '')
-    ) {
-      return setAmountInfo('');
-    }
-    setAmountInfo(
-      'Paying for gas will fail when you transfer your full balance',
+  if (!account)
+    return (
+      <div>
+        Account not found <ButtonLink href="/">Go back home</ButtonLink>
+      </div>
     );
-  }, [amount, gasPayer, account]);
+
+  const amountInfo =
+    gasPayer === account.accountName || amount === parseFloat(account.balance)
+      ? 'Paying for gas will fail when you transfer your full balance'
+      : '';
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -119,15 +110,22 @@ export default function SendForm() {
             <Stack gap="xs" alignItems="center">
               <Button
                 variant="contained"
-                className={style.maxButton}
+                className={style.button}
                 onClick={() =>
-                  setValue('amount', parseFloat(account?.balance || ''))
+                  setValue('amount', parseFloat(account.balance) / 2)
                 }
               >
-                <span className={style.maxButtonText}>MAX</span>
+                <span className={style.buttonText}>Half</span>
+              </Button>
+              <Button
+                variant="contained"
+                className={style.button}
+                onClick={() => setValue('amount', parseFloat(account.balance))}
+              >
+                <span className={style.buttonText}>Max</span>
               </Button>
               <span className={style.balanceText}>
-                {account?.balance} KDA account balance
+                {account.balance} KDA account balance
               </span>
             </Stack>
           }
@@ -137,7 +135,7 @@ export default function SendForm() {
           {...register('amount', {
             valueAsNumber: true,
             min: 0.000001,
-            max: parseFloat(account?.balance || ''),
+            max: parseFloat(account.balance),
           })}
         />
         <TextField
@@ -147,7 +145,7 @@ export default function SendForm() {
           isRequired
           {...register('gasPayer')}
         />
-        <Button type="submit">{isLoading ? 'Loading' : 'Send'}</Button>
+        <Button type="submit">Send</Button>
       </Stack>
     </form>
   );

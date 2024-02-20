@@ -13,7 +13,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 export type Account = {
   alias: string;
   accountName: string;
-  balance?: string;
+  balance: string;
   devices: Device[];
   network: string;
 };
@@ -122,7 +122,7 @@ const fetchAccountsFromChain = async (localAccounts: Account[]) => {
         accountName,
         network,
         alias,
-        balance: remoteAccount.balance,
+        balance: remoteAccount.balance || '0',
         devices: uniqueDevices.map((device: Device) => {
           const deviceOnChain = remoteAccount.devices.find(
             (d) => d['credential-id'] === device['credential-id'],
@@ -221,6 +221,7 @@ const AccountsProvider = ({ children }: Props) => {
       alias,
       network,
       devices,
+      balance: '0',
     });
 
     return {
