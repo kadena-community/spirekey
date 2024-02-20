@@ -36,7 +36,7 @@ export function Account({
     .map((a) => parseFloat(a?.balance || '0'));
 
   const balancePercentage = calculateBalancePercentage(
-    parseFloat(account?.balance || '0'),
+    parseFloat(account.balance),
     accountBalancesOnNetwork,
   );
 

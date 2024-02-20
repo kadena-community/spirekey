@@ -24,7 +24,7 @@ export default function CardBottom({ account }: CardBottomProps) {
       </Stack>
       <Stack>
         <span className={balanceLabel}>Balance</span>
-        <span className={balance}>{account.balance || 0}</span>
+        <span className={balance}>{account.balance}</span>
       </Stack>
     </>
   );

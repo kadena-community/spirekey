@@ -79,6 +79,7 @@ export default function Recover() {
           deviceType: device.deviceType || 'phone',
           color: device.color || deviceColors.purple,
         })),
+        balance: '0'
       });
     });
 
