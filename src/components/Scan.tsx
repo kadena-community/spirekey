@@ -109,11 +109,11 @@ export const Scan = () => {
 
     return setupCamera(video, canvas, setResult);
   }, [shouldLoad]);
-  
+
   useEffect(() => {
     if (!result) return;
     router.push(result);
-  }, [result])
+  }, [result]);
 
   return (
     <Card fullWidth>

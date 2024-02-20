@@ -1,13 +1,12 @@
 'use client';
 
-import React from 'react';
 import { Box } from '@kadena/react-ui';
 import dynamic from 'next/dynamic';
+import React from 'react';
 
-const SendForm = dynamic(
-  () => import('@/components/SendForm/SendForm'),
-  { ssr: false },
-);
+const SendForm = dynamic(() => import('@/components/SendForm/SendForm'), {
+  ssr: false,
+});
 
 export default function SendPage() {
   return (

@@ -7,6 +7,7 @@ import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { asyncPipe } from '@/utils/asyncPipe';
 import { l1Client } from '@/utils/client';
 import { decodeAccount } from '@/utils/decodeAccount';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { createTransaction } from '@kadena/client';
 import {
   Card,
@@ -25,7 +26,6 @@ import {
   uploadModuleTransaction,
   validateJson,
 } from './pact.utils';
-import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 
 const FORM_DEFAULT = {
   chainId: process.env.CHAIN_ID!,

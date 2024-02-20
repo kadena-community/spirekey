@@ -5,11 +5,7 @@ import { useSign } from '@/hooks/useSign';
 import { l1Client } from '@/utils/client';
 import { transfer } from '@/utils/transfer';
 import { isSignedTransaction } from '@kadena/client';
-import {
-  Button,
-  Stack,
-  TextField,
-} from '@kadena/react-ui';
+import { Button, Stack, TextField } from '@kadena/react-ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -35,8 +31,8 @@ export default function SendForm() {
   const pubkeys = device?.guard.keys || [];
   const network = account?.network || '';
   const decodedAccount = Array.isArray(caccount)
-  ? decodeURIComponent(caccount[0])
-  : decodeURIComponent(caccount);
+    ? decodeURIComponent(caccount[0])
+    : decodeURIComponent(caccount);
   const publicKey = pubkeys[0] || '';
 
   const defaultValues = {
@@ -88,10 +84,15 @@ export default function SendForm() {
   const gasPayer = watch('gasPayer');
 
   useEffect(() => {
-    if (gasPayer !== account?.accountName || amount !== parseFloat(account.balance || '')) {
+    if (
+      gasPayer !== account?.accountName ||
+      amount !== parseFloat(account.balance || '')
+    ) {
       return setAmountInfo('');
     }
-    setAmountInfo('Paying for gas will fail when you transfer your full balance')
+    setAmountInfo(
+      'Paying for gas will fail when you transfer your full balance',
+    );
   }, [amount, gasPayer, account]);
 
   return (
@@ -119,11 +120,15 @@ export default function SendForm() {
               <Button
                 variant="contained"
                 className={style.maxButton}
-                onClick={() => setValue('amount', parseFloat(account?.balance || ''))}
+                onClick={() =>
+                  setValue('amount', parseFloat(account?.balance || ''))
+                }
               >
                 <span className={style.maxButtonText}>MAX</span>
               </Button>
-              <span className={style.balanceText}>{account?.balance} KDA account balance</span>
+              <span className={style.balanceText}>
+                {account?.balance} KDA account balance
+              </span>
             </Stack>
           }
           defaultValue={defaultValues.amount.toString()}

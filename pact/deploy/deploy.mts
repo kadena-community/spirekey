@@ -1,23 +1,23 @@
 import {
-  addSigner,
-  setMeta,
-  setNetworkId,
-  composePactCommand,
-  execution,
-  addData,
-} from "@kadena/client/fp";
-import { readFileSync } from "fs";
-import {
+  ChainId,
+  IClient,
+  ICommand,
+  ICommandResult,
+  ITransactionDescriptor,
+  IUnsignedCommand,
   createClient,
   createTransaction,
-  IClient,
-  IUnsignedCommand,
-  ChainId,
-  ICommand,
-  ITransactionDescriptor,
-  ICommandResult,
-} from "@kadena/client";
-import { sign } from "@kadena/cryptography-utils";
+} from '@kadena/client';
+import {
+  addData,
+  addSigner,
+  composePactCommand,
+  execution,
+  setMeta,
+  setNetworkId,
+} from '@kadena/client/fp';
+import { sign } from '@kadena/cryptography-utils';
+import { readFileSync } from 'fs';
 
 const asyncPipe =
   (...args: any) =>
@@ -40,10 +40,10 @@ export type DeployConfig = {
 
 export type DeploySettings = Omit<
   DeployConfig,
-  "code" | "data" | "host" | "chainId"
+  'code' | 'data' | 'host' | 'chainId'
 > & {
-  data?: DeployConfig["data"];
-  code?: DeployConfig["code"];
+  data?: DeployConfig['data'];
+  code?: DeployConfig['code'];
   dataFile?: string;
   codeFile?: string;
   hosts: {
@@ -70,11 +70,11 @@ const composeDeployCommand = ({
     }),
     setNetworkId(networkId),
     addSigner(keypair.publicKey, (withCapability) =>
-      caps.map((capArgs) => withCapability.apply({}, capArgs))
+      caps.map((capArgs) => withCapability.apply({}, capArgs)),
     ),
     ...Object.entries(data || {}).map(([key, value]) =>
-      addData(key, value as any)
-    )
+      addData(key, value as any),
+    ),
   );
 
 const signWithKeyPair =
@@ -100,26 +100,26 @@ const signSubmitListen = (client: IClient, config: DeployConfig) =>
       asyncPipe(
         () => client.listen(tx),
         (tx: ICommandResult) => {
-          if (tx.result.status === "success")
-            return console.log("success:", tx.result.data);
+          if (tx.result.status === 'success')
+            return console.log('success:', tx.result.data);
           return console.error(tx.result.error);
-        }
-      )
+        },
+      ),
   );
 
 const deploy = async (config: DeployConfig) => {
   const client = createClient(
     ({ chainId, networkId }) =>
-      `${config.host}/chainweb/0.0/${networkId}/chain/${chainId}/pact`
+      `${config.host}/chainweb/0.0/${networkId}/chain/${chainId}/pact`,
   );
   return asyncPipe(
     composeDeployCommand(config),
     composePactCommand(
       setMeta({
         chainId: config.chainId,
-      })
+      }),
     ),
-    signSubmitListen(client, config)
+    signSubmitListen(client, config),
   )({});
 };
 
@@ -129,16 +129,16 @@ const mapDeployConfig = (config: DeploySettings) =>
       ...config,
       host,
       chainId,
-    }))
+    })),
   );
 
-const mapData = ({ dataFile, ...config }: Omit<DeploySettings, "hosts">) => {
+const mapData = ({ dataFile, ...config }: Omit<DeploySettings, 'hosts'>) => {
   if (dataFile)
     return { ...config, data: JSON.parse(readFileSync(dataFile).toString()) };
   return config;
 };
 
-const mapCode = ({ codeFile, ...config }: Omit<DeploySettings, "hosts">) => {
+const mapCode = ({ codeFile, ...config }: Omit<DeploySettings, 'hosts'>) => {
   if (codeFile) return { ...config, code: readFileSync(codeFile).toString() };
   return config;
 };
@@ -147,11 +147,11 @@ export const local = async (
   code: string,
   host: string,
   networkId: string,
-  chainId: any
+  chainId: any,
 ) => {
   const client = createClient(
     ({ chainId, networkId }) =>
-      `${host}/chainweb/0.0/${networkId}/chain/${chainId}/pact`
+      `${host}/chainweb/0.0/${networkId}/chain/${chainId}/pact`,
   );
   return asyncPipe(
     composePactCommand(
@@ -162,11 +162,11 @@ export const local = async (
         gasPrice: 0.00000001,
         chainId,
       }),
-      setNetworkId(networkId)
+      setNetworkId(networkId),
     ),
     createTransaction,
     (tx: any) => client.local(tx, { preflight: false }),
-    (tx: any) => tx.result.data
+    (tx: any) => tx.result.data,
   )({});
 };
 
@@ -178,8 +178,8 @@ export default async function deployWith(config: DeploySettings[]) {
 
   const queuedUpTxs: Function[] = [];
   for (const config of deployConfig) {
-    console.log("deploying", config.code);
-    console.log("host:", config.host, "chain:", config.chainId);
+    console.log('deploying', config.code);
+    console.log('host:', config.host, 'chain:', config.chainId);
     queuedUpTxs.push(await deploy(config as DeployConfig));
   }
 

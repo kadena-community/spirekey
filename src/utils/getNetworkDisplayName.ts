@@ -1,4 +1,4 @@
-import { getDevnetNetworkId } from "./getDevnetNetworkId";
+import { getDevnetNetworkId } from './getDevnetNetworkId';
 
 export const getNetworkDisplayName = (network: string) => {
   if (network === 'mainnet01') return 'Mainnet';

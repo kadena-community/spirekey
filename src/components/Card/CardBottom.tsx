@@ -15,9 +15,7 @@ type CardBottomProps = {
   isActive?: boolean;
 };
 
-export default function CardBottom({
-  account,
-}: CardBottomProps) {
+export default function CardBottom({ account }: CardBottomProps) {
   return (
     <>
       <Stack alignItems="center">

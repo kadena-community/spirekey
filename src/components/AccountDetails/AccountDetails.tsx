@@ -2,10 +2,16 @@ import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { Account } from '@/context/AccountsContext';
 import { getChainwebDataUrl } from '@/context/NetworkContext';
 import { Grid, GridItem } from '@kadena/react-ui';
-import useSWR from 'swr';
-import { details, transactionAddress, transactionAmount, transactionAmountVariants, transactionDate } from './AccountDetails.css';
 import classNames from 'classnames';
 import { Fragment } from 'react';
+import useSWR from 'swr';
+import {
+  details,
+  transactionAddress,
+  transactionAmount,
+  transactionAmountVariants,
+  transactionDate,
+} from './AccountDetails.css';
 
 interface AccountDetailsProps {
   account: Account;
@@ -46,11 +52,17 @@ export function AccountDetails({ account }: AccountDetailsProps) {
               }
             />
           </GridItem>
-          <GridItem columnSpan={2} className={transactionDate}>{new Date(tx.blockTime).toLocaleString()}</GridItem>
+          <GridItem columnSpan={2} className={transactionDate}>
+            {new Date(tx.blockTime).toLocaleString()}
+          </GridItem>
           <GridItem
-            className={classNames([transactionAmount, transactionAmountVariants({
-              variant: tx.fromAccount === account.accountName ? 'debet' : 'credit',
-            })])}
+            className={classNames([
+              transactionAmount,
+              transactionAmountVariants({
+                variant:
+                  tx.fromAccount === account.accountName ? 'debet' : 'credit',
+              }),
+            ])}
           >
             {parseFloat(tx.amount).toFixed(2)}
           </GridItem>
