@@ -3,7 +3,7 @@
 import { Button } from '@/components/Button/Button';
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
 import { Surface } from '@/components/Surface/Surface';
-import { useAccounts } from '@/context/AccountsContext';
+import { Account, useAccounts } from '@/context/AccountsContext';
 import { useSign } from '@/hooks/useSign';
 import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
 import { getLabels } from '@/utils/signUtils';
@@ -22,7 +22,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import fingerprint from '@/assets/images/fingerprint.svg';
-import { ICommandPayload } from '@kadena/types';
+import { usePreviewEvents } from '@/hooks/usePreviewEvents';
+import type { ICommandPayload, IPactEvent } from '@kadena/types';
 import { container, step, wrapper } from './page.css';
 
 interface SignProps {
@@ -78,6 +79,8 @@ export default function Sign(req: SignProps) {
     }
   }, [redirectLocation, isReadyToSubmit, router, returnUrl, autoRedirect]);
 
+  const { events } = usePreviewEvents(req.searchParams);
+
   const onSign = async (deviceIndex: number) => {
     const signedTx = await sign(tx, devices?.[deviceIndex]?.['credential-id']!);
 
@@ -110,6 +113,21 @@ export default function Sign(req: SignProps) {
     setAutoRedirect(!autoRedirect);
   };
 
+  const isCoinEventForAccounts =
+    (accounts: Account[]) => (event: IPactEvent) => {
+      if (event.module.name !== 'coin') return false;
+      if (event.module.namespace) return false;
+      if (!event.params[0]) return false;
+      return accounts.some(
+        (account) => event.params[0] === account.accountName,
+      );
+    };
+  const coinEvents = events?.filter(isCoinEventForAccounts(accounts));
+  const otherEvents = events?.filter((event) => {
+    if (event.module.name === 'webauthn-wallet' && event.name === 'TRANSFER')
+      return false;
+    return !isCoinEventForAccounts(accounts)(event);
+  });
   return (
     <>
       <Stack flexDirection="column" gap="md" alignItems="center" margin="xl">
@@ -136,8 +154,8 @@ export default function Sign(req: SignProps) {
             <option value="fr">Français</option>
           </SelectItem>
         </Select> */}
-        {getLabels(txData.signers, language).map((x) => (
-          <Box key={x.label} width="100%">
+        {getLabels(txData.signers, language).map((x, index) => (
+          <Box key={x.label + index} width="100%">
             <Heading variant="h6">{x.label}</Heading>
             <Stack alignItems="center" gap="sm">
               <Text>{x.description ?? 'No description available'}</Text>
@@ -172,6 +190,50 @@ export default function Sign(req: SignProps) {
             </Box>
           </Box>
         ))}
+        <Box width="100%">
+          <Heading variant="h6">Events</Heading>
+          <Text>
+            <details>
+              <summary>View coin events</summary>
+
+              {coinEvents?.length
+                ? coinEvents.map((event) => (
+                    <>
+                      <h3>
+                        {event.module.namespace
+                          ? event.module.namespace + '.'
+                          : ''}
+                        {event.module.name}:{event.name}
+                      </h3>
+                      <Text>
+                        You will be paying {event.params[1].toString()}:{' '}
+                        {event.params[2].toString()}
+                      </Text>
+                    </>
+                  ))
+                : 'No KDA will be transfered in this transaction using this account.'}
+            </details>
+            <details>
+              <summary>View other events</summary>
+              {!!otherEvents?.length &&
+                otherEvents.map((event) => (
+                  <>
+                    <h3>
+                      {event.module.namespace
+                        ? event.module.namespace + '.'
+                        : ''}
+                      {event.module.name}:{event.name}
+                    </h3>
+                    <Text>
+                      {event.params.map((param) => (
+                        <p>{JSON.stringify(param)}</p>
+                      ))}
+                    </Text>
+                  </>
+                ))}
+            </details>
+          </Text>
+        </Box>
         <Box width="100%">
           <Text variant="base">
             <details>
