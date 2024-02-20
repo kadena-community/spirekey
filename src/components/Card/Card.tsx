@@ -5,14 +5,7 @@ import classnames from 'classnames';
 import Image from 'next/image';
 import { ReactNode } from 'react';
 import CardLogo from '../../assets/images/card-logo.svg';
-import {
-  accountAliasContainer,
-  card,
-  cardContentBottom,
-  cardContentContainer,
-  cardLogo,
-  txAndBalance,
-} from './Card.css';
+import * as styles from './Card.css';
 
 type CardProps = {
   color?: string;
@@ -38,7 +31,7 @@ export default function Card({
   return (
     <Box
       data-testid="card"
-      className={classnames(card, 'card')} // class `card` is needed for the `CardCollection` component
+      className={classnames(styles.card, 'card')} // class `card` is needed for the `CardCollection` component
       style={
         {
           '--card-progress': `${balancePercentage}%`,
@@ -50,13 +43,13 @@ export default function Card({
       <Stack
         flexDirection="column"
         justifyContent="space-between"
-        className={cardContentContainer}
+        className={styles.cardContentContainer}
       >
         <Stack flexDirection="row">
           <Stack
             flexDirection="row"
             alignItems="center"
-            className={accountAliasContainer}
+            className={styles.accountAliasContainer}
           >
             {title}
           </Stack>
@@ -69,12 +62,12 @@ export default function Card({
           flexDirection="row"
           justifyContent="space-between"
           alignItems="flex-end"
-          className={cardContentBottom}
+          className={styles.cardContentBottom}
         >
-          <Stack flexDirection="column" className={txAndBalance}>
+          <Stack flexDirection="column" className={styles.txAndBalance}>
             {cardBottom}
           </Stack>
-          <Image src={CardLogo} alt="Card logo" className={cardLogo} />
+          <Image src={CardLogo} alt="Card logo" className={styles.cardLogo} />
         </Stack>
       </Stack>
     </Box>

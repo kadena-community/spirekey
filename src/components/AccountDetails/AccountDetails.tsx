@@ -44,7 +44,6 @@ export function AccountDetails({ account }: AccountDetailsProps) {
           <GridItem columnSpan={2}>
             <MaskedValue
               className={transactionAddress}
-              startUnmaskedValues={16}
               value={
                 tx.fromAccount === account.accountName
                   ? tx.toAccount
@@ -64,7 +63,7 @@ export function AccountDetails({ account }: AccountDetailsProps) {
               }),
             ])}
           >
-            {parseFloat(tx.amount).toFixed(2)}
+            {parseFloat(tx.amount)}
           </GridItem>
         </Fragment>
       ))}

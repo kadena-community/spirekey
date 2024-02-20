@@ -1,5 +1,7 @@
 import { Account } from '@/context/AccountsContext';
+import { getChainwebDataUrl } from '@/context/NetworkContext';
 import { Stack } from '@kadena/react-ui';
+import useSWR from 'swr';
 import {
   balance,
   balanceLabel,
@@ -7,24 +9,30 @@ import {
   transactionsLabel,
 } from './Card.css';
 
-type CardBottomProps = {
+interface CardBottomProps {
   account: Account;
-  onClick?: (account: Account) => void;
-  balancePercentage?: number;
-  isCollapsed?: boolean;
-  isActive?: boolean;
-};
+}
 
 export default function CardBottom({ account }: CardBottomProps) {
+  const domain = getChainwebDataUrl(account.network || '');
+  const { data } = useSWR(
+    `${domain}/txs/account/${encodeURIComponent(account.accountName)}`,
+    async (url: string) => {
+      return await fetch(url).then((res) => res.json());
+    },
+  );
+
   return (
     <>
       <Stack alignItems="center">
         <span className={transactionsLabel}># TX</span>
-        <span className={transactions}>0</span>
+        <span className={transactions}>{data?.length}</span>
       </Stack>
       <Stack>
         <span className={balanceLabel}>Balance</span>
-        <span className={balance}>{account.balance}</span>
+        <span className={balance}>
+          {account.balance && `${account.balance} KDA`}
+        </span>
       </Stack>
     </>
   );

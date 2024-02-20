@@ -25,11 +25,13 @@ export const MaskedValue: FC<IMaskedValueProps> = ({
   const end = value.slice(-endUnmaskedValues);
 
   return (
-    <div
+    <span
       data-testid="accountName"
       className={classNames(className, valueContainer)}
     >
-      {start}...{end}
-    </div>
+      {value.length <= startUnmaskedValues + endUnmaskedValues
+        ? value
+        : `${start}...${end}`}
+    </span>
   );
 };
