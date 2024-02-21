@@ -18,6 +18,7 @@ export default function CardBottom({ account }: CardBottomProps) {
   const { data } = useSWR(
     `${domain}/txs/account/${encodeURIComponent(account.accountName)}`,
     async (url: string) => {
+      if (!account.accountName) return {};
       return await fetch(url).then((res) => res.json());
     },
   );
