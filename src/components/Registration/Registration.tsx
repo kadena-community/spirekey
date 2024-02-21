@@ -144,7 +144,10 @@ export default function Registration({ redirectUrl }: Props) {
         });
       }
 
-      if (Boolean(process.env.INSTA_FUND)) {
+      if (
+        Boolean(process.env.INSTA_FUND) &&
+        data.networkId === getDevnetNetworkId()
+      ) {
         // fire and forget
         fundAccount({ account: data.accountName, network: data.networkId });
       }
