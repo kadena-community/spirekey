@@ -5,7 +5,6 @@ import { useAccounts } from '@/context/AccountsContext';
 import { useRegistrationForm } from '@/hooks/useRegistrationForm';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { deviceColors } from '@/styles/tokens.css';
-import { fundAccount } from '@/utils/fund';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { getAccountName } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
