@@ -91,11 +91,3 @@ docker volume create l1
 
 Now clear your local storage of your wallet domain. On localhost by default it
 will be [http://localhost:1337].
-
-## Contributing
-
-Before creating a pull request, make sure that your code changes are properly
-formatted. In Visual Studio Code you can install the recommended
-[Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-extension, enable `Editor: Format On Save` and set `Prettier - Code formatter`
-as the `Editor: Default Formatter`.
