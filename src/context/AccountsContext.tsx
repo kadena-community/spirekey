@@ -2,6 +2,7 @@
 
 import { getAccountFrom } from '@/utils/account';
 import { l1Client } from '@/utils/client';
+import { fundAccount } from '@/utils/fund';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import {
   getWebAuthnPubkeyFormat,
@@ -245,6 +246,14 @@ const AccountsProvider = ({ children }: Props) => {
         delete device.pendingRegistrationTx;
         break;
       }
+    }
+
+    if (
+      process.env.INSTA_FUND === 'true' &&
+      account.network === getDevnetNetworkId()
+    ) {
+      // fire and forget
+      fundAccount({ account: account.accountName, network: account.network });
     }
 
     setAccount(account);
