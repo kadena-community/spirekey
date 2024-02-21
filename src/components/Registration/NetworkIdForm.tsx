@@ -13,7 +13,7 @@ type Props = Pick<FormData, 'networkId'> & FormUtils;
 
 const getDescription = (networkId: string) => {
   const dev = ' For development purposes only';
-  const main = ' WebAuthn wallets are not yet supported on Mainnet';
+  const main = '';
 
   return (
     <Text>
