@@ -131,7 +131,10 @@ export default function Registration({ redirectUrl }: Props) {
         network: data.networkId,
       });
 
-      if (process.env.AUTO_REGISTER_MAINNET === 'true') {
+      if (
+        process.env.AUTO_REGISTER_MAINNET === 'true' &&
+        data.networkId !== 'mainnet01'
+      ) {
         registerAccount({
           caccount: data.accountName,
           alias: data.alias,

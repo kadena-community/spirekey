@@ -29,7 +29,7 @@ import {
 
 const FORM_DEFAULT = {
   chainId: process.env.CHAIN_ID!,
-  networkdId: process.env.NETWORK_ID || getDevnetNetworkId(),
+  networkdId: getDevnetNetworkId(),
   code: '',
   file: null as FileList | null,
   contractData: JSON.stringify({}),

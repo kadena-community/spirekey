@@ -41,7 +41,7 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
   const { orders, markOrderAsReady, saveDelivery, refreshOrders } = useDelivery(
     {
       chainId: process.env.CHAIN_ID as ChainId,
-      networkId: process.env.NETWORK_ID!,
+      networkId: process.env.DAPP_NETWORK_ID!,
     },
   );
   const markAsReady = (orderId: string) => async () => {

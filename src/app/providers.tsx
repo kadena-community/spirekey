@@ -2,10 +2,9 @@
 
 import { darkThemeClass } from '@kadena/react-ui/styles';
 import { ThemeProvider } from 'next-themes';
-import { ReactNode, Suspense } from 'react';
+import { ReactNode } from 'react';
 
 import { AccountsProvider } from '@/context/AccountsContext';
-import { NetworkProvider } from '@/context/NetworkContext';
 import { SWRConfig } from 'swr';
 
 function localStorageProvider() {
@@ -26,20 +25,18 @@ function localStorageProvider() {
 export default function Providers({ children }: { children: ReactNode }) {
   return (
     <SWRConfig value={{ provider: localStorageProvider }}>
-      <NetworkProvider defaultNetwork={process.env.NETWORK_ID || 'testnet04'}>
-        <AccountsProvider>
-          <ThemeProvider
-            attribute="class"
-            enableSystem={false}
-            value={{
-              dark: darkThemeClass,
-            }}
-            defaultTheme="dark"
-          >
-            {children}
-          </ThemeProvider>
-        </AccountsProvider>
-      </NetworkProvider>
+      <AccountsProvider>
+        <ThemeProvider
+          attribute="class"
+          enableSystem={false}
+          value={{
+            dark: darkThemeClass,
+          }}
+          defaultTheme="dark"
+        >
+          {children}
+        </ThemeProvider>
+      </AccountsProvider>
     </SWRConfig>
   );
 }

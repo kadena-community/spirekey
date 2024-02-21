@@ -1,5 +1,5 @@
 import { Account } from '@/context/AccountsContext';
-import { getChainwebDataUrl } from '@/context/NetworkContext';
+import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
 import { Stack } from '@kadena/react-ui';
 import useSWR from 'swr';
 import {

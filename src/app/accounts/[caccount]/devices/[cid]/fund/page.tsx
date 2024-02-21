@@ -1,6 +1,6 @@
 'use client';
 
-import { useNetwork } from '@/context/NetworkContext';
+import { useAccounts } from '@/context/AccountsContext';
 import { fundAccount } from '@/utils/fund';
 import { Box, Button, Card, ContentHeader, Stack } from '@kadena/react-ui';
 import { useParams, useRouter } from 'next/navigation';
@@ -9,18 +9,22 @@ import React, { useState } from 'react';
 export default function FundPage() {
   const params = useParams();
   const router = useRouter();
-  const { network } = useNetwork();
+  const { accounts } = useAccounts();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
 
   const caccount = decodeURIComponent(params.caccount.toString());
 
+  const account = accounts.find((a) => a.accountName === caccount);
+
   const handleFundAccount = async () => {
+    if (!account) return;
+
     try {
       setLoading(true);
       if (!caccount) throw new Error('No account selected');
 
-      await fundAccount({ account: caccount, network });
+      await fundAccount(account);
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
@@ -32,6 +36,10 @@ export default function FundPage() {
       );
     }
   };
+
+  if (!account) {
+    return <p>Account not found</p>;
+  }
 
   return (
     <Box margin="lg">
