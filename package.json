@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "deploy": "tsx pact/deploy/deploy-contracts.mts",
+    "deploy": "tsx src/utils/deploy.ts ./pact/deploy/deploy.json",
     "deploy:dev": "tsx src/utils/deploy.ts ./pact/deploy/local-init.json",
     "deploy:testnet": "tsx src/utils/deploy.ts ./pact/deploy/testnet-init.json",
     "dev": "next dev --port 1337",

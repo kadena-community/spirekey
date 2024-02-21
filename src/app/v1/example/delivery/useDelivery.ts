@@ -33,6 +33,31 @@ type ChainOrder = {
   };
 };
 
+const getDeliveryEscrowId = async ({
+  chainId,
+  networkId,
+}: {
+  chainId: ChainId;
+  networkId: string;
+}) =>
+  asyncPipe(
+    composePactCommand(
+      execution(
+        `n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.ESCROW_ID`,
+      ),
+      setMeta({
+        chainId,
+      }),
+      setNetworkId(networkId),
+    ),
+    createTransaction,
+    (tx) => l1Client.local(tx, { preflight: false }),
+    (tx) => {
+      if (tx?.result?.status !== 'success') return null;
+      return tx.result.data;
+    },
+  )({});
+
 const getDeliveriesByIds = async ({
   ids,
   chainId,
@@ -58,7 +83,6 @@ const getDeliveriesByIds = async ({
     createTransaction,
     (tx) => l1Client.local(tx, { preflight: false }),
     (tx) => {
-      console.log('tx', tx);
       if (tx?.result?.status !== 'success') return null;
       return tx.result.data.map((x: ChainOrder) => {
         if (!x.order) return x;
@@ -115,11 +139,21 @@ const createOrder = async ({
 
   localStorage.setItem('newOrderId', orderHash);
 
+  const escrowId = await getDeliveryEscrowId({ chainId, networkId });
   return asyncPipe(
     composePactCommand(
       execution(
         `(n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.create-order
           "${orderHash}"
+          [
+            {
+              "line-id": "order-line-1-hash",
+              "price"  : ${orderPrice.toFixed(12)}
+            }, {
+              "line-id": "order-line-2-hash",
+              "price"  : ${deliveryPrice.toFixed(12)}
+            }
+          ]
           "${merchantAccount}"
           (n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.get-wallet-guard "${merchantAccount}")
           "${customerAccount}"
@@ -138,8 +172,22 @@ const createOrder = async ({
         { pubKey: customerPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
           withCap(
-            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER',
+            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE',
             orderHash,
+            'order-line-1-hash',
+            { decimal: orderPrice.toFixed(12) },
+          ),
+          withCap(
+            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE',
+            orderHash,
+            'order-line-2-hash',
+            { decimal: deliveryPrice.toFixed(12) },
+          ),
+          withCap(
+            `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.TRANSFER`,
+            customerAccount,
+            escrowId,
+            { decimal: (orderPrice + deliveryPrice).toFixed(12) },
           ),
           withCap(
             `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.GAS_PAYER`,
@@ -154,8 +202,22 @@ const createOrder = async ({
         { pubKey: merchantPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
           withCap(
-            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER',
+            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE',
             orderHash,
+            'order-line-1-hash',
+            { decimal: orderPrice.toFixed(12) },
+          ),
+          withCap(
+            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE',
+            orderHash,
+            'order-line-2-hash',
+            { decimal: deliveryPrice.toFixed(12) },
+          ),
+          withCap(
+            `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.TRANSFER`,
+            merchantAccount,
+            escrowId,
+            { decimal: orderPrice.toFixed(12) },
           ),
         ],
       ),
@@ -332,16 +394,13 @@ export const useDelivery = ({
 }) => {
   const { data, mutate } = useSWR<Order[]>('deliveries', async () => {
     const deliveryIds = JSON.parse(localStorage.getItem('deliveryIds') || '[]');
-    console.log('ok ok');
     const orders: Order[] = await getDeliveriesByIds({
       ids: deliveryIds,
       chainId,
       networkId,
     });
-    console.log('orders', orders);
     return orders;
   });
-  console.log('data', data);
   const saveDelivery = (id: string) => {
     const deliveryIds = new Set<string>(
       JSON.parse(localStorage.getItem('deliveryIds') || '[]'),
