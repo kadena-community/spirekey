@@ -122,10 +122,6 @@ export const device = style({
   width: '1.5rem',
 });
 
-export const cardContentCenter = style({
-  marginBlockStart: 'clamp(0px, 4vw, 1.5rem)',
-});
-
 export const network = style([
   atoms({
     fontWeight: 'bodyFont.regular',

@@ -6,7 +6,7 @@ import { useCopyToClipboard } from 'usehooks-ts';
 import { AccountRevealer } from '../AccountRevealer/AccountRevealer';
 
 import * as styles from './AccountNetwork.css';
-import { cardContentCenter, network } from './Card.css';
+import { network } from './Card.css';
 
 type AccountNetworkProps = {
   account: Account;
@@ -33,7 +33,7 @@ export default function AccountNetwork({
   const [accountNamespace, accountName] = account.accountName.split(':');
 
   return (
-    <Stack flexDirection="column" className={cardContentCenter}>
+    <Stack flexDirection="column">
       <Stack flexDirection="row" alignItems="center" className={styles.account}>
         {accountName && (
           <span className={styles.namespace}>{accountNamespace}:</span>
