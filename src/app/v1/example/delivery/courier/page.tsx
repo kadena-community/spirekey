@@ -76,6 +76,12 @@ export default function CourierPage({ searchParams }: CourierProps) {
   const router = useRouter();
   const { getReturnUrl } = useReturnUrl();
 
+  const merchantAccount = process.env.MERCHANT_ACCOUNT;
+
+  if (!merchantAccount) {
+    throw new Error('Merchant account is not configured.');
+  }
+
   useEffect(() => {
     if (!messages.length) return;
     messages
@@ -95,7 +101,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
     send(
       {
         id: '1234',
-        publicKey: 'c:-BtZKCieonbuxQHJocDqdUXMZgHwN4XDNQjXXSaTJDo',
+        publicKey: merchantAccount,
       },
       {
         type: 'id',
@@ -174,7 +180,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
       send(
         {
           id: '1234',
-          publicKey: 'c:-BtZKCieonbuxQHJocDqdUXMZgHwN4XDNQjXXSaTJDo',
+          publicKey: merchantAccount,
         },
         {
           type: 'tx',
