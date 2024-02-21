@@ -11,7 +11,7 @@
   (defcap GOVERNANCE()
     (enforce-guard GOVERNANCE_KEYSET)
   )
-  
+
   (defcap DEBIT(account:string)
     (webauthn-guard.enforce-authenticated account)
   )

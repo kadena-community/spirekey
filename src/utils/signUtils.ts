@@ -39,9 +39,16 @@ const getDescription = (key: string, args: any, language: string) => {
     title: translation.title,
     description: translation.description.replace(
       /\{\{(\w+)\}\}/g,
-      (match: string, index: string) => args[parseInt(index, 10)] || match,
+      (match: string, index: string) =>
+        toValue(args[parseInt(index, 10)]) || match,
     ),
   };
+};
+
+const toValue = (x: any) => {
+  if (x?.decimal) return x.decimal;
+  if (x?.int) return x.int;
+  return x;
 };
 
 const getArgValue = (x: any) => (x?.decimal ? x.decimal : x?.int ? x.int : x);

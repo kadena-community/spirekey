@@ -42,6 +42,8 @@
   ]
 )
 (begin-tx "Load webauthn contract")
+(load "webauthn-guard.pact")
+(load "webauthn-wallet.pact")
 (load "coin-delivery.pact")
 (commit-tx)
 
@@ -54,14 +56,112 @@
   , 'courier-keyset  : ["courier-public-key"]
   }
 )
-(begin-tx "Prepare test accounts")
-  (test-capability (coin.COINBASE))
-  (coin.coinbase "merchant-account" (read-keyset 'merchant-keyset) 1000.0)
-  (coin.coinbase "buyer-account" (read-keyset 'buyer-keyset) 1000.0)
-  (coin.coinbase "courier-account" (read-keyset 'courier-keyset) 1000.0)
-  
+(begin-tx "Register a new webauthn-wallet")
+(let* (
+  (merchant-guard (read-keyset 'merchant-keyset))
+  (buyer-guard (read-keyset 'buyer-keyset))
+  (courier-guard (read-keyset 'courier-keyset))
+  (merchant (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.create-wallet
+    1 1
+    [{ 'name          : 'phone
+     , 'credential-id : 'xysDsaI
+     , 'domain        : "www.example.com"
+     , 'guard         : merchant-guard
+     }
+    ]
+  ))
+  (buyer (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.create-wallet
+    1 1
+    [{ 'name          : 'phone
+     , 'credential-id : 'xysDsaI
+     , 'domain        : "www.example.com"
+     , 'guard         : buyer-guard
+     }
+    ]
+  ))
+  (courier (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.create-wallet
+    1 1
+    [{ 'name          : 'phone
+     , 'credential-id : 'xysDsaI
+     , 'domain        : "www.example.com"
+     , 'guard         : courier-guard
+     }
+    ]
+  ))
+)
+  (print "-------------------------------")
+  (print [merchant buyer courier])
+  (coin.coinbase merchant (at 'guard (coin.details merchant)) 1000.0)
+  (coin.coinbase buyer (at 'guard (coin.details buyer)) 1000.0)
+  (coin.coinbase courier (at 'guard (coin.details courier)) 1000.0)
+)
 (commit-tx)
-(env-sigs [])
 (env-data {})
+(env-sigs [])
 
-(verify "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.delivery")
+(env-sigs
+  [{ 'key  : "merchant-public-key"
+   , 'caps : [
+      (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.delivery.CREATE_ORDER_LINE
+        "order-id"
+        'line-1
+        100.0
+      )
+      (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.delivery.CREATE_ORDER_LINE
+        "order-id"
+        'line-2
+        10.0
+      )
+      (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.TRANSFER
+        "c:PWRDU5GPeTS8PV7pZKcmu-EuMaldvxqHzD0Jk84GiPk"
+        "c:hMKp8IsGHUbmk3vpNwLYZOppJcYrVv14K3udHklT5Bc"
+        100.0
+      )
+     ]
+   }
+   { 'key  : "buyer-public-key"
+   , 'caps : [
+      (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.delivery.CREATE_ORDER_LINE
+        "order-id"
+        'line-1
+        100.0
+      )
+      (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.delivery.CREATE_ORDER_LINE
+        "order-id"
+        'line-2
+        10.0
+      )
+      (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.TRANSFER
+        "c:OychoUF-sI-Xu8RDNZQufi2SsARBbkUwQomUL8DtWN0"
+        "c:hMKp8IsGHUbmk3vpNwLYZOppJcYrVv14K3udHklT5Bc"
+        110.0
+      )
+    ]
+  }
+])
+(begin-tx "Test order creation")
+(let (
+  (merchant-account "c:PWRDU5GPeTS8PV7pZKcmu-EuMaldvxqHzD0Jk84GiPk")
+  (buyer-account "c:OychoUF-sI-Xu8RDNZQufi2SsARBbkUwQomUL8DtWN0")
+  (courier-account "c:NjhPXJgz5gmY22rY1OgXN2HnK1UIi5KEkmKHcyQ6IOM")
+)
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.delivery.create-order
+    "order-id"
+    [{ 'line-id : 'line-1
+     , 'price   : 100.0
+     }
+     { 'line-id : 'line-2
+     , 'price   : 10.0
+     }
+    ]
+    merchant-account
+    (at 'guard (coin.details merchant-account))
+    buyer-account
+    (at 'guard (coin.details buyer-account))
+    100.0
+    10.0
+  )
+)
+(commit-tx)
+
+(typecheck "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.delivery")

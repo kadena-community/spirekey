@@ -130,6 +130,11 @@
     (compose-capability (RESERVE_FUNDS))
   )
 
+  (defcap CREATE_ORDER_LINE (order-id:string line-id:string price:decimal)
+    @doc "Capability validates that the order line can be created"
+    true
+  )
+
   (defcap SET_READY_FOR_DELIVERY(order-id:string)
     @doc "Capability validates that the order is ready for delivery"
     @event
@@ -176,8 +181,69 @@
     ])
   )
 
+  (defschema order-line-schema
+    @doc "Order line schema"
+    line-id  : string
+    price    : decimal
+  )
+  (defun enforce-and-get-price:decimal (
+    order-id                   : string
+    buyer                      : string
+    buyer-guard                : guard
+    merchant                   : string
+    merchant-guard             : guard
+    line                       : object{order-line-schema}
+  )
+    (bind line
+      { 'line-id := line-id
+      , 'price   := price
+      }
+      (with-capability (CREATE_ORDER_LINE order-id line-id price)
+        (enforce-capability-guard buyer buyer-guard)
+        (enforce-capability-guard merchant merchant-guard)
+        price
+      )
+    )
+  )
+  (defun enforce-order-lines (
+    order-id       : string
+    order-lines    : [object{order-line-schema}]
+    buyer          : string
+    buyer-guard    : guard
+    merchant       : string
+    merchant-guard : guard
+    order-price    : decimal
+    delivery-price : decimal
+  )
+    (let (
+      (total-price
+        (fold
+          (+)
+          0.0
+          (map
+            (enforce-and-get-price
+              order-id
+              buyer
+              buyer-guard
+              merchant
+              merchant-guard
+            )
+            order-lines
+          )
+        )
+      )
+    )
+      (enforce
+        (= total-price (+ order-price delivery-price))
+        (format "Order lines total price does not match the order price with delivery price {} {}" [order-price total-price])
+      )
+      (enforce (= (floor order-price MINIMUM_PRECISION) order-price) "Order price exeeds minimum allowed precision decimals")
+      (enforce (= (floor delivery-price MINIMUM_PRECISION) delivery-price) "Delivery price exeeds minimum allowed precision decimals")
+    )
+  )
   (defun create-order (
     order-id       : string
+    order-lines    : [object{order-line-schema}]
     merchant       : string
     merchant-guard : guard
     buyer          : string
@@ -194,10 +260,16 @@
     (enforce (validate-principal buyer-guard buyer) "Invalid buyer guard")
 
     (with-capability (CREATE_ORDER order-id)
-      (enforce-capability-guard merchant merchant-guard)
-      (enforce-capability-guard buyer buyer-guard)
-      (enforce (= (floor order-price MINIMUM_PRECISION) order-price) "Order price exeeds minimum allowed precision decimals")
-      (enforce (= (floor delivery-price MINIMUM_PRECISION) delivery-price) "Delivery price exeeds minimum allowed precision decimals")
+      (enforce-order-lines
+        order-id
+        order-lines
+        buyer
+        buyer-guard
+        merchant
+        merchant-guard
+        order-price
+        delivery-price
+      )
       (insert order-table order-id 
         { 'order-status   : CREATED
         , 'merchant       : merchant
@@ -283,7 +355,6 @@
     (require-capability (RESERVE_FUNDS))
     (enforce (!= order-id "") "Order id can not be empty")
     (enforce (is-principal sender) "Sender can not be empty")
-    (install-capability (webauthn-wallet.TRANSFER sender ESCROW_ID amount))
     (webauthn-wallet.transfer sender ESCROW_ID amount)
   )
 
