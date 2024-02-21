@@ -10,7 +10,7 @@ import { Box, Stack } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useConnection } from './Connection';
 import hawaiiImg from './hawaii.webp';
@@ -20,6 +20,8 @@ import pepperoniImg from './pepperoni.webp';
 import { createOrderId, useDelivery } from './useDelivery';
 import { useLoggedInAccount } from './useLoggedInAccount';
 import veggieImg from './veggie.webp';
+import { getAccountFrom } from '@/utils/account';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 
 type DeliveryProps = {
   searchParams: {
@@ -39,11 +41,18 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     networkId: process.env.DAPP_NETWORK_ID!,
   });
   const { status, doSubmit } = useSubmit(searchParams);
-
   const router = useRouter();
+  const [merchantPublicKey, setMerchantPublicKey] = useState<string>('');
+
+  const merchantAccount = process.env.MERCHANT_ACCOUNT;
+
+  if (!merchantAccount) {
+    throw new Error('Merchant account is not configured.');
+  }
+
   const { register, getValues, watch } = useForm({
     defaultValues: {
-      receiver: 'c:-BtZKCieonbuxQHJocDqdUXMZgHwN4XDNQjXXSaTJDo',
+      receiver: merchantAccount,
       amount: 1,
     },
     reValidateMode: 'onChange',
@@ -55,16 +64,15 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     const tx = await createOrder({
       customerAccount: account.accountName,
       customerPublicKey: account.credentials[0].publicKey,
-      merchantAccount: 'c:-BtZKCieonbuxQHJocDqdUXMZgHwN4XDNQjXXSaTJDo',
-      merchantPublicKey:
-        'WEBAUTHN-a5010203262001215820c4518d145cd1ca74d6371dfd24fec692d770ef13335e299533e0cf2bd11286a2225820b956dd1d7d48d3bb4e3a47c0a1cd70c7e3751f0e3fabf50c58ab22fc07033950',
+      merchantAccount,
+      merchantPublicKey,
       deliveryPrice: 2.55,
       orderPrice: 2.55,
       orderId: id,
     });
     const orderId = createOrderId({
       customer: account.accountName,
-      merchant: 'c:-BtZKCieonbuxQHJocDqdUXMZgHwN4XDNQjXXSaTJDo',
+      merchant: merchantAccount,
       orderId: id,
     });
     saveDelivery(orderId);
@@ -84,6 +92,18 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       ).toString('base64')}&returnUrl=${getReturnUrl('/v1/example/delivery')}`,
     );
   };
+
+  useEffect(() => {
+    if (!merchantAccount) return;
+    const fetchMerchantAccount = async () => {
+      const remoteMerchantAccount = await getAccountFrom({
+        networkId: process.env.NETWORK_ID || getDevnetNetworkId(),
+        caccount: merchantAccount,
+      });
+      setMerchantPublicKey(remoteMerchantAccount.devices[0].guard.keys[0]);
+    };
+    fetchMerchantAccount();
+  }, [merchantAccount, setMerchantPublicKey]);
 
   useEffect(() => {
     if (isLoading) return;
