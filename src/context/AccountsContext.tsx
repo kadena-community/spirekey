@@ -253,7 +253,7 @@ const AccountsProvider = ({ children }: Props) => {
       account.network === getDevnetNetworkId()
     ) {
       // fire and forget
-      fundAccount({ account: account.accountName, network: account.network });
+      fundAccount(account);
     }
 
     setAccount(account);

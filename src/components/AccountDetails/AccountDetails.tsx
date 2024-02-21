@@ -1,6 +1,7 @@
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { Account } from '@/context/AccountsContext';
-import { getChainwebDataUrl } from '@/context/NetworkContext';
+
+import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
 import { Grid, GridItem } from '@kadena/react-ui';
 import classNames from 'classnames';
 import { Fragment } from 'react';

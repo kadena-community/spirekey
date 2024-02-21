@@ -70,7 +70,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
   const { account } = useLoggedInAccount(user);
   const { orders, saveDelivery, pickupDelivery, deliverOrder } = useDelivery({
     chainId: process.env.CHAIN_ID as ChainId,
-    networkId: process.env.NETWORK_ID!,
+    networkId: process.env.DAPP_NETWORK_ID!,
   });
   const { isLoading, messages, setId, connect, send } = useConnection();
   const router = useRouter();
@@ -113,7 +113,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
       if (!account) return;
       const merchantAcc = await getAccountFrom({
         caccount: merchant,
-        networkId: process.env.NETWORK_ID!,
+        networkId: process.env.DAPP_NETWORK_ID!,
       });
       const tx = await pickupDelivery({
         orderId,
@@ -136,7 +136,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
       if (!account) return;
       const buyerAccount = await getAccountFrom({
         caccount: buyer,
-        networkId: process.env.NETWORK_ID!,
+        networkId: process.env.DAPP_NETWORK_ID!,
       });
       const tx = await deliverOrder({
         orderId,

@@ -36,7 +36,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   const { getReturnUrl } = useReturnUrl();
   const { orders, createOrder, saveDelivery } = useDelivery({
     chainId: process.env.CHAIN_ID as ChainId,
-    networkId: process.env.NETWORK_ID!,
+    networkId: process.env.DAPP_NETWORK_ID!,
   });
   const { status, doSubmit } = useSubmit(searchParams);
 
