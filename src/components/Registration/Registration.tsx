@@ -131,7 +131,7 @@ export default function Registration({ redirectUrl }: Props) {
         network: data.networkId,
       });
 
-      if (Boolean(process.env.AUTO_REGISTER_MAINNET)) {
+      if (process.env.AUTO_REGISTER_MAINNET === 'true') {
         registerAccount({
           caccount: data.accountName,
           alias: data.alias,
@@ -142,14 +142,6 @@ export default function Registration({ redirectUrl }: Props) {
           domain: host,
           network: 'mainnet01',
         });
-      }
-
-      if (
-        Boolean(process.env.INSTA_FUND) &&
-        data.networkId === getDevnetNetworkId()
-      ) {
-        // fire and forget
-        fundAccount({ account: data.accountName, network: data.networkId });
       }
 
       router.push(completeRedirectUrl);
