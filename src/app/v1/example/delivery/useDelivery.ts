@@ -391,25 +391,31 @@ export const useDelivery = ({
   chainId: ChainId;
   networkId: string;
 }) => {
-  const { data, mutate } = useSWR<Order[]>('deliveries', async () => {
-    const deliveryIds = JSON.parse(localStorage.getItem('deliveryIds') || '[]');
-    const orders: Order[] = await getDeliveriesByIds({
-      ids: deliveryIds,
-      chainId,
-      networkId,
-    });
-    return orders;
+  const { data: deliveryIds, mutate } = useSWR<string[]>('deliveryIds', () => {
+    return JSON.parse(localStorage.getItem('deliveryIds') || '[]');
   });
+  const { data, mutate: updateOrders } = useSWR<Order[]>(
+    () => (deliveryIds ? 'deliveries' : null),
+    async () => {
+      const deliveryIds = JSON.parse(
+        localStorage.getItem('deliveryIds') || '[]',
+      );
+      const orders: Order[] = await getDeliveriesByIds({
+        ids: deliveryIds,
+        chainId,
+        networkId,
+      });
+      return orders;
+    },
+  );
   const saveDelivery = (id: string) => {
     const deliveryIds = new Set<string>(
       JSON.parse(localStorage.getItem('deliveryIds') || '[]'),
     );
     deliveryIds.add(id);
-    localStorage.setItem(
-      'deliveryIds',
-      JSON.stringify(Array.from(deliveryIds).filter(Boolean)),
-    );
-    mutate();
+    const newDeliveryIds = Array.from(deliveryIds).filter(Boolean);
+    localStorage.setItem('deliveryIds', JSON.stringify(newDeliveryIds));
+    mutate(newDeliveryIds);
   };
   const onCreateOrder = (
     orderDetails: Omit<OrderDetails, 'chainId' | 'networkId'>,
@@ -476,5 +482,6 @@ export const useDelivery = ({
     deliverOrder: onDeliverOrder,
     saveDelivery,
     refreshOrders: mutate,
+    updateOrders,
   };
 };

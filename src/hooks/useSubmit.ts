@@ -44,6 +44,7 @@ export const useSubmit = ({ transaction }: Props) => {
 
       setStatus(SubmitStatus.SUCCESS);
       setResult(result);
+      return result;
     } catch (err: any) {
       console.log(err);
       setStatus(SubmitStatus.ERROR);
