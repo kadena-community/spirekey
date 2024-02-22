@@ -68,10 +68,11 @@ const CourierActionCell = ({
 export default function CourierPage({ searchParams }: CourierProps) {
   const { user, transaction } = searchParams;
   const { account } = useLoggedInAccount(user);
-  const { orders, saveDelivery, pickupDelivery, deliverOrder } = useDelivery({
-    chainId: process.env.CHAIN_ID as ChainId,
-    networkId: process.env.DAPP_NETWORK_ID!,
-  });
+  const { orders, saveDelivery, pickupDelivery, deliverOrder, updateOrders } =
+    useDelivery({
+      chainId: process.env.CHAIN_ID as ChainId,
+      networkId: process.env.DAPP_NETWORK_ID!,
+    });
   const { isLoading, messages, setId, connect, send } = useConnection();
   const router = useRouter();
   const { getReturnUrl } = useReturnUrl();
@@ -89,6 +90,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
       .flatMap((m) =>
         m.data.orders.map((order: any) => saveDelivery(order.orderId)),
       );
+    updateOrders();
   }, [messages]);
   useEffect(() => {
     if (isLoading) return;
