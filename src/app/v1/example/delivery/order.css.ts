@@ -13,24 +13,24 @@ export const loadingWrapper = style({
 export const list = style({
   display: 'grid',
   gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-  gap: '1em',
+  gap: '1rem',
   maxWidth: '100%',
   listStyle: 'none',
-  marginBlockStart: '1em',
+  marginBlockStart: '1rem',
   padding: '0',
 });
 
 export const hero = style({
   textAlign: 'center',
   display: 'flex',
-  justifyContent: 'space-evenly',
+  justifyContent: 'space-between',
   alignItems: 'center',
   backgroundColor: 'rgba(0,0,0, .8)',
-  padding: '15px',
+  padding: '1rem 1rem 1rem 2rem',
   position: 'relative',
   width: '80vw',
-  marginTop: '20px',
-  height: '80px',
+  marginTop: '2rem',
+  height: '6rem',
   fontSize: '.8em',
 
   '::before': {
@@ -40,10 +40,14 @@ export const hero = style({
     bottom: 0,
     width: 0,
     height: 0,
-    borderLeft: '40px solid rgba(0, 0, 0, 0.8)',
-    borderTop: '40px solid transparent',
-    borderBottom: '40px solid transparent',
+    borderLeft: '3rem solid rgba(0, 0, 0, 0.8)',
+    borderTop: '3rem solid transparent',
+    borderBottom: '3rem solid transparent',
   },
+});
+
+export const logo = style({
+  height: '100%',
 });
 
 export const dealImg = style({
@@ -57,8 +61,8 @@ export const deals = style({
 
 export const order = style({
   background: 'rgba(0, 0, 0, 0.7)',
-  margin: '25px',
-  padding: '20px 20px',
+  margin: '2em',
+  padding: '2em',
 });
 
 export const button = style({

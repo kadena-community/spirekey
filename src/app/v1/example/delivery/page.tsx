@@ -4,8 +4,11 @@ import pizzaBackground from '@/app/v1/example/delivery/pizzabackground.jpg';
 import { AccountButton } from '@/components/AccountButton';
 import { Button } from '@/components/Button/Button';
 import { PizzaLoader } from '@/components/PizzaLoader/PizzaLoader';
+import { PizzaWorld } from '@/components/icons/PizzaWorld';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
+import { getAccountFrom } from '@/utils/account';
+import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { Box, Stack } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
 import Image from 'next/image';
@@ -20,8 +23,6 @@ import pepperoniImg from './pepperoni.webp';
 import { createOrderId, useDelivery } from './useDelivery';
 import { useLoggedInAccount } from './useLoggedInAccount';
 import veggieImg from './veggie.webp';
-import { getAccountFrom } from '@/utils/account';
-import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 
 type DeliveryProps = {
   searchParams: {
@@ -174,11 +175,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
         `}
       </style>
       <header className={styles.hero}>
-        <img
-          src="https://images.jsworldconference.com/devworld_b41c690105.png?width=60"
-          alt="devworld pizza"
-        />
-        <h1>PIZZAWORLD</h1>
+        <PizzaWorld className={styles.logo} />
         <AccountButton
           className={styles.button}
           user={account}
