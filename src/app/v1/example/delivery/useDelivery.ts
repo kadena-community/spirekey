@@ -42,9 +42,7 @@ const getDeliveryEscrowId = async ({
 }) =>
   asyncPipe(
     composePactCommand(
-      execution(
-        `n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.ESCROW_ID`,
-      ),
+      execution(`${process.env.NAMESPACE}.delivery.ESCROW_ID`),
       setMeta({
         chainId,
       }),
@@ -72,7 +70,7 @@ const getDeliveriesByIds = async ({
       execution(
         `(map (lambda (x) (try 
           { 'order-id: x }
-          (n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.get-order x)
+          (${process.env.NAMESPACE}.delivery.get-order x)
         )) [${ids.map((x) => `"${x}"`).join(' ')}])`,
       ),
       setMeta({
@@ -143,7 +141,7 @@ const createOrder = async ({
   return asyncPipe(
     composePactCommand(
       execution(
-        `(n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.create-order
+        `(${process.env.NAMESPACE}.delivery.create-order
           "${orderHash}"
           [
             {
@@ -155,9 +153,9 @@ const createOrder = async ({
             }
           ]
           "${merchantAccount}"
-          (n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.get-wallet-guard "${merchantAccount}")
+          (${process.env.NAMESPACE}.webauthn-wallet.get-wallet-guard "${merchantAccount}")
           "${customerAccount}"
-          (n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.get-wallet-guard "${customerAccount}")
+          (${process.env.NAMESPACE}.webauthn-wallet.get-wallet-guard "${customerAccount}")
           ${orderPrice.toFixed(12)}
           ${deliveryPrice.toFixed(12)}
          )`,
@@ -172,25 +170,25 @@ const createOrder = async ({
         { pubKey: customerPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
           withCap(
-            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE',
+            `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
             orderHash,
             'order-line-1-hash',
             { decimal: orderPrice.toFixed(12) },
           ),
           withCap(
-            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE',
+            `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
             orderHash,
             'order-line-2-hash',
             { decimal: deliveryPrice.toFixed(12) },
           ),
           withCap(
-            `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.TRANSFER`,
+            `${process.env.NAMESPACE}.webauthn-wallet.TRANSFER`,
             customerAccount,
             escrowId,
             { decimal: (orderPrice + deliveryPrice).toFixed(12) },
           ),
           withCap(
-            `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.GAS_PAYER`,
+            `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
             customerAccount,
             { int: 1 },
             1,
@@ -202,19 +200,19 @@ const createOrder = async ({
         { pubKey: merchantPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
           withCap(
-            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE',
+            `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
             orderHash,
             'order-line-1-hash',
             { decimal: orderPrice.toFixed(12) },
           ),
           withCap(
-            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE',
+            `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
             orderHash,
             'order-line-2-hash',
             { decimal: deliveryPrice.toFixed(12) },
           ),
           withCap(
-            `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.TRANSFER`,
+            `${process.env.NAMESPACE}.webauthn-wallet.TRANSFER`,
             merchantAccount,
             escrowId,
             { decimal: orderPrice.toFixed(12) },
@@ -242,7 +240,7 @@ const markOrderAsReady = async ({
   return asyncPipe(
     composePactCommand(
       execution(
-        `(n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.set-order-ready-for-delivery "${orderId}")`,
+        `(${process.env.NAMESPACE}.delivery.set-order-ready-for-delivery "${orderId}")`,
       ),
       setMeta({
         chainId,
@@ -254,11 +252,11 @@ const markOrderAsReady = async ({
         { pubKey: merchantPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
           withCap(
-            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.SET_READY_FOR_DELIVERY',
+            `${process.env.NAMESPACE}.delivery.SET_READY_FOR_DELIVERY`,
             orderId,
           ),
           withCap(
-            `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.GAS_PAYER`,
+            `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
             merchantAccount,
             { int: 1 },
             1,
@@ -288,10 +286,10 @@ const pickupDelivery = async ({
   return asyncPipe(
     composePactCommand(
       execution(
-        `(n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.pickup-delivery 
+        `(${process.env.NAMESPACE}.delivery.pickup-delivery 
           "${orderId}"
           "${courierAccount}" 
-          (n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.get-wallet-guard "${courierAccount}")
+          (${process.env.NAMESPACE}.webauthn-wallet.get-wallet-guard "${courierAccount}")
         )`,
       ),
       setMeta({
@@ -303,12 +301,9 @@ const pickupDelivery = async ({
         // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: courierPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
+          withCap(`${process.env.NAMESPACE}.delivery.PICKUP_DELIVERY`, orderId),
           withCap(
-            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.PICKUP_DELIVERY',
-            orderId,
-          ),
-          withCap(
-            `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.GAS_PAYER`,
+            `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
             courierAccount,
             { int: 1 },
             1,
@@ -319,10 +314,7 @@ const pickupDelivery = async ({
         // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: merchantPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
-          withCap(
-            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.PICKUP_DELIVERY',
-            orderId,
-          ),
+          withCap(`${process.env.NAMESPACE}.delivery.PICKUP_DELIVERY`, orderId),
         ],
       ),
     ),
@@ -348,7 +340,7 @@ const completeDelivery = async ({
   asyncPipe(
     composePactCommand(
       execution(
-        `(n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.deliver-order "${orderId}")`,
+        `(${process.env.NAMESPACE}.delivery.deliver-order "${orderId}")`,
       ),
       setMeta({
         chainId,
@@ -359,12 +351,9 @@ const completeDelivery = async ({
         // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: buyerPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
+          withCap(`${process.env.NAMESPACE}.delivery.DELIVER_ORDER`, orderId),
           withCap(
-            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.DELIVER_ORDER',
-            orderId,
-          ),
-          withCap(
-            `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.GAS_PAYER`,
+            `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
             buyerAccount,
             { int: 1 },
             1,
@@ -375,10 +364,7 @@ const completeDelivery = async ({
         // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: courierPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
-          withCap(
-            'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.DELIVER_ORDER',
-            orderId,
-          ),
+          withCap(`${process.env.NAMESPACE}.delivery.DELIVER_ORDER`, orderId),
         ],
       ),
     ),
