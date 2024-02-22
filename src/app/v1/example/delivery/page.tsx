@@ -99,7 +99,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     const fetchMerchantAccount = async () => {
       const remoteMerchantAccount = await getAccountFrom({
         networkId: process.env.NETWORK_ID || getDevnetNetworkId(),
-        caccount: merchantAccount,
+        accountName: merchantAccount,
       });
       setMerchantPublicKey(remoteMerchantAccount.devices[0].guard.keys[0]);
     };

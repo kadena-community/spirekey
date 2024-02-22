@@ -120,7 +120,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
     async () => {
       if (!account) return;
       const merchantAcc = await getAccountFrom({
-        caccount: merchant,
+        accountName: merchant,
         networkId: process.env.DAPP_NETWORK_ID!,
       });
       const tx = await pickupDelivery({
@@ -143,7 +143,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
     async () => {
       if (!account) return;
       const buyerAccount = await getAccountFrom({
-        caccount: buyer,
+        accountName: buyer,
         networkId: process.env.DAPP_NETWORK_ID!,
       });
       const tx = await deliverOrder({

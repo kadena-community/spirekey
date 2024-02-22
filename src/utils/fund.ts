@@ -27,20 +27,20 @@ export const fundAccount = async (account: Account): Promise<string> =>
   )({});
 
 const getCommand = (account: Account) => {
-  if (account.network === getDevnetNetworkId())
+  if (account.networkId === getDevnetNetworkId())
     return fundLocally(account.accountName);
-  if (account.network === 'testnet04')
+  if (account.networkId === 'testnet04')
     return fundViaFaucet(account.accountName);
-  throw new Error(`Unsupported network: ${account.network}`);
+  throw new Error(`Unsupported network: ${account.networkId}`);
 };
 
-const fundLocally = (account: string) =>
+const fundLocally = (accountName: string) =>
   composePactCommand(
     execution(
       `
       (coin.transfer
         "sender00"
-        "${account}"
+        "${accountName}"
         100.0
       )
     `.trim(),
@@ -54,16 +54,16 @@ const fundLocally = (account: string) =>
     }),
     addSigner(genesisPubKey, (withCap) => [
       withCap('coin.GAS'),
-      withCap('coin.TRANSFER', 'sender00', account, 100),
+      withCap('coin.TRANSFER', 'sender00', accountName, 100),
     ]),
     setNetworkId(getDevnetNetworkId()),
   );
 
-const fundViaFaucet = (account: string) =>
+const fundViaFaucet = (accountName: string) =>
   composePactCommand(
     execution(
       `
-      (n_d8cbb935f9cd9d2399a5886bb08caed71f9bad49.coin-faucet.request-coin "${account}" 100.0)
+      (n_d8cbb935f9cd9d2399a5886bb08caed71f9bad49.coin-faucet.request-coin "${accountName}" 100.0)
     `.trim(),
     ),
     setMeta({
@@ -76,14 +76,14 @@ const fundViaFaucet = (account: string) =>
     addSigner(genesisPubKey, (withCap) => [
       withCap(
         'n_d8cbb935f9cd9d2399a5886bb08caed71f9bad49.coin-faucet.GAS_PAYER',
-        account,
+        accountName,
         { int: 1 },
         1,
       ),
       withCap(
         'coin.TRANSFER',
         'c:Ecwy85aCW3eogZUnIQxknH8tG8uXHM5QiC__jeI0nWA',
-        account,
+        accountName,
         100,
       ),
     ]),

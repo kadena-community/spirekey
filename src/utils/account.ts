@@ -10,11 +10,11 @@ import { asyncPipe } from './asyncPipe';
 import { l1Client } from './client';
 
 export const getAccountFrom = async ({
-  caccount,
+  accountName,
   networkId,
   namespace = process.env.NAMESPACE,
 }: {
-  caccount: string;
+  accountName: string;
   networkId: string;
   namespace?: string;
 }): Promise<Account> =>
@@ -22,8 +22,8 @@ export const getAccountFrom = async ({
     composePactCommand(
       execution(
         `[
-          (${namespace}.webauthn-wallet.get-webauthn-guard "${caccount}")
-          (coin.get-balance "${caccount}")
+          (${namespace}.webauthn-wallet.get-webauthn-guard "${accountName}")
+          (coin.get-balance "${accountName}")
         ]`,
       ),
       setMeta({
@@ -37,7 +37,7 @@ export const getAccountFrom = async ({
       if (tx?.result?.status !== 'success') return null;
       const [devices, balance] = tx.result.data;
       return {
-        accountName: caccount,
+        accountName,
         devices: devices.devices || [],
         balance,
       };

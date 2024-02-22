@@ -19,7 +19,7 @@ interface AccountDetailsProps {
 }
 
 export function AccountDetails({ account }: AccountDetailsProps) {
-  const domain = getChainwebDataUrl(account.network || '');
+  const domain = getChainwebDataUrl(account.networkId);
   const { data } = useSWR(
     `${domain}/txs/account/${encodeURIComponent(account.accountName)}`,
     async (url: string) => {
@@ -30,7 +30,7 @@ export function AccountDetails({ account }: AccountDetailsProps) {
   return (
     <Grid
       className={details}
-      gap={'xs'}
+      gap="xs"
       columns={{
         lg: 5,
         md: 5,

@@ -26,7 +26,7 @@ export default function SendForm() {
     (d) => d['credential-id'] === decodeURIComponent(cid as string),
   );
   const pubkeys = device?.guard.keys || [];
-  const network = account?.network || '';
+  const network = account?.networkId || '';
   const decodedAccount = Array.isArray(caccount)
     ? decodeURIComponent(caccount[0])
     : decodeURIComponent(caccount);
@@ -37,8 +37,8 @@ export default function SendForm() {
     receiver: '',
     amount: 0,
     gasPayer: decodedAccount,
-    networkId: account?.network,
-    namespace: process.env.NAMESPACE || '',
+    networkId: account?.networkId,
+    namespace: process.env.NAMESPACE,
   };
 
   type FormValues = typeof defaultValues;

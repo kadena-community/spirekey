@@ -12,12 +12,10 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
 const FORM_DEFAULT = {
-  account: '',
+  accountName: '',
 };
 
-const isAccount = (
-  result: Account | null,
-): result is Account & { network: string } => {
+const isAccount = (result: Account | null): result is Account => {
   return result !== null;
 };
 
@@ -32,17 +30,17 @@ export default function Recover() {
   const networks = ['mainnet01', 'testnet04', getDevnetNetworkId()];
 
   const onSubmit = async () => {
-    const { account } = getValues();
-    if (!account) throw new Error('Account is required');
+    const { accountName } = getValues();
+    if (!accountName) throw new Error('Account is required');
     const results = await Promise.all(
-      networks.map(async (network) => {
+      networks.map(async (networkId) => {
         try {
           const acc = await getAccountFrom({
-            caccount: account,
-            networkId: network,
+            accountName,
+            networkId,
           });
           if (!acc) return null;
-          return { ...acc, network };
+          return { ...acc, networkId };
         } catch (e) {
           console.log(e);
           return null;
@@ -72,7 +70,7 @@ export default function Recover() {
       // @TODO: Let the user fill in the alias, deviceType and color
       setAccount({
         accountName: account.accountName,
-        network: account.network,
+        networkId: account.networkId,
         alias: 'Restored',
         devices: account.devices.map((device) => ({
           ...device,
@@ -83,7 +81,7 @@ export default function Recover() {
       });
     });
 
-    const caccount = encodeURIComponent(account);
+    const caccount = encodeURIComponent(accountName);
     const cid = encodeURIComponent(authResult.id);
     router.push(`/accounts/${caccount}/devices/${cid}`);
   };
@@ -109,7 +107,7 @@ export default function Recover() {
           label="Account"
           {...{
             id: 'account',
-            ...register('account', { required: true }),
+            ...register('accountName', { required: true }),
           }}
           info="The c:account you want to recover"
           description="The c:account you want to recover"

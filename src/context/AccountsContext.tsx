@@ -16,7 +16,7 @@ export type Account = {
   accountName: string;
   balance: string;
   devices: Device[];
-  network: string;
+  networkId: string;
 };
 
 export type Device = {
@@ -32,14 +32,14 @@ export type Device = {
 };
 
 export type AccountRegistration = {
-  caccount: string;
+  accountName: string;
   alias: string;
   color: string;
   deviceType: string;
   domain: string;
   credentialId: string;
   credentialPubkey: string;
-  network: string;
+  networkId: string;
 };
 
 const getAccountsFromLocalStorage = (): Account[] => {
@@ -94,12 +94,12 @@ type Props = {
 const fetchAccountsFromChain = async (localAccounts: Account[]) => {
   return await Promise.all(
     localAccounts.map(async (localAccount) => {
-      const { accountName, network, alias, devices } = localAccount;
+      const { accountName, networkId, alias, devices } = localAccount;
       let remoteAccount: Account;
       try {
         remoteAccount = await getAccountFrom({
-          networkId: network,
-          caccount: accountName,
+          networkId,
+          accountName,
         });
       } catch (e: unknown) {
         return localAccount;
@@ -121,7 +121,7 @@ const fetchAccountsFromChain = async (localAccounts: Account[]) => {
 
       return {
         accountName,
-        network,
+        networkId,
         alias,
         balance: remoteAccount.balance || '0',
         devices: uniqueDevices.map((device: Device) => {
@@ -162,7 +162,7 @@ const AccountsProvider = ({ children }: Props) => {
             listenForRegistrationTransaction({
               requestKey: device.pendingRegistrationTx,
               chainId: process.env.CHAIN_ID as ChainId,
-              networkId: account.network,
+              networkId: account.networkId,
             });
           }
         }
@@ -184,23 +184,23 @@ const AccountsProvider = ({ children }: Props) => {
   };
 
   const registerAccount = async ({
-    caccount,
+    accountName,
     alias,
     color,
     deviceType,
     domain,
     credentialId,
     credentialPubkey,
-    network,
+    networkId,
   }: AccountRegistration): Promise<ITransactionDescriptor> => {
-    const { requestKey, chainId, networkId } = await registerAccountOnChain({
-      caccount,
+    const { requestKey, chainId } = await registerAccountOnChain({
+      accountName,
       color,
       deviceType,
       domain,
       credentialId,
       credentialPubkey,
-      network,
+      networkId,
     });
 
     const devices: Device[] = [
@@ -218,9 +218,9 @@ const AccountsProvider = ({ children }: Props) => {
     ];
 
     addAccount({
-      accountName: caccount,
+      accountName,
       alias,
-      network,
+      networkId,
       devices,
       balance: '0',
     });
@@ -250,7 +250,7 @@ const AccountsProvider = ({ children }: Props) => {
 
     if (
       process.env.INSTA_FUND === 'true' &&
-      account.network === getDevnetNetworkId()
+      account.networkId === getDevnetNetworkId()
     ) {
       // fire and forget
       fundAccount(account);
