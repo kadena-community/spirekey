@@ -1,10 +1,12 @@
 'use client';
 
+import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getAccountFrom } from '@/utils/account';
 import { l1Client } from '@/utils/client';
 import { fundAccount } from '@/utils/fund';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import {
+  getAccountName,
   getWebAuthnPubkeyFormat,
   registerAccountOnChain,
 } from '@/utils/register';
@@ -41,6 +43,8 @@ export type AccountRegistration = {
   credentialPubkey: string;
   networkId: string;
 };
+
+export type AccountRecovery = Omit<AccountRegistration, 'accountName'>;
 
 const migrateAccountNetworkToNetworkId = (
   account: Account & { network?: string },
@@ -93,52 +97,9 @@ type Props = {
   children: React.ReactNode;
 };
 
-const fetchAccountsFromChain = async (localAccounts: Account[]) => {
-  return await Promise.all(
-    localAccounts.map(async (localAccount) => {
-      const { accountName, networkId, alias, devices } = localAccount;
-      let remoteAccount: Account;
-      try {
-        remoteAccount = await getAccountFrom({
-          networkId,
-          accountName,
-        });
-      } catch (e: unknown) {
-        return localAccount;
-      }
-
-      if (!remoteAccount) {
-        return localAccount;
-      }
-
-      const uniqueDevices = Array.from(
-        [...remoteAccount.devices, ...devices]
-          .reduce(
-            (allUniqueDevices, d) =>
-              allUniqueDevices.set(d['credential-id'], d),
-            new Map(),
-          )
-          .values(),
-      );
-
-      return {
-        accountName,
-        networkId,
-        alias,
-        balance: remoteAccount.balance || '0',
-        devices: uniqueDevices.map((device: Device) => {
-          const deviceOnChain = remoteAccount.devices.find(
-            (d) => d['credential-id'] === device['credential-id'],
-          );
-
-          return { ...deviceOnChain, ...device };
-        }),
-      };
-    }),
-  );
-};
-
 const AccountsProvider = ({ children }: Props) => {
+  const { host } = useReturnUrl();
+
   const [accounts, setAccounts] = useState<Account[]>(
     getAccountsFromLocalStorage(),
   );
@@ -173,6 +134,67 @@ const AccountsProvider = ({ children }: Props) => {
 
     checkPendingTxs();
   }, [accounts]);
+
+  const fetchAccountsFromChain = async (localAccounts: Account[]) => {
+    return await Promise.all(
+      localAccounts.map(async (localAccount) => {
+        const { accountName, networkId, alias, devices } = localAccount;
+        let remoteAccount: Account;
+        try {
+          remoteAccount = await getAccountFrom({
+            networkId,
+            accountName,
+          });
+
+          console.log({ remoteAccount });
+
+          if (remoteAccount === null) {
+            throw new Error('Account not found on chain');
+          }
+        } catch (e: unknown) {
+          console.log('hi');
+          await recoverAccount({
+            alias,
+            networkId,
+            credentialPubkey: devices[0].guard.keys[0],
+            credentialId: devices[0]['credential-id'],
+            color: devices[0].color,
+            deviceType: devices[0].deviceType,
+            domain: host,
+          });
+          return localAccount;
+        }
+
+        if (!remoteAccount) {
+          return localAccount;
+        }
+
+        const uniqueDevices = Array.from(
+          [...remoteAccount.devices, ...devices]
+            .reduce(
+              (allUniqueDevices, d) =>
+                allUniqueDevices.set(d['credential-id'], d),
+              new Map(),
+            )
+            .values(),
+        );
+
+        return {
+          accountName,
+          networkId,
+          alias,
+          balance: remoteAccount.balance || '0',
+          devices: uniqueDevices.map((device: Device) => {
+            const deviceOnChain = remoteAccount.devices.find(
+              (d) => d['credential-id'] === device['credential-id'],
+            );
+
+            return { ...deviceOnChain, ...device };
+          }),
+        };
+      }),
+    );
+  };
 
   const setAccount = (account: Account): void => {
     const updatedAccounts =
@@ -225,6 +247,35 @@ const AccountsProvider = ({ children }: Props) => {
       networkId,
       devices,
       balance: '0',
+    });
+
+    return {
+      requestKey,
+      chainId,
+      networkId,
+    };
+  };
+
+  const recoverAccount = async ({
+    alias,
+    color,
+    deviceType,
+    domain,
+    credentialId,
+    credentialPubkey,
+    networkId,
+  }: AccountRecovery): Promise<ITransactionDescriptor> => {
+    const accountName = await getAccountName(credentialPubkey, networkId);
+
+    const { requestKey, chainId } = await registerAccount({
+      accountName,
+      alias,
+      color,
+      deviceType,
+      domain,
+      credentialId,
+      credentialPubkey,
+      networkId,
     });
 
     return {
