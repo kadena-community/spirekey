@@ -15,9 +15,7 @@ const FORM_DEFAULT = {
   accountName: '',
 };
 
-const isAccount = (
-  result: Account | null,
-): result is Account & { network: string } => {
+const isAccount = (result: Account | null): result is Account => {
   return result !== null;
 };
 
@@ -72,7 +70,7 @@ export default function Recover() {
       // @TODO: Let the user fill in the alias, deviceType and color
       setAccount({
         accountName: account.accountName,
-        networkId: account.network,
+        networkId: account.networkId,
         alias: 'Restored',
         devices: account.devices.map((device) => ({
           ...device,
