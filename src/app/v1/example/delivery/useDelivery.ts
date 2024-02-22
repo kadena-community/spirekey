@@ -391,15 +391,23 @@ export const useDelivery = ({
   chainId: ChainId;
   networkId: string;
 }) => {
-  const { data, mutate } = useSWR<Order[]>('deliveries', async () => {
-    const deliveryIds = JSON.parse(localStorage.getItem('deliveryIds') || '[]');
-    const orders: Order[] = await getDeliveriesByIds({
-      ids: deliveryIds,
-      chainId,
-      networkId,
-    });
-    return orders;
+  const { data: deliveryIds } = useSWR<string[]>('deliveryIds', () => {
+    return JSON.parse(localStorage.getItem('deliveryIds') || '[]');
   });
+  const { data, mutate } = useSWR<Order[]>(
+    () => (deliveryIds ? 'deliveries' : null),
+    async () => {
+      const deliveryIds = JSON.parse(
+        localStorage.getItem('deliveryIds') || '[]',
+      );
+      const orders: Order[] = await getDeliveriesByIds({
+        ids: deliveryIds,
+        chainId,
+        networkId,
+      });
+      return orders;
+    },
+  );
   const saveDelivery = (id: string) => {
     const deliveryIds = new Set<string>(
       JSON.parse(localStorage.getItem('deliveryIds') || '[]'),
