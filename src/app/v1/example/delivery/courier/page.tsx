@@ -1,6 +1,8 @@
 'use client';
 
+import pizzaBackground from '@/app/v1/example/delivery/pizzabackground.jpg';
 import { AccountButton } from '@/components/AccountButton';
+import { PizzaWorld } from '@/components/icons/PizzaWorld';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getAccountFrom } from '@/utils/account';
 import {
@@ -9,15 +11,18 @@ import {
   Cell,
   Column,
   Row,
+  Stack,
   Table,
   TableBody,
   TableHeader,
+  Text,
   maskValue,
 } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useConnection } from '../Connection';
+import * as styles from '../order.css';
 import { useDelivery } from '../useDelivery';
 import { useLoggedInAccount } from '../useLoggedInAccount';
 
@@ -67,7 +72,7 @@ const CourierActionCell = ({
 
 export default function CourierPage({ searchParams }: CourierProps) {
   const { user, transaction } = searchParams;
-  const { account } = useLoggedInAccount(user);
+  const { account, logout } = useLoggedInAccount(user);
   const { orders, saveDelivery, pickupDelivery, deliverOrder, updateOrders } =
     useDelivery({
       chainId: process.env.CHAIN_ID as ChainId,
@@ -194,13 +199,45 @@ export default function CourierPage({ searchParams }: CourierProps) {
 
   return (
     <div>
-      <Box margin="md">
-        <h1>Delivery Page</h1>
-        <AccountButton
-          user={account}
-          returnPath="/v1/example/delivery/courier"
-        />
-      </Box>
+      <style jsx global>
+        {`
+          body {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-image: url(${pizzaBackground.src});
+            background-color: rgba(255, 255, 255, 0.4);
+            background-blend-mode: saturation;
+          }
+        `}
+      </style>
+      <Stack className={styles.hero} flexDirection="column">
+        <Box textAlign="right">
+          <PizzaWorld className={styles.logo} />
+          <Text
+            variant="small"
+            style={{
+              fontWeight: 'bold',
+              marginBlockStart: '-0.25rem',
+              display: 'block',
+            }}
+          >
+            Delivery dashboard
+          </Text>
+        </Box>
+      </Stack>
+
+      <Stack justifyContent="flex-end" marginBlockEnd="md">
+        <Stack justifyContent="flex-end" gap="md" className={styles.account}>
+          <AccountButton
+            className={styles.button}
+            user={account}
+            returnPath="/v1/example/delivery/merchant"
+            onLogout={logout}
+          />
+        </Stack>
+      </Stack>
       {account && !!orders?.length && (
         <Table>
           <TableHeader>

@@ -1,25 +1,31 @@
 'use client';
 
+import pizzaBackground from '@/app/v1/example/delivery/pizzabackground.jpg';
 import { AccountButton } from '@/components/AccountButton';
 import { Button } from '@/components/Button/Button';
+import { AcceptOrder } from '@/components/Delivery/AcceptOrder/AcceptOrder';
+import { PizzaWorld } from '@/components/icons/PizzaWorld';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
 import {
   Box,
   Cell,
   Column,
+  Heading,
   Row,
   Stack,
   Table,
   TableBody,
   TableHeader,
+  Text,
 } from '@kadena/react-ui';
-import { ChainId } from '@kadena/types';
+import { ChainId, ISigner } from '@kadena/types';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import type { Message } from '../Connection';
 import { useConnection } from '../Connection';
+import * as styles from '../order.css';
 import { useDelivery } from '../useDelivery';
 import { useLoggedInAccount } from '../useLoggedInAccount';
 
@@ -32,7 +38,7 @@ type MerchantProps = {
 
 export default function MerchantPage({ searchParams }: MerchantProps) {
   const { user } = searchParams;
-  const { account } = useLoggedInAccount(user);
+  const { account, logout } = useLoggedInAccount(user);
   const { setId, send, isLoading, messages } = useConnection();
   const { getReturnUrl } = useReturnUrl();
   const router = useRouter();
@@ -96,82 +102,159 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
     doSubmit();
     send(originMsg.connectionId, { type: 'confirm', data: tx });
   }, [status, isLoading, messages]);
+
+  console.log(orders);
+  // const pendingOrders = orders;
   const pendingOrders = orders?.filter((order) => order.status === 'CREATED');
+
+  const newOrders = messages.filter((message) => message.type === 'create');
+
   return (
     <div>
-      <Box margin="md">
-        <h1>Merchant Page</h1>
-        <AccountButton
-          user={account}
-          returnPath="/v1/example/delivery/merchant"
-        />
-      </Box>
-      <Table>
-        <TableHeader>
-          <Column>Type</Column>
-          <Column>Transaction Hash</Column>
-          <Column>Action</Column>
-        </TableHeader>
-        <TableBody>
-          {Array.from(
-            messages
-              .filter((m) => m.type === 'tx' || m.type === 'create')
-              .reduce((s, m) => {
-                s.set(m.data.hash, m);
-                return s;
-              }, new Map<string, Message>())
-              .values(),
-          ).map((message, index) => (
-            <Row key={message.data.hash + message.type}>
-              <Cell>{message.type}</Cell>
-              <Cell>{message.data.hash}</Cell>
-              <Cell>
-                <Link
-                  href={`${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
-                    JSON.stringify(message.data),
+      <style jsx global>
+        {`
+          body {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-image: url(${pizzaBackground.src});
+            background-color: rgba(0, 0, 0, 0.8);
+            background-blend-mode: saturation;
+          }
+        `}
+      </style>
+      <Stack className={styles.hero} flexDirection="column">
+        <Box textAlign="right">
+          <PizzaWorld className={styles.logo} />
+          <Text
+            variant="small"
+            style={{
+              fontWeight: 'bold',
+              marginBlockStart: '-0.25rem',
+              display: 'block',
+            }}
+          >
+            Management dashboard
+          </Text>
+        </Box>
+      </Stack>
+
+      <Stack justifyContent="flex-end" marginBlockEnd="md">
+        <Stack justifyContent="flex-end" gap="md" className={styles.account}>
+          <AccountButton
+            className={styles.button}
+            user={account}
+            returnPath="/v1/example/delivery/merchant"
+            onLogout={logout}
+          />
+        </Stack>
+      </Stack>
+
+      {account && (
+        <>
+          {newOrders.length > 0 && (
+            <Stack
+              flexDirection="column"
+              paddingInline="lg"
+              marginBlockEnd="xl"
+              gap="md"
+            >
+              <Stack marginBlock="xl" justifyContent="center">
+                <Heading variant="h5" as="h3">
+                  New orders
+                </Heading>
+              </Stack>
+              {newOrders.map((newOrder) => (
+                <AcceptOrder
+                  key={newOrder.data.hash + newOrder.type}
+                  signers={JSON.parse(newOrder.data.cmd).signers as ISigner[]}
+                  signingLink={`${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
+                    JSON.stringify(newOrder.data),
                   ).toString('base64')}&returnUrl=${getReturnUrl(
                     '/v1/example/delivery/merchant',
                   )}`}
-                >
-                  sign
-                </Link>
-              </Cell>
-            </Row>
-          ))}
-        </TableBody>
-      </Table>
-      {!!pendingOrders?.length && (
-        <Stack margin="md" gap="md" flexDirection="column">
-          <h2>Pending Orders</h2>
+                />
+              ))}
+            </Stack>
+          )}
+          {newOrders.length === 0 && (
+            <Stack marginBlock="xl" justifyContent="center">
+              <Heading variant="h5" as="h3">
+                No new orders to accept
+              </Heading>
+            </Stack>
+          )}
           <Table>
             <TableHeader>
-              <Column>Order Id</Column>
-              <Column>Buyer</Column>
-              <Column>Order Price</Column>
-              <Column>Delivery Price</Column>
-              <Column>Courier</Column>
-              <Column>Merchant</Column>
+              <Column>Type</Column>
+              <Column>Transaction Hash</Column>
               <Column>Action</Column>
             </TableHeader>
             <TableBody>
-              {pendingOrders.map((order) => (
-                <Row key={order.orderId}>
-                  <Cell>{order.orderId}</Cell>
-                  <Cell>{order.buyer}</Cell>
-                  <Cell>{order.orderPrice}</Cell>
-                  <Cell>{order.deliveryPrice}</Cell>
-                  <Cell>{order.courier}</Cell>
-                  <Cell>{order.merchant}</Cell>
+              {Array.from(
+                messages
+                  .filter((m) => m.type === 'tx' || m.type === 'create')
+                  .reduce((s, m) => {
+                    s.set(m.data.hash, m);
+                    return s;
+                  }, new Map<string, Message>())
+                  .values(),
+              ).map((message, index) => (
+                <Row key={message.data.hash + message.type}>
+                  <Cell>{message.type}</Cell>
+                  <Cell>{message.data.hash}</Cell>
                   <Cell>
-                    <Button onPress={markAsReady(order.orderId)}>
-                      Mark as Ready
-                    </Button>
+                    <Link
+                      href={`${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
+                        JSON.stringify(message.data),
+                      ).toString('base64')}&returnUrl=${getReturnUrl(
+                        '/v1/example/delivery/merchant',
+                      )}`}
+                    >
+                      sign
+                    </Link>
                   </Cell>
                 </Row>
               ))}
             </TableBody>
           </Table>
-        </Stack>
+          {!!pendingOrders?.length && (
+            <Stack margin="md" gap="md" flexDirection="column">
+              <h2>Pending Orders</h2>
+              <Table>
+                <TableHeader>
+                  <Column>Order Id</Column>
+                  {/* <Column>Status</Column> */}
+                  <Column>Buyer</Column>
+                  <Column>Order Price</Column>
+                  <Column>Delivery Price</Column>
+                  <Column>Courier</Column>
+                  <Column>Merchant</Column>
+                  <Column>Action</Column>
+                </TableHeader>
+                <TableBody>
+                  {pendingOrders.map((order) => (
+                    <Row key={order.orderId}>
+                      <Cell>{order.orderId}</Cell>
+                      {/* <Cell>{order.status}</Cell> */}
+                      <Cell>{order.buyer}</Cell>
+                      <Cell>{order.orderPrice}</Cell>
+                      <Cell>{order.deliveryPrice}</Cell>
+                      <Cell>{order.courier}</Cell>
+                      <Cell>{order.merchant}</Cell>
+                      <Cell>
+                        <Button onPress={markAsReady(order.orderId)}>
+                          Mark as Ready
+                        </Button>
+                      </Cell>
+                    </Row>
+                  ))}
+                </TableBody>
+              </Table>
+            </Stack>
+          )}
+        </>
       )}
     </div>
   );

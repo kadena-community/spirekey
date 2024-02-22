@@ -1,3 +1,4 @@
+import { OrderItems, products } from '@/context/OrderContext';
 import { asyncPipe } from '@/utils/asyncPipe';
 import { l1Client } from '@/utils/client';
 import { ChainId, createTransaction } from '@kadena/client';
@@ -116,6 +117,7 @@ type OrderDetails = {
   orderPrice: number;
   deliveryPrice: number;
   orderId: string;
+  orderItems: OrderItems;
 };
 
 const createOrder = async ({
@@ -128,6 +130,7 @@ const createOrder = async ({
   orderPrice,
   deliveryPrice,
   orderId,
+  orderItems,
 }: OrderDetails) => {
   const orderHash = createOrderId({
     customer: customerAccount,
@@ -137,21 +140,26 @@ const createOrder = async ({
 
   localStorage.setItem('newOrderId', orderHash);
 
+  const orderedProducts = products.filter((product) =>
+    orderItems.includes(product.name),
+  );
+  const orderLines = orderedProducts.map((product) => {
+    const amount = orderItems.filter(
+      (orderItem) => orderItem === product.name,
+    ).length;
+    return {
+      'line-id': `${product.name} (${amount}x)`,
+      price: (amount * product.price).toFixed(12),
+    };
+  });
+
   const escrowId = await getDeliveryEscrowId({ chainId, networkId });
   return asyncPipe(
     composePactCommand(
       execution(
         `(${process.env.NAMESPACE}.delivery.create-order
           "${orderHash}"
-          [
-            {
-              "line-id": "order-line-1-hash",
-              "price"  : ${orderPrice.toFixed(12)}
-            }, {
-              "line-id": "order-line-2-hash",
-              "price"  : ${deliveryPrice.toFixed(12)}
-            }
-          ]
+          ${JSON.stringify(orderLines)}
           "${merchantAccount}"
           (${process.env.NAMESPACE}.webauthn-wallet.get-wallet-guard "${merchantAccount}")
           "${customerAccount}"
@@ -169,16 +177,18 @@ const createOrder = async ({
         // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: customerPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
+          ...orderLines.map((orderLine) => {
+            return withCap(
+              `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
+              orderHash,
+              orderLine['line-id'],
+              { decimal: orderLine.price },
+            );
+          }),
           withCap(
             `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
             orderHash,
-            'order-line-1-hash',
-            { decimal: orderPrice.toFixed(12) },
-          ),
-          withCap(
-            `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
-            orderHash,
-            'order-line-2-hash',
+            'Delivery',
             { decimal: deliveryPrice.toFixed(12) },
           ),
           withCap(
@@ -199,16 +209,18 @@ const createOrder = async ({
         // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: merchantPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
+          ...orderLines.map((orderLine) => {
+            return withCap(
+              `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
+              orderHash,
+              orderLine['line-id'],
+              { decimal: orderLine.price },
+            );
+          }),
           withCap(
             `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
             orderHash,
-            'order-line-1-hash',
-            { decimal: orderPrice.toFixed(12) },
-          ),
-          withCap(
-            `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
-            orderHash,
-            'order-line-2-hash',
+            'Delivery',
             { decimal: deliveryPrice.toFixed(12) },
           ),
           withCap(

@@ -55,8 +55,8 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
   >({});
   const saveNewMessage = (message: Message) =>
     setMessages((prev) => {
-      if (message.type === 'orders') return [...prev, message];
-      if (message.type === 'id') return [...prev, message];
+      if (message.type === 'orders') return [message, ...prev];
+      if (message.type === 'id') return [message, ...prev];
       if (
         prev.length &&
         prev.some((m) => {
@@ -66,7 +66,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
         })
       )
         return prev;
-      const newMessages = [...prev, message];
+      const newMessages = [message, ...prev];
       localStorage.setItem('messages', JSON.stringify(newMessages));
       return newMessages;
     });
@@ -99,7 +99,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
     const conn =
       connections[connectionId] || ((await connect(toId)) as DataConnection);
     console.log('Sending data to peer', message);
-    conn.send({ ...message, connectionId: id });
+    conn?.send({ ...message, connectionId: id });
   };
   const onSetId = (id: ConnectionId) => {
     setId(id);

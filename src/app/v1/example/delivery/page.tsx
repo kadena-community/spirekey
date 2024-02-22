@@ -3,8 +3,11 @@
 import pizzaBackground from '@/app/v1/example/delivery/pizzabackground.jpg';
 import { AccountButton } from '@/components/AccountButton';
 import { Button } from '@/components/Button/Button';
+import { OrderSummary } from '@/components/Delivery/OrderSummary/OrderSummary';
+import { Product } from '@/components/Delivery/Product/Product';
 import { PizzaLoader } from '@/components/PizzaLoader/PizzaLoader';
 import { PizzaWorld } from '@/components/icons/PizzaWorld';
+import { useOrder } from '@/context/OrderContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
 import { getAccountFrom } from '@/utils/account';
@@ -16,13 +19,9 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useConnection } from './Connection';
-import hawaiiImg from './hawaii.webp';
-import margheritaImg from './margherita.webp';
 import * as styles from './order.css';
-import pepperoniImg from './pepperoni.webp';
 import { createOrderId, useDelivery } from './useDelivery';
 import { useLoggedInAccount } from './useLoggedInAccount';
-import veggieImg from './veggie.webp';
 
 type DeliveryProps = {
   searchParams: {
@@ -34,7 +33,7 @@ type DeliveryProps = {
 export default function DeliveryPage({ searchParams }: DeliveryProps) {
   const { user } = searchParams;
   const { tx } = useSubmit(searchParams);
-  const { account } = useLoggedInAccount(user);
+  const { account, logout } = useLoggedInAccount(user);
   const { messages, setId, send, isLoading } = useConnection();
   const { getReturnUrl } = useReturnUrl();
   const { orders, createOrder, saveDelivery } = useDelivery({
@@ -44,6 +43,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   const { status, doSubmit } = useSubmit(searchParams);
   const router = useRouter();
   const [merchantPublicKey, setMerchantPublicKey] = useState<string>('');
+  const { products, orderItems, orderTotalPrice } = useOrder();
 
   const merchantAccount = process.env.MERCHANT_ACCOUNT;
 
@@ -67,9 +67,10 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       customerPublicKey: account.credentials[0].publicKey,
       merchantAccount,
       merchantPublicKey,
-      deliveryPrice: 2.55,
-      orderPrice: 2.55,
+      deliveryPrice: 6.25,
+      orderPrice: orderTotalPrice,
       orderId: id,
+      orderItems,
     });
     const orderId = createOrderId({
       customer: account.accountName,
@@ -84,7 +85,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     );
   };
 
-  const deliverTx = [...messages].reverse().find((m) => m.type === 'tx');
+  const deliverTx = [...messages].find((m) => m.type === 'tx');
   const onAcceptDelivery = async () => {
     if (!deliverTx) return;
     router.push(
@@ -176,24 +177,31 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       </style>
       <header className={styles.hero}>
         <PizzaWorld className={styles.logo} />
-        <AccountButton
-          className={styles.button}
-          user={account}
-          returnPath="/v1/example/delivery"
-        />
       </header>
-      {pendingTx && (
+      {mintedTx && (
         <article className={styles.loadingWrapper}>
           <h2>We are crafting your pizza!</h2>
           <PizzaLoader />
         </article>
       )}
-      {mintedTx && <Box margin="md">Your pizza is on the way!</Box>}
+      {pendingTx && <Box margin="md">Your order is being processed.</Box>}
       {isAcceptingOrder && deliverTx && (
         <Box margin="md">
           Sign off to receive your pizza!
           <Button onPress={onAcceptDelivery}>Sign off</Button>
         </Box>
+      )}
+      {!tx && (
+        <Stack justifyContent="flex-end">
+          <Stack justifyContent="flex-end" gap="md" className={styles.account}>
+            <AccountButton
+              className={styles.button}
+              user={account}
+              returnPath="/v1/example/delivery"
+              onLogout={logout}
+            />
+          </Stack>
+        </Stack>
       )}
       {!tx && (
         <article className={styles.order}>
@@ -203,38 +211,11 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
           <section className={styles.deals}>
             <h3>Today's Specials</h3>
             <ul className={styles.list}>
-              <li>
-                <Image
-                  className={styles.dealImg}
-                  src={margheritaImg}
-                  alt="Delicious Peperroni Pizza"
-                />
-                <div>$ 2.55</div>
-              </li>
-              <li>
-                <Image
-                  className={styles.dealImg}
-                  src={pepperoniImg}
-                  alt="Delicious margherita Pizza"
-                />
-                <div>$ 2.55</div>
-              </li>
-              <li>
-                <Image
-                  className={styles.dealImg}
-                  src={veggieImg}
-                  alt="Delicious hawaii Pizza"
-                />
-                <div>$ 2.55</div>
-              </li>
-              <li>
-                <Image
-                  className={styles.dealImg}
-                  src={hawaiiImg}
-                  alt="Delicious veggie Pizza"
-                />
-                <div>$ 2.55</div>
-              </li>
+              {products.map((product) => (
+                <li key={product.name}>
+                  <Product product={product} />
+                </li>
+              ))}
             </ul>
           </section>
           <section>
@@ -246,8 +227,13 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
               <li>Sign for your delivery</li>
             </ol>
           </section>
+          <OrderSummary />
           <Stack gap="md" margin="md" flexDirection="column">
-            <Button className={styles.button} onPress={onSend}>
+            <Button
+              className={styles.button}
+              onPress={onSend}
+              isDisabled={!account || orderItems.length === 0}
+            >
               Place your order
             </Button>
           </Stack>

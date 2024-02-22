@@ -5,6 +5,7 @@ import { ThemeProvider } from 'next-themes';
 import { ReactNode } from 'react';
 
 import { AccountsProvider } from '@/context/AccountsContext';
+import { OrderProvider } from '@/context/OrderContext';
 import { SWRConfig } from 'swr';
 
 function localStorageProvider() {
@@ -26,16 +27,18 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <SWRConfig value={{ provider: localStorageProvider }}>
       <AccountsProvider>
-        <ThemeProvider
-          attribute="class"
-          enableSystem={false}
-          value={{
-            dark: darkThemeClass,
-          }}
-          defaultTheme="dark"
-        >
-          {children}
-        </ThemeProvider>
+        <OrderProvider>
+          <ThemeProvider
+            attribute="class"
+            enableSystem={false}
+            value={{
+              dark: darkThemeClass,
+            }}
+            defaultTheme="dark"
+          >
+            {children}
+          </ThemeProvider>
+        </OrderProvider>
       </AccountsProvider>
     </SWRConfig>
   );
