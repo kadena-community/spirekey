@@ -42,34 +42,36 @@ export type AccountRegistration = {
   networkId: string;
 };
 
+const migrateAccountNetworkToNetworkId = (
+  account: Account & { network?: string },
+): Account => {
+  const migratedAccount = {
+    ...account,
+    networkId: account.network || account.networkId,
+  };
+  delete migratedAccount.network;
+  return migratedAccount;
+};
+
 const getAccountsFromLocalStorage = (): Account[] => {
   if (typeof window === 'undefined') {
     return [];
   }
 
-  const rawLocalAccounts =
-    localStorage !== undefined
-      ? localStorage.getItem('localAccounts')
-      : undefined;
-
-  if (!rawLocalAccounts) {
-    return [];
-  }
+  const rawLocalAccounts = localStorage.getItem('localAccounts') || '[]';
 
   try {
-    const localAccounts = JSON.parse(rawLocalAccounts) as
+    const parsedAccounts = JSON.parse(rawLocalAccounts) as
       | Account[]
       | Record<string, Account>;
+    const accounts = Array.isArray(parsedAccounts)
+      ? parsedAccounts
+      : Object.values(parsedAccounts);
+    const migratedAccounts = accounts.map(migrateAccountNetworkToNetworkId);
+    localStorage.setItem('localAccounts', JSON.stringify(migratedAccounts));
 
-    if (Array.isArray(localAccounts)) {
-      return localAccounts;
-    }
-
-    const mutatedAccounts = Object.values(localAccounts);
-    localStorage.setItem('localAccounts', JSON.stringify(mutatedAccounts));
-
-    return mutatedAccounts;
-  } catch (e: unknown) {
+    return migratedAccounts;
+  } catch {
     return [];
   }
 };
