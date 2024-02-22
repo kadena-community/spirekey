@@ -1,6 +1,6 @@
 import { customTokens } from '@/styles/tokens.css';
 import { atoms, tokens } from '@kadena/react-ui/styles';
-import { style } from '@vanilla-extract/css';
+import { keyframes, style } from '@vanilla-extract/css';
 
 export const button = style([
   atoms({
@@ -42,16 +42,24 @@ export const buttonContent = style([
 export const iconContainer = style([
   atoms({
     paddingBlock: 'sm',
-    justifyContent: 'center',
-    alignItems: 'center',
   }),
   {
     borderTopLeftRadius: tokens.kda.foundation.radius.sm,
     borderTopRightRadius: tokens.kda.foundation.radius.sm,
     background: 'rgba(255, 255, 255, 0.3)',
     color: customTokens.color.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: 'grid',
+    overflow: 'hidden',
+    position: 'relative',
   },
 ]);
+
+export const icon = style({
+  gridColumn: 1,
+  gridRow: 1,
+});
 
 export const title = style([
   atoms({
@@ -76,3 +84,19 @@ export const description = style([
     lineHeight: '1.5',
   },
 ]);
+
+const rotate = keyframes({
+  '0%': { transform: 'rotate(0deg)' },
+  '100%': { transform: 'rotate(360deg)' },
+});
+
+export const loader = style({
+  animation: rotate,
+  animationDuration: '1s',
+  animationTimingFunction: 'linear',
+  animationIterationCount: 'infinite',
+});
+
+export const error = style({
+  color: '#ff0000',
+});
