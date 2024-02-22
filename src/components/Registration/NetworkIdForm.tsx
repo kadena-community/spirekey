@@ -13,7 +13,6 @@ type Props = Pick<FormData, 'networkId'> & FormUtils;
 
 const getDescription = (networkId: string) => {
   const dev = ' For development purposes only';
-  const main = ' WebAuthn wallets are not yet supported on Mainnet';
 
   return (
     <Text>
@@ -21,7 +20,7 @@ const getDescription = (networkId: string) => {
         {getNetworkDisplayName(networkId)}
       </Text>{' '}
       selected.
-      {['testnet04', getDevnetNetworkId()].includes(networkId) ? dev : main}
+      {['testnet04', getDevnetNetworkId()].includes(networkId) ? dev : ''}
     </Text>
   );
 };

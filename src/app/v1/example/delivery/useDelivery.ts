@@ -283,6 +283,12 @@ const pickupDelivery = async ({
   courierPublicKey: string;
   merchantPublicKey: string;
 }) => {
+  const escrowId = await getDeliveryEscrowId({ chainId, networkId });
+  const [order] = await getDeliveriesByIds({
+    chainId,
+    networkId,
+    ids: [orderId],
+  });
   return asyncPipe(
     composePactCommand(
       execution(
@@ -302,6 +308,13 @@ const pickupDelivery = async ({
         { pubKey: courierPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
           withCap(`${process.env.NAMESPACE}.delivery.PICKUP_DELIVERY`, orderId),
+          withCap(`${process.env.NAMESPACE}.delivery.PICKUP_DELIVERY`, orderId),
+          withCap(
+            `${process.env.NAMESPACE}.webauthn-wallet.TRANSFER`,
+            courierAccount,
+            escrowId,
+            { decimal: (order.orderPrice * 2).toFixed(12) },
+          ),
           withCap(
             `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
             courierAccount,
