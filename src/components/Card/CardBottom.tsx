@@ -15,9 +15,11 @@ interface CardBottomProps {
 
 export default function CardBottom({ account }: CardBottomProps) {
   const domain = getChainwebDataUrl(account.network || '');
-  const { data } = useSWR(() => account.accountName
-    ? `${domain}/txs/account/${encodeURIComponent(account.accountName)}`
-    : null,
+  const { data } = useSWR(
+    () =>
+      account.accountName
+        ? `${domain}/txs/account/${encodeURIComponent(account.accountName)}`
+        : null,
     async (url: string) => {
       return await fetch(url).then((res) => res.json());
     },
