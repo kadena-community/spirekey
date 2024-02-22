@@ -10,12 +10,14 @@ import { card, inner, wrapper } from './CardCollection.css';
 interface CardCollectionProps {
   returnUrl?: string;
   optimistic?: boolean;
+  networkId?: string;
 }
 
 // Something we might be able to use for the scroll-enlarge-effect: https://codesandbox.io/p/sandbox/fervent-pasteur-dqs9ry?file=%2FApp.js%3A75%2C18-75%2C25
 export default function CardCollection({
   returnUrl,
   optimistic,
+  networkId,
 }: CardCollectionProps) {
   const { accounts } = useAccounts();
   const [activeCard, setActiveCard] = useState<number | null>(
@@ -60,43 +62,48 @@ export default function CardCollection({
   return (
     <Box className={wrapper}>
       <Stack className={inner} flexDirection="column" ref={innerRef}>
-        {accounts.map((account, i) => {
-          const marginBlockEnd =
-            collapsedCardSpacing * collapsedCardsVisible -
-            (hasActiveCard && activeCard < i ? i - 1 : i) *
-              collapsedCardSpacing;
+        {accounts
+          .filter(
+            (account) =>
+              networkId === undefined || account.network === networkId,
+          )
+          .map((account, i) => {
+            const marginBlockEnd =
+              collapsedCardSpacing * collapsedCardsVisible -
+              (hasActiveCard && activeCard < i ? i - 1 : i) *
+                collapsedCardSpacing;
 
-          return (
-            <motion.div
-              key={account.accountName + account.network}
-              layout
-              onClick={() => handleCardClick(i)}
-              transition={{
-                type: 'spring',
-                damping: 44,
-                stiffness: 280,
-              }}
-              className={card({ variant: getCardVariant(i) })}
-              style={{
-                zIndex: `${i}`,
-                marginBlockEnd: `${
-                  hasActiveCard ? marginBlockEnd : cardOverlap
-                }px`,
-                bottom:
-                  hasActiveCard && activeCard !== i ? `-${cardHeight}px` : 0,
-              }}
-              ref={(ref) => (cardRefs.current[i] = ref)}
-            >
-              <Account
+            return (
+              <motion.div
                 key={account.accountName + account.network}
-                account={account}
-                returnUrl={returnUrl}
-                optimistic={optimistic}
-                isActive={activeCard === i}
-              />
-            </motion.div>
-          );
-        })}
+                layout
+                onClick={() => handleCardClick(i)}
+                transition={{
+                  type: 'spring',
+                  damping: 44,
+                  stiffness: 280,
+                }}
+                className={card({ variant: getCardVariant(i) })}
+                style={{
+                  zIndex: `${i}`,
+                  marginBlockEnd: `${
+                    hasActiveCard ? marginBlockEnd : cardOverlap
+                  }px`,
+                  bottom:
+                    hasActiveCard && activeCard !== i ? `-${cardHeight}px` : 0,
+                }}
+                ref={(ref) => (cardRefs.current[i] = ref)}
+              >
+                <Account
+                  key={account.accountName + account.network}
+                  account={account}
+                  returnUrl={returnUrl}
+                  optimistic={optimistic}
+                  isActive={activeCard === i}
+                />
+              </motion.div>
+            );
+          })}
       </Stack>
     </Box>
   );
