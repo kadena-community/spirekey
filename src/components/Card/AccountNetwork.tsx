@@ -30,7 +30,9 @@ export default function AccountNetwork({
     };
   }, [hasCopied]);
 
-  const [accountNamespace, accountName] = (account.accountName || ':').split(':');
+  const [accountNamespace, accountName] = (account.accountName || ':').split(
+    ':',
+  );
 
   return (
     <Stack flexDirection="column">
