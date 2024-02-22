@@ -28,7 +28,7 @@ export const transfer = async ({
 }): Promise<ICommand> => {
   // TODO: make a decicion which command to get (safe/unsafe transfer)
   const receiverAcc = await getAccountFrom({
-    caccount: receiver,
+    accountName: receiver,
     namespace,
     networkId,
   });

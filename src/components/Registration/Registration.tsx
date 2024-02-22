@@ -121,14 +121,14 @@ export default function Registration({ redirectUrl }: Props) {
       setIsSubmitting(true);
 
       await registerAccount({
-        caccount: data.accountName,
+        accountName: data.accountName,
         alias: data.alias,
         color: data.color,
         deviceType: data.deviceType,
         credentialPubkey: data.credentialPubkey,
         credentialId: data.credentialId,
         domain: host,
-        network: data.networkId,
+        networkId: data.networkId,
       });
 
       if (
@@ -136,14 +136,14 @@ export default function Registration({ redirectUrl }: Props) {
         data.networkId !== 'mainnet01'
       ) {
         registerAccount({
-          caccount: data.accountName,
+          accountName: data.accountName,
           alias: data.alias,
           color: data.color,
           deviceType: data.deviceType,
           credentialPubkey: data.credentialPubkey,
           credentialId: data.credentialId,
           domain: host,
-          network: 'mainnet01',
+          networkId: 'mainnet01',
         });
       }
 
@@ -190,8 +190,8 @@ export default function Registration({ redirectUrl }: Props) {
           account={{
             alias: data.alias,
             accountName: data.accountName,
-            balance: '0.0',
-            network: data.networkId,
+            balance: '0',
+            networkId: data.networkId,
             devices: [
               {
                 'credential-id': data.credentialId,

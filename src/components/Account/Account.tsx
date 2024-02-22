@@ -32,8 +32,8 @@ export function Account({
   const { accounts } = useAccounts();
   const [delayedIsActive, setDelayedIsActive] = useState(false);
   const accountBalancesOnNetwork = accounts
-    .filter((a) => a.network === account.network)
-    .map((a) => parseFloat(a?.balance || '0'));
+    .filter((a) => a.networkId === account.networkId)
+    .map((a) => parseFloat(a.balance));
 
   const balancePercentage = calculateBalancePercentage(
     parseFloat(account.balance),
@@ -99,7 +99,7 @@ export function Account({
                       description="Transfers"
                     />
                     {['testnet04', getDevnetNetworkId()].includes(
-                      account.network,
+                      account.networkId,
                     ) && (
                       <AccountButton
                         href={`/accounts/${caccount}/devices/${cid}/fund`}

@@ -65,7 +65,7 @@ export default function CardCollection({
         {accounts
           .filter(
             (account) =>
-              networkId === undefined || account.network === networkId,
+              networkId === undefined || account.networkId === networkId,
           )
           .map((account, i) => {
             const marginBlockEnd =
@@ -75,7 +75,7 @@ export default function CardCollection({
 
             return (
               <motion.div
-                key={account.accountName + account.network}
+                key={account.accountName + account.networkId}
                 layout
                 onClick={() => handleCardClick(i)}
                 transition={{
@@ -95,7 +95,7 @@ export default function CardCollection({
                 ref={(ref) => (cardRefs.current[i] = ref)}
               >
                 <Account
-                  key={account.accountName + account.network}
+                  key={account.accountName + account.networkId}
                   account={account}
                   returnUrl={returnUrl}
                   optimistic={optimistic}

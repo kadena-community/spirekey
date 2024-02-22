@@ -14,7 +14,7 @@ interface CardBottomProps {
 }
 
 export default function CardBottom({ account }: CardBottomProps) {
-  const domain = getChainwebDataUrl(account.network || '');
+  const domain = getChainwebDataUrl(account.networkId);
   const { data } = useSWR(
     () =>
       account.accountName
@@ -33,9 +33,7 @@ export default function CardBottom({ account }: CardBottomProps) {
       </Stack>
       <Stack>
         <span className={balanceLabel}>Balance</span>
-        <span className={balance}>
-          {account.balance !== '0' && `${account.balance} KDA`}
-        </span>
+        <span className={balance}>{account.balance} KDA</span>
       </Stack>
     </>
   );

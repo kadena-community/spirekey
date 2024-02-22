@@ -51,23 +51,23 @@ export const getAccountName = async (publicKey: string, networkId: string) =>
   )({});
 
 export const registerAccountOnChain = async ({
-  caccount,
+  accountName,
   color,
   deviceType,
   domain,
   credentialId,
   credentialPubkey,
-  network,
+  networkId,
 }: Omit<AccountRegistration, 'alias'>): Promise<ITransactionDescriptor> => {
   return asyncPipe(
     registerAccountCommand({
-      caccount,
+      accountName,
       color,
       deviceType,
       domain,
       credentialId,
       credentialPubkey,
-      network,
+      networkId,
     }),
     createTransaction,
     signWithKeyPair({ publicKey: genesisPubKey, secretKey: genesisPrivateKey }),
@@ -81,21 +81,21 @@ export const getWebAuthnPubkeyFormat = (pubkey: string) => {
 };
 
 const registerAccountCommand = ({
-  caccount,
+  accountName,
   color,
   deviceType,
   credentialId,
   credentialPubkey,
   domain,
-  network,
+  networkId,
 }: {
-  caccount: string;
+  accountName: string;
   color: string;
   deviceType: string;
   credentialId: string;
   credentialPubkey: string;
   domain: string;
-  network: string;
+  networkId: string;
 }) => {
   const displayName = `${deviceType}_${color} `;
   return composePactCommand(
@@ -116,7 +116,7 @@ const registerAccountCommand = ({
       withCap('coin.GAS'),
       withCap(
         `${process.env.NAMESPACE}.gas-station.GAS_PAYER`,
-        caccount,
+        accountName,
         { int: 1 },
         1,
       ),
@@ -132,6 +132,6 @@ const registerAccountCommand = ({
       ttl: 60000,
       senderAccount: gasStation,
     }),
-    setNetworkId(network),
+    setNetworkId(networkId),
   );
 };
