@@ -14,7 +14,7 @@ export default function LoginHeader({ returnUrl, reason, networkId }: Props) {
   const { accounts } = useAccounts();
 
   const filteredAccounts = accounts.filter(
-    (account) => networkId === undefined || account.network === networkId,
+    (account) => networkId === undefined || account.networkId === networkId,
   );
 
   const displayReason =
