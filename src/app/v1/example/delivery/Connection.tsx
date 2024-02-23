@@ -105,26 +105,22 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
     setId(id);
     localStorage.setItem('connectionId', JSON.stringify(id));
   };
-  const { data: peer, isLoading } = useSWR<Peer | undefined>(
-    id?.publicKey + id?.id,
-    async (pid) => {
+  const [peer, setPeer] = useState<Peer>();
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const createPeer = async () => {
       if (!id) return;
       const { Peer } = await import('peerjs');
       const peerId = getConnectionId(id);
       const peer = new Peer(peerId);
 
-      return new Promise((resolve) => {
-        peer.on('open', () => {
-          resolve(peer);
-        });
+      peer.on('open', () => {
+        setPeer(peer);
+        setIsLoading(false);
       });
-    },
-    {
-      revalidateIfStale: false,
-      revalidateOnReconnect: false,
-      revalidateOnFocus: false,
-    },
-  );
+    };
+    createPeer();
+  }, [id]);
   useEffect(() => {
     if (!peer) return;
     peer.on('connection', (conn) => {
