@@ -49,13 +49,16 @@ export default function CardCollection({
 
   const collapsedCardSpacing = 15;
   const collapsedCardsVisible = 3;
+  const expandedCardSpacing = 15;
 
   const cardHeight =
     cardRefs.current[0]?.querySelector('.card')?.offsetHeight || 0;
 
   const totalCardHeight = accounts.length * cardHeight;
   const excessHeight = totalCardHeight - (innerHeight - 30);
-  const cardOverlap = (excessHeight / (accounts.length - 1)) * -1;
+  const negativeOverlap = (excessHeight / (accounts.length - 1)) * -1;
+  const cardOverlap =
+    totalCardHeight < innerHeight - 30 ? expandedCardSpacing : negativeOverlap;
 
   const hasActiveCard = activeCard !== null;
 

@@ -100,3 +100,7 @@ export const loader = style({
 export const error = style({
   color: '#ff0000',
 });
+
+export const success = style({
+  color: 'green',
+});

@@ -21,7 +21,10 @@ import {
   setNetworkId,
 } from '@kadena/client/fp';
 
-export const getAccountName = async (publicKey: string, networkId: string) =>
+export const getAccountName = async (
+  publicKey: string,
+  networkId: string,
+): Promise<string> =>
   asyncPipe(
     composePactCommand(
       execution(`

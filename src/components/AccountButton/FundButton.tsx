@@ -12,7 +12,8 @@ interface Props {
 
 export const FundButton: FC<Props> = ({ account }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
 
   const handleFundAccount = async () => {
     if (isLoading) return;
@@ -22,9 +23,11 @@ export const FundButton: FC<Props> = ({ account }) => {
       if (!account) throw new Error('No account selected');
 
       await fundAccount(account);
+      setSuccess(true);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        setError('error');
+        setError(error.message);
+        console.error(error.message);
       }
     } finally {
       setIsLoading(false);
@@ -34,10 +37,16 @@ export const FundButton: FC<Props> = ({ account }) => {
   useEffect(() => {
     if (error) {
       setTimeout(() => {
-        setError('');
+        setError(null);
       }, 3000);
     }
-  }, [error]);
+
+    if (success) {
+      setTimeout(() => {
+        setSuccess(false);
+      }, 3000);
+    }
+  }, [error, success]);
 
   return (
     <Box className={styles.button} onClick={handleFundAccount}>
@@ -56,7 +65,7 @@ export const FundButton: FC<Props> = ({ account }) => {
                 <SystemIcon.Loading className={styles.loader} />
               </motion.span>
             )}
-            {!error && !isLoading && (
+            {!error && !success && !isLoading && (
               <motion.span
                 key="fund"
                 initial={{ opacity: 0, x: -50 }}
@@ -78,6 +87,18 @@ export const FundButton: FC<Props> = ({ account }) => {
                 className={styles.icon}
               >
                 <SystemIcon.Close className={styles.error} />
+              </motion.span>
+            )}
+            {success && !isLoading && (
+              <motion.span
+                key="success"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 50 }}
+                transition={{ duration: 0.2 }}
+                className={styles.icon}
+              >
+                <SystemIcon.Check className={styles.success} />
               </motion.span>
             )}
           </AnimatePresence>
