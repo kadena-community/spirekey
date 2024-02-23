@@ -7,10 +7,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { Fragment, useEffect, useState } from 'react';
 import { AccountButton } from '../AccountButton/AccountButton';
+import { FundButton } from '../AccountButton/FundButton';
 import { ButtonLink } from '../ButtonLink/ButtonLink';
 import DeviceCard from '../Card/DeviceCard';
 import { Carousel } from '../Carousel/Carousel';
-import { Fund } from '../icons/Fund';
 import { Request } from '../icons/Request';
 import { Send } from '../icons/Send';
 import { Transactions } from '../icons/Transactions';
@@ -100,14 +100,7 @@ export function Account({
                     />
                     {['testnet04', getDevnetNetworkId()].includes(
                       account.networkId,
-                    ) && (
-                      <AccountButton
-                        href={`/accounts/${caccount}/devices/${cid}/fund`}
-                        icon={<Fund />}
-                        title="Fund"
-                        description="Account"
-                      />
-                    )}
+                    ) && <FundButton account={account} />}
                   </Stack>
                   <Stack
                     marginBlock="lg"
