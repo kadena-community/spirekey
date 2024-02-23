@@ -1,7 +1,8 @@
 import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { Button, Text } from '@kadena/react-ui';
+import { Text } from '@kadena/react-ui';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
+import { Button } from './Button/Button';
 
 interface Credential {
   type: 'WebAuthn' | 'ED25519';
@@ -20,10 +21,12 @@ export const AccountButton = ({
   user,
   returnPath,
   className,
+  onLogout,
 }: {
   user?: LoginAccount | null;
   returnPath: string;
   className?: string;
+  onLogout: () => void;
 }) => {
   const router = useRouter();
   const { getReturnUrl } = useReturnUrl();
@@ -36,14 +39,32 @@ export const AccountButton = ({
 
   if (!user)
     return (
-      <Button className={className} onPress={onLogin}>
-        Login
+      <Button
+        variant="primary"
+        className={className}
+        onPress={onLogin}
+        style={{
+          paddingBlock: '0.25rem',
+          paddingInline: '0.5rem',
+        }}
+      >
+        Log in
       </Button>
     );
 
   return (
     <>
-      <Text bold>Account: {user.alias}</Text>
+      <Text bold>Welcome, {user.alias}!</Text>
+      <Button
+        variant="secondary"
+        onPress={onLogout}
+        style={{
+          paddingBlock: '0.25rem',
+          paddingInline: '0.5rem',
+        }}
+      >
+        Log out
+      </Button>
     </>
   );
 };
