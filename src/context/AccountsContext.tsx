@@ -10,6 +10,7 @@ import {
   getWebAuthnPubkeyFormat,
   registerAccountOnChain,
 } from '@/utils/register';
+import { retryPromises } from '@/utils/retryPromises';
 import { ChainId, ITransactionDescriptor } from '@kadena/client';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -136,62 +137,64 @@ const AccountsProvider = ({ children }: Props) => {
   }, [accounts]);
 
   const fetchAccountsFromChain = async (localAccounts: Account[]) => {
-    return await Promise.all(
+    return Promise.all(
       localAccounts.map(async (localAccount) => {
         const { accountName, networkId, alias, devices } = localAccount;
-        let remoteAccount: Account;
         try {
-          remoteAccount = await getAccountFrom({
+          const remoteAccount = await getAccountFrom({
             networkId,
             accountName,
           });
 
-          console.log({ remoteAccount });
-
           if (remoteAccount === null) {
             throw new Error('Account not found on chain');
           }
-        } catch (e: unknown) {
-          console.log('hi');
-          await recoverAccount({
-            alias,
+
+          const uniqueDevices = Array.from(
+            [...remoteAccount.devices, ...devices]
+              .reduce(
+                (allUniqueDevices, d) =>
+                  allUniqueDevices.set(d['credential-id'], d),
+                new Map(),
+              )
+              .values(),
+          );
+
+          return {
+            accountName,
             networkId,
-            credentialPubkey: devices[0].guard.keys[0],
-            credentialId: devices[0]['credential-id'],
-            color: devices[0].color,
-            deviceType: devices[0].deviceType,
-            domain: host,
-          });
-          return localAccount;
-        }
+            alias,
+            balance: remoteAccount.balance || '0',
+            devices: uniqueDevices.map((device: Device) => {
+              const deviceOnChain = remoteAccount.devices.find(
+                (d) => d['credential-id'] === device['credential-id'],
+              );
 
-        if (!remoteAccount) {
-          return localAccount;
-        }
-
-        const uniqueDevices = Array.from(
-          [...remoteAccount.devices, ...devices]
-            .reduce(
-              (allUniqueDevices, d) =>
-                allUniqueDevices.set(d['credential-id'], d),
-              new Map(),
-            )
-            .values(),
-        );
-
-        return {
-          accountName,
-          networkId,
-          alias,
-          balance: remoteAccount.balance || '0',
-          devices: uniqueDevices.map((device: Device) => {
-            const deviceOnChain = remoteAccount.devices.find(
-              (d) => d['credential-id'] === device['credential-id'],
+              return { ...deviceOnChain, ...device };
+            }),
+          };
+        } catch (e: unknown) {
+          try {
+            await retryPromises<ITransactionDescriptor>(() =>
+              recoverAccount({
+                alias,
+                networkId,
+                credentialPubkey: devices[0].guard.keys[0],
+                credentialId: devices[0]['credential-id'],
+                color: devices[0].color,
+                deviceType: devices[0].deviceType,
+                domain: host,
+              }),
             );
+          } catch (e: unknown) {
+            console.error(
+              `Couldn't restore account ${accountName} on ${networkId}`,
+            );
+          }
 
-            return { ...deviceOnChain, ...device };
-          }),
-        };
+          // We've stored our local data on chain, so localAccount === remoteAccount
+          return localAccount;
+        }
       }),
     );
   };
