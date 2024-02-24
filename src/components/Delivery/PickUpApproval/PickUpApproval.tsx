@@ -14,13 +14,13 @@ export function PickUpApproval({ order }: Props) {
         <Stack flexDirection="column" marginBlockEnd="md">
           <Stack
             justifyContent="space-between"
-            alignItems="center"
+            alignItems="flex-start"
             marginBlockEnd="md"
           >
             <Heading variant="h5" color="emphasize">
               Delivery price: $ {order.deliveryPrice.toFixed(2)}
             </Heading>
-            <SystemIcon.Loading size="md" className={styles.loader} />
+            <SystemIcon.Loading size="lg" className={styles.loader} />
           </Stack>
         </Stack>
         <Heading variant="h6" color="emphasize">

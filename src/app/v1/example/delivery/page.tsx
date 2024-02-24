@@ -13,9 +13,8 @@ import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
 import { getAccountFrom } from '@/utils/account';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
-import { Box, Heading, Stack } from '@kadena/react-ui';
+import { Heading, Stack } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -154,7 +153,6 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   );
 
   const getOrderStatus = (): OrderStatus => {
-    if (order?.status === undefined) return 'processing';
     if (status === SubmitStatus.LOADING) return 'signing';
     if (status === SubmitStatus.SUCCESS) return 'completed';
     if (tx && order?.status === 'DELIVERED') return 'delivered';
@@ -172,12 +170,13 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       <style jsx global>
         {`
           body {
-            background-color: #000;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-image: url(${pizzaBackground.src});
+            background-color: rgba(0, 40, 0, 0.8);
+            background-blend-mode: saturation;
           }
         `}
       </style>
@@ -185,60 +184,62 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
         <PizzaWorld className={styles.logo} />
       </header>
 
-      <Stack margin="lg" justifyContent="center">
-        <Surface>
-          <Stack flexDirection="column" alignItems="center" width="100%">
-            {orderStatus === 'ready' && (
-              <Heading variant="h5" color="emphasize">
-                Your order is ready for delivery!
-              </Heading>
-            )}
-            {orderStatus === 'delivered' && (
-              <Heading variant="h5" color="emphasize">
-                <div>Enjoy your pizza!</div>
-              </Heading>
-            )}
-            {orderStatus === 'completed' && (
-              <Heading variant="h5" color="emphasize">
-                <div>Thank you for your order!</div>
-              </Heading>
-            )}
-            {orderStatus === 'signing' && (
-              <Heading variant="h5" color="emphasize">
-                <div>Signing for delivery...</div>
-              </Heading>
-            )}
-            {orderStatus === 'crafting' && (
-              <article className={styles.loadingWrapper}>
+      {orderStatus && (
+        <Stack margin="lg" justifyContent="center">
+          <Surface>
+            <Stack flexDirection="column" alignItems="center" width="100%">
+              {orderStatus === 'ready' && (
                 <Heading variant="h5" color="emphasize">
-                  We are crafting your pizza!
+                  Your order is ready for delivery!
                 </Heading>
-                <PizzaLoader />
-              </article>
-            )}
-            {orderStatus === 'processing' && (
-              <Heading variant="h5" color="emphasize">
-                Your order is being processed.
-              </Heading>
-            )}
-
-            {orderStatus === 'delivering' && (
-              <Stack justifyContent="space-between">
+              )}
+              {orderStatus === 'delivered' && (
                 <Heading variant="h5" color="emphasize">
-                  Sign off to receive your pizza!
+                  <div>Enjoy your pizza!</div>
                 </Heading>
-                <Button onPress={onAcceptDelivery}>Sign off</Button>
-              </Stack>
-            )}
+              )}
+              {orderStatus === 'completed' && (
+                <Heading variant="h5" color="emphasize">
+                  <div>Thank you for your order!</div>
+                </Heading>
+              )}
+              {orderStatus === 'signing' && (
+                <Heading variant="h5" color="emphasize">
+                  <div>Signing for delivery...</div>
+                </Heading>
+              )}
+              {orderStatus === 'crafting' && (
+                <article className={styles.loadingWrapper}>
+                  <Heading variant="h5" color="emphasize">
+                    We are crafting your pizza!
+                  </Heading>
+                  <PizzaLoader />
+                </article>
+              )}
+              {orderStatus === 'processing' && (
+                <Heading variant="h5" color="emphasize">
+                  Your order is being processed.
+                </Heading>
+              )}
 
-            {orderStatus === 'transit' && (
-              <Heading variant="h5" color="emphasize">
-                Your pizza is on its way!
-              </Heading>
-            )}
-          </Stack>
-        </Surface>
-      </Stack>
+              {orderStatus === 'delivering' && (
+                <Stack flexDirection="column" gap="xl">
+                  <Heading variant="h5" color="emphasize">
+                    Sign off to receive your pizza!
+                  </Heading>
+                  <Button onPress={onAcceptDelivery}>Sign off</Button>
+                </Stack>
+              )}
+
+              {orderStatus === 'transit' && (
+                <Heading variant="h5" color="emphasize">
+                  Your pizza is on its way!
+                </Heading>
+              )}
+            </Stack>
+          </Surface>
+        </Stack>
+      )}
       {!tx && (
         <Stack justifyContent="flex-end">
           <Stack justifyContent="flex-end" gap="md" className={styles.account}>

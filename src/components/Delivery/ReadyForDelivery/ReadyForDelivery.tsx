@@ -78,7 +78,7 @@ export function ReadyForDelivery({ signers, order, transaction }: Props) {
   return (
     <>
       <Surface>
-        <Stack justifyContent="space-between" alignItems="center">
+        <Stack justifyContent="space-between" alignItems="flex-start">
           <Stack flexDirection="column" marginBlockEnd="md">
             <Heading variant="h5" color="emphasize">
               Order with value: ${' '}
@@ -91,7 +91,7 @@ export function ReadyForDelivery({ signers, order, transaction }: Props) {
             </Heading>
           </Stack>
           {!transaction && (
-            <SystemIcon.Loading size="md" className={styles.loader} />
+            <SystemIcon.Loading size="lg" className={styles.loader} />
           )}
           {transaction && (
             <ButtonLink
@@ -101,7 +101,7 @@ export function ReadyForDelivery({ signers, order, transaction }: Props) {
                 '/v1/example/delivery/merchant',
               )}`}
             >
-              Hand of
+              Hand off
             </ButtonLink>
           )}
         </Stack>

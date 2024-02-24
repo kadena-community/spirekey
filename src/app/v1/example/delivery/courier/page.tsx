@@ -228,7 +228,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-image: url(${pizzaBackground.src});
-            background-color: rgba(0, 40, 0, 0.8);
+            background-color: rgba(0, 0, 40, 0.8);
             background-blend-mode: saturation;
           }
         `}
@@ -254,7 +254,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
           <AccountButton
             className={styles.button}
             user={account}
-            returnPath="/v1/example/delivery/merchant"
+            returnPath="/v1/example/delivery/courier"
             onLogout={logout}
           />
         </Stack>
@@ -350,52 +350,6 @@ export default function CourierPage({ searchParams }: CourierProps) {
             </Stack>
           )}
         </>
-      )}
-
-      {account && !!orders?.length && (
-        <Table>
-          <TableHeader>
-            <Column>Order Id</Column>
-            <Column>Buyer</Column>
-            <Column>Order Price</Column>
-            <Column>Delivery Price</Column>
-            <Column>Courier</Column>
-            <Column>Merchant</Column>
-          </TableHeader>
-          <TableBody>
-            {orders.map(
-              ({
-                orderId,
-                status,
-                buyer,
-                merchant,
-                courier,
-                deliveryPrice,
-                orderPrice,
-              }) => (
-                <Row key={orderId + status}>
-                  <Cell>{maskValue(orderId)}</Cell>
-                  <Cell>{maskValue(buyer)}</Cell>
-                  <Cell>{orderPrice}</Cell>
-                  <Cell>{deliveryPrice}</Cell>
-                  <Cell>
-                    <CourierActionCell
-                      transaction={transaction}
-                      onPickupDelivery={onPickupDelivery}
-                      courier={courier}
-                      buyer={buyer}
-                      orderId={orderId}
-                      status={status}
-                      merchant={merchant}
-                      onDeliver={onDeliver}
-                    />
-                  </Cell>
-                  <Cell>{maskValue(merchant)}</Cell>
-                </Row>
-              ),
-            )}
-          </TableBody>
-        </Table>
       )}
     </div>
   );
