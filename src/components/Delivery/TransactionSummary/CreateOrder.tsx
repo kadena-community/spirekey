@@ -1,4 +1,3 @@
-import { useLoggedInAccount } from '@/app/v1/example/delivery/useLoggedInAccount';
 import { useOrder } from '@/context/OrderContext';
 import { Box, Heading, Stack, SystemIcon } from '@kadena/react-ui';
 import { ICap } from '@kadena/types';
@@ -11,9 +10,6 @@ interface Props {
 
 export function CreateOrder({ capabilities }: Props) {
   const { products } = useOrder();
-  const { account } = useLoggedInAccount();
-
-  const accountName = account?.accountName;
 
   const orderLineCapabilities = capabilities.filter((capability) => {
     return (
@@ -33,9 +29,6 @@ export function CreateOrder({ capabilities }: Props) {
   const gasPayerCapability = capabilities.find((capability) =>
     capability.name.includes('webauthn-wallet.GAS_PAYER'),
   );
-
-  console.log(accountName);
-  console.log(transferCapability?.args);
 
   // The customer signs for the gas payer capability
   const transferTitle = gasPayerCapability
@@ -108,7 +101,7 @@ export function CreateOrder({ capabilities }: Props) {
         {gasPayerCapability && (
           <Stack marginBlockStart="xs" justifyContent="space-between">
             <Heading variant="h6" as="h4">
-              + max transaction fee:
+              + max transaction fee
             </Heading>
             <Heading variant="h6" as="h4">
               $ {(gasPayerCapability?.args[2] as number).toFixed(2)}

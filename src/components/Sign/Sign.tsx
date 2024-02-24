@@ -25,6 +25,9 @@ import fingerprint from '@/assets/images/fingerprint.svg';
 import { usePreviewEvents } from '@/hooks/usePreviewEvents';
 import type { ICap, ICommandPayload, IPactEvent, ISigner } from '@kadena/types';
 import { CreateOrder } from '../Delivery/TransactionSummary/CreateOrder';
+import { DeliverOrder } from '../Delivery/TransactionSummary/DeliverOrder';
+import { PickUpDelivery } from '../Delivery/TransactionSummary/PickUpDelivery';
+import { SetReadyForDelivery } from '../Delivery/TransactionSummary/SetReadyForDelivery';
 import { container, step, wrapper } from './Sign.css';
 
 interface Props {
@@ -206,6 +209,24 @@ export default function Sign(props: Props) {
     cap.name.includes('delivery.CREATE_ORDER'),
   );
 
+  const isDeliverySetReadyForDeliveryTransaction = capabilitiesToSign.some(
+    (cap) => cap.name.includes('delivery.SET_READY_FOR_DELIVERY'),
+  );
+
+  const isDeliverPickUpDeliveryTransaction = capabilitiesToSign.some((cap) =>
+    cap.name.includes('delivery.PICKUP_DELIVERY'),
+  );
+
+  const isDeliverDeliverOrderTransaction = capabilitiesToSign.some((cap) =>
+    cap.name.includes('delivery.DELIVER_ORDER'),
+  );
+
+  const isCustomizedTransaction =
+    isDeliveryCreateOrderTransaction ||
+    isDeliverySetReadyForDeliveryTransaction ||
+    isDeliverPickUpDeliveryTransaction ||
+    isDeliverDeliverOrderTransaction;
+
   const isReadyToSubmit =
     (!optimistic && !!pendingRegistrationTxs.length) || optimistic;
 
@@ -271,7 +292,24 @@ export default function Sign(props: Props) {
           <CreateOrder capabilities={capabilitiesToSign} />
         )}
 
-        {!isDeliveryCreateOrderTransaction && (
+        {isDeliverySetReadyForDeliveryTransaction && (
+          <SetReadyForDelivery capabilities={capabilitiesToSign} />
+        )}
+
+        {isDeliverPickUpDeliveryTransaction && (
+          <PickUpDelivery capabilities={capabilitiesToSign} />
+        )}
+
+        {isDeliverDeliverOrderTransaction && (
+          <DeliverOrder capabilities={capabilitiesToSign} />
+        )}
+
+        {/* <TransactionDetails
+          signers={currentSigners}
+          language={language}
+          accounts={accounts}
+        /> */}
+        {!isCustomizedTransaction && (
           <TransactionDetails
             signers={currentSigners}
             language={language}

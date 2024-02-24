@@ -1,21 +1,36 @@
+import { Order, useDelivery } from '@/app/v1/example/delivery/useDelivery';
+import { useLoggedInAccount } from '@/app/v1/example/delivery/useLoggedInAccount';
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
 import { Surface } from '@/components/Surface/Surface';
 import { Account, useAccounts } from '@/context/AccountsContext';
 import { useOrder } from '@/context/OrderContext';
+import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
-import { Box, Heading, Stack, SystemIcon } from '@kadena/react-ui';
-import { ICap, ISigner } from '@kadena/types';
+import { Box, Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
+import { ChainId, ICap, ISigner } from '@kadena/types';
 import Image from 'next/image';
-import * as styles from './AcceptOrder.css';
+import { useRouter } from 'next/navigation';
+import * as styles from './ReadyForDelivery.css';
 
 interface Props {
   signers: ISigner[];
-  signingLink: string;
+  order: Order;
+  transaction?: any;
 }
 
-export function AcceptOrder({ signers, signingLink }: Props) {
+export function ReadyForDelivery({ signers, order, transaction }: Props) {
   const { products } = useOrder();
   const { accounts } = useAccounts();
+  const { account } = useLoggedInAccount();
+  const router = useRouter();
+  const { getReturnUrl } = useReturnUrl();
+
+  console.log(transaction);
+
+  const { orders, markOrderAsReady, saveDelivery, updateOrders } = useDelivery({
+    chainId: process.env.CHAIN_ID as ChainId,
+    networkId: process.env.DAPP_NETWORK_ID!,
+  });
 
   const publicKeys: string[] = signers.map((s: { pubKey: string }) => s.pubKey);
 
@@ -63,20 +78,32 @@ export function AcceptOrder({ signers, signingLink }: Props) {
   return (
     <>
       <Surface>
-        <Stack
-          justifyContent="space-between"
-          alignItems="center"
-          marginBlockEnd="md"
-        >
-          <Heading variant="h5" color="emphasize">
-            Order with value: ${' '}
-            {Number(
-              (transferCapability?.args[2] as { decimal: number }).decimal,
-            ).toFixed(2)}
-          </Heading>
-          <ButtonLink variant="primary" href={signingLink}>
-            Accept
-          </ButtonLink>
+        <Stack justifyContent="space-between" alignItems="center">
+          <Stack flexDirection="column" marginBlockEnd="md">
+            <Heading variant="h5" color="emphasize">
+              Order with value: ${' '}
+              {Number(
+                (transferCapability?.args[2] as { decimal: number }).decimal,
+              ).toFixed(2)}
+            </Heading>
+            <Heading variant="h6" color="emphasize">
+              Courier: {order.courier}
+            </Heading>
+          </Stack>
+          {!transaction && (
+            <SystemIcon.Loading size="md" className={styles.loader} />
+          )}
+          {transaction && (
+            <ButtonLink
+              href={`${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
+                JSON.stringify(transaction),
+              ).toString('base64')}&returnUrl=${getReturnUrl(
+                '/v1/example/delivery/merchant',
+              )}`}
+            >
+              Hand of
+            </ButtonLink>
+          )}
         </Stack>
         <Stack flexDirection="column" gap="md">
           {orderLineCapabilities.map((capability, i) => (

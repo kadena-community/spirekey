@@ -12,7 +12,7 @@ import {
 import { hash } from '@kadena/cryptography-utils';
 import useSWR from 'swr';
 
-type Order = {
+export type Order = {
   orderId: string;
   status: string;
   courier: string;
@@ -153,13 +153,22 @@ const createOrder = async ({
     };
   });
 
+  // The format required by Pact does not allow for a simple JSON.stringify
+  const orderLinesExecutionString = orderLines
+    .reduce((previous, current, index) => {
+      return `${previous}${index === 0 ? '[' : ','}{"line-id": "${current['line-id']}", "price": ${current.price}}`;
+    }, '')
+    .concat(`,{"line-id": "Delivery", "price": ${deliveryPrice.toFixed(12)}}]`);
+
+  console.log(orderLinesExecutionString);
+
   const escrowId = await getDeliveryEscrowId({ chainId, networkId });
   return asyncPipe(
     composePactCommand(
       execution(
         `(${process.env.NAMESPACE}.delivery.create-order
           "${orderHash}"
-          ${JSON.stringify(orderLines)}
+          ${orderLinesExecutionString}
           "${merchantAccount}"
           (${process.env.NAMESPACE}.webauthn-wallet.get-wallet-guard "${merchantAccount}")
           "${customerAccount}"
@@ -319,7 +328,6 @@ const pickupDelivery = async ({
         // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: courierPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
-          withCap(`${process.env.NAMESPACE}.delivery.PICKUP_DELIVERY`, orderId),
           withCap(`${process.env.NAMESPACE}.delivery.PICKUP_DELIVERY`, orderId),
           withCap(
             `${process.env.NAMESPACE}.webauthn-wallet.TRANSFER`,

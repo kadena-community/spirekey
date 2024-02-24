@@ -2,28 +2,17 @@
 
 import pizzaBackground from '@/app/v1/example/delivery/pizzabackground.jpg';
 import { AccountButton } from '@/components/AccountButton';
-import { Button } from '@/components/Button/Button';
 import { AcceptOrder } from '@/components/Delivery/AcceptOrder/AcceptOrder';
+import { AcceptedOrder } from '@/components/Delivery/AcceptedOrder/AcceptedOrder';
+import { OrderDelivery } from '@/components/Delivery/OrderDelivery/OrderDelivery';
+import { ReadyForDelivery } from '@/components/Delivery/ReadyForDelivery/ReadyForDelivery';
 import { PizzaWorld } from '@/components/icons/PizzaWorld';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
-import {
-  Box,
-  Cell,
-  Column,
-  Heading,
-  Row,
-  Stack,
-  Table,
-  TableBody,
-  TableHeader,
-  Text,
-} from '@kadena/react-ui';
-import { ChainId, ISigner } from '@kadena/types';
-import Link from 'next/link';
+import { Box, Heading, Stack, Text } from '@kadena/react-ui';
+import { ChainId, ICommandPayload, ISigner } from '@kadena/types';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import type { Message } from '../Connection';
 import { useConnection } from '../Connection';
 import * as styles from '../order.css';
 import { useDelivery } from '../useDelivery';
@@ -41,28 +30,12 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
   const { account, logout } = useLoggedInAccount(user);
   const { setId, send, isLoading, messages } = useConnection();
   const { getReturnUrl } = useReturnUrl();
-  const router = useRouter();
 
   const { status, doSubmit, tx } = useSubmit(searchParams);
-  const { orders, markOrderAsReady, saveDelivery, updateOrders } = useDelivery({
+  const { orders, saveDelivery, updateOrders } = useDelivery({
     chainId: process.env.CHAIN_ID as ChainId,
     networkId: process.env.DAPP_NETWORK_ID!,
   });
-  const markAsReady = (orderId: string) => async () => {
-    if (!account) return;
-    const tx = await markOrderAsReady({
-      orderId,
-      merchantAccount: account?.accountName,
-      merchantPublicKey: account?.credentials[0].publicKey,
-    });
-    router.push(
-      `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
-        JSON.stringify(tx),
-      ).toString('base64')}&returnUrl=${getReturnUrl(
-        '/v1/example/delivery/merchant',
-      )}`,
-    );
-  };
 
   const couriers = Array.from(
     new Map(
@@ -94,6 +67,7 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
     if (isLoading) return;
     if (status !== SubmitStatus.SUBMITABLE) return;
     const originMsg = messages.find((m) => m.data.hash === tx.hash);
+    console.log(originMsg);
     if (!originMsg) {
       doSubmit();
       return;
@@ -103,11 +77,34 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
     send(originMsg.connectionId, { type: 'confirm', data: tx });
   }, [status, isLoading, messages]);
 
-  console.log(orders);
-  // const pendingOrders = orders;
-  const pendingOrders = orders?.filter((order) => order.status === 'CREATED');
+  const transactionsToSign = messages
+    .filter(
+      (message) =>
+        message.type === 'tx' &&
+        message.data.cmd.includes('delivery.PICKUP_DELIVER'),
+    )
+    .map((transactionToSign) => transactionToSign.data);
+
+  const acceptedOrders = orders;
+
+  const deliveredOrders =
+    orders?.filter((order) => order.status === 'DELIVERED') || [];
+
+  const transitOrders =
+    orders?.filter((order) => order.status === 'IN_TRANSIT') || [];
+
+  const readyOrders =
+    orders?.filter((order) => order.status === 'READY_FOR_DELIVERY') || [];
+
+  const notReadyOrders =
+    orders?.filter((order) => order.status === 'CREATED') || [];
 
   const newOrders = messages.filter((message) => message.type === 'create');
+  const acceptedOrderIds =
+    acceptedOrders?.map((acceptedOrder) => acceptedOrder.orderId) || [];
+  const newOrdersToAccept = newOrders.filter(
+    (newOrder) => !acceptedOrderIds.includes(newOrder.orderId || ''),
+  );
 
   return (
     <div>
@@ -153,7 +150,164 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
 
       {account && (
         <>
-          {newOrders.length > 0 && (
+          {!!deliveredOrders?.length && (
+            <Stack
+              flexDirection="column"
+              paddingInline="lg"
+              marginBlockEnd="xl"
+              gap="md"
+            >
+              <Stack marginBlock="xl" justifyContent="center">
+                <Heading variant="h5" as="h3">
+                  Completed orders
+                </Heading>
+              </Stack>
+              {deliveredOrders.map((deliveredOrder) => {
+                const orderTransaction = newOrders.find(
+                  (newOrder) => newOrder.orderId === deliveredOrder.orderId,
+                );
+                return (
+                  <OrderDelivery
+                    key={`${orderTransaction?.data.hash}-transit`}
+                    signers={
+                      JSON.parse(orderTransaction?.data.cmd || '{}')
+                        .signers as ISigner[]
+                    }
+                    transaction={transactionsToSign.find((t) =>
+                      t.cmd.includes(deliveredOrder.orderId),
+                    )}
+                    order={deliveredOrder}
+                  />
+                );
+              })}
+            </Stack>
+          )}
+          {!deliveredOrders?.length && (
+            <Stack marginBlock="xl" justifyContent="center">
+              <Heading variant="h5" as="h3">
+                No pizzas delivered
+              </Heading>
+            </Stack>
+          )}
+
+          {!!transitOrders?.length && (
+            <Stack
+              flexDirection="column"
+              paddingInline="lg"
+              marginBlockEnd="xl"
+              gap="md"
+            >
+              <Stack marginBlock="xl" justifyContent="center">
+                <Heading variant="h5" as="h3">
+                  Deliveries in progress
+                </Heading>
+              </Stack>
+              {transitOrders.map((transitOrder) => {
+                const orderTransaction = newOrders.find(
+                  (newOrder) => newOrder.orderId === transitOrder.orderId,
+                );
+                return (
+                  <OrderDelivery
+                    key={`${orderTransaction?.data.hash}-transit`}
+                    signers={
+                      JSON.parse(orderTransaction?.data.cmd || '{}')
+                        .signers as ISigner[]
+                    }
+                    transaction={transactionsToSign.find((t) =>
+                      t.cmd.includes(transitOrder.orderId),
+                    )}
+                    order={transitOrder}
+                  />
+                );
+              })}
+            </Stack>
+          )}
+          {!transitOrders?.length && (
+            <Stack marginBlock="xl" justifyContent="center">
+              <Heading variant="h5" as="h3">
+                No deliveries in progress
+              </Heading>
+            </Stack>
+          )}
+
+          {!!readyOrders?.length && (
+            <Stack
+              flexDirection="column"
+              paddingInline="lg"
+              marginBlockEnd="xl"
+              gap="md"
+            >
+              <Stack marginBlock="xl" justifyContent="center">
+                <Heading variant="h5" as="h3">
+                  Ready for delivery
+                </Heading>
+              </Stack>
+              {readyOrders.map((readyOrder) => {
+                const orderTransaction = newOrders.find(
+                  (newOrder) => newOrder.orderId === readyOrder.orderId,
+                );
+                return (
+                  <ReadyForDelivery
+                    key={`${orderTransaction?.data.hash}-accepted`}
+                    signers={
+                      JSON.parse(orderTransaction?.data.cmd || '{}')
+                        .signers as ISigner[]
+                    }
+                    transaction={transactionsToSign.find((t) =>
+                      t.cmd.includes(readyOrder.orderId),
+                    )}
+                    order={readyOrder}
+                  />
+                );
+              })}
+            </Stack>
+          )}
+          {!readyOrders?.length && (
+            <Stack marginBlock="xl" justifyContent="center">
+              <Heading variant="h5" as="h3">
+                No orders ready for delivery
+              </Heading>
+            </Stack>
+          )}
+
+          {!!notReadyOrders?.length && (
+            <Stack
+              flexDirection="column"
+              paddingInline="lg"
+              marginBlockEnd="xl"
+              gap="md"
+            >
+              <Stack marginBlock="xl" justifyContent="center">
+                <Heading variant="h5" as="h3">
+                  Accepted orders
+                </Heading>
+              </Stack>
+              {notReadyOrders.map((notReadyOrder) => {
+                const orderTransaction = newOrders.find(
+                  (newOrder) => newOrder.orderId === notReadyOrder.orderId,
+                );
+                return (
+                  <AcceptedOrder
+                    key={`${orderTransaction?.data.hash}-accepted`}
+                    signers={
+                      JSON.parse(orderTransaction?.data.cmd || '{}')
+                        .signers as ISigner[]
+                    }
+                    orderId={notReadyOrder.orderId}
+                  />
+                );
+              })}
+            </Stack>
+          )}
+          {!notReadyOrders?.length && (
+            <Stack marginBlock="xl" justifyContent="center">
+              <Heading variant="h5" as="h3">
+                No orders in progress
+              </Heading>
+            </Stack>
+          )}
+
+          {!!newOrdersToAccept.length && (
             <Stack
               flexDirection="column"
               paddingInline="lg"
@@ -165,7 +319,7 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
                   New orders
                 </Heading>
               </Stack>
-              {newOrders.map((newOrder) => (
+              {newOrdersToAccept.map((newOrder) => (
                 <AcceptOrder
                   key={newOrder.data.hash + newOrder.type}
                   signers={JSON.parse(newOrder.data.cmd).signers as ISigner[]}
@@ -178,80 +332,11 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
               ))}
             </Stack>
           )}
-          {newOrders.length === 0 && (
+          {!newOrdersToAccept.length && (
             <Stack marginBlock="xl" justifyContent="center">
               <Heading variant="h5" as="h3">
                 No new orders to accept
               </Heading>
-            </Stack>
-          )}
-          <Table>
-            <TableHeader>
-              <Column>Type</Column>
-              <Column>Transaction Hash</Column>
-              <Column>Action</Column>
-            </TableHeader>
-            <TableBody>
-              {Array.from(
-                messages
-                  .filter((m) => m.type === 'tx' || m.type === 'create')
-                  .reduce((s, m) => {
-                    s.set(m.data.hash, m);
-                    return s;
-                  }, new Map<string, Message>())
-                  .values(),
-              ).map((message, index) => (
-                <Row key={message.data.hash + message.type}>
-                  <Cell>{message.type}</Cell>
-                  <Cell>{message.data.hash}</Cell>
-                  <Cell>
-                    <Link
-                      href={`${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
-                        JSON.stringify(message.data),
-                      ).toString('base64')}&returnUrl=${getReturnUrl(
-                        '/v1/example/delivery/merchant',
-                      )}`}
-                    >
-                      sign
-                    </Link>
-                  </Cell>
-                </Row>
-              ))}
-            </TableBody>
-          </Table>
-          {!!pendingOrders?.length && (
-            <Stack margin="md" gap="md" flexDirection="column">
-              <h2>Pending Orders</h2>
-              <Table>
-                <TableHeader>
-                  <Column>Order Id</Column>
-                  {/* <Column>Status</Column> */}
-                  <Column>Buyer</Column>
-                  <Column>Order Price</Column>
-                  <Column>Delivery Price</Column>
-                  <Column>Courier</Column>
-                  <Column>Merchant</Column>
-                  <Column>Action</Column>
-                </TableHeader>
-                <TableBody>
-                  {pendingOrders.map((order) => (
-                    <Row key={order.orderId}>
-                      <Cell>{order.orderId}</Cell>
-                      {/* <Cell>{order.status}</Cell> */}
-                      <Cell>{order.buyer}</Cell>
-                      <Cell>{order.orderPrice}</Cell>
-                      <Cell>{order.deliveryPrice}</Cell>
-                      <Cell>{order.courier}</Cell>
-                      <Cell>{order.merchant}</Cell>
-                      <Cell>
-                        <Button onPress={markAsReady(order.orderId)}>
-                          Mark as Ready
-                        </Button>
-                      </Cell>
-                    </Row>
-                  ))}
-                </TableBody>
-              </Table>
             </Stack>
           )}
         </>

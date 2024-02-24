@@ -1,19 +1,20 @@
-import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
+import { Order } from '@/app/v1/example/delivery/useDelivery';
 import { Surface } from '@/components/Surface/Surface';
 import { Account, useAccounts } from '@/context/AccountsContext';
 import { useOrder } from '@/context/OrderContext';
 import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
-import { Box, Heading, Stack, SystemIcon } from '@kadena/react-ui';
+import { Box, Heading, Stack, SystemIcon, maskValue } from '@kadena/react-ui';
 import { ICap, ISigner } from '@kadena/types';
 import Image from 'next/image';
-import * as styles from './AcceptOrder.css';
+import * as styles from './OrderDelivery.css';
 
 interface Props {
   signers: ISigner[];
-  signingLink: string;
+  order: Order;
+  transaction?: any;
 }
 
-export function AcceptOrder({ signers, signingLink }: Props) {
+export function OrderDelivery({ signers, order, transaction }: Props) {
   const { products } = useOrder();
   const { accounts } = useAccounts();
 
@@ -63,20 +64,22 @@ export function AcceptOrder({ signers, signingLink }: Props) {
   return (
     <>
       <Surface>
-        <Stack
-          justifyContent="space-between"
-          alignItems="center"
-          marginBlockEnd="md"
-        >
-          <Heading variant="h5" color="emphasize">
-            Order with value: ${' '}
-            {Number(
-              (transferCapability?.args[2] as { decimal: number }).decimal,
-            ).toFixed(2)}
-          </Heading>
-          <ButtonLink variant="primary" href={signingLink}>
-            Accept
-          </ButtonLink>
+        <Stack justifyContent="space-between" alignItems="flex-start">
+          <Stack flexDirection="column" marginBlockEnd="md">
+            <Heading variant="h5" color="emphasize">
+              Order with value: ${' '}
+              {Number(
+                (transferCapability?.args[2] as { decimal: number }).decimal,
+              ).toFixed(2)}
+            </Heading>
+            <Heading variant="h6" color="emphasize">
+              Courier: {maskValue(order.courier)}
+            </Heading>
+          </Stack>
+          {order.status === 'IN_TRANSIT' && (
+            <SystemIcon.Loading size="lg" className={styles.loader} />
+          )}
+          {order.status === 'DELIVERED' && <SystemIcon.Check size="lg" />}
         </Stack>
         <Stack flexDirection="column" gap="md">
           {orderLineCapabilities.map((capability, i) => (

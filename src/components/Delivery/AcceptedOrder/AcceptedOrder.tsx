@@ -1,21 +1,49 @@
-import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
+import { useDelivery } from '@/app/v1/example/delivery/useDelivery';
+import { useLoggedInAccount } from '@/app/v1/example/delivery/useLoggedInAccount';
+import { Button } from '@/components/Button/Button';
 import { Surface } from '@/components/Surface/Surface';
 import { Account, useAccounts } from '@/context/AccountsContext';
 import { useOrder } from '@/context/OrderContext';
+import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
-import { Box, Heading, Stack, SystemIcon } from '@kadena/react-ui';
-import { ICap, ISigner } from '@kadena/types';
+import { Box, Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
+import { ChainId, ICap, ISigner } from '@kadena/types';
 import Image from 'next/image';
-import * as styles from './AcceptOrder.css';
+import { useRouter } from 'next/navigation';
+import * as styles from './AcceptedOrder.css';
 
 interface Props {
   signers: ISigner[];
-  signingLink: string;
+  orderId: string;
 }
 
-export function AcceptOrder({ signers, signingLink }: Props) {
+export function AcceptedOrder({ signers, orderId }: Props) {
   const { products } = useOrder();
   const { accounts } = useAccounts();
+  const { account } = useLoggedInAccount();
+  const router = useRouter();
+  const { getReturnUrl } = useReturnUrl();
+
+  const { markOrderAsReady } = useDelivery({
+    chainId: process.env.CHAIN_ID as ChainId,
+    networkId: process.env.DAPP_NETWORK_ID!,
+  });
+
+  const markAsReady = (orderId: string) => async () => {
+    if (!account) return;
+    const tx = await markOrderAsReady({
+      orderId,
+      merchantAccount: account?.accountName,
+      merchantPublicKey: account?.credentials[0].publicKey,
+    });
+    router.push(
+      `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
+        JSON.stringify(tx),
+      ).toString('base64')}&returnUrl=${getReturnUrl(
+        '/v1/example/delivery/merchant',
+      )}`,
+    );
+  };
 
   const publicKeys: string[] = signers.map((s: { pubKey: string }) => s.pubKey);
 
@@ -74,9 +102,9 @@ export function AcceptOrder({ signers, signingLink }: Props) {
               (transferCapability?.args[2] as { decimal: number }).decimal,
             ).toFixed(2)}
           </Heading>
-          <ButtonLink variant="primary" href={signingLink}>
-            Accept
-          </ButtonLink>
+          <Button variant="primary" onPress={markAsReady(orderId)}>
+            Ready
+          </Button>
         </Stack>
         <Stack flexDirection="column" gap="md">
           {orderLineCapabilities.map((capability, i) => (

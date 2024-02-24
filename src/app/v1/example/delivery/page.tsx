@@ -6,13 +6,14 @@ import { Button } from '@/components/Button/Button';
 import { OrderSummary } from '@/components/Delivery/OrderSummary/OrderSummary';
 import { Product } from '@/components/Delivery/Product/Product';
 import { PizzaLoader } from '@/components/PizzaLoader/PizzaLoader';
+import { Surface } from '@/components/Surface/Surface';
 import { PizzaWorld } from '@/components/icons/PizzaWorld';
 import { useOrder } from '@/context/OrderContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
 import { getAccountFrom } from '@/utils/account';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
-import { Box, Stack } from '@kadena/react-ui';
+import { Box, Heading, Stack } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -29,6 +30,17 @@ type DeliveryProps = {
     transaction: string;
   };
 };
+
+type OrderStatus =
+  | 'processing'
+  | 'crafting'
+  | 'ready'
+  | 'transit'
+  | 'delivering'
+  | 'signing'
+  | 'delivered'
+  | 'completed'
+  | undefined;
 
 export default function DeliveryPage({ searchParams }: DeliveryProps) {
   const { user } = searchParams;
@@ -137,29 +149,23 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   const pendingTx = tx && !messages.some((m) => m.data.hash === tx.hash);
   const mintedTx = tx && messages.some((m) => m.data.hash === tx.hash);
 
-  if (
-    orders?.find((o) => o.orderId === localStorage.getItem('newOrderId'))
-      ?.status === 'DELIVERED' &&
-    tx
-  )
-    return (
-      <Box margin="md">
-        <div>Enjoy your pizza!</div>
-      </Box>
-    );
+  const order = orders?.find(
+    (o) => o.orderId === localStorage.getItem('newOrderId'),
+  );
 
-  if (status === SubmitStatus.SUCCESS)
-    return (
-      <Box margin="md">
-        <div>Enjoy your pizza!</div>
-      </Box>
-    );
-  if (status === SubmitStatus.LOADING)
-    return (
-      <Box margin="md">
-        <div>Signing off...</div>
-      </Box>
-    );
+  const getOrderStatus = (): OrderStatus => {
+    if (order?.status === undefined) return 'processing';
+    if (status === SubmitStatus.LOADING) return 'signing';
+    if (status === SubmitStatus.SUCCESS) return 'completed';
+    if (tx && order?.status === 'DELIVERED') return 'delivered';
+    if (isAcceptingOrder && deliverTx) return 'delivering';
+    if (tx && order?.status === 'READY_FOR_DELIVERY') return 'ready';
+    if (tx && order?.status === 'IN_TRANSIT') return 'transit';
+    if (pendingTx) return 'processing';
+    if (mintedTx) return 'crafting';
+  };
+
+  const orderStatus = getOrderStatus();
 
   return (
     <div>
@@ -178,19 +184,61 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
       <header className={styles.hero}>
         <PizzaWorld className={styles.logo} />
       </header>
-      {mintedTx && (
-        <article className={styles.loadingWrapper}>
-          <h2>We are crafting your pizza!</h2>
-          <PizzaLoader />
-        </article>
-      )}
-      {pendingTx && <Box margin="md">Your order is being processed.</Box>}
-      {isAcceptingOrder && deliverTx && (
-        <Box margin="md">
-          Sign off to receive your pizza!
-          <Button onPress={onAcceptDelivery}>Sign off</Button>
-        </Box>
-      )}
+
+      <Stack margin="lg" justifyContent="center">
+        <Surface>
+          <Stack flexDirection="column" alignItems="center" width="100%">
+            {orderStatus === 'ready' && (
+              <Heading variant="h5" color="emphasize">
+                Your order is ready for delivery!
+              </Heading>
+            )}
+            {orderStatus === 'delivered' && (
+              <Heading variant="h5" color="emphasize">
+                <div>Enjoy your pizza!</div>
+              </Heading>
+            )}
+            {orderStatus === 'completed' && (
+              <Heading variant="h5" color="emphasize">
+                <div>Thank you for your order!</div>
+              </Heading>
+            )}
+            {orderStatus === 'signing' && (
+              <Heading variant="h5" color="emphasize">
+                <div>Signing for delivery...</div>
+              </Heading>
+            )}
+            {orderStatus === 'crafting' && (
+              <article className={styles.loadingWrapper}>
+                <Heading variant="h5" color="emphasize">
+                  We are crafting your pizza!
+                </Heading>
+                <PizzaLoader />
+              </article>
+            )}
+            {orderStatus === 'processing' && (
+              <Heading variant="h5" color="emphasize">
+                Your order is being processed.
+              </Heading>
+            )}
+
+            {orderStatus === 'delivering' && (
+              <Stack justifyContent="space-between">
+                <Heading variant="h5" color="emphasize">
+                  Sign off to receive your pizza!
+                </Heading>
+                <Button onPress={onAcceptDelivery}>Sign off</Button>
+              </Stack>
+            )}
+
+            {orderStatus === 'transit' && (
+              <Heading variant="h5" color="emphasize">
+                Your pizza is on its way!
+              </Heading>
+            )}
+          </Stack>
+        </Surface>
+      </Stack>
       {!tx && (
         <Stack justifyContent="flex-end">
           <Stack justifyContent="flex-end" gap="md" className={styles.account}>
