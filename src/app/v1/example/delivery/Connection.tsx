@@ -43,6 +43,8 @@ const isMessage = (data: any): data is Message => {
   );
 };
 
+const isPeer = (peer: any): peer is Peer => peer;
+
 const ConnectionProvider = ({ children }: { children: ReactNode }) => {
   const [messages, setMessages] = useState<Message[]>(
     JSON.parse(localStorage.getItem('messages') || '[]'),
@@ -71,7 +73,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
       return newMessages;
     });
   const connect = async (id: ConnectionId) => {
-    if (!peer) return;
+    if (!isPeer(peer)) return;
     const connectionId = getConnectionId(id);
     return new Promise((resolve) => {
       const conn = peer.connect(connectionId, {
@@ -105,24 +107,27 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
     setId(id);
     localStorage.setItem('connectionId', JSON.stringify(id));
   };
-  const [peer, setPeer] = useState<Peer>();
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    const createPeer = async () => {
+  const { data: peer, isLoading } = useSWR<Peer | undefined>(
+    () => (id ? `/peer/${getConnectionId(id)}` : null),
+    async () => {
       if (!id) return;
       const { Peer } = await import('peerjs');
       const peerId = getConnectionId(id);
       const peer = new Peer(peerId);
 
-      peer.on('open', () => {
-        setPeer(peer);
-        setIsLoading(false);
+      await new Promise<Peer>((resolve) => {
+        peer.on('open', () => {
+          resolve(peer);
+        });
+
+        peer.on('error', (err) => console.error('Peer error', err));
       });
-    };
-    createPeer();
-  }, [id]);
+      return peer;
+    },
+  );
+
   useEffect(() => {
-    if (!peer) return;
+    if (!isPeer(peer)) return;
     peer.on('connection', (conn) => {
       setConnections((prev) => ({ ...prev, [conn.peer]: conn }));
       conn.on('open', () => {

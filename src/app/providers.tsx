@@ -14,7 +14,17 @@ function localStorageProvider() {
 
   // Before unloading the app, we write back all the data into `localStorage`.
   window.addEventListener('beforeunload', () => {
-    const appCache = JSON.stringify(Array.from(map.entries()));
+    const inMemoryCache = Array.from(map.entries()).filter((e) => {
+      try {
+        JSON.stringify(e);
+        return true;
+      } catch (error) {
+        // this is probably a circular reference
+        // we can't store this in localStorage
+        return false;
+      }
+    });
+    const appCache = JSON.stringify(inMemoryCache);
     localStorage.setItem('app-cache', appCache);
   });
 
