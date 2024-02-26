@@ -1,68 +1,28 @@
 'use client';
 
 import { AccountButton } from '@/components/AccountButton';
+import { DeliveredOrder } from '@/components/Delivery/DeliveredOrder/DeliveredOrder';
+import { DeliveryTransit } from '@/components/Delivery/DeliveryTransit/DeliveryTransit';
+import { PickUpApproval } from '@/components/Delivery/PickUpApproval/PickUpApproval';
+import { ReadyForPickUp } from '@/components/Delivery/ReadyForPickUp/ReadyForPickUp';
+import { PizzaWorld } from '@/components/icons/PizzaWorld';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getAccountFrom } from '@/utils/account';
-import {
-  Box,
-  Button,
-  Cell,
-  Column,
-  Row,
-  Table,
-  TableBody,
-  TableHeader,
-  maskValue,
-} from '@kadena/react-ui';
+import { Box, Heading, Stack, Text } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useConnection } from '../Connection';
+import * as styles from '../order.css';
 import { useDelivery } from '../useDelivery';
 import { useLoggedInAccount } from '../useLoggedInAccount';
+import './page.css';
 
 type CourierProps = {
   searchParams: {
     user: string;
     transaction: string;
   };
-};
-
-const CourierActionCell = ({
-  transaction,
-  onPickupDelivery,
-  courier,
-  buyer,
-  orderId,
-  status,
-  merchant,
-  onDeliver,
-}: any) => {
-  if (transaction && status === 'READY_FOR_DELIVERY')
-    return <span>Pending approval from merchant</span>;
-  if (!transaction && status === 'READY_FOR_DELIVERY')
-    return (
-      <Button
-        onPress={onPickupDelivery({
-          orderId,
-          merchant,
-        })}
-      >
-        Pickup
-      </Button>
-    );
-  if (status === 'IN_TRANSIT')
-    return (
-      <Button
-        onPress={onDeliver({
-          buyer,
-          orderId,
-        })}
-      >
-        Deliver
-      </Button>
-    );
-  return courier;
 };
 
 export default function CourierPage({ searchParams }: CourierProps) {
@@ -73,7 +33,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
       chainId: process.env.CHAIN_ID as ChainId,
       networkId: process.env.DAPP_NETWORK_ID!,
     });
-  const { isLoading, messages, setId, connect, send } = useConnection();
+  const { isLoading, messages, setId, send } = useConnection();
   const router = useRouter();
   const { getReturnUrl } = useReturnUrl();
 
@@ -92,11 +52,13 @@ export default function CourierPage({ searchParams }: CourierProps) {
       );
     updateOrders();
   }, [messages]);
+
   useEffect(() => {
     if (isLoading) return;
     if (!account?.accountName) return;
     setId({ id: '1234', publicKey: account?.accountName });
   }, [account?.accountName, isLoading]);
+
   useEffect(() => {
     if (!account?.accountName) return;
     if (isLoading) return;
@@ -192,60 +154,139 @@ export default function CourierPage({ searchParams }: CourierProps) {
     }
   }, [isLoading, transaction, account?.accountName]);
 
+  const pickUpTransaction = JSON.parse(
+    Buffer.from(transaction || '', 'base64').toString() || '""',
+  );
+  const deliveredOrders = orders?.filter((o) => o.status === 'DELIVERED') || [];
+  const readyOrders =
+    orders?.filter((o) => o.status === 'READY_FOR_DELIVERY') || [];
+  const pendingOrder = readyOrders.find(
+    (o) => pickUpTransaction && pickUpTransaction.cmd.includes(o.orderId),
+  );
+  const transitOrder = orders?.find((o) => o.status === 'IN_TRANSIT');
+  const readyOrdersToPickUp = readyOrders.filter(
+    (newOrder) => pendingOrder?.orderId !== newOrder.orderId,
+  );
+
   return (
-    <div>
-      <Box margin="md">
-        <h1>Delivery Page</h1>
-        <AccountButton
-          user={account}
-          returnPath="/v1/example/delivery/courier"
-        />
-      </Box>
-      {account && !!orders?.length && (
-        <Table>
-          <TableHeader>
-            <Column>Order Id</Column>
-            <Column>Buyer</Column>
-            <Column>Order Price</Column>
-            <Column>Delivery Price</Column>
-            <Column>Courier</Column>
-            <Column>Merchant</Column>
-          </TableHeader>
-          <TableBody>
-            {orders.map(
-              ({
-                orderId,
-                status,
-                buyer,
-                merchant,
-                courier,
-                deliveryPrice,
-                orderPrice,
-              }) => (
-                <Row key={orderId + status}>
-                  <Cell>{maskValue(orderId)}</Cell>
-                  <Cell>{maskValue(buyer)}</Cell>
-                  <Cell>{orderPrice}</Cell>
-                  <Cell>{deliveryPrice}</Cell>
-                  <Cell>
-                    <CourierActionCell
-                      transaction={transaction}
-                      onPickupDelivery={onPickupDelivery}
-                      courier={courier}
-                      buyer={buyer}
-                      orderId={orderId}
-                      status={status}
-                      merchant={merchant}
-                      onDeliver={onDeliver}
-                    />
-                  </Cell>
-                  <Cell>{maskValue(merchant)}</Cell>
-                </Row>
-              ),
-            )}
-          </TableBody>
-        </Table>
+    <>
+      <Stack className={styles.hero} flexDirection="column">
+        <Box textAlign="right">
+          <PizzaWorld className={styles.logo} />
+          <Text
+            variant="small"
+            style={{
+              fontWeight: 'bold',
+              marginBlockStart: '-0.25rem',
+              display: 'block',
+            }}
+          >
+            Delivery dashboard
+          </Text>
+        </Box>
+      </Stack>
+
+      <Stack justifyContent="flex-end" marginBlockEnd="md">
+        <Stack justifyContent="flex-end" gap="md" className={styles.account}>
+          <AccountButton
+            className={styles.button}
+            user={account}
+            returnPath="/v1/example/delivery/courier"
+          />
+        </Stack>
+      </Stack>
+
+      {account && (
+        <>
+          {!!deliveredOrders?.length && (
+            <Stack
+              flexDirection="column"
+              paddingInline="lg"
+              marginBlockEnd="xl"
+              gap="md"
+            >
+              <Stack marginBlock="xl" justifyContent="center">
+                <Heading variant="h5" as="h3">
+                  Delivered orders
+                </Heading>
+              </Stack>
+              {deliveredOrders.map((deliveredOrder) => (
+                <DeliveredOrder
+                  key={`${deliveredOrder.orderId}-delivered`}
+                  order={deliveredOrder}
+                />
+              ))}
+            </Stack>
+          )}
+          {!deliveredOrders?.length && (
+            <Stack marginBlock="xl" justifyContent="center">
+              <Heading variant="h5" as="h3">
+                No delivered orders
+              </Heading>
+            </Stack>
+          )}
+
+          {transitOrder && (
+            <Stack
+              flexDirection="column"
+              paddingInline="lg"
+              marginBlockEnd="xl"
+              gap="md"
+            >
+              <Stack marginBlock="xl" justifyContent="center">
+                <Heading variant="h5" as="h3">
+                  Current delivery
+                </Heading>
+              </Stack>
+              <DeliveryTransit order={transitOrder} />
+            </Stack>
+          )}
+
+          {pendingOrder && (
+            <Stack
+              flexDirection="column"
+              paddingInline="lg"
+              marginBlockEnd="xl"
+              gap="md"
+            >
+              <Stack marginBlock="xl" justifyContent="center">
+                <Heading variant="h5" as="h3">
+                  Current delivery
+                </Heading>
+              </Stack>
+              <PickUpApproval order={pendingOrder} />
+            </Stack>
+          )}
+
+          {!!readyOrdersToPickUp?.length && (
+            <Stack
+              flexDirection="column"
+              paddingInline="lg"
+              marginBlockEnd="xl"
+              gap="md"
+            >
+              <Stack marginBlock="xl" justifyContent="center">
+                <Heading variant="h5" as="h3">
+                  Ready for pick-up
+                </Heading>
+              </Stack>
+              {readyOrdersToPickUp.map((readyOrder) => (
+                <ReadyForPickUp
+                  key={`${readyOrder.orderId}-ready`}
+                  order={readyOrder}
+                />
+              ))}
+            </Stack>
+          )}
+          {!readyOrdersToPickUp?.length && (
+            <Stack marginBlock="xl" justifyContent="center">
+              <Heading variant="h5" as="h3">
+                No orders to pick up
+              </Heading>
+            </Stack>
+          )}
+        </>
       )}
-    </div>
+    </>
   );
 }
