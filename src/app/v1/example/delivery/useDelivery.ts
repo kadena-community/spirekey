@@ -11,7 +11,7 @@ import {
 import { hash } from '@kadena/cryptography-utils';
 import useSWR from 'swr';
 
-type Order = {
+export type Order = {
   orderId: string;
   status: string;
   courier: string;
