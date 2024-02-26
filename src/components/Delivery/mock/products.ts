@@ -1,8 +1,8 @@
+import hawaiiImg from '@/app/v1/example/delivery/hawaii.webp';
+import margheritaImg from '@/app/v1/example/delivery/margherita.webp';
+import pepperoniImg from '@/app/v1/example/delivery/pepperoni.webp';
+import veggieImg from '@/app/v1/example/delivery/veggie.webp';
 import { StaticImageData } from 'next/image';
-import hawaiiImg from '../app/v1/example/delivery/hawaii.webp';
-import margheritaImg from '../app/v1/example/delivery/margherita.webp';
-import pepperoniImg from '../app/v1/example/delivery/pepperoni.webp';
-import veggieImg from '../app/v1/example/delivery/veggie.webp';
 
 export interface Product {
   name: string;
