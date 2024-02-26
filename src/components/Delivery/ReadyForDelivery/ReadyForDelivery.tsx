@@ -101,15 +101,19 @@ export function ReadyForDelivery({ signers, order, transaction }: Props) {
         <Stack flexDirection="column" gap="md">
           {orderLineCapabilities.map((capability, i) => (
             <Stack alignItems="center" gap="sm" key={i}>
-              <Image
-                className={styles.productImage}
-                src={
-                  products.find((product) =>
-                    capability.args[1].toString().includes(product.name),
-                  )?.image || ''
-                }
-                alt={capability.args[1].toString()}
-              />
+              {products.find((product) =>
+                capability.args[1].toString().includes(product.name),
+              )?.image && (
+                <Image
+                  className={styles.productImage}
+                  src={
+                    products.find((product) =>
+                      capability.args[1].toString().includes(product.name),
+                    )?.image || ''
+                  }
+                  alt={capability.args[1].toString()}
+                />
+              )}
               <Box>
                 <Heading variant="h6" as="h4">
                   {capability.args[1].toString()}
@@ -144,7 +148,8 @@ export function ReadyForDelivery({ signers, order, transaction }: Props) {
             >
               ${' '}
               {Number(
-                (deliveryCapability?.args[2] as { decimal: number }).decimal,
+                (deliveryCapability?.args[2] as { decimal: number })?.decimal ||
+                  '0',
               ).toFixed(2)}
             </Heading>
           </Stack>
