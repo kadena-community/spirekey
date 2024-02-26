@@ -1,6 +1,5 @@
 'use client';
 
-import pizzaBackground from '@/app/v1/example/delivery/pizzabackground.jpg';
 import { AccountButton } from '@/components/AccountButton';
 import { AcceptOrder } from '@/components/Delivery/AcceptOrder/AcceptOrder';
 import { AcceptedOrder } from '@/components/Delivery/AcceptedOrder/AcceptedOrder';
@@ -11,12 +10,12 @@ import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
 import { Box, Heading, Stack, Text } from '@kadena/react-ui';
 import { ChainId, ICommandPayload, ISigner } from '@kadena/types';
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useConnection } from '../Connection';
 import * as styles from '../order.css';
 import { useDelivery } from '../useDelivery';
 import { useLoggedInAccount } from '../useLoggedInAccount';
+import './page.css';
 
 type MerchantProps = {
   searchParams: {
@@ -85,8 +84,6 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
     )
     .map((transactionToSign) => transactionToSign.data);
 
-  const acceptedOrders = orders;
-
   const deliveredOrders =
     orders?.filter((order) => order.status === 'DELIVERED') || [];
 
@@ -101,26 +98,13 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
 
   const newOrders = messages.filter((message) => message.type === 'create');
   const acceptedOrderIds =
-    acceptedOrders?.map((acceptedOrder) => acceptedOrder.orderId) || [];
+    orders?.map((acceptedOrder) => acceptedOrder.orderId) || [];
   const newOrdersToAccept = newOrders.filter(
     (newOrder) => !acceptedOrderIds.includes(newOrder.orderId || ''),
   );
 
   return (
-    <div>
-      <style jsx global>
-        {`
-          body {
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-image: url(${pizzaBackground.src});
-            background-color: rgba(0, 0, 0, 0.8);
-            background-blend-mode: saturation;
-          }
-        `}
-      </style>
+    <>
       <Stack className={styles.hero} flexDirection="column">
         <Box textAlign="right">
           <PizzaWorld className={styles.logo} />
@@ -341,6 +325,6 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
           )}
         </>
       )}
-    </div>
+    </>
   );
 }

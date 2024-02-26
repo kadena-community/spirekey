@@ -1,5 +1,3 @@
-'use client';
-
 import { StaticImageData } from 'next/image';
 import { createContext, useContext, useEffect, useState } from 'react';
 import hawaiiImg from '../app/v1/example/delivery/hawaii.webp';

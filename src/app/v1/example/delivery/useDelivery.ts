@@ -160,8 +160,6 @@ const createOrder = async ({
     }, '')
     .concat(`,{"line-id": "Delivery", "price": ${deliveryPrice.toFixed(12)}}]`);
 
-  console.log(orderLinesExecutionString);
-
   const escrowId = await getDeliveryEscrowId({ chainId, networkId });
   return asyncPipe(
     composePactCommand(

@@ -16,8 +16,6 @@ export function PickUpDelivery({ capabilities }: Props) {
     capability.name.includes('webauthn-wallet.GAS_PAYER'),
   );
 
-  console.log(pickUpDeliveryCapability);
-
   return (
     <>
       <Stack flexDirection="column" gap="md" marginBlockEnd="xl">

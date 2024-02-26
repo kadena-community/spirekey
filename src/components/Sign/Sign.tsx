@@ -304,11 +304,6 @@ export default function Sign(props: Props) {
           <DeliverOrder capabilities={capabilitiesToSign} />
         )}
 
-        {/* <TransactionDetails
-          signers={currentSigners}
-          language={language}
-          accounts={accounts}
-        /> */}
         {!isCustomizedTransaction && (
           <TransactionDetails
             signers={currentSigners}

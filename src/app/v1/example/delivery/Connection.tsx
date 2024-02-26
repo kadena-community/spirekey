@@ -96,10 +96,20 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
     message: Pick<Message, 'type' | 'data'>,
   ) => {
     const connectionId = getConnectionId(toId);
-    const conn =
-      connections[connectionId] || ((await connect(toId)) as DataConnection);
-    console.log('Sending data to peer', message);
-    conn?.send({ ...message, connectionId: id });
+    try {
+      const conn =
+        connections[connectionId] || ((await connect(toId)) as DataConnection);
+      conn.send({ ...message, connectionId: id });
+      console.log('Sending data to peer', message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(
+          'Could not send data to peer, because no connecction was established. Retrying in 1 second',
+          error,
+        );
+        setTimeout(() => send(toId, message), 1000);
+      }
+    }
   };
   const onSetId = (id: ConnectionId) => {
     setId(id);

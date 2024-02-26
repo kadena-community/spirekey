@@ -1,6 +1,5 @@
 'use client';
 
-import pizzaBackground from '@/app/v1/example/delivery/pizzabackground.jpg';
 import { AccountButton } from '@/components/AccountButton';
 import { Button } from '@/components/Button/Button';
 import { OrderSummary } from '@/components/Delivery/OrderSummary/OrderSummary';
@@ -166,20 +165,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
   const orderStatus = getOrderStatus();
 
   return (
-    <div>
-      <style jsx global>
-        {`
-          body {
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-image: url(${pizzaBackground.src});
-            background-color: rgba(0, 40, 0, 0.8);
-            background-blend-mode: saturation;
-          }
-        `}
-      </style>
+    <>
       <header className={styles.hero}>
         <PizzaWorld className={styles.logo} />
       </header>
@@ -288,6 +274,6 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
           </Stack>
         </article>
       )}
-    </div>
+    </>
   );
 }

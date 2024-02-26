@@ -1,4 +1,15 @@
-import { style } from '@vanilla-extract/css';
+import pizzaBackground from '@/app/v1/example/delivery/pizzabackground.jpg';
+import { globalStyle, style } from '@vanilla-extract/css';
+
+globalStyle('body', {
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
+  backgroundAttachment: 'fixed',
+  backgroundImage: `url(${pizzaBackground.src})`,
+  backgroundColor: 'rgba(0, 40, 0, 0.8)',
+  backgroundBlendMode: 'saturation',
+});
 
 export const loadingWrapper = style({
   width: 'auto',

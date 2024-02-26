@@ -1,5 +1,4 @@
 import { Order, useDelivery } from '@/app/v1/example/delivery/useDelivery';
-import { useLoggedInAccount } from '@/app/v1/example/delivery/useLoggedInAccount';
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
 import { Surface } from '@/components/Surface/Surface';
 import { Account, useAccounts } from '@/context/AccountsContext';
@@ -9,7 +8,6 @@ import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
 import { Box, Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
 import { ChainId, ICap, ISigner } from '@kadena/types';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import * as styles from './ReadyForDelivery.css';
 
 interface Props {
@@ -21,11 +19,7 @@ interface Props {
 export function ReadyForDelivery({ signers, order, transaction }: Props) {
   const { products } = useOrder();
   const { accounts } = useAccounts();
-  const { account } = useLoggedInAccount();
-  const router = useRouter();
   const { getReturnUrl } = useReturnUrl();
-
-  console.log(transaction);
 
   const { orders, markOrderAsReady, saveDelivery, updateOrders } = useDelivery({
     chainId: process.env.CHAIN_ID as ChainId,
