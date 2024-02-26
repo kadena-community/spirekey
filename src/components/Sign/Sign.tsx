@@ -24,6 +24,7 @@ import { useEffect, useState } from 'react';
 import fingerprint from '@/assets/images/fingerprint.svg';
 import { usePreviewEvents } from '@/hooks/usePreviewEvents';
 import type { ICommandPayload, IPactEvent } from '@kadena/types';
+import { Signers } from '../Signer/Signers';
 import { container, step, wrapper } from './Sign.css';
 
 interface Props {
@@ -32,8 +33,11 @@ interface Props {
   optimistic?: boolean;
 }
 
-export default function Sign(props: Props) {
-  const { transaction, returnUrl, optimistic = false } = props;
+export default function Sign({
+  transaction,
+  returnUrl,
+  optimistic = false,
+}: Props) {
   const [autoRedirect, setAutoRedirect] = useState<boolean>(true);
   const [redirectLocation, setRedirectLocation] = useState<string>('');
   const router = useRouter();
@@ -43,9 +47,7 @@ export default function Sign(props: Props) {
     ? Buffer.from(transaction, 'base64').toString()
     : null;
   const [tx, setTx] = useState<any>(JSON.parse(data ?? '{}'));
-
   const { sign } = useSign();
-  const [language, setLanguage] = useState('en');
 
   const txData: ICommandPayload = JSON.parse(tx.cmd || '{}');
 
@@ -60,6 +62,7 @@ export default function Sign(props: Props) {
       ),
     )
     .map((publicKey) => getDeviceByPublicKey(accounts, publicKey));
+
   const pendingRegistrationTxs = devices.map(
     (device) => device?.pendingRegistrationTx,
   );
@@ -71,13 +74,15 @@ export default function Sign(props: Props) {
     devices.length,
   );
 
+  const currentSigner = devices[devices.length - signaturesToSign];
+
   useEffect(() => {
     if (isReadyToSubmit && redirectLocation && autoRedirect) {
       router.push(redirectLocation);
     }
   }, [redirectLocation, isReadyToSubmit, router, returnUrl, autoRedirect]);
 
-  const { events } = usePreviewEvents(props);
+  const { events } = usePreviewEvents(transaction);
 
   const onSign = async (deviceIndex: number) => {
     const signedTx = await sign(tx, devices?.[deviceIndex]?.['credential-id']!);
@@ -133,43 +138,9 @@ export default function Sign(props: Props) {
           <ProductIcon.ManageKda size="lg" />
           <Heading variant="h5">Preview and sign transaction</Heading>
         </Stack>
-        <Heading variant="h5">Transaction details</Heading>
-        {getLabels(txData.signers, language).map((x, index) => (
-          <Box key={x.label + index} width="100%">
-            <Heading variant="h6">{x.label}</Heading>
-            <Stack alignItems="center" gap="sm">
-              <Text>{x.description ?? 'No description available'}</Text>
-              {!x.description && (
-                <Tooltip
-                  content="The owner of this smart contract hasn't provided a description for
-                this type of transaction yet."
-                >
-                  <SystemIcon.AlertCircleOutline size="sm" />
-                </Tooltip>
-              )}
-            </Stack>
-            <Box marginBlockStart="sm">
-              <Text variant="base">
-                <details>
-                  <summary>View raw capability</summary>
-                  <Text bold variant="base">
-                    Capability:
-                  </Text>{' '}
-                  {x.raw.name}
-                  <br />
-                  {x.valuesString && (
-                    <>
-                      <Text bold variant="base">
-                        Values:
-                      </Text>{' '}
-                      {x.valuesString}
-                    </>
-                  )}
-                </details>
-              </Text>
-            </Box>
-          </Box>
-        ))}
+
+        <Signers signers={txData.signers} currentSigner={currentSigner} />
+
         <Box width="100%">
           <Heading variant="h6">Events</Heading>
           <Text>

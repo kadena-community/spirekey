@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 
 const Sign = dynamic(() => import('@/components/Sign/Sign'), { ssr: false });
+
 interface SignProps {
   searchParams: {
     transaction: string;
