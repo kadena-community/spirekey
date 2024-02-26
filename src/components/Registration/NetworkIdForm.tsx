@@ -4,92 +4,111 @@ import { NetworkTestnet } from '@/components/icons/NetworkTestnet';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { Text } from '@kadena/react-ui';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { FC } from 'react';
+import { useForm } from 'react-hook-form';
 import { SurfaceCard } from '../SurfaceCard/SurfaceCard';
-import { FormData, FormUtils } from './Registration';
-import { descriptionEmphasis, item, itemContainer } from './styles.css';
+import { StepProps } from './Registration';
+import { animationVariants } from './animation';
+import * as styles from './styles.css';
 
-type Props = Pick<FormData, 'networkId'> & FormUtils;
+export const NetworkIdForm: FC<StepProps> = ({
+  isVisible,
+  stepIndex,
+  updateFields,
+  defaultValues,
+  navigation,
+}) => {
+  const { handleSubmit, register, watch } = useForm({
+    defaultValues: { networkId: defaultValues.networkId },
+  });
 
-const getDescription = (networkId: string) => {
-  const dev = ' For development purposes only';
+  const selectedNetwork = watch('networkId');
+
+  const onSubmit = (values: { networkId: string }) => {
+    updateFields(values);
+    navigation.next();
+  };
+
+  const getDescription = () => {
+    const dev = ' For development purposes only';
+
+    return (
+      <Text>
+        <Text className={styles.descriptionEmphasis}>
+          {getNetworkDisplayName(selectedNetwork)}
+        </Text>{' '}
+        selected.
+        {['testnet04', 'fast-development'].includes(selectedNetwork) ? dev : ''}
+      </Text>
+    );
+  };
 
   return (
-    <Text>
-      <Text className={descriptionEmphasis}>
-        {getNetworkDisplayName(networkId)}
-      </Text>{' '}
-      selected.
-      {['testnet04', getDevnetNetworkId()].includes(networkId) ? dev : ''}
-    </Text>
-  );
-};
-
-export function NetworkIdForm({ networkId, updateFields, direction }: Props) {
-  const xPositionMultiplier = direction === 'forward' ? 1 : -1;
-
-  return (
-    <AnimatePresence>
-      <motion.div
-        key="register-step-network-id"
-        initial={{ x: 300 * xPositionMultiplier, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        exit={{ x: -300 * xPositionMultiplier, opacity: 0 }}
-        transition={{ duration: 0.3 }}
+    <motion.div
+      animate={isVisible ? 'visible' : 'hidden'}
+      variants={animationVariants}
+    >
+      <form
+        id={`registration-form-${stepIndex}`}
+        onSubmit={handleSubmit(onSubmit)}
       >
-        <SurfaceCard title="Network" description={getDescription(networkId)}>
-          <div className={itemContainer}>
+        <SurfaceCard title="Network" description={getDescription()}>
+          <div className={styles.itemContainer}>
             <div>
               <input
+                {...register('networkId', {
+                  onChange: (event) => {
+                    updateFields({ networkId: event.target.value });
+                  },
+                })}
                 aria-label="Mainnet"
                 type="radio"
                 value="mainnet01"
                 id="network-mainnet"
-                name="networkId"
-                checked={networkId === 'mainnet01'}
-                onChange={(event) =>
-                  updateFields({ networkId: event.target.value })
-                }
               />
-              <label htmlFor="network-mainnet" className={item}>
+              <label htmlFor="network-mainnet" className={styles.item}>
                 <NetworkMainnet />
+                <span>Mainnet</span>
               </label>
             </div>
             <div>
               <input
+                {...register('networkId', {
+                  onChange: (event) => {
+                    updateFields({ networkId: event.target.value });
+                  },
+                })}
                 aria-label="Testnet"
                 type="radio"
                 value="testnet04"
                 id="network-testnet"
-                name="networkId"
-                checked={networkId === 'testnet04'}
-                onChange={(event) =>
-                  updateFields({ networkId: event.target.value })
-                }
               />
-              <label htmlFor="network-testnet" className={item}>
+              <label htmlFor="network-testnet" className={styles.item}>
                 <NetworkTestnet />
+                <span>Testnet</span>
               </label>
             </div>
             <div>
               <input
+                {...register('networkId', {
+                  onChange: (event) => {
+                    updateFields({ networkId: event.target.value });
+                  },
+                })}
                 aria-label="Devnet"
                 type="radio"
-                value={getDevnetNetworkId()}
+                value="fast-development"
                 id="network-devnet"
-                name="networkId"
-                checked={networkId === getDevnetNetworkId()}
-                onChange={(event) =>
-                  updateFields({ networkId: event.target.value })
-                }
               />
-              <label htmlFor="network-devnet" className={item}>
+              <label htmlFor="network-devnet" className={styles.item}>
                 <NetworkDevnet />
+                <span>Devnet</span>
               </label>
             </div>
           </div>
         </SurfaceCard>
-      </motion.div>
-    </AnimatePresence>
+      </form>
+    </motion.div>
   );
-}
+};

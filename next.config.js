@@ -16,6 +16,7 @@ const nextConfig = {
     DEVNET_NETWORK_ID: process.env.DEVNET_NETWORK_ID,
     AUTO_REGISTER_MAINNET: process.env.AUTO_REGISTER_MAINNET,
     DAPP_NETWORK_ID: process.env.DAPP_NETWORK_ID,
+    WALLET_NETWORK_ID: process.env.WALLET_NETWORK_ID,
     MERCHANT_ACCOUNT: process.env.MERCHANT_ACCOUNT,
   },
 };
