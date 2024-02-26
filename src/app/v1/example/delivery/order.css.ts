@@ -11,16 +11,6 @@ globalStyle('body', {
   backgroundBlendMode: 'saturation',
 });
 
-export const loadingWrapper = style({
-  width: 'auto',
-  height: 'auto',
-  margin: '20px',
-  padding: '20px',
-  position: 'relative',
-  background: 'rgba(0,0,0,.7)',
-  textAlign: 'center',
-});
-
 export const list = style({
   display: 'grid',
   gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',

@@ -195,7 +195,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
                 </Heading>
               )}
               {orderStatus === 'crafting' && (
-                <article className={styles.loadingWrapper}>
+                <article>
                   <Heading variant="h5" color="emphasize">
                     We are crafting your pizza!
                   </Heading>
