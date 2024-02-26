@@ -7,6 +7,6 @@ globalStyle('body', {
   backgroundRepeat: 'no-repeat',
   backgroundAttachment: 'fixed',
   backgroundImage: `url(${pizzaBackground.src})`,
-  backgroundColor: 'rgba(0, 0, 40, 0.8)',
+  backgroundColor: 'rgba(40, 0, 0, 0.8)',
   backgroundBlendMode: 'saturation',
 });
