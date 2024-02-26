@@ -40,7 +40,6 @@ export interface StepProps {
   defaultValues: FormData;
   updateFields: (fields: Partial<FormData>) => void;
   formValues: FormData;
-  onClick?: () => void;
   navigation: {
     next: () => void;
     previous: () => void;

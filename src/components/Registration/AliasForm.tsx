@@ -1,17 +1,17 @@
 import { TextField } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
-import { useEffect, useImperativeHandle, useRef } from 'react';
+import { FC, useEffect, useImperativeHandle, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { SurfaceCard } from '../SurfaceCard/SurfaceCard';
 import { StepProps } from './Registration';
 import { animationVariants } from './animation';
 
-export function AliasForm({
+export const AliasForm: FC<StepProps> = ({
   isVisible,
   updateFields,
   stepIndex,
   navigation,
-}: StepProps) {
+}) => {
   const {
     handleSubmit,
     register,
@@ -75,4 +75,4 @@ export function AliasForm({
       </form>
     </motion.div>
   );
-}
+};

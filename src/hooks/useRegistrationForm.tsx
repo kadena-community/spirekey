@@ -1,8 +1,8 @@
-import { FormData } from '@/components/Registration/Registration';
-import { ReactElement, useState } from 'react';
+import { FormData, StepProps } from '@/components/Registration/Registration';
+import { FC, useState } from 'react';
 
 export function useRegistrationForm(
-  steps: ReactElement[],
+  steps: FC<StepProps>[],
   formValues: FormData,
   onSubmit: (formValues: FormData) => void,
 ) {
@@ -19,7 +19,6 @@ export function useRegistrationForm(
     }
 
     setCurrentStepIndex((i) => i + Number(i < steps.length - 1));
-    // @todo: navigate to accounts page when navigating beyond the last step.
   }
 
   function previous() {
@@ -29,7 +28,6 @@ export function useRegistrationForm(
     }
 
     setCurrentStepIndex((i) => i - Number(i > 0));
-    // @todo: navigate to welcome page when navigating back from step 0.
   }
 
   function goTo(index: number) {
