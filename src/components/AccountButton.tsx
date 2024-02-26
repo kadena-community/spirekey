@@ -26,7 +26,7 @@ export const AccountButton = ({
   user?: LoginAccount | null;
   returnPath: string;
   className?: string;
-  onLogout: () => void;
+  onLogout?: () => void;
 }) => {
   const router = useRouter();
   const { getReturnUrl } = useReturnUrl();
