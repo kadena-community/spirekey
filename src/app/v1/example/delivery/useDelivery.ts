@@ -178,6 +178,9 @@ const createOrder = async ({
       setMeta({
         chainId,
         senderAccount: customerAccount,
+        gasLimit: 10000,
+        gasPrice: 0.0000001,
+        ttl: 60000,
       }),
       setNetworkId(networkId),
       addSigner(

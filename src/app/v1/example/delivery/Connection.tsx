@@ -5,7 +5,6 @@ import type Peer from 'peerjs';
 import type { DataConnection } from 'peerjs';
 import type { ReactNode } from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
-import useSWR from 'swr';
 
 type ConnectionId = {
   id: string;
@@ -104,7 +103,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.log(
-          'Could not send data to peer, because no connecction was established. Retrying in 1 second',
+          'Could not send data to peer, because no connection was established. Retrying in 1 second',
           error,
         );
         setTimeout(() => send(toId, message), 1000);
@@ -131,6 +130,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
     };
     createPeer();
   }, [id]);
+
   useEffect(() => {
     if (!peer) return;
     peer.on('connection', (conn) => {
