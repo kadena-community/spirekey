@@ -1,5 +1,6 @@
 'use client';
 
+import { useNotifications } from '@/context/NotificationsContext';
 import { hash } from '@kadena/cryptography-utils';
 import type Peer from 'peerjs';
 import type { DataConnection } from 'peerjs';
@@ -46,6 +47,7 @@ const isMessage = (data: any): data is Message => {
 const isPeer = (peer: any): peer is Peer => peer;
 
 const ConnectionProvider = ({ children }: { children: ReactNode }) => {
+  const { addNotification } = useNotifications();
   const [messages, setMessages] = useState<Message[]>(
     JSON.parse(localStorage.getItem('messages') || '[]'),
   );
@@ -97,11 +99,23 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
     toId: ConnectionId,
     message: Pick<Message, 'type' | 'data'>,
   ) => {
-    const connectionId = getConnectionId(toId);
-    const conn =
-      connections[connectionId] || ((await connect(toId)) as DataConnection);
-    console.log('Sending data to peer', message);
-    conn.send({ ...message, connectionId: id });
+    try {
+      const connectionId = getConnectionId(toId);
+      const conn =
+        connections[connectionId] || ((await connect(toId)) as DataConnection);
+      conn.send({ ...message, connectionId: id });
+      console.log('Sending data to peer', message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        addNotification({
+          variant: 'error',
+          title:
+            'Could not send data to peer, because no connection was established. Retrying in 1 second',
+          message: error.message,
+        });
+        setTimeout(() => send(toId, message), 1000);
+      }
+    }
   };
   const onSetId = (id: ConnectionId) => {
     setId(id);

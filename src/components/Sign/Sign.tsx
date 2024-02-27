@@ -6,16 +6,7 @@ import { Surface } from '@/components/Surface/Surface';
 import { Account, useAccounts } from '@/context/AccountsContext';
 import { useSign } from '@/hooks/useSign';
 import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
-import { getLabels } from '@/utils/signUtils';
-import {
-  Box,
-  Heading,
-  ProductIcon,
-  Stack,
-  SystemIcon,
-  Text,
-  Tooltip,
-} from '@kadena/react-ui';
+import { Box, Heading, ProductIcon, Stack, Text } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';

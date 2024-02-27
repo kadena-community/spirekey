@@ -129,7 +129,7 @@ export function AcceptedOrder({ signers, orderId }: Props) {
               >
                 ${' '}
                 {Number(
-                  (capability.args[2] as { decimal: number }).decimal,
+                  (capability.args[4] as { decimal: number }).decimal,
                 ).toFixed(2)}
               </Heading>
             </Stack>
@@ -144,7 +144,7 @@ export function AcceptedOrder({ signers, orderId }: Props) {
                 Delivery
               </Heading>
             </Box>
-            {(deliveryCapability?.args[2] as { decimal: number })?.decimal && (
+            {(deliveryCapability?.args[4] as { decimal: number })?.decimal && (
               <Heading
                 variant="h6"
                 as="h4"
@@ -152,7 +152,7 @@ export function AcceptedOrder({ signers, orderId }: Props) {
               >
                 ${' '}
                 {Number(
-                  (deliveryCapability?.args[2] as { decimal: number }).decimal,
+                  (deliveryCapability?.args[4] as { decimal: number }).decimal,
                 ).toFixed(2)}
               </Heading>
             )}

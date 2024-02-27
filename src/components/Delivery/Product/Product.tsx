@@ -1,7 +1,7 @@
 import { Button } from '@/components/Button/Button';
+import { Product, useOrder } from '@/context/OrderContext';
 import { Box, Heading, Stack, Text } from '@kadena/react-ui';
 import Image from 'next/image';
-import { Product } from '../mock/products';
 import * as styles from './Product.css';
 
 interface Props {
@@ -9,12 +9,12 @@ interface Props {
 }
 
 export function Product({ product }: Props) {
-  const orderItems: string[] = [];
-  const onDecrementOrderItem = (productName: string) => () =>
-    console.log('Add', productName);
+  const { addOrderItem, removeOrderItem, orderItems } = useOrder();
 
+  const onDecrementOrderItem = (productName: string) => () =>
+    removeOrderItem(productName);
   const onIncrementOrderItem = (productName: string) => () =>
-    console.log('Add', productName);
+    addOrderItem(productName);
 
   const orderItemAmount = orderItems.filter(
     (orderItem) => orderItem === product.name,

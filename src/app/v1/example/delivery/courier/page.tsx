@@ -6,6 +6,7 @@ import { DeliveryTransit } from '@/components/Delivery/DeliveryTransit/DeliveryT
 import { PickUpApproval } from '@/components/Delivery/PickUpApproval/PickUpApproval';
 import { ReadyForPickUp } from '@/components/Delivery/ReadyForPickUp/ReadyForPickUp';
 import { PizzaWorld } from '@/components/icons/PizzaWorld';
+import { OrderProvider } from '@/context/OrderContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getAccountFrom } from '@/utils/account';
 import { Box, Heading, Stack, Text } from '@kadena/react-ui';
@@ -77,52 +78,6 @@ export default function CourierPage({ searchParams }: CourierProps) {
     );
   }, [account?.accountName, isLoading]);
 
-  const onPickupDelivery =
-    ({ merchant, orderId }: { merchant: string; orderId: string }) =>
-    async () => {
-      if (!account) return;
-      const merchantAcc = await getAccountFrom({
-        accountName: merchant,
-        networkId: process.env.DAPP_NETWORK_ID!,
-      });
-      const tx = await pickupDelivery({
-        orderId,
-        merchantPublicKey: merchantAcc?.devices[0].guard.keys[0],
-        courierAccount: account.accountName,
-        courierPublicKey: account.credentials[0].publicKey,
-      });
-      router.push(
-        `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
-          JSON.stringify(tx),
-        ).toString('base64')}&returnUrl=${getReturnUrl(
-          '/v1/example/delivery/courier',
-        )}`,
-      );
-    };
-
-  const onDeliver =
-    ({ buyer, orderId }: { buyer: string; orderId: string }) =>
-    async () => {
-      if (!account) return;
-      const buyerAccount = await getAccountFrom({
-        accountName: buyer,
-        networkId: process.env.DAPP_NETWORK_ID!,
-      });
-      const tx = await deliverOrder({
-        orderId,
-        buyerAccount: buyer,
-        buyerPublicKey: buyerAccount?.devices[0].guard.keys[0],
-        courierPublicKey: account.credentials[0].publicKey,
-      });
-      router.push(
-        `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
-          JSON.stringify(tx),
-        ).toString('base64')}&returnUrl=${getReturnUrl(
-          '/v1/example/delivery/courier',
-        )}`,
-      );
-    };
-
   useEffect(() => {
     if (!account?.accountName) return;
     if (isLoading) return;
@@ -169,7 +124,7 @@ export default function CourierPage({ searchParams }: CourierProps) {
   );
 
   return (
-    <>
+    <OrderProvider>
       <Stack className={styles.hero} flexDirection="column">
         <Box textAlign="right">
           <PizzaWorld className={styles.logo} />
@@ -287,6 +242,6 @@ export default function CourierPage({ searchParams }: CourierProps) {
           )}
         </>
       )}
-    </>
+    </OrderProvider>
   );
 }

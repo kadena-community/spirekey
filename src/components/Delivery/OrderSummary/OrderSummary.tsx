@@ -1,19 +1,11 @@
+import { useOrder } from '@/context/OrderContext';
 import { Box, Heading, Stack, SystemIcon } from '@kadena/react-ui';
 import Image from 'next/image';
-import { Product } from '../mock/products';
 import * as styles from './OrderSummary.css';
 
-interface Props {
-  products: Product[];
-  orderItems: string[];
-  orderTotalPrice: number;
-}
+export function OrderSummary() {
+  const { products, orderItems, orderTotalPrice } = useOrder();
 
-export function OrderSummary({
-  orderItems = [],
-  products,
-  orderTotalPrice,
-}: Props) {
   const orderedProducts = products.filter((product) =>
     orderItems.includes(product.name),
   );
