@@ -89,6 +89,19 @@ export const getCustomTranslation = ({
   return getTranslation(mergedBundle, capability, type);
 };
 
+export const generateCapabilityHash = ({
+  capabilityArgs,
+  customTranslation,
+}: {
+  capabilityArgs: ICap['args'];
+  customTranslation: any;
+}) =>
+  hash(
+    [
+      ...capabilityArgs.map((v) => JSON.stringify(v)),
+      JSON.stringify(customTranslation),
+    ].join(','),
+  );
 const getCustomCapabilityTranslation = ({
   capability,
   capabilityMeta,
