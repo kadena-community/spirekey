@@ -9,6 +9,7 @@ import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
 import { getAccountFrom } from '@/utils/account';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
+import { getTranslations } from '@/utils/getTranslationBundle';
 import { getSmartContractMeta } from '@/utils/smartContractMeta';
 import { Box, Stack } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
@@ -85,6 +86,8 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
         'base64',
       )}&returnUrl=${getReturnUrl('/v1/example/delivery')}&meta=${Buffer.from(
         JSON.stringify(getSmartContractMeta()),
+      ).toString('base64')}&translations=${Buffer.from(
+        JSON.stringify(getTranslations()),
       ).toString('base64')}`,
     );
   };
@@ -99,6 +102,8 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
         'base64',
       )}&returnUrl=${getReturnUrl('/v1/example/delivery')}&meta=${Buffer.from(
         JSON.stringify(getSmartContractMeta()),
+      ).toString('base64')}&translations=${Buffer.from(
+        JSON.stringify(getTranslations()),
       ).toString('base64')}`,
     );
   };
