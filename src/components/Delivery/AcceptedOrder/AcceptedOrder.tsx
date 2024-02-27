@@ -122,16 +122,18 @@ export function AcceptedOrder({ signers, orderId }: Props) {
                   {capability.args[1].toString()}
                 </Heading>
               </Box>
-              <Heading
-                variant="h6"
-                as="h4"
-                style={{ flexGrow: 1, textAlign: 'end' }}
-              >
-                ${' '}
-                {Number(
-                  (capability.args[4] as { decimal: number }).decimal,
-                ).toFixed(2)}
-              </Heading>
+              {(capability.args[4] as { decimal: number })?.decimal && (
+                <Heading
+                  variant="h6"
+                  as="h4"
+                  style={{ flexGrow: 1, textAlign: 'end' }}
+                >
+                  ${' '}
+                  {Number(
+                    (capability.args[4] as { decimal: number }).decimal,
+                  ).toFixed(2)}
+                </Heading>
+              )}
             </Stack>
           ))}
           <Stack alignItems="center" gap="sm">
