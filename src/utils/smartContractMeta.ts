@@ -46,6 +46,11 @@ const deliveryMeta = {
       // along with the hashValues and compare with the hash. If it does not match,
       // it will throw an error.
       hashValues: [0, 2, 3, 4],
+      hashIndex: 1,
+      // translation bundle:
+      // hash ( order-id + buyer + merchant + price + translation provided by dApp )
+      // { "value": "Pizza margahritate x1 costs 10 KDA",
+      // "image": "https://example.com/pizza-margahritate.jpg" }
     },
     SET_READY_FOR_DELIVERY: {
       granter: {
@@ -80,10 +85,7 @@ const webauthnWalletMeta = {
   capabilities: {
     TRANSFER: {
       granter: {
-        argIndex: 0,
-      },
-      acceptor: {
-        argIndex: 1,
+        isSigner: true,
       },
     },
     GAS_PAYER: {

@@ -28,6 +28,16 @@ describe('smartContractMeta', () => {
             ],
           },
           {
+            name: 'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE',
+            args: [
+              'order-id',
+              'hash-of-data-2',
+              'customer',
+              'merchant',
+              { decimal: '2.2' },
+            ],
+          },
+          {
             name: 'n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.TRANSFER',
             args: ['customer', 'escrow', { decimal: '2.2' }],
           },
@@ -75,6 +85,16 @@ describe('smartContractMeta', () => {
                 args: [
                   'order-id',
                   'hash-of-data',
+                  'customer',
+                  'merchant',
+                  { decimal: '2.2' },
+                ],
+              },
+              {
+                name: 'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE',
+                args: [
+                  'order-id',
+                  'hash-of-data-2',
                   'customer',
                   'merchant',
                   { decimal: '2.2' },
