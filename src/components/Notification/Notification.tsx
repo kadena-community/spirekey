@@ -24,7 +24,7 @@ export const Notification: FC<Props> = ({ variant, title, message }) => {
           {title}
         </Heading>
       </header>
-      {message && <Text className={styles.message}>{message}</Text>}
+      {message && <Text style={{ color: 'inherit' }}>{message}</Text>}
     </motion.div>
   );
 };

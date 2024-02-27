@@ -47,7 +47,3 @@ export const heading = atoms({
   fontWeight: 'headingFont.bold',
   fontSize: 'base',
 });
-
-export const message = style({
-  color: 'inherit !important',
-});

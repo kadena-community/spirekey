@@ -1,7 +1,6 @@
 'use client';
 
 import { useAccounts } from '@/context/AccountsContext';
-import { useNotifications } from '@/context/NotificationsContext';
 import { Heading, Stack, SystemIcon } from '@kadena/react-ui';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
@@ -15,7 +14,6 @@ const CardCollection = dynamic(
 export default function Accounts() {
   const { accounts } = useAccounts();
   const router = useRouter();
-  const { addNotification } = useNotifications();
 
   useEffect(() => {
     if (!accounts.length) {
