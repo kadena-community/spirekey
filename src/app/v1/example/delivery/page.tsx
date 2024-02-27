@@ -9,6 +9,7 @@ import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
 import { getAccountFrom } from '@/utils/account';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
+import { getSmartContractMeta } from '@/utils/smartContractMeta';
 import { Box, Stack } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
 import Image from 'next/image';
@@ -80,7 +81,11 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     router.push(
       `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
         JSON.stringify(tx),
-      ).toString('base64')}&returnUrl=${getReturnUrl('/v1/example/delivery')}`,
+      ).toString(
+        'base64',
+      )}&returnUrl=${getReturnUrl('/v1/example/delivery')}&meta=${Buffer.from(
+        JSON.stringify(getSmartContractMeta()),
+      ).toString('base64')}`,
     );
   };
 
@@ -90,7 +95,11 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     router.push(
       `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
         JSON.stringify(deliverTx.data),
-      ).toString('base64')}&returnUrl=${getReturnUrl('/v1/example/delivery')}`,
+      ).toString(
+        'base64',
+      )}&returnUrl=${getReturnUrl('/v1/example/delivery')}&meta=${Buffer.from(
+        JSON.stringify(getSmartContractMeta()),
+      ).toString('base64')}`,
     );
   };
 
