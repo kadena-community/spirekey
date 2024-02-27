@@ -22,8 +22,8 @@ describe('smartContractMeta', () => {
             args: [
               'order-id',
               'hash-of-data',
-              'customer',
               'merchant',
+              'customer',
               { decimal: '2.2' },
             ],
           },
@@ -32,8 +32,8 @@ describe('smartContractMeta', () => {
             args: [
               'order-id',
               'hash-of-data-2',
-              'customer',
               'merchant',
+              'customer',
               { decimal: '2.2' },
             ],
           },
@@ -85,8 +85,8 @@ describe('smartContractMeta', () => {
                 args: [
                   'order-id',
                   'hash-of-data',
-                  'customer',
                   'merchant',
+                  'customer',
                   { decimal: '2.2' },
                 ],
               },
@@ -95,8 +95,8 @@ describe('smartContractMeta', () => {
                 args: [
                   'order-id',
                   'hash-of-data-2',
-                  'customer',
                   'merchant',
+                  'customer',
                   { decimal: '2.2' },
                 ],
               },
