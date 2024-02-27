@@ -4,7 +4,9 @@ import { darkThemeClass } from '@kadena/react-ui/styles';
 import { ThemeProvider } from 'next-themes';
 import { ReactNode } from 'react';
 
+import { NotificationContainer } from '@/components/NotificationsContainer/NotificationsContainer';
 import { AccountsProvider } from '@/context/AccountsContext';
+import { NotificationsProvider } from '@/context/NotificationsContext';
 import { SWRConfig } from 'swr';
 
 function localStorageProvider() {
@@ -35,18 +37,23 @@ function localStorageProvider() {
 export default function Providers({ children }: { children: ReactNode }) {
   return (
     <SWRConfig value={{ provider: localStorageProvider }}>
-      <AccountsProvider>
-        <ThemeProvider
-          attribute="class"
-          enableSystem={false}
-          value={{
-            dark: darkThemeClass,
-          }}
-          defaultTheme="dark"
-        >
-          {children}
-        </ThemeProvider>
-      </AccountsProvider>
+      <NotificationsProvider>
+        <AccountsProvider>
+          <ThemeProvider
+            attribute="class"
+            enableSystem={false}
+            value={{
+              dark: darkThemeClass,
+            }}
+            defaultTheme="dark"
+          >
+            <>
+              {children}
+              <NotificationContainer />
+            </>
+          </ThemeProvider>
+        </AccountsProvider>
+      </NotificationsProvider>
     </SWRConfig>
   );
 }

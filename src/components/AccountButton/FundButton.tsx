@@ -1,4 +1,5 @@
 import { Account } from '@/context/AccountsContext';
+import { useNotifications } from '@/context/NotificationsContext';
 import { fundAccount } from '@/utils/fund';
 import { Box, Stack, SystemIcon, Text } from '@kadena/react-ui';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -14,6 +15,7 @@ export const FundButton: FC<Props> = ({ account }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
+  const { addNotification } = useNotifications();
 
   const handleFundAccount = async () => {
     if (isLoading) return;
@@ -27,7 +29,11 @@ export const FundButton: FC<Props> = ({ account }) => {
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
-        console.error(error.message);
+        addNotification({
+          variant: 'error',
+          title: 'Error funding',
+          message: error.message,
+        });
       }
     } finally {
       setIsLoading(false);
