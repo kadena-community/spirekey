@@ -28,6 +28,7 @@ import {
   filterGranterCapabilities,
 } from '@/utils/smartContractMeta';
 import type { ICommandPayload, IPactEvent } from '@kadena/types';
+import { Capability } from '../Capability/Capability';
 import { container, step, wrapper } from './Sign.css';
 
 interface Props {
@@ -35,10 +36,17 @@ interface Props {
   returnUrl: string;
   optimistic?: boolean;
   meta?: string;
+  translations?: string;
 }
 
 export default function Sign(props: Props) {
-  const { transaction, returnUrl, optimistic = false, meta } = props;
+  const {
+    transaction,
+    returnUrl,
+    optimistic = false,
+    meta,
+    translations,
+  } = props;
   const [autoRedirect, setAutoRedirect] = useState<boolean>(true);
   const [redirectLocation, setRedirectLocation] = useState<string>('');
   const router = useRouter();
@@ -52,6 +60,12 @@ export default function Sign(props: Props) {
   const metaDataString = meta ? Buffer.from(meta, 'base64').toString() : null;
   const metaData = metaDataString ? JSON.parse(metaDataString) : [];
 
+  const translationsDataString = translations
+    ? Buffer.from(translations, 'base64').toString()
+    : null;
+  const translationsData = translationsDataString
+    ? JSON.parse(translationsDataString)
+    : [];
   const { sign } = useSign();
   const [language, setLanguage] = useState('en');
 
@@ -186,12 +200,11 @@ export default function Sign(props: Props) {
               <summary>Accepting capabilities</summary>
               {signers.flatMap((signer) =>
                 signer.acceptorCapabilities?.map((capability) => (
-                  <>
-                    <h3>{capability.name}</h3>
-                    <Text>
-                      {capability.args.map((x) => JSON.stringify(x)).join(', ')}
-                    </Text>
-                  </>
+                  <Capability
+                    capability={capability}
+                    translations={translationsData}
+                    type="acceptor"
+                  />
                 )),
               )}
             </details>
@@ -201,70 +214,16 @@ export default function Sign(props: Props) {
               <summary>Granting capabilities</summary>
               {signers.flatMap((signer) =>
                 signer.granterCapabilities?.map((capability) => (
-                  <>
-                    <h3>{capability.name}</h3>
-                    <Text>
-                      {capability.args.map((x) => JSON.stringify(x)).join(', ')}
-                    </Text>
-                  </>
+                  <Capability
+                    capability={capability}
+                    translations={translationsData}
+                    type="granter"
+                  />
                 )),
               )}
             </details>
           </Text>
         </Box>
-        <Box width="100%">
-          <Heading variant="h6">Events</Heading>
-          <Text>
-            <details>
-              <summary>View coin events</summary>
-
-              {coinEvents?.length
-                ? coinEvents.map((event) => (
-                    <>
-                      <h3>
-                        {event.module.namespace
-                          ? event.module.namespace + '.'
-                          : ''}
-                        {event.module.name}:{event.name}
-                      </h3>
-                      <Text>
-                        You will be paying {event.params[1].toString()}:{' '}
-                        {event.params[2].toString()}
-                      </Text>
-                    </>
-                  ))
-                : 'No KDA will be transfered in this transaction using this account.'}
-            </details>
-            <details>
-              <summary>View other events</summary>
-              {!!otherEvents?.length &&
-                otherEvents.map((event) => (
-                  <>
-                    <h3>
-                      {event.module.namespace
-                        ? event.module.namespace + '.'
-                        : ''}
-                      {event.module.name}:{event.name}
-                    </h3>
-                    <Text>
-                      {event.params.map((param) => (
-                        <p>{JSON.stringify(param)}</p>
-                      ))}
-                    </Text>
-                  </>
-                ))}
-            </details>
-          </Text>
-        </Box>
-        <Box width="100%">
-          <Text variant="base">
-            <details>
-              <summary>View raw transaction</summary>
-              <pre>{JSON.stringify({ ...tx, cmd: txData }, null, 2)}</pre>
-            </details>
-          </Text>
-        </Box>
-
         <div className={wrapper}>
           <motion.div
             animate={{ x: `-${(devices.length - signaturesToSign) * 100}%` }}
@@ -328,6 +287,58 @@ export default function Sign(props: Props) {
             </Box>
           </motion.div>
         </div>
+        <Box width="100%">
+          <Heading variant="h6">Events</Heading>
+          <Text>
+            <details>
+              <summary>View coin events</summary>
+
+              {coinEvents?.length
+                ? coinEvents.map((event) => (
+                    <>
+                      <h3>
+                        {event.module.namespace
+                          ? event.module.namespace + '.'
+                          : ''}
+                        {event.module.name}:{event.name}
+                      </h3>
+                      <Text>
+                        You will be paying {event.params[1].toString()}:{' '}
+                        {event.params[2].toString()}
+                      </Text>
+                    </>
+                  ))
+                : 'No KDA will be transfered in this transaction using this account.'}
+            </details>
+            <details>
+              <summary>View other events</summary>
+              {!!otherEvents?.length &&
+                otherEvents.map((event) => (
+                  <>
+                    <h3>
+                      {event.module.namespace
+                        ? event.module.namespace + '.'
+                        : ''}
+                      {event.module.name}:{event.name}
+                    </h3>
+                    <Text>
+                      {event.params.map((param) => (
+                        <p>{JSON.stringify(param)}</p>
+                      ))}
+                    </Text>
+                  </>
+                ))}
+            </details>
+          </Text>
+        </Box>
+        <Box width="100%">
+          <Text variant="base">
+            <details>
+              <summary>View raw transaction</summary>
+              <pre>{JSON.stringify({ ...tx, cmd: txData }, null, 2)}</pre>
+            </details>
+          </Text>
+        </Box>
       </Stack>
     </>
   );
