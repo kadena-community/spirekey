@@ -1,3 +1,5 @@
+import { products } from '@/components/Delivery/mock/products';
+import { OrderItems, Product } from '@/context/OrderContext';
 import { asyncPipe } from '@/utils/asyncPipe';
 import { l1Client } from '@/utils/client';
 import { ChainId, createTransaction } from '@kadena/client';
@@ -20,6 +22,11 @@ export type Order = {
   orderPrice: number;
   deliveryPrice: number;
 };
+
+interface OrderLine {
+  'line-id': string;
+  price: string;
+}
 
 type ChainOrder = {
   ['order-id']: string;
@@ -116,6 +123,7 @@ type OrderDetails = {
   orderPrice: number;
   deliveryPrice: number;
   orderId: string;
+  orderItems: OrderItems;
 };
 
 const createOrder = async ({
@@ -128,6 +136,7 @@ const createOrder = async ({
   orderPrice,
   deliveryPrice,
   orderId,
+  orderItems,
 }: OrderDetails) => {
   const orderHash = createOrderId({
     customer: customerAccount,
@@ -137,21 +146,33 @@ const createOrder = async ({
 
   localStorage.setItem('newOrderId', orderHash);
 
+  const orderedProducts = products.filter((product: Product) =>
+    orderItems.includes(product.name),
+  );
+  const orderLines: OrderLine[] = orderedProducts.map((product: Product) => {
+    const amount = orderItems.filter(
+      (orderItem) => orderItem === product.name,
+    ).length;
+    return {
+      'line-id': `${product.name} (${amount}x)`,
+      price: (amount * product.price).toFixed(12),
+    };
+  });
+
+  // The format required by Pact does not allow for a simple JSON.stringify
+  const orderLinesExecutionString = orderLines
+    .reduce((previous, current, index) => {
+      return `${previous}${index === 0 ? '[' : ','}{"line-id": "${current['line-id']}", "price": ${current.price}}`;
+    }, '')
+    .concat(`,{"line-id": "Delivery", "price": ${deliveryPrice.toFixed(12)}}]`);
+
   const escrowId = await getDeliveryEscrowId({ chainId, networkId });
   return asyncPipe(
     composePactCommand(
       execution(
         `(${process.env.NAMESPACE}.delivery.create-order
           "${orderHash}"
-          [
-            {
-              "line-id": "order-line-1-hash",
-              "price"  : ${orderPrice.toFixed(12)}
-            }, {
-              "line-id": "order-line-2-hash",
-              "price"  : ${deliveryPrice.toFixed(12)}
-            }
-          ]
+          ${orderLinesExecutionString}
           "${merchantAccount}"
           (${process.env.NAMESPACE}.webauthn-wallet.get-wallet-guard "${merchantAccount}")
           "${customerAccount}"
@@ -163,24 +184,29 @@ const createOrder = async ({
       setMeta({
         chainId,
         senderAccount: customerAccount,
+        gasLimit: 10000,
+        gasPrice: 0.0000001,
+        ttl: 60000,
       }),
       setNetworkId(networkId),
       addSigner(
         // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: customerPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
+          ...orderLines.map((orderLine) => {
+            return withCap(
+              `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
+              orderHash,
+              orderLine['line-id'],
+              merchantAccount,
+              customerAccount,
+              { decimal: orderLine.price },
+            );
+          }),
           withCap(
             `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
             orderHash,
-            'order-line-1-hash',
-            merchantAccount,
-            customerAccount,
-            { decimal: orderPrice.toFixed(12) },
-          ),
-          withCap(
-            `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
-            orderHash,
-            'order-line-2-hash',
+            'Delivery',
             merchantAccount,
             customerAccount,
             { decimal: deliveryPrice.toFixed(12) },
@@ -203,18 +229,20 @@ const createOrder = async ({
         // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: merchantPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
+          ...orderLines.map((orderLine) => {
+            return withCap(
+              `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
+              orderHash,
+              orderLine['line-id'],
+              merchantAccount,
+              customerAccount,
+              { decimal: orderLine.price },
+            );
+          }),
           withCap(
             `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
             orderHash,
-            'order-line-1-hash',
-            merchantAccount,
-            customerAccount,
-            { decimal: orderPrice.toFixed(12) },
-          ),
-          withCap(
-            `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
-            orderHash,
-            'order-line-2-hash',
+            'Delivery',
             merchantAccount,
             customerAccount,
             { decimal: deliveryPrice.toFixed(12) },
@@ -315,7 +343,6 @@ const pickupDelivery = async ({
         // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: courierPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
-          withCap(`${process.env.NAMESPACE}.delivery.PICKUP_DELIVERY`, orderId),
           withCap(`${process.env.NAMESPACE}.delivery.PICKUP_DELIVERY`, orderId),
           withCap(
             `${process.env.NAMESPACE}.webauthn-wallet.TRANSFER`,

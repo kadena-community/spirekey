@@ -4,6 +4,8 @@ import { Button } from '@/components/Button/Button';
 import { Surface } from '@/components/Surface/Surface';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getAccountFrom } from '@/utils/account';
+import { getTranslations } from '@/utils/getTranslationBundle';
+import { getSmartContractMeta } from '@/utils/smartContractMeta';
 import { Heading, Stack, maskValue } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
 import { useRouter } from 'next/navigation';
@@ -40,7 +42,11 @@ export function DeliveryTransit({ order }: Props) {
           JSON.stringify(tx),
         ).toString('base64')}&returnUrl=${getReturnUrl(
           '/v1/example/delivery/courier',
-        )}`,
+        )}&meta=${Buffer.from(JSON.stringify(getSmartContractMeta())).toString(
+          'base64',
+        )}&translations=${Buffer.from(
+          JSON.stringify(getTranslations()),
+        ).toString('base64')}`,
       );
     };
 

@@ -101,7 +101,7 @@ export function OrderDelivery({ signers, order, transaction }: Props) {
                   {capability.args[1].toString()}
                 </Heading>
               </Box>
-              {(capability.args[2] as { decimal: number }).decimal && (
+              {(capability.args[4] as { decimal: number }).decimal && (
                 <Heading
                   variant="h6"
                   as="h4"
@@ -109,7 +109,7 @@ export function OrderDelivery({ signers, order, transaction }: Props) {
                 >
                   ${' '}
                   {Number(
-                    (capability.args[2] as { decimal: number }).decimal,
+                    (capability.args[4] as { decimal: number }).decimal,
                   ).toFixed(2)}
                 </Heading>
               )}
@@ -132,7 +132,7 @@ export function OrderDelivery({ signers, order, transaction }: Props) {
             >
               ${' '}
               {Number(
-                (deliveryCapability?.args[2] as { decimal: number })?.decimal ||
+                (deliveryCapability?.args[4] as { decimal: number })?.decimal ||
                   '0',
               ).toFixed(2)}
             </Heading>
