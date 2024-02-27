@@ -8,11 +8,12 @@ interface SignProps {
     transaction: string;
     returnUrl: string;
     optimistic?: boolean;
+    meta?: string;
   };
 }
 
 export default function SignPage(req: SignProps) {
-  const { transaction, returnUrl, optimistic = false } = req.searchParams;
+  const { transaction, returnUrl, optimistic = false, meta } = req.searchParams;
 
-  return <Sign {...{ transaction, returnUrl, optimistic }} />;
+  return <Sign {...{ transaction, returnUrl, optimistic, meta }} />;
 }

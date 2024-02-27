@@ -23,6 +23,10 @@ import { useEffect, useState } from 'react';
 
 import fingerprint from '@/assets/images/fingerprint.svg';
 import { usePreviewEvents } from '@/hooks/usePreviewEvents';
+import {
+  filterAcceptorCapabilities,
+  filterGranterCapabilities,
+} from '@/utils/smartContractMeta';
 import type { ICommandPayload, IPactEvent } from '@kadena/types';
 import { container, step, wrapper } from './Sign.css';
 
@@ -30,10 +34,11 @@ interface Props {
   transaction: string;
   returnUrl: string;
   optimistic?: boolean;
+  meta?: string;
 }
 
 export default function Sign(props: Props) {
-  const { transaction, returnUrl, optimistic = false } = props;
+  const { transaction, returnUrl, optimistic = false, meta } = props;
   const [autoRedirect, setAutoRedirect] = useState<boolean>(true);
   const [redirectLocation, setRedirectLocation] = useState<string>('');
   const router = useRouter();
@@ -44,6 +49,9 @@ export default function Sign(props: Props) {
     : null;
   const [tx, setTx] = useState<any>(JSON.parse(data ?? '{}'));
 
+  const metaDataString = meta ? Buffer.from(meta, 'base64').toString() : null;
+  const metaData = metaDataString ? JSON.parse(metaDataString) : [];
+
   const { sign } = useSign();
   const [language, setLanguage] = useState('en');
 
@@ -53,13 +61,51 @@ export default function Sign(props: Props) {
     (s: { pubKey: string }) => s.pubKey,
   );
 
-  const devices = publicKeys
-    .filter((key) =>
-      accounts.some((account) =>
-        account.devices.some((device) => device.guard.keys.includes(key)),
-      ),
+  const pubkeysForTx = publicKeys.filter((key) =>
+    accounts.some((account) =>
+      account.devices.some((device) => device.guard.keys.includes(key)),
+    ),
+  );
+  // Find capabilities applicable to the current transaction for accounts found
+  const signers = txData.signers
+    .filter((signer: { pubKey: string }) =>
+      pubkeysForTx.includes(signer.pubKey),
     )
-    .map((publicKey) => getDeviceByPublicKey(accounts, publicKey));
+    .map((signer) => ({
+      signer,
+      account: accounts.find((account) =>
+        account.devices.some((device) =>
+          device.guard.keys.includes(signer.pubKey),
+        ),
+      ),
+    }))
+    .filter((signer) => !!signer.account && !!signer.signer)
+    .map(({ signer, account }) => {
+      const granterCapabilities = signer.clist?.filter(
+        filterGranterCapabilities({
+          account: account!,
+          meta: metaData,
+        }),
+      );
+      const acceptorCapabilities = signer.clist?.filter(
+        filterAcceptorCapabilities({
+          account: account!,
+          meta: metaData,
+        }),
+      );
+      return {
+        signer,
+        account,
+        granterCapabilities,
+        acceptorCapabilities,
+      };
+    });
+
+  console.log('signers', signers);
+
+  const devices = pubkeysForTx.map((publicKey) =>
+    getDeviceByPublicKey(accounts, publicKey),
+  );
   const pendingRegistrationTxs = devices.map(
     (device) => device?.pendingRegistrationTx,
   );
@@ -134,42 +180,38 @@ export default function Sign(props: Props) {
           <Heading variant="h5">Preview and sign transaction</Heading>
         </Stack>
         <Heading variant="h5">Transaction details</Heading>
-        {getLabels(txData.signers, language).map((x, index) => (
-          <Box key={x.label + index} width="100%">
-            <Heading variant="h6">{x.label}</Heading>
-            <Stack alignItems="center" gap="sm">
-              <Text>{x.description ?? 'No description available'}</Text>
-              {!x.description && (
-                <Tooltip
-                  content="The owner of this smart contract hasn't provided a description for
-                this type of transaction yet."
-                >
-                  <SystemIcon.AlertCircleOutline size="sm" />
-                </Tooltip>
+        <Box width="100%">
+          <Text>
+            <details>
+              <summary>Accepting capabilities</summary>
+              {signers.flatMap((signer) =>
+                signer.acceptorCapabilities?.map((capability) => (
+                  <>
+                    <h3>{capability.name}</h3>
+                    <Text>
+                      {capability.args.map((x) => JSON.stringify(x)).join(', ')}
+                    </Text>
+                  </>
+                )),
               )}
-            </Stack>
-            <Box marginBlockStart="sm">
-              <Text variant="base">
-                <details>
-                  <summary>View raw capability</summary>
-                  <Text bold variant="base">
-                    Capability:
-                  </Text>{' '}
-                  {x.raw.name}
-                  <br />
-                  {x.valuesString && (
-                    <>
-                      <Text bold variant="base">
-                        Values:
-                      </Text>{' '}
-                      {x.valuesString}
-                    </>
-                  )}
-                </details>
-              </Text>
-            </Box>
-          </Box>
-        ))}
+            </details>
+          </Text>
+          <Text>
+            <details>
+              <summary>Granting capabilities</summary>
+              {signers.flatMap((signer) =>
+                signer.granterCapabilities?.map((capability) => (
+                  <>
+                    <h3>{capability.name}</h3>
+                    <Text>
+                      {capability.args.map((x) => JSON.stringify(x)).join(', ')}
+                    </Text>
+                  </>
+                )),
+              )}
+            </details>
+          </Text>
+        </Box>
         <Box width="100%">
           <Heading variant="h6">Events</Heading>
           <Text>
