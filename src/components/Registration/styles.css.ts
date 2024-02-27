@@ -39,34 +39,10 @@ export const item = style({
   justifyContent: 'center',
   alignItems: 'center',
   display: 'flex',
+  flexDirection: 'column',
+  gap: '0.5rem',
 });
 
 globalStyle(`input:checked + ${item}`, {
   color: customTokens.color.accent,
-});
-
-export const colorWrapper = style({
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(1.5rem, 1fr))',
-  gridAutoRows: 'auto',
-});
-
-export const colorInput = style({
-  display: 'none',
-});
-
-export const colorLabel = style({
-  width: '1.5rem',
-  height: '1.5rem',
-  borderRadius: '50%',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-});
-
-export const selectedColor = style({
-  width: '40%',
-  height: '40%',
-  background: 'white',
-  borderRadius: 'inherit',
 });

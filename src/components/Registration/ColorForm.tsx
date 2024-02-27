@@ -1,62 +1,93 @@
+import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
 import { deviceColors } from '@/styles/tokens.css';
 import { Box, Grid, GridItem } from '@kadena/react-ui';
-import classNames from 'classnames';
+import classnames from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
-import { SurfaceCard } from '../SurfaceCard/SurfaceCard';
-import type { FormData, FormUtils } from './Registration';
-import {
-  colorInput,
-  colorLabel,
-  colorWrapper,
-  selectedColor,
-} from './styles.css';
+import { FC } from 'react';
+import { useForm } from 'react-hook-form';
+import { color, input, selected, wrapper } from './ColorForm.css';
+import { StepProps } from './Registration';
+import { animationVariants } from './animation';
 
-type Props = Pick<FormData, 'color'> & FormUtils;
+export const ColorForm: FC<StepProps> = ({
+  isVisible,
+  defaultValues,
+  updateFields,
+  navigation,
+  stepIndex,
+}) => {
+  const {
+    handleSubmit,
+    register,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: { color: defaultValues.color },
+  });
 
-export function ColorForm({ color, updateFields, direction }: Props) {
-  const xPositionMultiplier = direction === 'forward' ? 1 : -1;
+  const selectedColor = watch('color');
+
+  const onSubmit = (values: { color: string }) => {
+    updateFields(values);
+    navigation.next();
+  };
 
   return (
-    <AnimatePresence>
-      <motion.div
-        key="register-step-color"
-        initial={{ x: 300 * xPositionMultiplier, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        exit={{ x: -300 * xPositionMultiplier, opacity: 0 }}
-        transition={{ duration: 0.3 }}
+    <motion.div
+      animate={isVisible ? 'visible' : 'hidden'}
+      variants={animationVariants}
+    >
+      <form
+        id={`registration-form-${stepIndex}`}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <SurfaceCard
           title="Color"
-          description="This color helps you to identify this account. The color is only stored
-          on your device and cannot been seen by others."
+          description={
+            <>
+              This color helps you to identify this account. The color is only
+              stored on your device and cannot been seen by others.
+              {errors.color && (
+                <Box style={{ color: 'red' }}>{errors.color.message}</Box>
+              )}
+            </>
+          }
         >
-          <Grid gap="md" className={colorWrapper}>
+          <Grid gap="md" className={wrapper}>
             {Object.entries(deviceColors).map(([description, colorHex]) => {
               return (
                 <GridItem key={colorHex}>
                   <input
-                    className={colorInput}
+                    className={input}
+                    {...register('color', {
+                      onChange: (event) => {
+                        updateFields({ color: event.target.value });
+                      },
+                      required: 'Please select a color',
+                    })}
                     type="radio"
-                    name="color"
                     value={colorHex}
                     id={`color-${colorHex}`}
-                    checked={color === colorHex}
-                    onChange={(event) =>
-                      updateFields({ color: event.target.value })
-                    }
                   />
                   <label
                     htmlFor={`color-${colorHex}`}
                     aria-label={`Color ${description}`}
                   >
                     <Box
-                      className={classNames(colorLabel, {
-                        selected: color === colorHex,
+                      className={classnames(color, {
+                        selected: selectedColor === colorHex,
                       })}
                       style={{ backgroundColor: colorHex }}
                     >
-                      {color === colorHex && (
-                        <div className={selectedColor}></div>
+                      {selectedColor === colorHex && (
+                        <AnimatePresence>
+                          <motion.div
+                            initial={{ transform: 'scale(0)', opacity: 0 }}
+                            animate={{ transform: 'scale(1)', opacity: 1 }}
+                            transition={{ duration: 0.1 }}
+                            className={selected}
+                          />
+                        </AnimatePresence>
                       )}
                     </Box>
                   </label>
@@ -65,7 +96,7 @@ export function ColorForm({ color, updateFields, direction }: Props) {
             })}
           </Grid>
         </SurfaceCard>
-      </motion.div>
-    </AnimatePresence>
+      </form>
+    </motion.div>
   );
-}
+};

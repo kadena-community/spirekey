@@ -1,13 +1,15 @@
+import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
+import { Box, Text } from '@kadena/react-ui';
+import { motion } from 'framer-motion';
+import { FC } from 'react';
+import { useForm } from 'react-hook-form';
+import { animationVariants } from './animation';
+import { descriptionEmphasis, item, itemContainer } from './styles.css';
+
 import { DeviceDesktop } from '@/components/icons/DeviceDesktop';
 import { DevicePhone } from '@/components/icons/DevicePhone';
 import { DeviceSecurityKey } from '@/components/icons/DeviceSecurityKey';
-import { Text } from '@kadena/react-ui';
-import { AnimatePresence, motion } from 'framer-motion';
-import { SurfaceCard } from '../SurfaceCard/SurfaceCard';
-import { FormData, FormUtils } from './Registration';
-import { descriptionEmphasis, item, itemContainer } from './styles.css';
-
-type Props = Pick<FormData, 'deviceType'> & FormUtils;
+import { StepProps } from './Registration';
 
 const deviceTypes: Record<string, string> = {
   'security-key': 'Security Key',
@@ -24,69 +26,98 @@ const getDescription = (deviceType: string) => {
   );
 };
 
-export function DeviceTypeForm({ deviceType, updateFields, direction }: Props) {
-  const xPositionMultiplier = direction === 'forward' ? 1 : -1;
+export const DeviceTypeForm: FC<StepProps> = ({
+  stepIndex,
+  isVisible,
+  defaultValues,
+  updateFields,
+  navigation,
+}) => {
+  const {
+    handleSubmit,
+    register,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: { deviceType: defaultValues.deviceType },
+  });
+
+  const selectedDeviceType = watch('deviceType');
+
+  const onSubmit = (values: { deviceType: string }) => {
+    updateFields(values);
+    navigation.next();
+  };
 
   return (
-    <AnimatePresence>
-      <motion.div
-        key="register-step-device-type"
-        initial={{ x: 300 * xPositionMultiplier, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        exit={{ x: -300 * xPositionMultiplier, opacity: 0 }}
-        transition={{ duration: 0.3 }}
+    <motion.div
+      animate={isVisible ? 'visible' : 'hidden'}
+      variants={animationVariants}
+    >
+      <form
+        id={`registration-form-${stepIndex}`}
+        onSubmit={handleSubmit(onSubmit)}
+      ></form>
+      <SurfaceCard
+        title="Device Type"
+        description={
+          <>
+            {getDescription(selectedDeviceType)}
+            {errors.deviceType && (
+              <Box style={{ color: 'red' }}>{errors.deviceType.message}</Box>
+            )}
+          </>
+        }
       >
-        <SurfaceCard
-          title="Device Type"
-          description={getDescription(deviceType)}
-        >
-          <div className={itemContainer}>
-            <div>
-              <input
-                type="radio"
-                name="deviceType"
-                value="security-key"
-                id="deviceType-security-key"
-                checked={deviceType === 'security-key'}
-                onChange={(event) =>
-                  updateFields({ deviceType: event.target.value })
-                }
-              />
-              <label htmlFor="deviceType-security-key" className={item}>
-                <DeviceSecurityKey />
-              </label>
-            </div>
-
+        <div className={itemContainer}>
+          <div>
             <input
               type="radio"
-              name="deviceType"
-              value="phone"
-              id="deviceType-phone"
-              checked={deviceType === 'phone'}
-              onChange={(event) =>
-                updateFields({ deviceType: event.target.value })
-              }
+              value="security-key"
+              id="deviceType-security-key"
+              {...register('deviceType', {
+                onChange: (event) => {
+                  updateFields({ deviceType: event.target.value });
+                },
+                required: 'Please select a device type',
+              })}
             />
-            <label htmlFor="deviceType-phone" className={item}>
-              <DevicePhone />
-            </label>
-
-            <input
-              type="radio"
-              name="deviceType"
-              value="desktop"
-              id="deviceType-desktop"
-              checked={deviceType === 'desktop'}
-              onChange={(event) =>
-                updateFields({ deviceType: event.target.value })
-              }
-            />
-            <label htmlFor="deviceType-desktop" className={item}>
-              <DeviceDesktop />
+            <label htmlFor="deviceType-security-key" className={item}>
+              <DeviceSecurityKey />
             </label>
           </div>
-        </SurfaceCard>
-      </motion.div>
-    </AnimatePresence>
+
+          <input
+            type="radio"
+            value="phone"
+            id="deviceType-phone"
+            {...register('deviceType', {
+              onChange: (event) => {
+                updateFields({ deviceType: event.target.value });
+              },
+              required: 'Please select a device type',
+            })}
+          />
+          <label htmlFor="deviceType-phone" className={item}>
+            <DevicePhone />
+          </label>
+
+          <input
+            type="radio"
+            value="desktop"
+            id="deviceType-desktop"
+            {...register('deviceType', {
+              onChange: (event) => {
+                updateFields({ deviceType: event.target.value });
+              },
+              required: 'Please select a device type',
+            })}
+          />
+          <label htmlFor="deviceType-desktop" className={item}>
+            <DeviceDesktop />
+          </label>
+        </div>
+      </SurfaceCard>
+    </motion.div>
   );
-}
+};

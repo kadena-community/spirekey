@@ -9,9 +9,14 @@ interface Props {
   children: React.ReactNode;
 }
 
-export const SurfaceCard: FC<Props> = ({ title, description, children }) => {
+export const SurfaceCard: FC<Props> = ({
+  title,
+  description,
+  children,
+  onClick = () => {},
+}) => {
   return (
-    <Surface>
+    <Surface onClick={onClick}>
       <Box marginBlockEnd="lg">
         <Heading variant="h5">{title}</Heading>
         <Text>{description}</Text>
