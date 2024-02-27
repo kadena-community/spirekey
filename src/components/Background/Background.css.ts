@@ -10,11 +10,5 @@ export const container = style([
   }),
   {
     height: '100%',
-    transition: 'opacity 1s ease-in-out',
-    selectors: {
-      "&[data-hidden='true']": {
-        opacity: 0,
-      },
-    },
   },
 ]);
