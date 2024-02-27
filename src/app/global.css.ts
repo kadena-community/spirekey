@@ -9,12 +9,4 @@ globalStyle('body', {
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
   backgroundAttachment: 'fixed',
-  '@media': {
-    '(orientation: portrait)': {
-      backgroundImage: `url(${backgroundImagePortrait.src})`,
-    },
-    '(orientation: landscape)': {
-      backgroundImage: `url(${backgroundImageLandscape.src})`,
-    },
-  },
 });
