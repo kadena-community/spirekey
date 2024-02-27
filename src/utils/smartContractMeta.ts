@@ -141,9 +141,9 @@ export const filterGranterCapabilities =
     );
     if (!capabilityMeta?.granter) return false;
     if (capabilityMeta.granter.isSigner) return true;
+    if (!capabilityMeta.granter.argIndex) return false;
     const granter = capability.args[capabilityMeta.granter.argIndex];
-    if (granter === account.accountName) return true;
-    return false;
+    return granter === account.accountName;
   };
 
 export const filterAcceptorCapabilities =
@@ -165,7 +165,7 @@ export const filterAcceptorCapabilities =
     );
     if (!capabilityMeta?.acceptor) return false;
     if (capabilityMeta.acceptor.isSigner) return true;
+    if (!capabilityMeta.acceptor.argIndex) return false;
     const acceptor = capability.args[capabilityMeta.acceptor.argIndex];
-    if (acceptor === account.accountName) return true;
-    return false;
+    return acceptor === account.accountName;
   };

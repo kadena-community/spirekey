@@ -126,6 +126,35 @@ type OrderDetails = {
   orderItems: OrderItems;
 };
 
+export const getOrderDetails = ({
+  orderItems,
+  products,
+}: {
+  orderItems: OrderItems;
+  products: Product[];
+}) => {
+  const orderedProducts = products.filter((product: Product) =>
+    orderItems.includes(product.name),
+  );
+  const orderLines = orderedProducts.map((product: Product) => {
+    const amount = orderItems.filter(
+      (orderItem) => orderItem === product.name,
+    ).length;
+    return {
+      acceptor: {
+        title: `${product.name} (${amount}x)`,
+        value: `${amount} x ${(amount * product.price).toFixed(12)}`,
+        image: product.image,
+      },
+      granter: {
+        title: `${product.name} (${amount}x)`,
+        value: `${amount} x ${(amount * product.price).toFixed(12)}`,
+        image: product.image,
+      },
+    };
+  });
+  return orderLines;
+};
 const createOrder = async ({
   chainId,
   networkId,

@@ -151,9 +151,8 @@ describe('translation', () => {
         };
         assert.equal(
           getCustomTranslation({
-            bundle: translationMock,
+            bundle: { ...translationMock, ...customBundle },
             capability,
-            customBundle,
             metas: getSmartContractMeta(),
             type: 'granter',
           })?.value,

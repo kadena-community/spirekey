@@ -48,13 +48,11 @@ export const getTranslation = (
 
 export const getCustomTranslation = ({
   bundle,
-  customBundle,
   capability,
   metas,
   type,
 }: {
   bundle: any;
-  customBundle: any;
   capability: ICap;
   metas: Meta[];
   type: 'granter' | 'acceptor';
@@ -74,7 +72,7 @@ export const getCustomTranslation = ({
   const customTranslation = getCustomCapabilityTranslation({
     capability,
     capabilityMeta,
-    customBundle,
+    bundle,
   });
   if (!customTranslation) return getTranslation(bundle, capability, type);
   console.log(customTranslation.hash);
@@ -105,17 +103,17 @@ export const generateCapabilityHash = ({
 const getCustomCapabilityTranslation = ({
   capability,
   capabilityMeta,
-  customBundle,
+  bundle,
 }: {
   capabilityMeta: CapabilityMeta;
-  customBundle: any;
+  bundle: any;
   capability: ICap;
 }) => {
   const capValues = capabilityMeta.hashValues
     .map((value) => capability.args[value])
     .map((v) => JSON.stringify(v));
   const customTranslation =
-    customBundle[`${capability.name}(${capValues.join(',')})`];
+    bundle[`${capability.name}(${capValues.join(',')})`];
   if (!customTranslation) return null;
   return {
     hash: hash([...capValues, JSON.stringify(customTranslation)].join(',')),
