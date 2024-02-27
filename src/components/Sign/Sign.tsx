@@ -180,42 +180,38 @@ export default function Sign(props: Props) {
           <Heading variant="h5">Preview and sign transaction</Heading>
         </Stack>
         <Heading variant="h5">Transaction details</Heading>
-        {getLabels(txData.signers, language).map((x, index) => (
-          <Box key={x.label + index} width="100%">
-            <Heading variant="h6">{x.label}</Heading>
-            <Stack alignItems="center" gap="sm">
-              <Text>{x.description ?? 'No description available'}</Text>
-              {!x.description && (
-                <Tooltip
-                  content="The owner of this smart contract hasn't provided a description for
-                this type of transaction yet."
-                >
-                  <SystemIcon.AlertCircleOutline size="sm" />
-                </Tooltip>
+        <Box width="100%">
+          <Text>
+            <details>
+              <summary>Accepting capabilities</summary>
+              {signers.flatMap((signer) =>
+                signer.acceptorCapabilities?.map((capability) => (
+                  <>
+                    <h3>{capability.name}</h3>
+                    <Text>
+                      {capability.args.map((x) => JSON.stringify(x)).join(', ')}
+                    </Text>
+                  </>
+                )),
               )}
-            </Stack>
-            <Box marginBlockStart="sm">
-              <Text variant="base">
-                <details>
-                  <summary>View raw capability</summary>
-                  <Text bold variant="base">
-                    Capability:
-                  </Text>{' '}
-                  {x.raw.name}
-                  <br />
-                  {x.valuesString && (
-                    <>
-                      <Text bold variant="base">
-                        Values:
-                      </Text>{' '}
-                      {x.valuesString}
-                    </>
-                  )}
-                </details>
-              </Text>
-            </Box>
-          </Box>
-        ))}
+            </details>
+          </Text>
+          <Text>
+            <details>
+              <summary>Granting capabilities</summary>
+              {signers.flatMap((signer) =>
+                signer.granterCapabilities?.map((capability) => (
+                  <>
+                    <h3>{capability.name}</h3>
+                    <Text>
+                      {capability.args.map((x) => JSON.stringify(x)).join(', ')}
+                    </Text>
+                  </>
+                )),
+              )}
+            </details>
+          </Text>
+        </Box>
         <Box width="100%">
           <Heading variant="h6">Events</Heading>
           <Text>

@@ -33,10 +33,10 @@ const deliveryMeta = {
   capabilities: {
     CREATE_ORDER_LINE: {
       granter: {
-        argIndex: 3,
+        argIndex: 2,
       },
       acceptor: {
-        argIndex: 2,
+        argIndex: 3,
       },
       // TODO: Discuss if this could provide for customizing the lines securely
       // 0: order-id, 2: buyer, 3: merchant, 4: price
