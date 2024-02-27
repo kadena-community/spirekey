@@ -141,17 +141,19 @@ export function ReadyForDelivery({ signers, order, transaction }: Props) {
                 Delivery
               </Heading>
             </Box>
-            <Heading
-              variant="h6"
-              as="h4"
-              style={{ flexGrow: 1, textAlign: 'end' }}
-            >
-              ${' '}
-              {Number(
-                (deliveryCapability?.args[2] as { decimal: number })?.decimal ||
-                  '0',
-              ).toFixed(2)}
-            </Heading>
+            {(deliveryCapability?.args[2] as { decimal: number })?.decimal && (
+              <Heading
+                variant="h6"
+                as="h4"
+                style={{ flexGrow: 1, textAlign: 'end' }}
+              >
+                ${' '}
+                {Number(
+                  (deliveryCapability?.args[2] as { decimal: number })
+                    ?.decimal || '0',
+                ).toFixed(2)}
+              </Heading>
+            )}
           </Stack>
         </Stack>
       </Surface>

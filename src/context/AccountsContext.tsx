@@ -270,6 +270,8 @@ const AccountsProvider = ({ children }: Props) => {
   }: AccountRecovery): Promise<ITransactionDescriptor> => {
     const accountName = await getAccountName(credentialPubkey, networkId);
 
+    if (!accountName) throw new Error('Wallet smart contract not found.');
+
     const { requestKey, chainId } = await registerAccount({
       accountName,
       alias,

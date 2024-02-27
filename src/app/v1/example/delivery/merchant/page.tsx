@@ -66,7 +66,6 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
     if (isLoading) return;
     if (status !== SubmitStatus.SUBMITABLE) return;
     const originMsg = messages.find((m) => m.data.hash === tx.hash);
-    console.log(originMsg);
     if (!originMsg) {
       doSubmit();
       return;
