@@ -16,7 +16,12 @@ export const ColorForm: FC<StepProps> = ({
   navigation,
   stepIndex,
 }) => {
-  const { handleSubmit, register, watch } = useForm({
+  const {
+    handleSubmit,
+    register,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: { color: defaultValues.color },
   });
 
@@ -38,8 +43,15 @@ export const ColorForm: FC<StepProps> = ({
       >
         <SurfaceCard
           title="Color"
-          description="This color helps you to identify this account. The color is only stored
-        on your device and cannot been seen by others."
+          description={
+            <>
+              This color helps you to identify this account. The color is only
+              stored on your device and cannot been seen by others.
+              {errors.color && (
+                <Box style={{ color: 'red' }}>{errors.color.message}</Box>
+              )}
+            </>
+          }
         >
           <Grid gap="md" className={wrapper}>
             {Object.entries(deviceColors).map(([description, colorHex]) => {
@@ -51,6 +63,7 @@ export const ColorForm: FC<StepProps> = ({
                       onChange: (event) => {
                         updateFields({ color: event.target.value });
                       },
+                      required: 'Please select a color',
                     })}
                     type="radio"
                     value={colorHex}

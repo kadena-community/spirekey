@@ -6,13 +6,11 @@ import { useRegistrationForm } from '@/hooks/useRegistrationForm';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { deviceColors } from '@/styles/tokens.css';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
-import { getAccountName } from '@/utils/register';
-import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Box, Stack } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 import DeviceCard from '../Card/DeviceCard';
 import { AliasForm } from './AliasForm';
 import { BiometricsForm } from './BiometricsForm';
@@ -21,10 +19,17 @@ import { DeviceTypeForm } from './DeviceTypeForm';
 import { NetworkIdForm } from './NetworkIdForm';
 import * as styles from './styles.css';
 
+const skipNetworkId =
+  process.env.WALLET_NETWORK_ID &&
+  typeof window !== 'undefined' &&
+  localStorage.getItem('devMode') !== 'true';
+
 const defaultFormData = {
   alias: '',
   usedAlias: '',
-  networkId: process.env.WALLET_NETWORK_ID || getDevnetNetworkId(),
+  networkId: skipNetworkId
+    ? process.env.WALLET_NETWORK_ID!
+    : getDevnetNetworkId(),
   accountName: '',
   credentialPubkey: '',
   credentialId: '',
@@ -97,7 +102,7 @@ export default function Registration({ redirectUrl }: Props) {
     router.push(completeRedirectUrl);
   };
 
-  const formStepComponents = process.env.WALLET_NETWORK_ID
+  const formStepComponents = skipNetworkId
     ? [AliasForm, BiometricsForm, DeviceTypeForm, ColorForm]
     : [AliasForm, NetworkIdForm, BiometricsForm, DeviceTypeForm, ColorForm];
 
@@ -155,9 +160,10 @@ export default function Registration({ redirectUrl }: Props) {
           transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
           className={styles.container}
         >
-          {steps.map((Comp, stepIndex) => (
+          {steps.map((FormStep, stepIndex) => (
             <Box className={styles.step}>
-              <Comp
+              <FormStep
+                key={stepIndex}
                 stepIndex={stepIndex}
                 isVisible={currentStepIndex === stepIndex}
                 defaultValues={defaultFormData}

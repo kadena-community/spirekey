@@ -1,5 +1,5 @@
 import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
-import { Text } from '@kadena/react-ui';
+import { Box, Text } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
@@ -33,7 +33,12 @@ export const DeviceTypeForm: FC<StepProps> = ({
   updateFields,
   navigation,
 }) => {
-  const { handleSubmit, register, watch } = useForm({
+  const {
+    handleSubmit,
+    register,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: { deviceType: defaultValues.deviceType },
   });
 
@@ -55,7 +60,14 @@ export const DeviceTypeForm: FC<StepProps> = ({
       ></form>
       <SurfaceCard
         title="Device Type"
-        description={getDescription(selectedDeviceType)}
+        description={
+          <>
+            {getDescription(selectedDeviceType)}
+            {errors.deviceType && (
+              <Box style={{ color: 'red' }}>{errors.deviceType.message}</Box>
+            )}
+          </>
+        }
       >
         <div className={itemContainer}>
           <div>
@@ -67,6 +79,7 @@ export const DeviceTypeForm: FC<StepProps> = ({
                 onChange: (event) => {
                   updateFields({ deviceType: event.target.value });
                 },
+                required: 'Please select a device type',
               })}
             />
             <label htmlFor="deviceType-security-key" className={item}>
@@ -82,6 +95,7 @@ export const DeviceTypeForm: FC<StepProps> = ({
               onChange: (event) => {
                 updateFields({ deviceType: event.target.value });
               },
+              required: 'Please select a device type',
             })}
           />
           <label htmlFor="deviceType-phone" className={item}>
@@ -96,6 +110,7 @@ export const DeviceTypeForm: FC<StepProps> = ({
               onChange: (event) => {
                 updateFields({ deviceType: event.target.value });
               },
+              required: 'Please select a device type',
             })}
           />
           <label htmlFor="deviceType-desktop" className={item}>

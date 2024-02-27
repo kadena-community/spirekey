@@ -51,7 +51,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     throw new Error('Merchant account is not configured.');
   }
 
-  const { register, getValues, watch } = useForm({
+  const { getValues } = useForm({
     defaultValues: {
       receiver: merchantAccount,
       amount: 1,
@@ -98,7 +98,7 @@ export default function DeliveryPage({ searchParams }: DeliveryProps) {
     if (!merchantAccount) return;
     const fetchMerchantAccount = async () => {
       const remoteMerchantAccount = await getAccountFrom({
-        networkId: process.env.NETWORK_ID || getDevnetNetworkId(),
+        networkId: process.env.DAPP_NETWORK_ID || getDevnetNetworkId(),
         accountName: merchantAccount,
       });
       setMerchantPublicKey(remoteMerchantAccount.devices[0].guard.keys[0]);

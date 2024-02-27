@@ -3,7 +3,7 @@ import { NetworkMainnet } from '@/components/icons/NetworkMainnet';
 import { NetworkTestnet } from '@/components/icons/NetworkTestnet';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
-import { Text } from '@kadena/react-ui';
+import { Box, Text } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
@@ -19,7 +19,12 @@ export const NetworkIdForm: FC<StepProps> = ({
   defaultValues,
   navigation,
 }) => {
-  const { handleSubmit, register, watch } = useForm({
+  const {
+    handleSubmit,
+    register,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: { networkId: defaultValues.networkId },
   });
 
@@ -53,7 +58,17 @@ export const NetworkIdForm: FC<StepProps> = ({
         id={`registration-form-${stepIndex}`}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <SurfaceCard title="Network" description={getDescription()}>
+        <SurfaceCard
+          title="Network"
+          description={
+            <>
+              {getDescription()}
+              {errors.networkId && (
+                <Box style={{ color: 'red' }}>{errors.networkId.message}</Box>
+              )}
+            </>
+          }
+        >
           <div className={styles.itemContainer}>
             <div>
               <input
@@ -61,6 +76,7 @@ export const NetworkIdForm: FC<StepProps> = ({
                   onChange: (event) => {
                     updateFields({ networkId: event.target.value });
                   },
+                  required: 'Please select a network',
                 })}
                 aria-label="Mainnet"
                 type="radio"
@@ -78,6 +94,7 @@ export const NetworkIdForm: FC<StepProps> = ({
                   onChange: (event) => {
                     updateFields({ networkId: event.target.value });
                   },
+                  required: 'Please select a network',
                 })}
                 aria-label="Testnet"
                 type="radio"
@@ -95,6 +112,7 @@ export const NetworkIdForm: FC<StepProps> = ({
                   onChange: (event) => {
                     updateFields({ networkId: event.target.value });
                   },
+                  required: 'Please select a network',
                 })}
                 aria-label="Devnet"
                 type="radio"
