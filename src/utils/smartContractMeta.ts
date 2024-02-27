@@ -127,9 +127,33 @@ export const filterGranterCapabilities =
       smartContractMeta,
       capability.name,
     );
-    if (!capabilityMeta) return false;
+    if (!capabilityMeta?.granter) return false;
     if (capabilityMeta.granter.isSigner) return true;
     const granter = capability.args[capabilityMeta.granter.argIndex];
     if (granter === account.accountName) return true;
+    return false;
+  };
+
+export const filterAcceptorCapabilities =
+  ({
+    account,
+    meta,
+  }: {
+    account: Pick<Account, 'accountName'>;
+    meta: Meta[];
+  }) =>
+  (capability: ICap) => {
+    const smartContractMeta = meta.find((m) =>
+      new RegExp(`^${m.module}\.`).test(capability.name),
+    );
+    if (!smartContractMeta) return false;
+    const capabilityMeta = getCapabilityMeta(
+      smartContractMeta,
+      capability.name,
+    );
+    if (!capabilityMeta?.acceptor) return false;
+    if (capabilityMeta.acceptor.isSigner) return true;
+    const acceptor = capability.args[capabilityMeta.acceptor.argIndex];
+    if (acceptor === account.accountName) return true;
     return false;
   };
