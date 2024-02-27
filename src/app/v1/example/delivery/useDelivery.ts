@@ -173,12 +173,16 @@ const createOrder = async ({
             `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
             orderHash,
             'order-line-1-hash',
+            merchantAccount,
+            customerAccount,
             { decimal: orderPrice.toFixed(12) },
           ),
           withCap(
             `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
             orderHash,
             'order-line-2-hash',
+            merchantAccount,
+            customerAccount,
             { decimal: deliveryPrice.toFixed(12) },
           ),
           withCap(
@@ -203,12 +207,16 @@ const createOrder = async ({
             `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
             orderHash,
             'order-line-1-hash',
+            merchantAccount,
+            customerAccount,
             { decimal: orderPrice.toFixed(12) },
           ),
           withCap(
             `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
             orderHash,
             'order-line-2-hash',
+            merchantAccount,
+            customerAccount,
             { decimal: deliveryPrice.toFixed(12) },
           ),
           withCap(

@@ -130,7 +130,13 @@
     (compose-capability (RESERVE_FUNDS))
   )
 
-  (defcap CREATE_ORDER_LINE (order-id:string line-id:string price:decimal)
+  (defcap CREATE_ORDER_LINE (
+    order-id : string
+    line-id  : string
+    merchant : string
+    buyer    : string
+    price    : decimal
+  )
     @doc "Capability validates that the order line can be created"
     true
   )
@@ -198,7 +204,7 @@
       { 'line-id := line-id
       , 'price   := price
       }
-      (with-capability (CREATE_ORDER_LINE order-id line-id price)
+      (with-capability (CREATE_ORDER_LINE order-id line-id merchant buyer price)
         (enforce-capability-guard buyer buyer-guard)
         (enforce-capability-guard merchant merchant-guard)
         price
