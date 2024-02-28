@@ -33,7 +33,11 @@ const TranslatedCapability = ({
   const valueNumber = Number(value);
   const isNumber = !isNaN(valueNumber);
   return (
-    <Stack alignItems="flex-start" gap="md" justifyContent="space-between">
+    <Stack
+      alignItems="flex-start"
+      gap="md"
+      justifyContent={isNumber ? 'space-between' : 'flex-start'}
+    >
       <img className={capabilityImage} src={image} alt={title} />
       <Box marginBlockStart="xs">
         <Heading variant="h6" as="h4">
@@ -43,7 +47,7 @@ const TranslatedCapability = ({
       </Box>
       {isNumber && (
         <Box marginBlockStart="xs" flexGrow={1} textAlign="right">
-          <Text>
+          <Text color="emphasize" bold>
             {valueNumber.toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 12,

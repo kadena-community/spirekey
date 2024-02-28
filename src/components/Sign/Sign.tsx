@@ -177,6 +177,15 @@ export default function Sign(props: Props) {
       return false;
     return !isCoinEventForAccounts(accounts)(event);
   });
+
+  const signerGranterCapabilities = signers.flatMap(
+    (signer) => signer.granterCapabilities,
+  );
+
+  const signerAcceptorCapabilities = signers.flatMap(
+    (signer) => signer.acceptorCapabilities,
+  );
+
   return (
     <>
       <Stack flexDirection="column" gap="md" alignItems="center" margin="xl">
@@ -185,38 +194,44 @@ export default function Sign(props: Props) {
           <Heading variant="h5">Preview and sign transaction</Heading>
         </Stack>
         <Stack gap="md" flexDirection="column">
-          <Surface>
-            <Heading variant="h4">Accepting capabilities</Heading>
-            <Stack gap="sm" flexDirection="column" marginBlockStart="md">
-              {signers.flatMap((signer) =>
-                signer.acceptorCapabilities?.map((capability) => (
-                  <Capability
-                    key={capability.name + capability.args.join(',')}
-                    capability={capability}
-                    translations={translationsData}
-                    metaData={metaData}
-                    type="acceptor"
-                  />
-                )),
-              )}
-            </Stack>
-          </Surface>
-          <Surface>
-            <Heading variant="h4">Granting capabilities</Heading>
-            <Stack gap="sm" flexDirection="column" marginBlockStart="md">
-              {signers.flatMap((signer) =>
-                signer.granterCapabilities?.map((capability) => (
-                  <Capability
-                    key={capability.name + capability.args.join(',')}
-                    capability={capability}
-                    translations={translationsData}
-                    metaData={metaData}
-                    type="granter"
-                  />
-                )),
-              )}
-            </Stack>
-          </Surface>
+          {!!signerAcceptorCapabilities.length && (
+            <Surface>
+              <Heading variant="h4">Accepting capabilities</Heading>
+              <Stack gap="sm" flexDirection="column" marginBlockStart="md">
+                {signerAcceptorCapabilities.map(
+                  (capability) =>
+                    !!capability && (
+                      <Capability
+                        key={capability.name + capability.args.join(',')}
+                        capability={capability}
+                        translations={translationsData}
+                        metaData={metaData}
+                        type="acceptor"
+                      />
+                    ),
+                )}
+              </Stack>
+            </Surface>
+          )}
+          {!!signerGranterCapabilities.length && (
+            <Surface>
+              <Heading variant="h4">Granting capabilities</Heading>
+              <Stack gap="sm" flexDirection="column" marginBlockStart="md">
+                {signerGranterCapabilities.map(
+                  (capability) =>
+                    !!capability && (
+                      <Capability
+                        key={capability?.name + capability?.args.join(',')}
+                        capability={capability}
+                        translations={translationsData}
+                        metaData={metaData}
+                        type="granter"
+                      />
+                    ),
+                )}
+              </Stack>
+            </Surface>
+          )}
         </Stack>
         <div className={wrapper}>
           <motion.div
