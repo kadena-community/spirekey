@@ -16,9 +16,8 @@ export function Product({ product }: Props) {
   const onIncrementOrderItem = (productName: string) => () =>
     addOrderItem(productName);
 
-  const orderItemAmount = orderItems.filter(
-    (orderItem) => orderItem === product.name,
-  ).length;
+  const orderItemAmount =
+    orderItems.find((item) => item.name === product.name)?.quantity || 0;
 
   return (
     <Stack flexDirection="column">

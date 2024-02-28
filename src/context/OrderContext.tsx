@@ -8,7 +8,10 @@ export interface Product {
   image: StaticImageData;
 }
 
-export type OrderItems = string[];
+type OrderItem = Product & {
+  quantity: number;
+};
+export type OrderItems = OrderItem[];
 
 const defaultOrderItems: OrderItems = [];
 
@@ -32,30 +35,43 @@ const OrderProvider = ({ children }: Props) => {
   );
   const [orderTotalPrice, setOrderTotalPrice] = useState<number>(0);
 
-  const addOrderItem = (productName: string): void => {
-    setOrderItems((value) => [...value, productName]);
-  };
+  const addOrderItem = (productName: string): void =>
+    setOrderItems((value) => {
+      const existingOrderItem = value.find(
+        (orderItem) => orderItem.name === productName,
+      );
+      if (!existingOrderItem)
+        return [
+          ...value,
+          {
+            ...products.find((product) => product.name === productName)!,
+            quantity: 1,
+          },
+        ];
+      return value.map((orderItem) =>
+        orderItem.name === productName
+          ? { ...orderItem, quantity: orderItem.quantity + 1 }
+          : orderItem,
+      );
+    });
 
-  const removeOrderItem = (productName: string): void => {
-    const otherOrderItems = orderItems.filter(
-      (orderItem) => orderItem !== productName,
+  const removeOrderItem = (productName: string): void =>
+    setOrderItems((value) =>
+      value
+        .map((orderItem) =>
+          orderItem.name === productName
+            ? { ...orderItem, quantity: orderItem.quantity - 1 }
+            : orderItem,
+        )
+        .filter((orderItem) => orderItem.quantity > 0),
     );
-    const productOrderItems = orderItems.filter(
-      (orderItem) => orderItem === productName,
-    );
-    productOrderItems.pop();
-    setOrderItems([...otherOrderItems, ...productOrderItems]);
-  };
 
   useEffect(() => {
     setOrderTotalPrice(
-      products.reduce((total, product) => {
-        return (
-          total +
-          orderItems.filter((orderItem) => orderItem === product.name).length *
-            product.price
-        );
-      }, 0),
+      orderItems.reduce(
+        (acc, orderItem) => acc + orderItem.price * orderItem.quantity,
+        0,
+      ),
     );
   }, [products, orderItems]);
 
