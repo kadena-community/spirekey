@@ -98,9 +98,9 @@ export function Account({
                       title="Request"
                       description="Transfers"
                     />
-                    {['testnet04', getDevnetNetworkId()].includes(
-                      account.networkId,
-                    ) && <FundButton account={account} />}
+                    {[getDevnetNetworkId()].includes(account.networkId) && (
+                      <FundButton account={account} />
+                    )}
                   </Stack>
                   <Stack
                     marginBlock="lg"
