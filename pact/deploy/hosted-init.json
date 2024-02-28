@@ -1,7 +1,7 @@
 {
   "profiles": {
     "default": {
-      "host": "http://localhost:8080",
+      "host": "https://devnet.kadena.network",
       "networkId": "development",
       "chains": [
         "0",

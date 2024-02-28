@@ -6,6 +6,7 @@
     "build": "next build",
     "deploy": "tsx src/utils/deploy.ts ./pact/deploy/deploy.json",
     "deploy:dev": "tsx src/utils/deploy.ts ./pact/deploy/local-init.json",
+    "deploy:hosted": "tsx src/utils/deploy.ts ./pact/deploy/hosted-init.json",
     "deploy:mainnet": "tsx src/utils/deploy.ts ./pact/deploy/mainnet-init.json",
     "deploy:testnet": "tsx src/utils/deploy.ts ./pact/deploy/testnet-init.json",
     "dev": "next dev --port 1337",
