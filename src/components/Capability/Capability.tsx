@@ -30,25 +30,27 @@ const TranslatedCapability = ({
   title: string;
   value: string;
 }) => {
+  const valueNumber = Number(value);
+  const isNumber = !isNaN(valueNumber);
   return (
-    <Stack marginBlock="sm" flexDirection="column">
-      <Surface>
-        <Stack alignItems="center" gap="md">
-          <img className={capabilityImage} src={image} alt={title} />
-          <Box marginBlockStart="xs" style={{ flexGrow: 1 }}>
-            <Heading variant="h6" as="h4">
-              {title}
-            </Heading>
-          </Box>
-          <Heading
-            variant="h6"
-            as="h4"
-            style={{ flexGrow: 1, textAlign: 'end' }}
-          >
-            {value}
-          </Heading>
-        </Stack>
-      </Surface>
+    <Stack alignItems="flex-start" gap="md" justifyContent="space-between">
+      <img className={capabilityImage} src={image} alt={title} />
+      <Box marginBlockStart="xs">
+        <Heading variant="h6" as="h4">
+          {title}
+        </Heading>
+        {!isNumber && <Text style={{ wordBreak: 'break-all' }}>{value}</Text>}
+      </Box>
+      {isNumber && (
+        <Box marginBlockStart="xs" flexGrow={1} textAlign="right">
+          <Text>
+            {valueNumber.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 12,
+            })}
+          </Text>
+        </Box>
+      )}
     </Stack>
   );
 };

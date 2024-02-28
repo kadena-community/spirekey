@@ -184,14 +184,14 @@ export default function Sign(props: Props) {
           <ProductIcon.ManageKda size="lg" />
           <Heading variant="h5">Preview and sign transaction</Heading>
         </Stack>
-        <Heading variant="h5">Transaction details</Heading>
-        <Box width="100%">
-          <Text>
-            <details>
-              <summary>Accepting capabilities</summary>
+        <Stack gap="md" flexDirection="column">
+          <Surface>
+            <Heading variant="h4">Accepting capabilities</Heading>
+            <Stack gap="sm" flexDirection="column" marginBlockStart="md">
               {signers.flatMap((signer) =>
                 signer.acceptorCapabilities?.map((capability) => (
                   <Capability
+                    key={capability.name + capability.args.join(',')}
                     capability={capability}
                     translations={translationsData}
                     metaData={metaData}
@@ -199,14 +199,15 @@ export default function Sign(props: Props) {
                   />
                 )),
               )}
-            </details>
-          </Text>
-          <Text>
-            <details>
-              <summary>Granting capabilities</summary>
+            </Stack>
+          </Surface>
+          <Surface>
+            <Heading variant="h4">Granting capabilities</Heading>
+            <Stack gap="sm" flexDirection="column" marginBlockStart="md">
               {signers.flatMap((signer) =>
                 signer.granterCapabilities?.map((capability) => (
                   <Capability
+                    key={capability.name + capability.args.join(',')}
                     capability={capability}
                     translations={translationsData}
                     metaData={metaData}
@@ -214,9 +215,9 @@ export default function Sign(props: Props) {
                   />
                 )),
               )}
-            </details>
-          </Text>
-        </Box>
+            </Stack>
+          </Surface>
+        </Stack>
         <div className={wrapper}>
           <motion.div
             animate={{ x: `-${(devices.length - signaturesToSign) * 100}%` }}
@@ -280,50 +281,6 @@ export default function Sign(props: Props) {
             </Box>
           </motion.div>
         </div>
-        <Box width="100%">
-          <Heading variant="h6">Events</Heading>
-          <Text>
-            <details>
-              <summary>View coin events</summary>
-
-              {coinEvents?.length
-                ? coinEvents.map((event) => (
-                    <>
-                      <h3>
-                        {event.module.namespace
-                          ? event.module.namespace + '.'
-                          : ''}
-                        {event.module.name}:{event.name}
-                      </h3>
-                      <Text>
-                        You will be paying {event.params[1].toString()}:{' '}
-                        {event.params[2].toString()}
-                      </Text>
-                    </>
-                  ))
-                : 'No KDA will be transfered in this transaction using this account.'}
-            </details>
-            <details>
-              <summary>View other events</summary>
-              {!!otherEvents?.length &&
-                otherEvents.map((event) => (
-                  <>
-                    <h3>
-                      {event.module.namespace
-                        ? event.module.namespace + '.'
-                        : ''}
-                      {event.module.name}:{event.name}
-                    </h3>
-                    <Text>
-                      {event.params.map((param) => (
-                        <p>{JSON.stringify(param)}</p>
-                      ))}
-                    </Text>
-                  </>
-                ))}
-            </details>
-          </Text>
-        </Box>
         <Box width="100%">
           <Text variant="base">
             <details>
