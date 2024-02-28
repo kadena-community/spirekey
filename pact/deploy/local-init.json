@@ -1,8 +1,8 @@
 {
   "profiles": {
     "default": {
-      "host": "http://localhost:8080",
-      "networkId": "fast-development",
+      "host": "https://devnet.kadena.network",
+      "networkId": "development",
       "chains": [
         "0",
         "1",
@@ -30,7 +30,7 @@
   "steps": [
     {
       "profile": "default",
-      "code": "(coin.transfer-create \"sender00\" \"w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any\" (read-keyset 'webauthn-keyset) 100.0)",
+      "code": "(coin.transfer-create \"sender00\" \"w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any\" (read-keyset 'webauthn-keyset) (- (coin.get-balance \"sender00\") 110.0))",
       "data": {
         "webauthn-keyset": {
           "keys": [
