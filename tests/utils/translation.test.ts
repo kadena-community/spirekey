@@ -1,4 +1,5 @@
-import { getTranslation } from '@/utils/translation';
+import { getSmartContractMeta } from '@/utils/smartContractMeta';
+import { getCustomTranslation, getTranslation } from '@/utils/translation';
 import assert from 'node:assert';
 import { beforeEach, describe, it, mock } from 'node:test';
 
@@ -122,7 +123,43 @@ describe('translation', () => {
   });
   describe('when customizing translations', () => {
     describe('when customizing translations for n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE', () => {
-      it('should show `For 5KDA you are receiving a Pizza Margherita`', () => {});
+      it('should show `For 5KDA you are receiving a Pizza Margherita`', () => {
+        const capability = {
+          name: 'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE',
+          args: [
+            'order-id',
+            'DtOzsHEctJWrc4h5ne5k09n6CnIc80J4S0KjHSbz5P8',
+            'c:zxy',
+            'c:abc',
+            { decimal: '5.5' },
+          ],
+        };
+        const customBundle = {
+          'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE("order-id","c:zxy","c:abc",{"decimal":"5.5"})':
+            {
+              granter: {
+                title: 'Create Order Line',
+                value: 'For {4}KDA you are making a Pizza Margherita',
+                image: 'http://example.pizza.com',
+              },
+              acceptor: {
+                title: 'Create Order Line',
+                value: 'For {4}KDA you are receiving a Pizza Margherita',
+                image: 'http://example.pizza.com',
+              },
+            },
+        };
+        assert.equal(
+          getCustomTranslation({
+            bundle: { ...translationMock, ...customBundle },
+            capability,
+            metas: getSmartContractMeta(),
+            type: 'granter',
+          })?.value,
+          'For 5.5KDA you are making a Pizza Margherita',
+          'Should retrieve the custom translation with plugs',
+        );
+      });
     });
   });
 });

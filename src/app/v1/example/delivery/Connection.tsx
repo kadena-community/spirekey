@@ -138,6 +138,11 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
       });
       return peer;
     },
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+    },
   );
 
   useEffect(() => {

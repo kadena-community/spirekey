@@ -98,7 +98,17 @@ const webauthnWalletMeta = {
 type CoinMeta = typeof coinMeta;
 type DeliveryMeta = typeof deliveryMeta;
 type WebAuthnWalletMeta = typeof webauthnWalletMeta;
-type Meta = CoinMeta | DeliveryMeta | WebAuthnWalletMeta;
+export type Meta = CoinMeta | DeliveryMeta | WebAuthnWalletMeta;
+type MetaDescriptor = {
+  isSigner?: boolean;
+  argIndex?: number;
+};
+export type CapabilityMeta = {
+  granter?: MetaDescriptor;
+  acceptor?: MetaDescriptor;
+  hashValues: number[];
+  hashIndex: number;
+};
 
 export const getSmartContractMeta = () => {
   // TODO: Find proper ways to retrieve the meta data
@@ -106,10 +116,10 @@ export const getSmartContractMeta = () => {
   return [coinMeta, deliveryMeta, webauthnWalletMeta];
 };
 
-const getCapabilityMeta = (meta: Meta, capability: string) => {
+export const getCapabilityMeta = (meta: Meta, capability: string) => {
   return (meta.capabilities as any)[
     capability.replace(new RegExp(`^${meta.module}\.`), '')
-  ] as any;
+  ] as CapabilityMeta;
 };
 
 export const filterGranterCapabilities =
@@ -131,9 +141,9 @@ export const filterGranterCapabilities =
     );
     if (!capabilityMeta?.granter) return false;
     if (capabilityMeta.granter.isSigner) return true;
+    if (!capabilityMeta.granter.argIndex) return false;
     const granter = capability.args[capabilityMeta.granter.argIndex];
-    if (granter === account.accountName) return true;
-    return false;
+    return granter === account.accountName;
   };
 
 export const filterAcceptorCapabilities =
@@ -155,7 +165,7 @@ export const filterAcceptorCapabilities =
     );
     if (!capabilityMeta?.acceptor) return false;
     if (capabilityMeta.acceptor.isSigner) return true;
+    if (!capabilityMeta.acceptor.argIndex) return false;
     const acceptor = capability.args[capabilityMeta.acceptor.argIndex];
-    if (acceptor === account.accountName) return true;
-    return false;
+    return acceptor === account.accountName;
   };
