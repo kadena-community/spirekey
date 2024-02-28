@@ -23,6 +23,7 @@ import { useConnection } from '../../app/v1/example/delivery/Connection';
 import * as styles from '../../app/v1/example/delivery/order.css';
 import {
   createOrderId,
+  getOrderDetails,
   useDelivery,
 } from '../../app/v1/example/delivery/useDelivery';
 import { useLoggedInAccount } from '../../app/v1/example/delivery/useLoggedInAccount';
@@ -92,6 +93,19 @@ export default function Customer({ searchParams }: Props) {
       merchant: merchantAccount,
       orderId: id,
     });
+
+    const details = getOrderDetails({
+      orderId,
+      buyerAccount: account.accountName,
+      merchantAccount,
+      orderItems,
+    });
+    const customTranslations = details.reduce((bundle, detail) => {
+      return {
+        ...bundle,
+        [detail.translationKey]: detail.translation,
+      };
+    }, {});
     saveDelivery(orderId);
     router.push(
       `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
@@ -101,7 +115,7 @@ export default function Customer({ searchParams }: Props) {
       )}&returnUrl=${getReturnUrl('/v1/example/delivery')}&meta=${Buffer.from(
         JSON.stringify(getSmartContractMeta()),
       ).toString('base64')}&translations=${Buffer.from(
-        JSON.stringify(getTranslations()),
+        JSON.stringify(getTranslations(customTranslations)),
       ).toString('base64')}`,
     );
   };

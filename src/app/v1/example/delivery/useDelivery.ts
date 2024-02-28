@@ -179,7 +179,7 @@ export const getOrderDetails = ({
     return {
       orderLineId: generateCapabilityHash({
         capabilityArgs: args,
-        customTranslation: JSON.stringify(translation),
+        customTranslation: translation,
       }),
       translationKey: `n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE(${args.map((x) => JSON.stringify(x)).join(',')})`,
       translation,
@@ -253,7 +253,7 @@ const createOrder = async ({
               orderLine.orderLineId,
               merchantAccount,
               customerAccount,
-              { decimal: orderLine.price },
+              { decimal: orderLine.price.toFixed(12) },
             );
           }),
           withCap(
@@ -289,7 +289,7 @@ const createOrder = async ({
               orderLine.orderLineId,
               merchantAccount,
               customerAccount,
-              { decimal: orderLine.price },
+              { decimal: orderLine.price.toFixed(12) },
             );
           }),
           withCap(

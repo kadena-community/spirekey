@@ -68,10 +68,11 @@ const coinTranslations = {
   },
 };
 
-export const getTranslations = () => {
+export const getTranslations = (customBundle = {}) => {
   return {
     ...deliveryTranslations,
     ...coinTranslations,
     ...webauthnWalletTranslations,
+    ...customBundle,
   };
 };
