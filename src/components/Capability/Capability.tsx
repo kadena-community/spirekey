@@ -1,4 +1,4 @@
-import { getTranslation } from '@/utils/translation';
+import { getCustomTranslation, getTranslation } from '@/utils/translation';
 import { Text } from '@kadena/react-ui';
 import { ICap } from '@kadena/types';
 import Image from 'next/image';
@@ -7,6 +7,7 @@ type Props = {
   translations: any;
   capability: ICap;
   type: 'granter' | 'acceptor';
+  metaData: any;
 };
 
 const DefaultCapability = ({ capability }: Pick<Props, 'capability'>) => {
@@ -21,8 +22,14 @@ const DefaultCapability = ({ capability }: Pick<Props, 'capability'>) => {
 const AcceptorCapability = ({
   capability,
   translations,
-}: Pick<Props, 'capability' | 'translations'>) => {
-  const specific = getTranslation(translations, capability, 'acceptor');
+  metaData,
+}: Pick<Props, 'capability' | 'translations' | 'metaData'>) => {
+  const specific = getCustomTranslation({
+    bundle: translations,
+    capability,
+    metas: metaData,
+    type: 'acceptor',
+  });
   if (!specific) return <DefaultCapability capability={capability} />;
   return (
     <>
@@ -36,8 +43,14 @@ const AcceptorCapability = ({
 const GranterCapability = ({
   capability,
   translations,
-}: Pick<Props, 'capability' | 'translations'>) => {
-  const specific = getTranslation(translations, capability, 'granter');
+  metaData,
+}: Pick<Props, 'capability' | 'translations' | 'metaData'>) => {
+  const specific = getCustomTranslation({
+    bundle: translations,
+    capability,
+    metas: metaData,
+    type: 'granter',
+  });
   if (!specific) return <DefaultCapability capability={capability} />;
   return (
     <>
@@ -48,15 +61,27 @@ const GranterCapability = ({
   );
 };
 
-export const Capability = ({ translations, capability, type }: Props) => {
-  console.log(translations, capability);
+export const Capability = ({
+  translations,
+  capability,
+  type,
+  metaData,
+}: Props) => {
   if (!translations) return <DefaultCapability capability={capability} />;
 
   if (type === 'acceptor')
     return (
-      <AcceptorCapability capability={capability} translations={translations} />
+      <AcceptorCapability
+        capability={capability}
+        translations={translations}
+        metaData={metaData}
+      />
     );
   return (
-    <GranterCapability capability={capability} translations={translations} />
+    <GranterCapability
+      capability={capability}
+      translations={translations}
+      metaData={metaData}
+    />
   );
 };

@@ -194,6 +194,7 @@ export default function Sign(props: Props) {
                   <Capability
                     capability={capability}
                     translations={translationsData}
+                    metaData={metaData}
                     type="acceptor"
                   />
                 )),
@@ -208,6 +209,7 @@ export default function Sign(props: Props) {
                   <Capability
                     capability={capability}
                     translations={translationsData}
+                    metaData={metaData}
                     type="granter"
                   />
                 )),

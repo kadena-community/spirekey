@@ -2,8 +2,10 @@ import { products } from '@/components/Delivery/mock/products';
 import { OrderItems, Product } from '@/context/OrderContext';
 import { asyncPipe } from '@/utils/asyncPipe';
 import { l1Client } from '@/utils/client';
+import { generateCapabilityHash } from '@/utils/translation';
 import { ChainId, createTransaction } from '@kadena/client';
 import {
+  addData,
   addSigner,
   composePactCommand,
   execution,
@@ -126,24 +128,62 @@ type OrderDetails = {
   orderItems: OrderItems;
 };
 
+type OrderLineDetails = {
+  orderLineId: string;
+  translationKey: string;
+  price: number;
+  translation: {
+    acceptor: {
+      title: string;
+      value: string;
+      image: string;
+    };
+    granter: {
+      title: string;
+      value: string;
+      image: string;
+    };
+  };
+};
 export const getOrderDetails = ({
+  orderId,
+  buyerAccount,
+  merchantAccount,
   orderItems,
 }: {
+  orderId: string;
+  buyerAccount: string;
+  merchantAccount: string;
   orderItems: OrderItems;
-  products: Product[];
-}) => {
+}): OrderLineDetails[] => {
   const orderLines = orderItems.map((product) => {
-    return {
+    const price = product.quantity * product.price;
+    const translation = {
       acceptor: {
-        title: `${product.name} (${product.quantity}x)`,
-        value: `${product.quantity} x ${(product.quantity * product.price).toFixed(12)}`,
-        image: product.image,
+        title: `${product.name} (${product.quantity}x${product.price})`,
+        value: price.toFixed(12),
+        image: product.image.src,
       },
       granter: {
-        title: `${product.name} (${product.quantity}x)`,
-        value: `${product.quantity} x ${(product.quantity * product.price).toFixed(12)}`,
-        image: product.image,
+        title: `${product.name} (${product.quantity}x${product.price})`,
+        value: price.toFixed(12),
+        image: product.image.src,
       },
+    };
+    const args = [
+      orderId,
+      merchantAccount,
+      buyerAccount,
+      { decimal: price.toFixed(12) },
+    ];
+    return {
+      orderLineId: generateCapabilityHash({
+        capabilityArgs: args,
+        customTranslation: translation,
+      }),
+      translationKey: `n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE(${args.map((x) => JSON.stringify(x)).join(',')})`,
+      translation,
+      price,
     };
   });
   return orderLines;
@@ -168,19 +208,12 @@ const createOrder = async ({
 
   localStorage.setItem('newOrderId', orderHash);
 
-  const orderLines: OrderLine[] = orderItems.map((product) => {
-    return {
-      'line-id': `${product.name} (${product.quantity}x)`,
-      price: (product.quantity * product.price).toFixed(12),
-    };
+  const orderLines = getOrderDetails({
+    orderId: orderHash,
+    buyerAccount: customerAccount,
+    merchantAccount,
+    orderItems,
   });
-
-  // The format required by Pact does not allow for a simple JSON.stringify
-  const orderLinesExecutionString = orderLines
-    .reduce((previous, current, index) => {
-      return `${previous}${index === 0 ? '[' : ','}{"line-id": "${current['line-id']}", "price": ${current.price}}`;
-    }, '')
-    .concat(`,{"line-id": "Delivery", "price": ${deliveryPrice.toFixed(12)}}]`);
 
   const escrowId = await getDeliveryEscrowId({ chainId, networkId });
   return asyncPipe(
@@ -188,7 +221,7 @@ const createOrder = async ({
       execution(
         `(${process.env.NAMESPACE}.delivery.create-order
           "${orderHash}"
-          ${orderLinesExecutionString}
+          (read-msg 'order-lines)
           "${merchantAccount}"
           (${process.env.NAMESPACE}.webauthn-wallet.get-wallet-guard "${merchantAccount}")
           "${customerAccount}"
@@ -196,6 +229,10 @@ const createOrder = async ({
           ${orderPrice.toFixed(12)}
           ${deliveryPrice.toFixed(12)}
          )`,
+      ),
+      addData(
+        'order-lines',
+        orderLines.map((x) => x.orderLineId),
       ),
       setMeta({
         chainId,
@@ -213,10 +250,10 @@ const createOrder = async ({
             return withCap(
               `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
               orderHash,
-              orderLine['line-id'],
+              orderLine.orderLineId,
               merchantAccount,
               customerAccount,
-              { decimal: orderLine.price },
+              { decimal: orderLine.price.toFixed(12) },
             );
           }),
           withCap(
@@ -249,10 +286,10 @@ const createOrder = async ({
             return withCap(
               `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
               orderHash,
-              orderLine['line-id'],
+              orderLine.orderLineId,
               merchantAccount,
               customerAccount,
-              { decimal: orderLine.price },
+              { decimal: orderLine.price.toFixed(12) },
             );
           }),
           withCap(

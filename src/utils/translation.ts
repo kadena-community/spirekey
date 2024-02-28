@@ -34,13 +34,13 @@ export const getTranslation = (
 
   if (type === 'acceptor')
     return {
-      title,
+      title: acceptor.title,
       value: getValue(acceptor.value, capability),
       image: acceptor.image,
     };
   const granterValue = getValue(granter?.value || value, capability);
   return {
-    title,
+    title: granter?.title || title,
     value: granterValue,
     image: granter?.image || image,
   };
@@ -75,7 +75,6 @@ export const getCustomTranslation = ({
     bundle,
   });
   if (!customTranslation) return getTranslation(bundle, capability, type);
-  console.log(customTranslation.hash);
   if (capability.args[capabilityMeta.hashIndex] !== customTranslation.hash)
     throw new Error(
       'The translations have been tempered with, please be careful!',

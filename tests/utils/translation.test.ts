@@ -74,7 +74,7 @@ describe('translation', () => {
           args: ['c:abc', 'c:zxy', { decimal: '5.005' }],
         };
         assert.equal(
-          getTranslation(translationMock, capability)?.value,
+          getTranslation(translationMock, capability, 'granter')?.value,
           `You are about to transfer 5.005 KDA to c:zxy`,
           'Expect the values to be placed correctly in the template string',
         );
