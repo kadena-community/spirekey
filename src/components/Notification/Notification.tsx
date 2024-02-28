@@ -14,7 +14,7 @@ export const Notification: FC<Props> = ({ variant, title, message }) => {
     <motion.div
       initial={{ opacity: 0, y: -100 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -100 }}
+      exit={{ opacity: 0, y: -100, transition: { duration: 0.1 } }}
       layout
       className={styles.wrapper({ variant })}
     >
