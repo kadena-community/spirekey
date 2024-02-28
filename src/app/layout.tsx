@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import favicon from './favicon.png';
 import Providers from './providers';
 
 import './global.css';
@@ -15,6 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href={favicon.src} sizes="any" />
+      </head>
       <body>
         <Providers>{children}</Providers>
       </body>
