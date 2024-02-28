@@ -9,5 +9,5 @@ export const l1Client = createClient(({ chainId, networkId }) => {
     return `http://localhost:8080/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
   if (networkId === 'l2')
     return `http://localhost:8081/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
-  return `http://localhost:8080/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
+  return `${process.env.DEVNET_HOST}/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
 });

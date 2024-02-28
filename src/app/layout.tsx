@@ -5,8 +5,8 @@ import { Background } from '@/components/Background/Background';
 import './global.css';
 
 export const metadata: Metadata = {
-  title: 'WebAuthn Wallet',
-  description: 'Conveniently secure your internet',
+  title: 'Kadena SpireKey',
+  description: 'Elevate your blockchain journey',
 };
 
 export default function RootLayout({
