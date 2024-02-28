@@ -1,6 +1,7 @@
 import { useFrame } from '@react-three/fiber';
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useContext, useLayoutEffect, useMemo, useRef } from 'react';
 import { Object3D, Shape } from 'three';
+import { BackgroundContext } from './Background.context';
 
 const tempBox = new Object3D();
 
@@ -10,7 +11,6 @@ interface InstancedTriangleProps {
   align: 'left' | 'right';
   columns: number;
   rows: number;
-  isAnimated?: boolean;
 }
 
 function getTriangleShape(align: 'left' | 'right', width: number) {
@@ -33,10 +33,10 @@ export function InstancedTriangle({
   align = 'left',
   columns = 10,
   rows = 10,
-  isAnimated = true,
 }: InstancedTriangleProps) {
   const ref = useRef<any>(null);
   const randomRef = useRef(new Float32Array(columns * rows));
+  const { isAnimated } = useContext(BackgroundContext);
   const args: [any, any] = useMemo(
     () => [
       getTriangleShape(align, width),
@@ -81,7 +81,7 @@ export function InstancedTriangle({
         tempBox.scale.setZ(
           scale *
             (Math.sin(
-              clock.elapsedTime * 0.2 + randomRef.current[id] * 2 * Math.PI,
+              clock.elapsedTime * 0.5 + randomRef.current[id] * 2 * Math.PI,
             ) +
               1),
         );
