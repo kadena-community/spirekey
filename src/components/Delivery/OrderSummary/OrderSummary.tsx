@@ -6,9 +6,7 @@ import * as styles from './OrderSummary.css';
 export function OrderSummary() {
   const { products, orderItems, orderTotalPrice } = useOrder();
 
-  const orderedProducts = products.filter((product) =>
-    orderItems.includes(product.name),
-  );
+  const orderedProducts = orderItems;
 
   if (orderItems.length === 0) {
     return (
@@ -40,11 +38,7 @@ export function OrderSummary() {
                 {product.name}
               </Heading>
               <div>
-                {
-                  orderItems.filter((orderItem) => orderItem === product.name)
-                    .length
-                }{' '}
-                x $ {product.price.toFixed(2)}
+                {product.quantity} x $ {product.price.toFixed(2)}
               </div>
             </Box>
             <Heading
@@ -52,11 +46,7 @@ export function OrderSummary() {
               as="h4"
               style={{ flexGrow: 1, textAlign: 'end' }}
             >
-              ${' '}
-              {(
-                orderItems.filter((orderItem) => orderItem === product.name)
-                  .length * product.price
-              ).toFixed(2)}
+              $ {(product.quantity * product.price).toFixed(2)}
             </Heading>
           </Stack>
         ))}

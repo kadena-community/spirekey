@@ -128,27 +128,20 @@ type OrderDetails = {
 
 export const getOrderDetails = ({
   orderItems,
-  products,
 }: {
   orderItems: OrderItems;
   products: Product[];
 }) => {
-  const orderedProducts = products.filter((product: Product) =>
-    orderItems.includes(product.name),
-  );
-  const orderLines = orderedProducts.map((product: Product) => {
-    const amount = orderItems.filter(
-      (orderItem) => orderItem === product.name,
-    ).length;
+  const orderLines = orderItems.map((product) => {
     return {
       acceptor: {
-        title: `${product.name} (${amount}x)`,
-        value: `${amount} x ${(amount * product.price).toFixed(12)}`,
+        title: `${product.name} (${product.quantity}x)`,
+        value: `${product.quantity} x ${(product.quantity * product.price).toFixed(12)}`,
         image: product.image,
       },
       granter: {
-        title: `${product.name} (${amount}x)`,
-        value: `${amount} x ${(amount * product.price).toFixed(12)}`,
+        title: `${product.name} (${product.quantity}x)`,
+        value: `${product.quantity} x ${(product.quantity * product.price).toFixed(12)}`,
         image: product.image,
       },
     };
@@ -175,16 +168,10 @@ const createOrder = async ({
 
   localStorage.setItem('newOrderId', orderHash);
 
-  const orderedProducts = products.filter((product: Product) =>
-    orderItems.includes(product.name),
-  );
-  const orderLines: OrderLine[] = orderedProducts.map((product: Product) => {
-    const amount = orderItems.filter(
-      (orderItem) => orderItem === product.name,
-    ).length;
+  const orderLines: OrderLine[] = orderItems.map((product) => {
     return {
-      'line-id': `${product.name} (${amount}x)`,
-      price: (amount * product.price).toFixed(12),
+      'line-id': `${product.name} (${product.quantity}x)`,
+      price: (product.quantity * product.price).toFixed(12),
     };
   });
 
