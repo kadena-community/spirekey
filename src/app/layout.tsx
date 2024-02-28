@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Providers from './providers';
 
-import { Background } from '@/components/Background/Background';
 import './global.css';
 
 export const metadata: Metadata = {
@@ -17,10 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <Providers>
-          {true && <Background />}
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
