@@ -1,7 +1,7 @@
 import { getSmartContractMeta } from '@/utils/smartContractMeta';
 import { getCustomTranslation, getTranslation } from '@/utils/translation';
 import assert from 'node:assert';
-import { beforeEach, describe, it, mock } from 'node:test';
+import { describe, it } from 'node:test';
 
 const translationMock = {
   'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE': {

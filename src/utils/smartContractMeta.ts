@@ -25,7 +25,7 @@ const coinMeta = {
 
 const deliveryMeta = {
   name: 'Delivery',
-  module: 'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery',
+  module: `${process.env.NAMESPACE}.delivery`,
   description:
     'Delivery smart contract that governs ordering and delivery of products.',
   hash: 'hxK8VcEQFl2CkyXxKGwSz02_ccPUoYb24jElkBI_vCk',
@@ -78,7 +78,7 @@ const deliveryMeta = {
 
 const webauthnWalletMeta = {
   name: 'WebAuthn Wallet',
-  module: 'n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet',
+  module: `${process.env.NAMESPACE}.webauthn-wallet`,
   description: 'WebAuthnWallet smart contract that governs WebAuthnWallet.',
   hash: 'eMkmlzPgQP4eg_t4qHyYqU6Micw4DlrOlGAjDRQplrY',
   blessed: [],

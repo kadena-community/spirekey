@@ -31,7 +31,7 @@
     "@kadena/react-ui": "^0.8.1",
     "@kadena/types": "^0.6.0",
     "@react-aria/utils": "^3.23.2",
-    "@react-three/drei": "^9.99.0",
+    "@react-three/drei": "^9.99.4",
     "@react-three/fiber": "^8.15.16",
     "@simplewebauthn/browser": "^9.0.1",
     "@simplewebauthn/types": "^9.0.1",
@@ -43,7 +43,7 @@
     "cbor": "^9.0.2",
     "classnames": "^2.5.1",
     "encoding": "^0.1.13",
-    "framer-motion": "^11.0.5",
+    "framer-motion": "^11.0.6",
     "next": "14.1.0",
     "next-themes": "^0.2.1",
     "parse-cosekey": "^1.0.2",
@@ -58,18 +58,18 @@
     "sharp": "^0.33.2",
     "swr": "^2.2.5",
     "three": "^0.161.0",
-    "usehooks-ts": "^2.14.0"
+    "usehooks-ts": "^2.15.1"
   },
   "devDependencies": {
     "@kadena/pactjs-cli": "^1.8.1",
-    "@types/node": "^20.11.19",
+    "@types/node": "^20.11.21",
     "@types/qrcode": "^1.5.5",
-    "@types/react": "^18.2.57",
+    "@types/react": "^18.2.60",
     "@types/react-dom": "^18.2.19",
     "husky": "^9.0.11",
     "prettier": "^3.2.5",
     "prettier-plugin-organize-imports": "^3.2.4",
-    "prettier-plugin-packagejson": "^2.4.11",
+    "prettier-plugin-packagejson": "^2.4.12",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3"
   }

@@ -1,4 +1,3 @@
-import { products } from '@/components/Delivery/mock/products';
 import { OrderItems, Product } from '@/context/OrderContext';
 import { asyncPipe } from '@/utils/asyncPipe';
 import { l1Client } from '@/utils/client';
