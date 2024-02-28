@@ -4,7 +4,7 @@ import Image from 'next/image';
 import * as styles from './OrderSummary.css';
 
 export function OrderSummary() {
-  const { products, orderItems, orderTotalPrice } = useOrder();
+  const { orderItems, orderTotalPrice } = useOrder();
 
   const orderedProducts = orderItems;
 

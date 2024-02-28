@@ -5,12 +5,12 @@ const deliveryTranslations = {
     granter: {
       title: 'Create Order Line',
       value: 'You are preparing {1} from {2} for {4} KDA',
-      image: pizza,
+      image: pizza.src,
     },
     acceptor: {
       title: 'Create Order Line',
       value: 'You are ordering {1} from {2} for {4} KDA',
-      image: pizza,
+      image: pizza.src,
     },
   },
   'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.SET_READY_FOR_DELIVERY':
@@ -18,30 +18,30 @@ const deliveryTranslations = {
       title: 'Ready for delivery',
       value:
         'Let the customer and couriers know the order is ready for delivery',
-      image: pizza,
+      image: pizza.src,
     },
   'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.PICKUP_DELIVERY': {
     granter: {
       title: 'Pick up delivery',
       value: 'You are handing off the package to the courier',
-      image: pizza,
+      image: pizza.src,
     },
     acceptor: {
       title: 'Pick up delivery',
       value: 'You are picking up the package',
-      image: pizza,
+      image: pizza.src,
     },
   },
   'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.DELIVER_ORDER': {
     granter: {
       title: 'Delivering order',
       value: 'You are handing off the order to the customer',
-      image: pizza,
+      image: pizza.src,
     },
     acceptor: {
       title: 'Delivering order',
       value: 'You are receiving the order from the courier',
-      image: pizza,
+      image: pizza.src,
     },
   },
 };
@@ -51,12 +51,12 @@ const webauthnWalletTranslations = {
     title: 'Transfer via WebAuthn',
     value:
       'You are about to transfer {2} KDA to {1}, this will go through `coin`',
-    image: pizza,
+    image: pizza.src,
   },
   'n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.GAS_PAYER': {
     title: 'Pay gas via WebAuthn',
     value: 'You are about to pay for gas',
-    image: pizza,
+    image: pizza.src,
   },
 };
 
@@ -64,7 +64,7 @@ const coinTranslations = {
   'coin.TRANSFER': {
     title: 'Transfer KDA',
     value: 'You are about to transfer {2} KDA to {1}',
-    image: pizza,
+    image: pizza.src,
   },
 };
 
