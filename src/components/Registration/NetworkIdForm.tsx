@@ -116,7 +116,7 @@ export const NetworkIdForm: FC<StepProps> = ({
                 })}
                 aria-label="Devnet"
                 type="radio"
-                value="fast-development"
+                value={getDevnetNetworkId()}
                 id="network-devnet"
               />
               <label htmlFor="network-devnet" className={styles.item}>

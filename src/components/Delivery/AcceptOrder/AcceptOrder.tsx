@@ -98,16 +98,19 @@ export function AcceptOrder({ signers, signingLink }: Props) {
                   {capability.args[1].toString()}
                 </Heading>
               </Box>
-              <Heading
-                variant="h6"
-                as="h4"
-                style={{ flexGrow: 1, textAlign: 'end' }}
-              >
-                ${' '}
-                {Number(
-                  (capability.args[4] as { decimal: number }).decimal,
-                ).toFixed(2)}
-              </Heading>
+              {(deliveryCapability?.args[4] as { decimal: number })
+                ?.decimal && (
+                <Heading
+                  variant="h6"
+                  as="h4"
+                  style={{ flexGrow: 1, textAlign: 'end' }}
+                >
+                  ${' '}
+                  {Number(
+                    (capability.args[4] as { decimal: number }).decimal,
+                  ).toFixed(2)}
+                </Heading>
+              )}
             </Stack>
           ))}
           <Stack alignItems="center" gap="sm">

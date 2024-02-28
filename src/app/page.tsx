@@ -1,5 +1,6 @@
 'use client';
 
+import { Background } from '@/components/Background/Background';
 import { useAccounts } from '@/context/AccountsContext';
 import { Heading, Stack, SystemIcon } from '@kadena/react-ui';
 import dynamic from 'next/dynamic';
@@ -22,24 +23,27 @@ export default function Accounts() {
   }, [accounts]);
 
   return (
-    <Stack
-      gap="md"
-      flexDirection="column"
-      alignItems="center"
-      width="100%"
-      style={{ height: '100svh' }}
-    >
+    <>
+      <Background />
       <Stack
-        paddingInline="lg"
-        paddingBlock="md"
+        gap="md"
+        flexDirection="column"
         alignItems="center"
-        justifyContent="space-between"
         width="100%"
+        style={{ height: '100svh' }}
       >
-        <Heading variant="h5">Accounts</Heading>
-        <SystemIcon.Application />
+        <Stack
+          paddingInline="lg"
+          paddingBlock="md"
+          alignItems="center"
+          justifyContent="space-between"
+          width="100%"
+        >
+          <Heading variant="h5">Accounts</Heading>
+          <SystemIcon.Application />
+        </Stack>
+        <CardCollection />
       </Stack>
-      <CardCollection />
-    </Stack>
+    </>
   );
 }

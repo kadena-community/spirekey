@@ -14,6 +14,7 @@ const nextConfig = {
     INSTA_FUND: process.env.INSTA_FUND,
     CHAIN_ID: process.env.CHAIN_ID,
     DEVNET_NETWORK_ID: process.env.DEVNET_NETWORK_ID,
+    DEVNET_HOST: process.env.DEVNET_HOST,
     AUTO_REGISTER_MAINNET: process.env.AUTO_REGISTER_MAINNET,
     DAPP_NETWORK_ID: process.env.DAPP_NETWORK_ID,
     WALLET_NETWORK_ID: process.env.WALLET_NETWORK_ID,

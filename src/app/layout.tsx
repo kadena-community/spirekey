@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
+import favicon from './favicon.png';
 import Providers from './providers';
 
-import { Background } from '@/components/Background/Background';
 import './global.css';
 
 export const metadata: Metadata = {
-  title: 'WebAuthn Wallet',
-  description: 'Conveniently secure your internet',
+  title: 'Kadena SpireKey',
+  description: 'Elevate your blockchain journey',
 };
 
 export default function RootLayout({
@@ -16,11 +16,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href={favicon.src} sizes="any" />
+      </head>
       <body>
-        <Providers>
-          {true && <Background />}
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
