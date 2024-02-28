@@ -1,7 +1,9 @@
-import { getCustomTranslation, getTranslation } from '@/utils/translation';
-import { Text } from '@kadena/react-ui';
+import { getCustomTranslation } from '@/utils/translation';
+import { Box, Heading, Stack, Text } from '@kadena/react-ui';
 import { ICap } from '@kadena/types';
 import Image from 'next/image';
+import { Surface } from '../Surface/Surface';
+import { capabilityImage } from './Capability.css';
 
 type Props = {
   translations: any;
@@ -19,6 +21,38 @@ const DefaultCapability = ({ capability }: Pick<Props, 'capability'>) => {
   );
 };
 
+const TranslatedCapability = ({
+  image,
+  title,
+  value,
+}: {
+  image: string;
+  title: string;
+  value: string;
+}) => {
+  return (
+    <Stack marginBlock="sm" flexDirection="column">
+      <Surface>
+        <Stack alignItems="center" gap="md">
+          <img className={capabilityImage} src={image} alt={title} />
+          <Box marginBlockStart="xs" style={{ flexGrow: 1 }}>
+            <Heading variant="h6" as="h4">
+              {title}
+            </Heading>
+          </Box>
+          <Heading
+            variant="h6"
+            as="h4"
+            style={{ flexGrow: 1, textAlign: 'end' }}
+          >
+            {value}
+          </Heading>
+        </Stack>
+      </Surface>
+    </Stack>
+  );
+};
+
 const AcceptorCapability = ({
   capability,
   translations,
@@ -32,11 +66,11 @@ const AcceptorCapability = ({
   });
   if (!specific) return <DefaultCapability capability={capability} />;
   return (
-    <>
-      <h3>{specific.title}</h3>
-      <Image src={specific.image} alt={specific.title} width={24} height={24} />
-      <Text>{specific.value}</Text>
-    </>
+    <TranslatedCapability
+      title={specific.title}
+      image={specific.image}
+      value={specific.value}
+    />
   );
 };
 
@@ -53,11 +87,11 @@ const GranterCapability = ({
   });
   if (!specific) return <DefaultCapability capability={capability} />;
   return (
-    <>
-      <h3>{specific.title}</h3>
-      <Image src={specific.image} alt={specific.title} width={24} height={24} />
-      <Text>{specific.value}</Text>
-    </>
+    <TranslatedCapability
+      title={specific.title}
+      image={specific.image}
+      value={specific.value}
+    />
   );
 };
 
