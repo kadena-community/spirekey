@@ -1,3 +1,4 @@
+import devWorld from '@/assets/images/devworld.png';
 import focus from '@/components/icons/mono_center_focus_strong.svg';
 import transfer from '@/components/icons/mono_credit_score.svg';
 import done from '@/components/icons/mono_download_done.svg';
@@ -74,11 +75,31 @@ const coinTranslations = {
   },
 };
 
+const proofOfUsTranslations = {
+  'n_31cd1d224d06ca2b327f1b03f06763e305099250.proof-of-us.ATTEND': {
+    title: 'DevWorld',
+    value: 'Your proof of attendance',
+    image: devWorld.src,
+  },
+  'n_31cd1d224d06ca2b327f1b03f06763e305099250.proof-of-us.CONNECT': {
+    title: 'DevWorld',
+    value: 'Your proof of connection',
+    image: devWorld.src,
+  },
+  'n_31cd1d224d06ca2b327f1b03f06763e305099250.proof-of-us-gas-station.GAS_PAYER':
+    {
+      title: 'The gas has been payed for',
+      value: 'This transaction has been payed for',
+      image: gas.src,
+    },
+};
+
 export const getTranslations = (customBundle = {}) => {
   return {
     ...deliveryTranslations,
     ...coinTranslations,
     ...webauthnWalletTranslations,
+    ...proofOfUsTranslations,
     ...customBundle,
   };
 };

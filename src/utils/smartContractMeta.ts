@@ -134,7 +134,7 @@ export const filterGranterCapabilities =
     const smartContractMeta = meta.find((m) =>
       new RegExp(`^${m.module}\.`).test(capability.name),
     );
-    if (!smartContractMeta) return false;
+    if (!smartContractMeta) return true;
     const capabilityMeta = getCapabilityMeta(
       smartContractMeta,
       capability.name,
