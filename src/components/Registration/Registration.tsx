@@ -5,6 +5,7 @@ import { useAccounts } from '@/context/AccountsContext';
 import { useRegistrationForm } from '@/hooks/useRegistrationForm';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { deviceColors } from '@/styles/tokens.css';
+import { fundAccount } from '@/utils/fund';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { Box, Stack } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
