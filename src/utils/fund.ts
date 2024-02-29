@@ -39,7 +39,7 @@ const fundLocally = (accountName: string) =>
     execution(
       `
       (coin.transfer
-        "sender00"
+        "senderx"
         "${accountName}"
         100.0
       )
@@ -50,11 +50,11 @@ const fundLocally = (accountName: string) =>
       gasLimit: 10000,
       gasPrice: 0.0000001,
       ttl: 60000,
-      senderAccount: 'sender00',
+      senderAccount: 'senderx',
     }),
     addSigner(genesisPubKey, (withCap) => [
       withCap('coin.GAS'),
-      withCap('coin.TRANSFER', 'sender00', accountName, 100),
+      withCap('coin.TRANSFER', 'senderx', accountName, 100),
     ]),
     setNetworkId(getDevnetNetworkId()),
   );
