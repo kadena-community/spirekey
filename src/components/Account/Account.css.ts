@@ -6,7 +6,7 @@ export const detailLink = style({
 });
 
 export const accountButtonWrapper = style({
-  gridTemplateColumns: 'repeat(auto-fit, minmax(1.5rem, 1fr))',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(3rem, 1fr))',
   marginInline: 'auto',
-  maxWidth: '80%',
+  paddingInline: '0.5rem',
 });

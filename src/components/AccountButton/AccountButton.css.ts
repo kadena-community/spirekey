@@ -68,7 +68,7 @@ export const title = style([
   {
     color: customTokens.color.white,
     fontWeight: 'bold',
-    fontSize: 'clamp(.7rem, 2vw, 1.5rem)',
+    fontSize: 'clamp(.6rem, 2vw, 1.5rem)',
     lineHeight: '1.5',
   },
 ]);
@@ -80,7 +80,7 @@ export const description = style([
   {
     color: customTokens.color.white,
     opacity: 0.6,
-    fontSize: '0.75rem',
+    fontSize: 'clamp(.6rem, 2vw, 1.5rem)',
     lineHeight: '1.5',
   },
 ]);
