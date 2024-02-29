@@ -55,9 +55,9 @@ export default function Sign(props: Props) {
   const translationsDataString = translations
     ? Buffer.from(translations, 'base64').toString()
     : null;
-  const translationsData = translationsDataString
-    ? JSON.parse(translationsDataString)
-    : getTranslations({});
+  const translationsData = getTranslations(
+    translationsDataString ? JSON.parse(translationsDataString) : {},
+  );
   const { sign } = useSign();
 
   const txData: ICommandPayload = JSON.parse(tx.cmd || '{}');
