@@ -54,15 +54,19 @@ export interface StepProps {
 
 interface Props {
   redirectUrl?: string;
+  networkId?: string;
 }
 
-export default function Registration({ redirectUrl }: Props) {
+export default function Registration({ redirectUrl, networkId }: Props) {
   const router = useRouter();
   const { registerAccount } = useAccounts();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { host } = useReturnUrl();
 
-  const [data, setData] = useState<FormData>(defaultFormData);
+  const [data, setData] = useState<FormData>({
+    ...defaultFormData,
+    networkId: networkId || defaultFormData.networkId,
+  });
 
   const updateFields = (fields: Partial<FormData>) =>
     setData((current) => ({ ...current, ...fields }));
