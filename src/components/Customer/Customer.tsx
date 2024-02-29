@@ -115,7 +115,7 @@ export default function Customer({ searchParams }: Props) {
       )}&returnUrl=${getReturnUrl('/v1/example/delivery')}&meta=${Buffer.from(
         JSON.stringify(getSmartContractMeta()),
       ).toString('base64')}&translations=${Buffer.from(
-        JSON.stringify(getTranslations(customTranslations)),
+        JSON.stringify(customTranslations),
       ).toString('base64')}`,
     );
   };
@@ -130,8 +130,6 @@ export default function Customer({ searchParams }: Props) {
         'base64',
       )}&returnUrl=${getReturnUrl('/v1/example/delivery')}&meta=${Buffer.from(
         JSON.stringify(getSmartContractMeta()),
-      ).toString('base64')}&translations=${Buffer.from(
-        JSON.stringify(getTranslations()),
       ).toString('base64')}`,
     );
   };

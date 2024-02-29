@@ -9,7 +9,6 @@ import { PizzaWorld } from '@/components/icons/PizzaWorld';
 import { OrderProvider } from '@/context/OrderContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
-import { getTranslations } from '@/utils/getTranslationBundle';
 import { getSmartContractMeta } from '@/utils/smartContractMeta';
 import { Box, Heading, Stack, Text } from '@kadena/react-ui';
 import { ChainId, ISigner } from '@kadena/types';
@@ -314,8 +313,6 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
                     '/v1/example/delivery/merchant',
                   )}&meta=${Buffer.from(
                     JSON.stringify(getSmartContractMeta()),
-                  ).toString('base64')}&translations=${Buffer.from(
-                    JSON.stringify(getTranslations()),
                   ).toString('base64')}`}
                 />
               ))}
