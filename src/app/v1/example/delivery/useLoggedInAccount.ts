@@ -2,7 +2,9 @@ import { LoginAccount } from '@/components/AccountButton';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-export const useLoggedInAccount = (encodedAccount?: string) => {
+export const useLoggedInAccount = (encodedAccountString?: string) => {
+  const urlParams = new URLSearchParams(window?.location?.search);
+  const encodedAccount = urlParams.get('user') || encodedAccountString;
   const [account, setAccount] = useState<LoginAccount | undefined>();
   const router = useRouter();
 
