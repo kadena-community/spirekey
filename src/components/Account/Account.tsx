@@ -2,7 +2,7 @@ import { useAccounts, type Account } from '@/context/AccountsContext';
 
 import { calculateBalancePercentage } from '@/utils/balance';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
-import { Stack } from '@kadena/react-ui';
+import { Grid, Stack } from '@kadena/react-ui';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { Fragment, useEffect, useState } from 'react';
@@ -15,6 +15,8 @@ import { Request } from '../icons/Request';
 import { Send } from '../icons/Send';
 import { Transactions } from '../icons/Transactions';
 import { detailLink } from './Account.css';
+
+import * as styles from './Account.css';
 
 interface AccountProps {
   account: Account;
@@ -74,11 +76,11 @@ export function Account({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Stack
-                    flexDirection="row"
+                  <Grid
                     justifyContent="center"
                     gap="md"
                     marginBlockStart="md"
+                    className={styles.accountButtonWrapper}
                   >
                     <AccountButton
                       href={`/accounts/${caccount}/devices/${cid}/transactions`}
@@ -101,7 +103,7 @@ export function Account({
                     {[getDevnetNetworkId()].includes(account.networkId) && (
                       <FundButton account={account} />
                     )}
-                  </Stack>
+                  </Grid>
                   <Stack
                     marginBlock="lg"
                     flexDirection="row"

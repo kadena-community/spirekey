@@ -68,7 +68,7 @@ export const title = style([
   {
     color: customTokens.color.white,
     fontWeight: 'bold',
-    fontSize: '0.9rem',
+    fontSize: 'clamp(.7rem, 2vw, 1.5rem)',
     lineHeight: '1.5',
   },
 ]);
