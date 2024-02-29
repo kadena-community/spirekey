@@ -220,7 +220,14 @@ const createOrder = async ({
       execution(
         `(${process.env.NAMESPACE}.delivery.create-order
           "${orderHash}"
-          (read-msg 'order-lines)
+          [${orderLines
+            .map(
+              (x) =>
+                `{ 'line-id : "${
+                  x.orderLineId
+                }", 'price : ${x.price.toFixed(12)}}`,
+            )
+            .join(' ')}]
           "${merchantAccount}"
           (${process.env.NAMESPACE}.webauthn-wallet.get-wallet-guard "${merchantAccount}")
           "${customerAccount}"
@@ -228,10 +235,6 @@ const createOrder = async ({
           ${orderPrice.toFixed(12)}
           ${deliveryPrice.toFixed(12)}
          )`,
-      ),
-      addData(
-        'order-lines',
-        orderLines.map((x) => x.orderLineId),
       ),
       setMeta({
         chainId,
@@ -255,14 +258,6 @@ const createOrder = async ({
               { decimal: orderLine.price.toFixed(12) },
             );
           }),
-          withCap(
-            `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
-            orderHash,
-            'Delivery',
-            merchantAccount,
-            customerAccount,
-            { decimal: deliveryPrice.toFixed(12) },
-          ),
           withCap(
             `${process.env.NAMESPACE}.webauthn-wallet.TRANSFER`,
             customerAccount,

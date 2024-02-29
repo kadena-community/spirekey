@@ -21,8 +21,13 @@ export const useSubmit = ({ transaction }: Props) => {
   const [preview, setPreview] = useState<any>(null);
 
   useEffect(() => {
-    if (!transaction) return;
-    const tx = JSON.parse(Buffer.from(transaction, 'base64').toString());
+    const txSearchParams = new URLSearchParams(window.location.search);
+    const txParam = txSearchParams.get('transaction') as string;
+
+    if (!transaction && !txParam) return;
+    const tx = JSON.parse(
+      Buffer.from(transaction || txParam, 'base64').toString(),
+    );
     setTx(tx);
     if (tx.sigs.filter((x: any) => x === null).length)
       return setStatus(SubmitStatus.INCOMPLETE);
@@ -33,11 +38,10 @@ export const useSubmit = ({ transaction }: Props) => {
   }, [transaction]);
 
   const doSubmit = async () => {
-    if (!transaction) return;
+    if (!tx) return;
 
     setStatus(SubmitStatus.LOADING);
 
-    const tx = JSON.parse(Buffer.from(transaction, 'base64').toString());
     try {
       const txRes = await l1Client.submit(tx);
       const result = await l1Client.listen(txRes);

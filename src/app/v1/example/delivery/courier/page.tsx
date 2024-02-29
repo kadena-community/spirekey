@@ -11,7 +11,7 @@ import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getAccountFrom } from '@/utils/account';
 import { Box, Heading, Stack, Text } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { useConnection } from '../Connection';
 import * as styles from '../order.css';
@@ -19,24 +19,16 @@ import { useDelivery } from '../useDelivery';
 import { useLoggedInAccount } from '../useLoggedInAccount';
 import './page.css';
 
-type CourierProps = {
-  searchParams: {
-    user: string;
-    transaction: string;
-  };
-};
-
-export default function CourierPage({ searchParams }: CourierProps) {
-  const { user, transaction } = searchParams;
+export default function CourierPage() {
+  const searchParams = useSearchParams();
+  const user = searchParams.get('user') || '';
+  const transaction = searchParams.get('transaction') || '';
   const { account } = useLoggedInAccount(user);
-  const { orders, saveDelivery, pickupDelivery, deliverOrder, updateOrders } =
-    useDelivery({
-      chainId: process.env.CHAIN_ID as ChainId,
-      networkId: process.env.DAPP_NETWORK_ID!,
-    });
+  const { orders, saveDelivery, updateOrders } = useDelivery({
+    chainId: process.env.CHAIN_ID as ChainId,
+    networkId: process.env.DAPP_NETWORK_ID!,
+  });
   const { isLoading, messages, setId, send } = useConnection();
-  const router = useRouter();
-  const { getReturnUrl } = useReturnUrl();
 
   const merchantAccount = process.env.MERCHANT_ACCOUNT;
 
