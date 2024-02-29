@@ -1,8 +1,6 @@
 import { getCustomTranslation } from '@/utils/translation';
 import { Box, Heading, Stack, Text } from '@kadena/react-ui';
 import { ICap } from '@kadena/types';
-import Image from 'next/image';
-import { Surface } from '../Surface/Surface';
 import { capabilityImage } from './Capability.css';
 
 type Props = {

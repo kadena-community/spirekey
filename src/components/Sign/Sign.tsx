@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 
 import fingerprint from '@/assets/images/fingerprint.svg';
 import { usePreviewEvents } from '@/hooks/usePreviewEvents';
+import { getTranslations } from '@/utils/getTranslationBundle';
 import {
   filterAcceptorCapabilities,
   filterGranterCapabilities,
@@ -56,9 +57,8 @@ export default function Sign(props: Props) {
     : null;
   const translationsData = translationsDataString
     ? JSON.parse(translationsDataString)
-    : [];
+    : getTranslations({});
   const { sign } = useSign();
-  const [language, setLanguage] = useState('en');
 
   const txData: ICommandPayload = JSON.parse(tx.cmd || '{}');
 
@@ -105,8 +105,6 @@ export default function Sign(props: Props) {
         acceptorCapabilities,
       };
     });
-
-  console.log('signers', signers);
 
   const devices = pubkeysForTx.map((publicKey) =>
     getDeviceByPublicKey(accounts, publicKey),
