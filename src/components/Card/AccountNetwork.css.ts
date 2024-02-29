@@ -30,3 +30,13 @@ export const copyButton = style([
     border: 'none',
   },
 ]);
+
+export const network = style([
+  atoms({
+    fontWeight: 'bodyFont.regular',
+  }),
+  {
+    fontSize: 'clamp(.75rem, 4vw, 1.125rem) !important', // doesn't work without important  ¯\_(ツ)_/¯
+    color: 'black',
+  },
+]);

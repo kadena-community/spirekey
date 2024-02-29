@@ -2,12 +2,7 @@ import { Account } from '@/context/AccountsContext';
 import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
 import { Stack } from '@kadena/react-ui';
 import useSWR from 'swr';
-import {
-  balance,
-  balanceLabel,
-  transactions,
-  transactionsLabel,
-} from './Card.css';
+import * as styles from './Card.css';
 
 interface CardBottomProps {
   account: Account;
@@ -28,12 +23,12 @@ export default function CardBottom({ account }: CardBottomProps) {
   return (
     <>
       <Stack alignItems="center">
-        <span className={transactionsLabel}># TX</span>
-        <span className={transactions}>{data?.length}</span>
+        <span className={styles.transactionsLabel}># TX</span>
+        <span className={styles.transactions}>{data?.length ?? 0}</span>
       </Stack>
       <Stack>
-        <span className={balanceLabel}>Balance</span>
-        <span className={balance}>{account.balance} KDA</span>
+        <span className={styles.balanceLabel}>Balance</span>
+        <span className={styles.balance}>{account.balance} KDA</span>
       </Stack>
     </>
   );

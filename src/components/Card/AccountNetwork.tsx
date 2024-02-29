@@ -6,7 +6,6 @@ import { useCopyToClipboard } from 'usehooks-ts';
 import { AccountRevealer } from '../AccountRevealer/AccountRevealer';
 
 import * as styles from './AccountNetwork.css';
-import { network } from './Card.css';
 
 type AccountNetworkProps = {
   account: Account;
@@ -60,7 +59,7 @@ export default function AccountNetwork({
           </button>
         )}
       </Stack>
-      <Text className={network}>
+      <Text className={styles.network}>
         {getNetworkDisplayName(account.networkId)}
       </Text>
     </Stack>

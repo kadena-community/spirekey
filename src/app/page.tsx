@@ -40,7 +40,6 @@ export default function Accounts() {
           width="100%"
         >
           <Heading variant="h5">Accounts</Heading>
-          <SystemIcon.Application />
         </Stack>
         <CardCollection />
       </Stack>

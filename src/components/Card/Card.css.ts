@@ -122,16 +122,6 @@ export const device = style({
   width: '1.5rem',
 });
 
-export const network = style([
-  atoms({
-    fontWeight: 'bodyFont.regular',
-  }),
-  {
-    fontSize: 'clamp(.75rem, 4vw, 1.125rem)',
-    color: 'black',
-  },
-]);
-
 export const cardContentBottom = style({
   color: 'black',
 });
