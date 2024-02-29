@@ -88,22 +88,6 @@ export default function Registration({ redirectUrl, networkId }: Props) {
       networkId: data.networkId,
     });
 
-    if (
-      process.env.AUTO_REGISTER_MAINNET === 'true' &&
-      data.networkId !== 'mainnet01'
-    ) {
-      registerAccount({
-        accountName: data.accountName,
-        alias: data.alias,
-        color: data.color,
-        deviceType: data.deviceType,
-        credentialPubkey: data.credentialPubkey,
-        credentialId: data.credentialId,
-        domain: host,
-        networkId: 'mainnet01',
-      });
-    }
-
     router.push(completeRedirectUrl);
   };
 
