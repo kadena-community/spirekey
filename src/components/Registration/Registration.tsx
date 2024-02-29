@@ -5,6 +5,7 @@ import { useAccounts } from '@/context/AccountsContext';
 import { useRegistrationForm } from '@/hooks/useRegistrationForm';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { deviceColors } from '@/styles/tokens.css';
+import { fundAccount } from '@/utils/fund';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { Box, Stack } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
@@ -87,22 +88,6 @@ export default function Registration({ redirectUrl, networkId }: Props) {
       domain: host,
       networkId: data.networkId,
     });
-
-    if (
-      process.env.AUTO_REGISTER_MAINNET === 'true' &&
-      data.networkId !== 'mainnet01'
-    ) {
-      registerAccount({
-        accountName: data.accountName,
-        alias: data.alias,
-        color: data.color,
-        deviceType: data.deviceType,
-        credentialPubkey: data.credentialPubkey,
-        credentialId: data.credentialId,
-        domain: host,
-        networkId: 'mainnet01',
-      });
-    }
 
     router.push(completeRedirectUrl);
   };

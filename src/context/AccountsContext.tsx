@@ -243,14 +243,22 @@ const AccountsProvider = ({ children }: Props) => {
         pendingRegistrationTx: requestKey,
       },
     ];
-
-    addAccount({
+    const account = {
       accountName,
       alias,
       networkId,
       devices,
       balance: '0',
-    });
+    };
+    addAccount(account);
+
+    if (
+      process.env.INSTA_FUND === 'true' &&
+      networkId === getDevnetNetworkId()
+    ) {
+      await l1Client.listen({ requestKey, chainId, networkId });
+      await fundAccount(account);
+    }
 
     return {
       requestKey,
@@ -304,14 +312,6 @@ const AccountsProvider = ({ children }: Props) => {
         delete device.pendingRegistrationTx;
         break;
       }
-    }
-
-    if (
-      process.env.INSTA_FUND === 'true' &&
-      account.networkId === getDevnetNetworkId()
-    ) {
-      // fire and forget
-      fundAccount(account);
     }
 
     setAccount(account);
