@@ -33,7 +33,9 @@ export const AccountButton = ({
 
   const onLogin = useCallback(() => {
     router.push(
-      `${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(returnPath)}`,
+      `${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(
+        returnPath,
+      )}&networkId=${process.env.DAPP_NETWORK_ID}`,
     );
   }, [getReturnUrl, returnPath]);
 
