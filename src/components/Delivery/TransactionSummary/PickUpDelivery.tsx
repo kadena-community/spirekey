@@ -38,7 +38,7 @@ export function PickUpDelivery({ capabilities }: Props) {
             <Heading variant="h6" as="h4">
               ${' '}
               {Number(
-                (transferCapability?.args[2] as { decimal: number }).decimal,
+                (transferCapability?.args[2] as { decimal: number })?.decimal,
               ).toFixed(2)}
             </Heading>
           </Stack>

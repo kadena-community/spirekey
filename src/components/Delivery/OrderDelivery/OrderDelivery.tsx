@@ -68,7 +68,7 @@ export function OrderDelivery({ signers, order, transaction }: Props) {
             <Heading variant="h5" color="emphasize">
               Order with value: ${' '}
               {Number(
-                (transferCapability?.args[2] as { decimal: number }).decimal,
+                (transferCapability?.args[2] as { decimal: number })?.decimal,
               ).toFixed(2)}
             </Heading>
             <Heading variant="h6" color="emphasize">
