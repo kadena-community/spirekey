@@ -67,6 +67,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
     ...defaultFormData,
     networkId: networkId || defaultFormData.networkId,
   });
+  console.log('data', data);
 
   const updateFields = (fields: Partial<FormData>) =>
     setData((current) => ({ ...current, ...fields }));
