@@ -70,7 +70,7 @@ export function AcceptOrder({ signers, signingLink }: Props) {
           <Heading variant="h5" color="emphasize">
             Order with value: ${' '}
             {Number(
-              (transferCapability?.args[2] as { decimal: number }).decimal,
+              (transferCapability?.args[2] as { decimal: number })?.decimal,
             ).toFixed(2)}
           </Heading>
           <ButtonLink variant="primary" href={signingLink}>

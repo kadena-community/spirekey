@@ -81,7 +81,7 @@ export function CreateOrder({ capabilities }: Props) {
           >
             ${' '}
             {Number(
-              (deliveryCapability?.args[2] as { decimal: number }).decimal,
+              (deliveryCapability?.args[2] as { decimal: number })?.decimal,
             ).toFixed(2)}
           </Heading>
         </Stack>
@@ -92,7 +92,7 @@ export function CreateOrder({ capabilities }: Props) {
           <Heading variant="h6" as="h4">
             ${' '}
             {Number(
-              (transferCapability?.args[2] as { decimal: number }).decimal,
+              (transferCapability?.args[2] as { decimal: number })?.decimal,
             ).toFixed(2)}
           </Heading>
         </Stack>
