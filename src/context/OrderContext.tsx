@@ -1,3 +1,4 @@
+import devWorld from '@/assets/images/devworld.png';
 import { products } from '@/components/Delivery/mock/products';
 import { StaticImageData } from 'next/image';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -17,6 +18,12 @@ const defaultOrderItems: OrderItems = [];
 
 const defaultState = {
   products,
+  deliveryFee: {
+    image: devWorld,
+    name: 'Delivery Fee',
+    price: 6.25,
+    quantity: 1,
+  },
   orderItems: defaultOrderItems,
   addOrderItem: (productName: string) => {},
   removeOrderItem: (productName: string) => {},
@@ -80,6 +87,7 @@ const OrderProvider = ({ children }: Props) => {
       value={{
         products,
         orderItems,
+        deliveryFee: defaultState.deliveryFee,
         addOrderItem,
         removeOrderItem,
         orderTotalPrice,

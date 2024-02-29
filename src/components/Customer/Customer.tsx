@@ -12,7 +12,6 @@ import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
 import { getAccountFrom } from '@/utils/account';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
-import { getTranslations } from '@/utils/getTranslationBundle';
 import { getSmartContractMeta } from '@/utils/smartContractMeta';
 import { Heading, Stack } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
@@ -59,7 +58,7 @@ export default function Customer({ searchParams }: Props) {
   const { status, doSubmit } = useSubmit(searchParams);
   const router = useRouter();
   const [merchantPublicKey, setMerchantPublicKey] = useState<string>('');
-  const { products, orderItems, orderTotalPrice } = useOrder();
+  const { products, orderItems, orderTotalPrice, deliveryFee } = useOrder();
 
   const merchantAccount = process.env.MERCHANT_ACCOUNT;
 
@@ -86,7 +85,7 @@ export default function Customer({ searchParams }: Props) {
       deliveryPrice: 6.25,
       orderPrice: orderTotalPrice,
       orderId: id,
-      orderItems,
+      orderItems: [...orderItems, deliveryFee],
     });
     const orderId = createOrderId({
       customer: account.accountName,
@@ -98,7 +97,7 @@ export default function Customer({ searchParams }: Props) {
       orderId,
       buyerAccount: account.accountName,
       merchantAccount,
-      orderItems,
+      orderItems: [...orderItems, deliveryFee],
     });
     const customTranslations = details.reduce((bundle, detail) => {
       return {
