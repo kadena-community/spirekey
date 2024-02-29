@@ -44,7 +44,11 @@ export const NetworkIdForm: FC<StepProps> = ({
           {getNetworkDisplayName(selectedNetwork)}
         </Text>{' '}
         selected.
-        {['testnet04', 'fast-development'].includes(selectedNetwork) ? dev : ''}
+        {['testnet04', 'fast-development', 'development'].includes(
+          selectedNetwork,
+        )
+          ? dev
+          : ''}
       </Text>
     );
   };

@@ -47,7 +47,7 @@ export default function LoginHeader({ returnUrl, reason, networkId }: Props) {
             </ButtonLink>
             <ButtonLink
               variant="primary"
-              href={`/register?redirectUrl=${Buffer.from(window.location.href).toString('base64')}`}
+              href={`/register?redirectUrl=${Buffer.from(window.location.href).toString('base64')}&networkId=${networkId}`}
             >
               Create
             </ButtonLink>
