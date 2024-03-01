@@ -72,7 +72,8 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
       doSubmit();
       return;
     }
-    if (originMsg.orderId) saveDelivery(originMsg.orderId);
+    if (originMsg.orderId)
+      saveDelivery(originMsg.orderId, originMsg.customTranslations);
     doSubmit();
     send(originMsg.connectionId, { type: 'confirm', data: tx });
   }, [status, isLoading, messages]);
@@ -306,6 +307,7 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
               {newOrdersToAccept.map((newOrder) => (
                 <AcceptOrder
                   key={newOrder.data.hash + newOrder.type}
+                  order={newOrder}
                   signers={JSON.parse(newOrder.data.cmd).signers as ISigner[]}
                   signingLink={`${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
                     JSON.stringify(newOrder.data),
@@ -314,6 +316,7 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
                   )}&meta=${Buffer.from(
                     JSON.stringify(getSmartContractMeta()),
                   ).toString('base64')}`}
+                  account={account}
                 />
               ))}
             </Stack>

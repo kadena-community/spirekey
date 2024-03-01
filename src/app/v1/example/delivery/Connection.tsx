@@ -18,13 +18,14 @@ export type Message = {
   data: any;
   connectionId: ConnectionId;
   orderId?: string;
+  customTranslations?: any;
 };
 
 const ConnectionContext = createContext({
   connect: (id: ConnectionId) => {},
   send: (
     id: ConnectionId,
-    message: Pick<Message, 'type' | 'data' | 'orderId'>,
+    message: Pick<Message, 'type' | 'data' | 'orderId' | 'customTranslations'>,
   ) => {},
   setId: (id: ConnectionId) => {},
   isLoading: true,
@@ -32,7 +33,7 @@ const ConnectionContext = createContext({
 });
 
 const getConnectionId = (id: ConnectionId) =>
-  hash(id.publicKey + id.id).replace(/_/g, '-');
+  `h${hash(id.publicKey + id.id).replace(/_/g, '-')}`;
 
 const isMessage = (data: any): data is Message => {
   return (
