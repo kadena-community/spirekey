@@ -162,6 +162,8 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
                       t.cmd.includes(deliveredOrder.orderId),
                     )}
                     order={deliveredOrder}
+                    message={orderTransaction}
+                    account={account}
                   />
                 );
               })}
@@ -202,6 +204,8 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
                       t.cmd.includes(transitOrder.orderId),
                     )}
                     order={transitOrder}
+                    message={orderTransaction}
+                    account={account}
                   />
                 );
               })}
