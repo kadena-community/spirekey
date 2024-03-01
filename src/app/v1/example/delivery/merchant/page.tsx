@@ -242,6 +242,8 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
                       t.cmd.includes(readyOrder.orderId),
                     )}
                     order={readyOrder}
+                    account={account}
+                    message={orderTransaction}
                   />
                 );
               })}
