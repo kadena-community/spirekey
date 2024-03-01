@@ -1,5 +1,6 @@
 import { Order, useDelivery } from '@/app/v1/example/delivery/useDelivery';
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
+import { Order as OrderComponent } from '@/components/Order/Order';
 import { Surface } from '@/components/Surface/Surface';
 import { Account, useAccounts } from '@/context/AccountsContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
@@ -16,9 +17,17 @@ interface Props {
   signers: ISigner[];
   order: Order;
   transaction?: any;
+  account: any;
+  message: any;
 }
 
-export function ReadyForDelivery({ signers, order, transaction }: Props) {
+export function ReadyForDelivery({
+  signers,
+  order,
+  transaction,
+  account,
+  message,
+}: Props) {
   const { accounts } = useAccounts();
   const { getReturnUrl } = useReturnUrl();
 
@@ -104,64 +113,7 @@ export function ReadyForDelivery({ signers, order, transaction }: Props) {
             </ButtonLink>
           )}
         </Stack>
-        <Stack flexDirection="column" gap="md">
-          {orderLineCapabilities.map((capability, i) => (
-            <Stack alignItems="center" gap="sm" key={i}>
-              {products.find((product) =>
-                capability.args[1].toString().includes(product.name),
-              )?.image && (
-                <Image
-                  className={styles.productImage}
-                  src={
-                    products.find((product) =>
-                      capability.args[1].toString().includes(product.name),
-                    )?.image || ''
-                  }
-                  alt={capability.args[1].toString()}
-                />
-              )}
-              <Box>
-                <Heading variant="h6" as="h4">
-                  {capability.args[1].toString()}
-                </Heading>
-              </Box>
-              <Heading
-                variant="h6"
-                as="h4"
-                style={{ flexGrow: 1, textAlign: 'end' }}
-              >
-                ${' '}
-                {Number(
-                  (capability.args[4] as { decimal: number }).decimal,
-                ).toFixed(2)}
-              </Heading>
-            </Stack>
-          ))}
-          <Stack alignItems="center" gap="sm">
-            <SystemIcon.MapMarker
-              size="xl"
-              style={{ marginInlineStart: '0.25rem' }}
-            />
-            <Box style={{ marginInlineStart: '0.5rem' }}>
-              <Heading variant="h6" as="h4">
-                Delivery
-              </Heading>
-            </Box>
-            {(deliveryCapability?.args[4] as { decimal: number })?.decimal && (
-              <Heading
-                variant="h6"
-                as="h4"
-                style={{ flexGrow: 1, textAlign: 'end' }}
-              >
-                ${' '}
-                {Number(
-                  (deliveryCapability?.args[4] as { decimal: number })
-                    ?.decimal || '0',
-                ).toFixed(2)}
-              </Heading>
-            )}
-          </Stack>
-        </Stack>
+        <OrderComponent order={message} signers={signers} account={account} />
       </Surface>
     </>
   );

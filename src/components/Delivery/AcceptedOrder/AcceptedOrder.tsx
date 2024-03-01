@@ -1,6 +1,7 @@
 import { useDelivery } from '@/app/v1/example/delivery/useDelivery';
 import { useLoggedInAccount } from '@/app/v1/example/delivery/useLoggedInAccount';
 import { Button } from '@/components/Button/Button';
+import { Order } from '@/components/Order/Order';
 import { Surface } from '@/components/Surface/Surface';
 import { Account, useAccounts } from '@/context/AccountsContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
@@ -15,9 +16,16 @@ import * as styles from './AcceptedOrder.css';
 interface Props {
   signers: ISigner[];
   orderId: string;
+  account: any;
+  order: any;
 }
 
-export function AcceptedOrder({ signers, orderId }: Props) {
+export function AcceptedOrder({
+  signers,
+  orderId,
+  order,
+  account: loggedInAccount,
+}: Props) {
   const { accounts } = useAccounts();
   const { account } = useLoggedInAccount();
   const router = useRouter();
@@ -86,6 +94,7 @@ export function AcceptedOrder({ signers, orderId }: Props) {
   const transferCapability = capabilitiesToSign.find((capability) =>
     capability.name.includes('webauthn-wallet.TRANSFER'),
   );
+  console.log('order', order);
 
   return (
     <>
@@ -105,61 +114,7 @@ export function AcceptedOrder({ signers, orderId }: Props) {
             Ready
           </Button>
         </Stack>
-        <Stack flexDirection="column" gap="md">
-          {orderLineCapabilities.map((capability, i) => (
-            <Stack alignItems="center" gap="sm" key={i}>
-              <Image
-                className={styles.productImage}
-                src={
-                  products.find((product) =>
-                    capability.args[1].toString().includes(product.name),
-                  )?.image || ''
-                }
-                alt={capability.args[1].toString()}
-              />
-              <Box>
-                <Heading variant="h6" as="h4">
-                  {capability.args[1].toString()}
-                </Heading>
-              </Box>
-              {(capability.args[4] as { decimal: number })?.decimal && (
-                <Heading
-                  variant="h6"
-                  as="h4"
-                  style={{ flexGrow: 1, textAlign: 'end' }}
-                >
-                  ${' '}
-                  {Number(
-                    (capability.args[4] as { decimal: number }).decimal,
-                  ).toFixed(2)}
-                </Heading>
-              )}
-            </Stack>
-          ))}
-          <Stack alignItems="center" gap="sm">
-            <SystemIcon.MapMarker
-              size="xl"
-              style={{ marginInlineStart: '0.25rem' }}
-            />
-            <Box style={{ marginInlineStart: '0.5rem' }}>
-              <Heading variant="h6" as="h4">
-                Delivery
-              </Heading>
-            </Box>
-            {(deliveryCapability?.args[4] as { decimal: number })?.decimal && (
-              <Heading
-                variant="h6"
-                as="h4"
-                style={{ flexGrow: 1, textAlign: 'end' }}
-              >
-                ${' '}
-                {Number(
-                  (deliveryCapability?.args[4] as { decimal: number }).decimal,
-                ).toFixed(2)}
-              </Heading>
-            )}
-          </Stack>
-        </Stack>
+        <Order signers={signers} account={loggedInAccount} order={order} />
       </Surface>
     </>
   );

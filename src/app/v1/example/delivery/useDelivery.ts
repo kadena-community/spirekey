@@ -1,10 +1,9 @@
-import { OrderItems, Product } from '@/context/OrderContext';
+import { OrderItems } from '@/context/OrderContext';
 import { asyncPipe } from '@/utils/asyncPipe';
 import { l1Client } from '@/utils/client';
 import { generateCapabilityHash } from '@/utils/translation';
 import { ChainId, createTransaction } from '@kadena/client';
 import {
-  addData,
   addSigner,
   composePactCommand,
   execution,
@@ -287,14 +286,6 @@ const createOrder = async ({
             );
           }),
           withCap(
-            `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
-            orderHash,
-            'Delivery',
-            merchantAccount,
-            customerAccount,
-            { decimal: deliveryPrice.toFixed(12) },
-          ),
-          withCap(
             `${process.env.NAMESPACE}.webauthn-wallet.TRANSFER`,
             merchantAccount,
             escrowId,
@@ -490,13 +481,15 @@ export const useDelivery = ({
       return orders;
     },
   );
-  const saveDelivery = (id: string) => {
+  const saveDelivery = (id: string, customTranslation: any) => {
     const deliveryIds = new Set<string>(
       JSON.parse(localStorage.getItem('deliveryIds') || '[]'),
     );
     deliveryIds.add(id);
     const newDeliveryIds = Array.from(deliveryIds).filter(Boolean);
     localStorage.setItem('deliveryIds', JSON.stringify(newDeliveryIds));
+    if (customTranslation)
+      localStorage.setItem(`delivery-${id}`, JSON.stringify(customTranslation));
     mutate(newDeliveryIds);
   };
   const onCreateOrder = (

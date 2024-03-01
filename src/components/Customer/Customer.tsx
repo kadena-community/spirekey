@@ -105,7 +105,7 @@ export default function Customer({ searchParams }: Props) {
         [detail.translationKey]: detail.translation,
       };
     }, {});
-    saveDelivery(orderId);
+    saveDelivery(orderId, customTranslations);
     router.push(
       `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
         JSON.stringify(tx),
@@ -156,10 +156,14 @@ export default function Customer({ searchParams }: Props) {
     if (!tx) return;
     if (deliverTx) return;
     const orderId = localStorage.getItem('newOrderId');
+    const customTranslations = JSON.parse(
+      localStorage.getItem(`delivery-${orderId}`) || '{}',
+    );
     if (!orderId) return;
+
     send(
       { id: '1234', publicKey: getValues('receiver') },
-      { type: 'create', data: tx, orderId },
+      { type: 'create', data: tx, orderId, customTranslations },
     );
   }, [tx, isLoading, deliverTx]);
 

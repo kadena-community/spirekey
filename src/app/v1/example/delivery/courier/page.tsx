@@ -7,11 +7,9 @@ import { PickUpApproval } from '@/components/Delivery/PickUpApproval/PickUpAppro
 import { ReadyForPickUp } from '@/components/Delivery/ReadyForPickUp/ReadyForPickUp';
 import { PizzaWorld } from '@/components/icons/PizzaWorld';
 import { OrderProvider } from '@/context/OrderContext';
-import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { getAccountFrom } from '@/utils/account';
 import { Box, Heading, Stack, Text } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { useConnection } from '../Connection';
 import * as styles from '../order.css';
@@ -41,7 +39,7 @@ export default function CourierPage() {
     messages
       .filter((m) => m.type === 'orders' && m.data?.orders?.length)
       .flatMap((m) =>
-        m.data.orders.map((order: any) => saveDelivery(order.orderId)),
+        m.data.orders.map((order: any) => saveDelivery(order.orderId, {})),
       );
     updateOrders();
   }, [messages]);
