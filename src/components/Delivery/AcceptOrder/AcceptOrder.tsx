@@ -1,5 +1,6 @@
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
 import { Capability } from '@/components/Capability/Capability';
+import { Order } from '@/components/Order/Order';
 import { Surface } from '@/components/Surface/Surface';
 import { Account, useAccounts } from '@/context/AccountsContext';
 import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
@@ -95,18 +96,7 @@ export function AcceptOrder({ signers, signingLink, account, order }: Props) {
             Accept
           </ButtonLink>
         </Stack>
-        {merchantCaps.flatMap(
-          (m) =>
-            m.capabilities?.map((c) => (
-              <Capability
-                key={c.name + c.args.join(',')}
-                capability={c}
-                metaData={getSmartContractMeta()}
-                translations={getTranslations(order.customTranslations || {})}
-                type="granter"
-              />
-            )) || [],
-        )}
+        <Order order={order} signers={signers} account={account} />
       </Surface>
     </>
   );

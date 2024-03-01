@@ -279,6 +279,8 @@ export default function MerchantPage({ searchParams }: MerchantProps) {
                         .signers as ISigner[]
                     }
                     orderId={notReadyOrder.orderId}
+                    order={orderTransaction}
+                    account={account}
                   />
                 );
               })}
