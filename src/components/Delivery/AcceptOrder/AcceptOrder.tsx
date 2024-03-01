@@ -5,11 +5,8 @@ import { Account, useAccounts } from '@/context/AccountsContext';
 import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
 import { getTranslations } from '@/utils/getTranslationBundle';
 import { getSmartContractMeta } from '@/utils/smartContractMeta';
-import { Box, Heading, Stack, SystemIcon } from '@kadena/react-ui';
+import { Heading, Stack } from '@kadena/react-ui';
 import { ICap, ISigner } from '@kadena/types';
-import Image from 'next/image';
-import { products } from '../mock/products';
-import * as styles from './AcceptOrder.css';
 
 interface Props {
   signers: ISigner[];
@@ -48,18 +45,6 @@ export function AcceptOrder({ signers, signingLink, account, order }: Props) {
     [],
   );
 
-  const orderLineCapabilities = capabilitiesToSign.filter((capability) => {
-    return (
-      capability.name.includes('delivery.CREATE_ORDER_LINE') &&
-      !capability.args.some((arg) => arg.toString() === 'Delivery')
-    );
-  });
-  const deliveryCapability = capabilitiesToSign.find((capability) => {
-    return (
-      capability.name.includes('delivery.CREATE_ORDER_LINE') &&
-      capability.args.some((arg) => arg.toString() === 'Delivery')
-    );
-  });
   const transferCapability = capabilitiesToSign.find((capability) =>
     capability.name.includes('webauthn-wallet.TRANSFER'),
   );
@@ -91,8 +76,6 @@ export function AcceptOrder({ signers, signingLink, account, order }: Props) {
         capabilities,
       };
     });
-
-  console.log(order);
 
   return (
     <>
