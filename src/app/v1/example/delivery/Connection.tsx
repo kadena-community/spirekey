@@ -152,7 +152,7 @@ const ConnectionProvider = ({ children }: { children: ReactNode }) => {
       setConnections((prev) => ({ ...prev, [conn.peer]: conn }));
       conn.on('open', () => {
         conn.on('data', (data) => {
-          console.log('Someone send me Data', data);
+          console.log('Someone sent me Data', data);
           if (!isMessage(data)) return;
           saveNewMessage(data);
         });

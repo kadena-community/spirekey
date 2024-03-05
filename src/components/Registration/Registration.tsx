@@ -68,7 +68,6 @@ export default function Registration({ redirectUrl, networkId }: Props) {
     ...defaultFormData,
     networkId: networkId || defaultFormData.networkId,
   });
-  console.log('data', data);
 
   const updateFields = (fields: Partial<FormData>) =>
     setData((current) => ({ ...current, ...fields }));
@@ -151,7 +150,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
           className={styles.container}
         >
           {steps.map((FormStep, stepIndex) => (
-            <Box className={styles.step}>
+            <Box className={styles.step} key={stepIndex}>
               <FormStep
                 key={stepIndex}
                 stepIndex={stepIndex}
