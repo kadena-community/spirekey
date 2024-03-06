@@ -1,4 +1,4 @@
-import { Order, useDelivery } from '@/app/v1/example/delivery/useDelivery';
+import { Order } from '@/app/v1/example/delivery/useDelivery';
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
 import { Order as OrderComponent } from '@/components/Order/Order';
 import { Surface } from '@/components/Surface/Surface';
@@ -7,10 +7,8 @@ import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
 import { getTranslations } from '@/utils/getTranslationBundle';
 import { getSmartContractMeta } from '@/utils/smartContractMeta';
-import { Box, Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
-import { ChainId, ICap, ISigner } from '@kadena/types';
-import Image from 'next/image';
-import { products } from '../mock/products';
+import { Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
+import { ICap, ISigner } from '@kadena/types';
 import * as styles from './ReadyForDelivery.css';
 
 interface Props {
@@ -30,11 +28,6 @@ export function ReadyForDelivery({
 }: Props) {
   const { accounts } = useAccounts();
   const { getReturnUrl } = useReturnUrl();
-
-  const { orders, markOrderAsReady, saveDelivery, updateOrders } = useDelivery({
-    chainId: process.env.CHAIN_ID as ChainId,
-    networkId: process.env.DAPP_NETWORK_ID!,
-  });
 
   const publicKeys: string[] = signers.map((s: { pubKey: string }) => s.pubKey);
 
@@ -63,18 +56,6 @@ export function ReadyForDelivery({
     [],
   );
 
-  const orderLineCapabilities = capabilitiesToSign.filter((capability) => {
-    return (
-      capability.name.includes('delivery.CREATE_ORDER_LINE') &&
-      !capability.args.some((arg) => arg.toString() === 'Delivery')
-    );
-  });
-  const deliveryCapability = capabilitiesToSign.find((capability) => {
-    return (
-      capability.name.includes('delivery.CREATE_ORDER_LINE') &&
-      capability.args.some((arg) => arg.toString() === 'Delivery')
-    );
-  });
   const transferCapability = capabilitiesToSign.find((capability) =>
     capability.name.includes('webauthn-wallet.TRANSFER'),
   );

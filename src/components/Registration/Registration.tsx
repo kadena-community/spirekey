@@ -5,7 +5,6 @@ import { useAccounts } from '@/context/AccountsContext';
 import { useRegistrationForm } from '@/hooks/useRegistrationForm';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { deviceColors } from '@/styles/tokens.css';
-import { fundAccount } from '@/utils/fund';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { Box, Stack } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
@@ -20,17 +19,12 @@ import { DeviceTypeForm } from './DeviceTypeForm';
 import { NetworkIdForm } from './NetworkIdForm';
 import * as styles from './styles.css';
 
-const skipNetworkId =
-  process.env.WALLET_NETWORK_ID &&
-  typeof window !== 'undefined' &&
-  localStorage.getItem('devMode') !== 'true';
+const skipNetworkId = !!process.env.WALLET_NETWORK_ID;
 
 const defaultFormData = {
   alias: '',
   usedAlias: '',
-  networkId: skipNetworkId
-    ? process.env.WALLET_NETWORK_ID!
-    : getDevnetNetworkId(),
+  networkId: process.env.WALLET_NETWORK_ID || getDevnetNetworkId(),
   accountName: '',
   credentialPubkey: '',
   credentialId: '',

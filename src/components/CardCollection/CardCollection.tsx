@@ -1,6 +1,6 @@
 import { Box, Stack } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
-import { Children, useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useResizeObserver } from 'usehooks-ts';
 
 import { useAccounts } from '@/context/AccountsContext';

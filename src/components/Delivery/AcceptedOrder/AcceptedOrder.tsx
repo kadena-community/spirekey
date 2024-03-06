@@ -6,12 +6,9 @@ import { Surface } from '@/components/Surface/Surface';
 import { Account, useAccounts } from '@/context/AccountsContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
-import { Box, Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
+import { Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
 import { ChainId, ICap, ISigner } from '@kadena/types';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { products } from '../mock/products';
-import * as styles from './AcceptedOrder.css';
 
 interface Props {
   signers: ISigner[];
@@ -79,22 +76,9 @@ export function AcceptedOrder({
     [],
   );
 
-  const orderLineCapabilities = capabilitiesToSign.filter((capability) => {
-    return (
-      capability.name.includes('delivery.CREATE_ORDER_LINE') &&
-      !capability.args.some((arg) => arg.toString() === 'Delivery')
-    );
-  });
-  const deliveryCapability = capabilitiesToSign.find((capability) => {
-    return (
-      capability.name.includes('delivery.CREATE_ORDER_LINE') &&
-      capability.args.some((arg) => arg.toString() === 'Delivery')
-    );
-  });
   const transferCapability = capabilitiesToSign.find((capability) =>
     capability.name.includes('webauthn-wallet.TRANSFER'),
   );
-  console.log('order', order);
 
   return (
     <>
