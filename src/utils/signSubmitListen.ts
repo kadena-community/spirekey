@@ -2,13 +2,15 @@ import { asyncPipe } from '@/utils/asyncPipe';
 import {
   IClient,
   IUnsignedCommand,
+  createSignWithChainweaver,
   createTransaction,
-  signWithChainweaver,
 } from '@kadena/client';
 import { sign } from '@kadena/cryptography-utils';
 import { isSignedCommand } from '@kadena/pactjs';
 
 export const signSubmitListen = (client: IClient) => {
+  const signWithChainweaver = createSignWithChainweaver();
+
   return asyncPipe(
     createTransaction,
     signWithChainweaver,

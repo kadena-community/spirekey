@@ -38,7 +38,7 @@ export const AliasForm: FC<StepProps> = ({
     if (isVisible) {
       setTimeout(() => {
         aliasRef.current?.focus();
-      }, 700);
+      }, 900);
     }
   }, [isVisible]);
 

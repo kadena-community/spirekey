@@ -9,6 +9,7 @@ export interface Notification {
   variant: NotificationVariant;
   title: string;
   message?: string;
+  timeout?: number;
 }
 
 export interface AddNotification extends Omit<Notification, 'id'> {}
@@ -37,7 +38,12 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const addNotification = ({ variant, title, message }: AddNotification) => {
+  const addNotification = ({
+    variant,
+    title,
+    message,
+    timeout = 3000,
+  }: AddNotification) => {
     const id = Date.now();
     setNotifications((prevNotifications) => [
       ...prevNotifications,
@@ -47,7 +53,7 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
       setNotifications((prevNotifications) =>
         prevNotifications.filter((n) => n.id !== id),
       );
-    }, 3000);
+    }, timeout);
   };
 
   return (

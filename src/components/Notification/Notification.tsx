@@ -19,12 +19,15 @@ export const Notification: FC<Props> = ({ variant, title, message }) => {
       className={styles.wrapper({ variant })}
     >
       <header className={styles.headingWrapper}>
-        <SystemIcon.AlertCircleOutline />
-        <Heading variant="h6" className={styles.heading}>
+        <SystemIcon.Information
+          size="sm"
+          className={styles.icon({ variant })}
+        />
+        <Heading variant="h6" className={styles.heading({ variant })}>
           {title}
         </Heading>
       </header>
-      {message && <Text style={{ color: 'inherit' }}>{message}</Text>}
+      {message && <Text style={{ color: 'white' }}>{message}</Text>}
     </motion.div>
   );
 };

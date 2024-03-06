@@ -9,25 +9,36 @@ export function useRegistrationForm(
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
   function next() {
-    if (currentStepIndex === 1 && formValues.usedAlias === formValues.alias) {
+    const nextStepIndex =
+      currentStepIndex + Number(currentStepIndex < steps.length - 1);
+
+    if (
+      steps[nextStepIndex].name === 'BiometricsForm' &&
+      formValues.usedAlias === formValues.alias
+    ) {
       // skip the fingerprint step if the currently filled in alias is the same as the one we used before
-      return goTo(3);
+      return goTo(nextStepIndex + 1);
     }
 
     if (currentStepIndex === steps.length - 1) {
       onSubmit(formValues);
     }
 
-    setCurrentStepIndex((i) => i + Number(i < steps.length - 1));
+    goTo(nextStepIndex);
   }
 
   function previous() {
-    if (currentStepIndex === 3 && formValues.usedAlias === formValues.alias) {
+    const previousStepIndex = currentStepIndex - Number(currentStepIndex > 0);
+
+    if (
+      steps[previousStepIndex].name === 'BiometricsForm' &&
+      formValues.usedAlias === formValues.alias
+    ) {
       // skip the fingerprint step when we already have an account for the same alias
-      return goTo(1);
+      return goTo(previousStepIndex - 1);
     }
 
-    setCurrentStepIndex((i) => i - Number(i > 0));
+    goTo(previousStepIndex);
   }
 
   function goTo(index: number) {
