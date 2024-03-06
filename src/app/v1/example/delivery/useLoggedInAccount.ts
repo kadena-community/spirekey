@@ -24,7 +24,11 @@ export const useLoggedInAccount = (encodedAccountString?: string) => {
 
   const logout = () => {
     setAccount(undefined);
-    localStorage.setItem('account', '');
+    localStorage.removeItem('account');
+    localStorage.removeItem('messages');
+    localStorage.removeItem('deliveryIds');
+    localStorage.removeItem('newOrderId');
+    localStorage.removeItem('connectionId');
     router.push(window.location.href.split('?')[0]);
   };
 
