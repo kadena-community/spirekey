@@ -1,7 +1,14 @@
 'use client';
 
-import Registration from '@/components/Registration/Registration';
 import { Stack } from '@kadena/react-ui';
+import dynamic from 'next/dynamic';
+
+const Registration = dynamic(
+  () => import('@/components/Registration/Registration'),
+  {
+    ssr: false,
+  },
+);
 
 type Props = {
   searchParams: {
@@ -14,7 +21,6 @@ export default function Register({ searchParams }: Props) {
   const redirectUrl = searchParams.redirectUrl;
   const networkId = searchParams.networkId;
 
-  console.log('searchParams:', networkId);
   return (
     <Stack flexDirection="column" gap="md">
       <Registration redirectUrl={redirectUrl} networkId={networkId} />

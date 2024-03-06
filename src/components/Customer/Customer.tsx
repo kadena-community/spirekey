@@ -7,6 +7,7 @@ import { Product } from '@/components/Delivery/Product/Product';
 import { PizzaLoader } from '@/components/PizzaLoader/PizzaLoader';
 import { Surface } from '@/components/Surface/Surface';
 import { PizzaWorld } from '@/components/icons/PizzaWorld';
+import { useNotifications } from '@/context/NotificationsContext';
 import { useOrder } from '@/context/OrderContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
@@ -59,6 +60,7 @@ export default function Customer({ searchParams }: Props) {
   const router = useRouter();
   const [merchantPublicKey, setMerchantPublicKey] = useState<string>('');
   const { products, orderItems, orderTotalPrice, deliveryFee } = useOrder();
+  const { addNotification } = useNotifications();
 
   const merchantAccount = process.env.MERCHANT_ACCOUNT;
 
@@ -136,11 +138,21 @@ export default function Customer({ searchParams }: Props) {
   useEffect(() => {
     if (!merchantAccount) return;
     const fetchMerchantAccount = async () => {
-      const remoteMerchantAccount = await getAccountFrom({
-        networkId: process.env.NETWORK_ID || getDevnetNetworkId(),
-        accountName: merchantAccount,
-      });
-      setMerchantPublicKey(remoteMerchantAccount.devices[0].guard.keys[0]);
+      try {
+        const remoteMerchantAccount = await getAccountFrom({
+          networkId: process.env.NETWORK_ID || getDevnetNetworkId(),
+          accountName: merchantAccount,
+        });
+        setMerchantPublicKey(remoteMerchantAccount.devices[0].guard.keys[0]);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          addNotification({
+            variant: 'error',
+            title: 'Merchant account was not found',
+            message: error.message,
+          });
+        }
+      }
     };
     fetchMerchantAccount();
   }, [merchantAccount, setMerchantPublicKey]);

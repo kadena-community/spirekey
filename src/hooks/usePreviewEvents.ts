@@ -21,12 +21,11 @@ export const usePreviewEvents = ({ transaction }: Props) => {
       })
       .catch((error: unknown) => {
         if (error instanceof Error) {
-          // disabled until after the talk
-          // addNotification({
-          //   variant: 'error',
-          //   title: 'Error previewing events',
-          //   message: error.message,
-          // });
+          addNotification({
+            variant: 'error',
+            title: 'Error previewing events',
+            message: error.message,
+          });
         }
       });
   }, [transaction]);
