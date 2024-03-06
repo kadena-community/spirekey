@@ -1,5 +1,4 @@
 import { l1Client } from '@/utils/client';
-import { ICommand } from '@kadena/client';
 import { useEffect, useState } from 'react';
 
 type Props = {
@@ -43,12 +42,6 @@ export const useSubmit = ({ transaction }: Props) => {
 
     setStatus(SubmitStatus.LOADING);
 
-<<<<<<< HEAD
-=======
-    const tx = JSON.parse(
-      Buffer.from(transaction, 'base64').toString(),
-    ) as ICommand;
->>>>>>> d16adb4 (Remove icon in header on /, add hint for biometrics, small styling fixes)
     try {
       const txRes = await l1Client.submit(tx);
       const result = await l1Client.listen(txRes);
