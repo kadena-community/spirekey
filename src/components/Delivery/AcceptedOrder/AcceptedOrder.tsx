@@ -1,11 +1,9 @@
 import { useDelivery } from '@/app/v1/example/delivery/useDelivery';
-import { useLoggedInAccount } from '@/app/v1/example/delivery/useLoggedInAccount';
+import { LoginAccount } from '@/components/AccountButton';
 import { Button } from '@/components/Button/Button';
 import { Order } from '@/components/Order/Order';
 import { Surface } from '@/components/Surface/Surface';
-import { Account, useAccounts } from '@/context/AccountsContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
 import { Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
 import { ChainId, ICap, ISigner } from '@kadena/types';
 import { useRouter } from 'next/navigation';
@@ -13,18 +11,11 @@ import { useRouter } from 'next/navigation';
 interface Props {
   signers: ISigner[];
   orderId: string;
-  account: any;
+  account: LoginAccount;
   order: any;
 }
 
-export function AcceptedOrder({
-  signers,
-  orderId,
-  order,
-  account: loggedInAccount,
-}: Props) {
-  const { accounts } = useAccounts();
-  const { account } = useLoggedInAccount();
+export function AcceptedOrder({ signers, orderId, order, account }: Props) {
   const router = useRouter();
   const { getReturnUrl } = useReturnUrl();
 
@@ -49,19 +40,8 @@ export function AcceptedOrder({
     );
   };
 
-  const publicKeys: string[] = signers.map((s: { pubKey: string }) => s.pubKey);
-
-  const devices = publicKeys
-    .filter((key) =>
-      accounts.some((account: Account) =>
-        account.devices.some((device) => device.guard.keys.includes(key)),
-      ),
-    )
-    .map((publicKey) => getDeviceByPublicKey(accounts, publicKey));
-
-  const availablePublicKeys = devices.reduce((keys: string[], device) => {
-    return [...keys, ...(device?.guard.keys || [])];
-  }, []);
+  const availablePublicKeys =
+    account.credentials.map((credential) => credential.publicKey) || [];
 
   const currentSigners = signers.filter((signer) =>
     availablePublicKeys.includes(signer.pubKey),
@@ -98,7 +78,7 @@ export function AcceptedOrder({
             Ready
           </Button>
         </Stack>
-        <Order signers={signers} account={loggedInAccount} order={order} />
+        <Order signers={signers} account={account} order={order} />
       </Surface>
     </>
   );
