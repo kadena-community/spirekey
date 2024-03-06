@@ -2,7 +2,7 @@
   "profiles": {
     "default": {
       "host": "http://localhost:8080",
-      "networkId": "fast-development",
+      "networkId": "development",
       "chains": [
         "0",
         "1",
@@ -28,7 +28,7 @@
     },
     "l2": {
       "host": "localhost",
-      "networkId": "fast-development",
+      "networkId": "development",
       "chains": ["14"]
     }
   },

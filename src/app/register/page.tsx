@@ -14,7 +14,6 @@ export default function Register({ searchParams }: Props) {
   const redirectUrl = searchParams.redirectUrl;
   const networkId = searchParams.networkId;
 
-  console.log('searchParams:', networkId);
   return (
     <Stack flexDirection="column" gap="md">
       <Registration redirectUrl={redirectUrl} networkId={networkId} />
