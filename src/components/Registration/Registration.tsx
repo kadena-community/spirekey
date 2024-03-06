@@ -19,12 +19,17 @@ import { DeviceTypeForm } from './DeviceTypeForm';
 import { NetworkIdForm } from './NetworkIdForm';
 import * as styles from './styles.css';
 
-const skipNetworkId = !!process.env.WALLET_NETWORK_ID;
+const skipNetworkId =
+  process.env.WALLET_NETWORK_ID &&
+  typeof window !== 'undefined' &&
+  localStorage.getItem('devMode') !== 'true';
 
 const defaultFormData = {
   alias: '',
   usedAlias: '',
-  networkId: process.env.WALLET_NETWORK_ID || getDevnetNetworkId(),
+  networkId: skipNetworkId
+    ? process.env.WALLET_NETWORK_ID!
+    : getDevnetNetworkId(),
   accountName: '',
   credentialPubkey: '',
   credentialId: '',
@@ -62,6 +67,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
     ...defaultFormData,
     networkId: networkId || defaultFormData.networkId,
   });
+  console.log('data', data);
 
   const updateFields = (fields: Partial<FormData>) =>
     setData((current) => ({ ...current, ...fields }));
@@ -144,7 +150,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
           className={styles.container}
         >
           {steps.map((FormStep, stepIndex) => (
-            <Box className={styles.step} key={stepIndex}>
+            <Box className={styles.step}>
               <FormStep
                 key={stepIndex}
                 stepIndex={stepIndex}
