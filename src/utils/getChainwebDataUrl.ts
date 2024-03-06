@@ -5,6 +5,6 @@ export const getChainwebDataUrl = (network: string) => {
     case 'testnet04':
       return 'https://estats.testnet.chainweb.com';
     default:
-      return process.env.CHAINWEB_URL || 'http://localhost:8080';
+      return process.env.CHAINWEB_URL || '';
   }
 };

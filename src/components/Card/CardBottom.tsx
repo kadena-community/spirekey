@@ -1,5 +1,7 @@
 import { Account } from '@/context/AccountsContext';
+import { useNotifications } from '@/context/NotificationsContext';
 import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
+import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { Stack } from '@kadena/react-ui';
 import useSWR from 'swr';
 import * as styles from './Card.css';
@@ -9,7 +11,16 @@ interface CardBottomProps {
 }
 
 export default function CardBottom({ account }: CardBottomProps) {
+  const { addNotification } = useNotifications();
   const domain = getChainwebDataUrl(account.networkId);
+
+  if (!domain) {
+    addNotification({
+      variant: 'error',
+      title: `The Chainweb Data URL is not configured for network: ${getNetworkDisplayName(account.networkId)}`,
+    });
+  }
+
   const { data } = useSWR(
     () =>
       account.accountName

@@ -1,7 +1,8 @@
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { Account } from '@/context/AccountsContext';
-
+import { useNotifications } from '@/context/NotificationsContext';
 import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
+import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { Grid, GridItem } from '@kadena/react-ui';
 import classNames from 'classnames';
 import { Fragment } from 'react';
@@ -19,7 +20,16 @@ interface AccountDetailsProps {
 }
 
 export function AccountDetails({ account }: AccountDetailsProps) {
+  const { addNotification } = useNotifications();
   const domain = getChainwebDataUrl(account.networkId);
+
+  if (!domain) {
+    addNotification({
+      variant: 'error',
+      title: `The Chainweb Data URL is not configured for network: ${getNetworkDisplayName(account.networkId)}`,
+    });
+  }
+
   const { data } = useSWR(
     `${domain}/txs/account/${encodeURIComponent(account.accountName)}`,
     async (url: string) => {
