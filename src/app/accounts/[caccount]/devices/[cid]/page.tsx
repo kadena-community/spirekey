@@ -1,15 +1,9 @@
 'use client';
 
-import logo from '@/assets/images/bennuKey.svg';
-import {
-  useAccounts,
-  type Account as TAccount,
-} from '@/context/AccountsContext';
+import { useAccounts } from '@/context/AccountsContext';
 import { Heading, Stack, SystemIcon } from '@kadena/react-ui';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 const CardCollection = dynamic(
   () => import('@/components/CardCollection/CardCollection'),

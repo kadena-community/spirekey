@@ -5,7 +5,6 @@ import { useAccounts } from '@/context/AccountsContext';
 import { useRegistrationForm } from '@/hooks/useRegistrationForm';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { deviceColors } from '@/styles/tokens.css';
-import { fundAccount } from '@/utils/fund';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { Box, Stack } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
@@ -68,6 +67,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
     ...defaultFormData,
     networkId: networkId || defaultFormData.networkId,
   });
+  console.log('data', data);
 
   const updateFields = (fields: Partial<FormData>) =>
     setData((current) => ({ ...current, ...fields }));
@@ -150,7 +150,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
           className={styles.container}
         >
           {steps.map((FormStep, stepIndex) => (
-            <Box className={styles.step} key={stepIndex}>
+            <Box className={styles.step}>
               <FormStep
                 key={stepIndex}
                 stepIndex={stepIndex}

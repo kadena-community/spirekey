@@ -1,11 +1,8 @@
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
-import { Capability } from '@/components/Capability/Capability';
 import { Order } from '@/components/Order/Order';
 import { Surface } from '@/components/Surface/Surface';
 import { Account, useAccounts } from '@/context/AccountsContext';
 import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
-import { getTranslations } from '@/utils/getTranslationBundle';
-import { getSmartContractMeta } from '@/utils/smartContractMeta';
 import { Heading, Stack } from '@kadena/react-ui';
 import { ICap, ISigner } from '@kadena/types';
 
@@ -49,34 +46,6 @@ export function AcceptOrder({ signers, signingLink, account, order }: Props) {
   const transferCapability = capabilitiesToSign.find((capability) =>
     capability.name.includes('webauthn-wallet.TRANSFER'),
   );
-
-  const pubkeysForTx = account.credentials.flatMap(
-    (credential: any) => credential.publicKey,
-  );
-
-  const merchantCaps = signers
-    .filter((signer: { pubKey: string }) =>
-      pubkeysForTx.includes(signer.pubKey),
-    )
-    .map((signer) => ({
-      signer,
-      account: accounts.find((account) =>
-        account.devices.some((device) =>
-          device.guard.keys.includes(signer.pubKey),
-        ),
-      ),
-    }))
-    .filter((signer) => !!signer.account && !!signer.signer)
-    .map(({ signer, account }) => {
-      const capabilities = signer.clist?.filter((capability: ICap) =>
-        capability.name.includes('CREATE_ORDER_LINE'),
-      );
-      return {
-        signer,
-        account,
-        capabilities,
-      };
-    });
 
   return (
     <>
