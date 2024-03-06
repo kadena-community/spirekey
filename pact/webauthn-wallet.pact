@@ -92,22 +92,21 @@
   )
 
   (defun create-wallet(
-    min-approvals:integer
-    min-registration-approvals:integer
-    devices:[object{device-schema}]
+    account:string
+    device:object{device-schema}
   )
     (let* (
-      (first-guard (at 'guard (at 0 devices)))
+      (first-guard (at 'guard device))
       (guard-name (create-principal first-guard))
-      (account-name:string (get-account-name guard-name))
       (account-guard:guard (get-account-guard guard-name))
     )
-      (register min-approvals min-registration-approvals devices)
-      (coin.create-account account-name account-guard)
-      (insert guard-lookup-table account-name
+      (enforce (validate-principal account-guard account) "Invalid account guard")
+      (register (create-principal first-guard) device)
+      (coin.create-account account account-guard)
+      (insert guard-lookup-table account
         { 'webauthn-guard-name : guard-name }
       )
-      account-name
+      account
     )
   )
 

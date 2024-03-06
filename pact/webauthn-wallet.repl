@@ -71,13 +71,14 @@
 (begin-tx "Register a new webauthn-wallet")
 (let* ((guard (read-keyset 'alice-ks))
   (caccount (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.create-wallet 
-    1 1
-    [{ 'name          : 'phone
-     , 'credential-id : 'xysDsaI
-     , 'domain        : "www.example.com"
-     , 'guard         : guard
-     }
-    ]
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-account-name
+      (create-principal guard)
+    )
+    { 'name          : 'phone
+    , 'credential-id : 'xysDsaI
+    , 'domain        : "www.example.com"
+    , 'guard         : guard
+    }
   ))
 )
   (print caccount)

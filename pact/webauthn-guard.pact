@@ -95,14 +95,17 @@
   )
 
   (defun register(
-    min-approvals:integer
-    min-registration-approvals:integer
-    devices:[object{device-schema}]
+    account:string
+    device:object{device-schema}
   )
     (let (
-      (first-guard (at 'guard (at 0 devices)))
+      (first-guard (at 'guard device))
     )
-      (register-guard (create-principal first-guard) min-approvals min-registration-approvals devices)
+      (enforce 
+        (validate-principal first-guard account)
+        "Principal must match the first provided device"
+      )
+      (register-guard account 1 1 [device])
     )
   )
 
