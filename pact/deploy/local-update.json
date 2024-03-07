@@ -30,7 +30,7 @@
   "steps": [
     {
       "profile": "default",
-      "code": "(coin.transfer-create \"sender00\" \"w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any\" (read-keyset 'webauthn-keyset) 100.0)",
+      "code": "(coin.transfer-create \"senderx\" \"w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any\" (read-keyset 'webauthn-keyset) 100.0)",
       "data": {
         "webauthn-keyset": {
           "keys": [
@@ -47,11 +47,11 @@
           "pred": "keys-any"
         }
       },
-      "sender": "sender00",
+      "sender": "senderx",
       "caps": [
         [
           "coin.TRANSFER",
-          "sender00",
+          "senderx",
           "w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any",
           "100.0"
         ],
@@ -122,13 +122,13 @@
     },
     {
       "profile": "default",
-      "code": "(coin.transfer \"sender00\" \"u:n_eef68e581f767dd66c4d4c39ed922be944ede505.gas-station.enforce-guard-any:dorjIaX8IGJZtfgZzYRkXV0DE9mEPxPvyuwdmML5eTk\" 100.0)",
+      "code": "(coin.transfer \"senderx\" \"u:n_eef68e581f767dd66c4d4c39ed922be944ede505.gas-station.enforce-guard-any:dorjIaX8IGJZtfgZzYRkXV0DE9mEPxPvyuwdmML5eTk\" 100.0)",
       "data": {},
-      "sender": "sender00",
+      "sender": "senderx",
       "caps": [
         [
           "coin.TRANSFER",
-          "sender00",
+          "senderx",
           "u:n_eef68e581f767dd66c4d4c39ed922be944ede505.gas-station.enforce-guard-any:dorjIaX8IGJZtfgZzYRkXV0DE9mEPxPvyuwdmML5eTk",
           "100.0"
         ],
