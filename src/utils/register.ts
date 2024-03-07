@@ -105,13 +105,12 @@ const registerAccountCommand = ({
     execution(
       `
         (${process.env.NAMESPACE}.webauthn-wallet.create-wallet 
-          1 1
-          [{ 
-              'name          : "${displayName}"
-            , 'credential-id : "${credentialId}"
-            , 'domain        : "${domain}"
-            , 'guard         : (read-keyset 'ks)
-          }]
+          "${accountName}"
+          { 'name          : "${displayName}"
+          , 'credential-id : "${credentialId}"
+          , 'domain        : "${domain}"
+          , 'guard         : (read-keyset 'ks)
+          }
         )
       `.trim(),
     ),

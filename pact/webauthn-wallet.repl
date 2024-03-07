@@ -71,13 +71,14 @@
 (begin-tx "Register a new webauthn-wallet")
 (let* ((guard (read-keyset 'alice-ks))
   (caccount (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.create-wallet 
-    1 1
-    [{ 'name          : 'phone
-     , 'credential-id : 'xysDsaI
-     , 'domain        : "www.example.com"
-     , 'guard         : guard
-     }
-    ]
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-account-name
+      (create-principal guard)
+    )
+    { 'name          : 'phone
+    , 'credential-id : 'xysDsaI
+    , 'domain        : "www.example.com"
+    , 'guard         : guard
+    }
   ))
 )
   (print caccount)
@@ -132,7 +133,12 @@
   "14"
 )
 (env-chain-data { 'chain-id : "14" })
-(continue-pact 1)
+(expect-failure 
+  "Copy account does not work in repl because the tables are shared cross chain in repl's environment"
+  "Database exception: Insert: row found for key c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA"
+  (continue-pact 1)
+)
+
 (commit-tx)
 
 (begin-tx "Create fungible account")

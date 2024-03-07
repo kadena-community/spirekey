@@ -55,15 +55,12 @@
 (env-sigs [])
 (begin-tx "Create alice webauthn guard")
 (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.register
-  1
-  1
-  [
-    { 'name          : "phone"
-    , 'domain        : "www.example.com"
-    , 'credential-id : 'cid-phone
-    , 'guard         : (read-keyset 'ks)
-    }
-  ]
+  (create-principal (read-keyset 'ks))
+  { 'name          : "phone"
+  , 'domain        : "www.example.com"
+  , 'credential-id : 'cid-phone
+  , 'guard         : (read-keyset 'ks)
+  }
 )
 (expect "Alice to be registered"
   (format "{}" 
