@@ -1,10 +1,9 @@
 import { Order } from '@/app/v1/example/delivery/useDelivery';
+import { LoginAccount } from '@/components/AccountButton';
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
 import { Order as OrderComponent } from '@/components/Order/Order';
 import { Surface } from '@/components/Surface/Surface';
-import { Account, useAccounts } from '@/context/AccountsContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
 import { getTranslations } from '@/utils/getTranslationBundle';
 import { getSmartContractMeta } from '@/utils/smartContractMeta';
 import { Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
@@ -15,7 +14,7 @@ interface Props {
   signers: ISigner[];
   order: Order;
   transaction?: any;
-  account: any;
+  account: LoginAccount;
   message: any;
 }
 
@@ -26,22 +25,10 @@ export function ReadyForDelivery({
   account,
   message,
 }: Props) {
-  const { accounts } = useAccounts();
   const { getReturnUrl } = useReturnUrl();
 
-  const publicKeys: string[] = signers.map((s: { pubKey: string }) => s.pubKey);
-
-  const devices = publicKeys
-    .filter((key) =>
-      accounts.some((account: Account) =>
-        account.devices.some((device) => device.guard.keys.includes(key)),
-      ),
-    )
-    .map((publicKey) => getDeviceByPublicKey(accounts, publicKey));
-
-  const availablePublicKeys = devices.reduce((keys: string[], device) => {
-    return [...keys, ...(device?.guard.keys || [])];
-  }, []);
+  const availablePublicKeys =
+    account.credentials.map((credential) => credential.publicKey) || [];
 
   const currentSigners = signers.filter((signer) =>
     availablePublicKeys.includes(signer.pubKey),

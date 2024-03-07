@@ -1,34 +1,20 @@
+import { LoginAccount } from '@/components/AccountButton';
 import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
 import { Order } from '@/components/Order/Order';
 import { Surface } from '@/components/Surface/Surface';
-import { Account, useAccounts } from '@/context/AccountsContext';
-import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
 import { Heading, Stack } from '@kadena/react-ui';
 import { ICap, ISigner } from '@kadena/types';
 
 interface Props {
   signers: ISigner[];
   signingLink: string;
-  account: any;
+  account: LoginAccount;
   order: any;
 }
 
 export function AcceptOrder({ signers, signingLink, account, order }: Props) {
-  const { accounts } = useAccounts();
-
-  const publicKeys: string[] = signers.map((s: { pubKey: string }) => s.pubKey);
-
-  const devices = publicKeys
-    .filter((key) =>
-      accounts.some((account: Account) =>
-        account.devices.some((device) => device.guard.keys.includes(key)),
-      ),
-    )
-    .map((publicKey) => getDeviceByPublicKey(accounts, publicKey));
-
-  const availablePublicKeys = devices.reduce((keys: string[], device) => {
-    return [...keys, ...(device?.guard.keys || [])];
-  }, []);
+  const availablePublicKeys =
+    account.credentials.map((credential) => credential.publicKey) || [];
 
   const currentSigners = signers.filter((signer) =>
     availablePublicKeys.includes(signer.pubKey),
