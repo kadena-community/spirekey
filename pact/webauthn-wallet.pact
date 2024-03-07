@@ -153,7 +153,7 @@
           (webauthn-guard.copy-account guard-name target)
 
           (let ((yield-data:object{copy-account-schema} { 'guard-name : guard-name }))
-            (yield yield-data)
+            (yield yield-data target)
           )
         )
       )
@@ -163,6 +163,7 @@
       (resume 
         { 'guard-name := guard-name }
         (continue (webauthn-guard.copy-account guard-name target))
+        (coin.create-account (get-account-name guard-name) (get-account-guard guard-name))
       )
     )
   )
