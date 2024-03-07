@@ -3,6 +3,9 @@
 (module webauthn-wallet GOVERNANCE
   (defconst GOVERNANCE_KEYSET (read-string 'webauthn-keyset-name))
 
+  ; webauthn-wallet used by Proof of Us
+  (bless "c5KSG0HHgGQdlr-SYja_FX8t8YZPXAd8GorSh98-7jU")
+
   (use coin)
   (use webauthn-guard)
   (use fungible-v2)
