@@ -15,6 +15,10 @@
       (at 'devices (get-account-before account))
     )
   ]
+
+  ; webauthn-guard used by Proof of Us
+  (bless "q8PWYhfYqfp9ypi-cysNkK-EXDiLX0Xg9c4yz5E1SmE")
+
   (defconst GOVERNANCE_KEYSET (read-string 'webauthn-keyset-name))
 
   (defcap GOVERNANCE()
