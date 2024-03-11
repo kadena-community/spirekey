@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/Button/Button';
-import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
+import { Button } from '@/components/shared/Button/Button';
+import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { Surface } from '@/components/Surface/Surface';
 import { Account, useAccounts } from '@/context/AccountsContext';
 import { useSign } from '@/hooks/useSign';
@@ -14,11 +14,11 @@ import { useEffect, useState } from 'react';
 
 import fingerprint from '@/assets/images/fingerprint.svg';
 import { usePreviewEvents } from '@/hooks/usePreviewEvents';
-import { getTranslations } from '@/utils/getTranslationBundle';
+import { getTranslations } from '@/utils/shared/getTranslationBundle';
 import {
   filterAcceptorCapabilities,
   filterGranterCapabilities,
-} from '@/utils/smartContractMeta';
+} from '@/utils/shared/smartContractMeta';
 import type { ICommandPayload, IPactEvent } from '@kadena/types';
 import { Capability } from '../Capability/Capability';
 import { container, step, wrapper } from './Sign.css';

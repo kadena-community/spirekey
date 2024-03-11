@@ -1,9 +1,9 @@
 'use client';
 
-import { Button } from '@/components/Button/Button';
+import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
-import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
-import { transfer } from '@/utils/transfer';
+import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
+import { transfer } from '@/utils/shared/transfer';
 import { useRouter } from 'next/navigation';
 
 // DEMO PAGE

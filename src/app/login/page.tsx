@@ -3,9 +3,12 @@
 import { Stack } from '@kadena/react-ui';
 import dynamic from 'next/dynamic';
 
-const LoginHeader = dynamic(() => import('@/components/Login/LoginHeader'), {
-  ssr: false,
-});
+const LoginHeader = dynamic(
+  () => import('@/components/shared/Login/LoginHeader'),
+  {
+    ssr: false,
+  },
+);
 
 const CardCollection = dynamic(
   () => import('@/components/CardCollection/CardCollection'),

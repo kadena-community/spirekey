@@ -1,6 +1,6 @@
 import fingerprint from '@/assets/images/fingerprint.svg';
 import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
-import { useNotifications } from '@/context/NotificationsContext';
+import { useNotifications } from '@/context/shared/NotificationsContext';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { getAccountName } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';

@@ -1,7 +1,7 @@
 import { Account } from '@/context/AccountsContext';
-import { asyncPipe } from '@/utils/asyncPipe';
-import { l1Client } from '@/utils/client';
 import { genesisPrivateKey, genesisPubKey } from '@/utils/constants';
+import { asyncPipe } from '@/utils/shared/asyncPipe';
+import { l1Client } from '@/utils/shared/client';
 import { signWithKeyPair } from '@/utils/signSubmitListen';
 import { ChainId, createTransaction } from '@kadena/client';
 import {
@@ -11,7 +11,7 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
-import { getDevnetNetworkId } from './getDevnetNetworkId';
+import { getDevnetNetworkId } from './shared/getDevnetNetworkId';
 
 export const fundAccount = async (account: Account): Promise<string> =>
   asyncPipe(

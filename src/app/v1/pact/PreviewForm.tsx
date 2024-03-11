@@ -1,13 +1,13 @@
 'use client';
 
-import { Button } from '@/components/Button/Button';
-import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
+import { Button } from '@/components/shared/Button/Button';
+import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { useAccounts } from '@/context/AccountsContext';
-import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { asyncPipe } from '@/utils/asyncPipe';
-import { l1Client } from '@/utils/client';
-import { decodeAccount } from '@/utils/decodeAccount';
-import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
+import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
+import { asyncPipe } from '@/utils/shared/asyncPipe';
+import { l1Client } from '@/utils/shared/client';
+import { decodeAccount } from '@/utils/shared/decodeAccount';
+import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { createTransaction } from '@kadena/client';
 import {
   Card,

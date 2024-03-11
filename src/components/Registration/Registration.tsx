@@ -1,11 +1,11 @@
 'use client';
 
-import { Button } from '@/components/Button/Button';
+import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
+import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { useRegistrationForm } from '@/hooks/useRegistrationForm';
-import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { deviceColors } from '@/styles/tokens.css';
-import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
+import { deviceColors } from '@/styles/shared/tokens.css';
+import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { Box, Stack } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
 import { motion } from 'framer-motion';

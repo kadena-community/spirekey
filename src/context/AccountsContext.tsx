@@ -1,16 +1,16 @@
 'use client';
 
-import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { getAccountFrom } from '@/utils/account';
-import { l1Client } from '@/utils/client';
+import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { fundAccount } from '@/utils/fund';
-import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import {
   getAccountName,
   getWebAuthnPubkeyFormat,
   registerAccountOnChain,
 } from '@/utils/register';
 import { retryPromises } from '@/utils/retryPromises';
+import { getAccountFrom } from '@/utils/shared/account';
+import { l1Client } from '@/utils/shared/client';
+import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { ChainId, ITransactionDescriptor } from '@kadena/client';
 import { createContext, useContext, useEffect, useState } from 'react';
 

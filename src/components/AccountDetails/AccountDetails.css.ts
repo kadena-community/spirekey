@@ -1,4 +1,4 @@
-import { customTokens } from '@/styles/tokens.css';
+import { customTokens } from '@/styles/shared/tokens.css';
 import { atoms } from '@kadena/react-ui/styles';
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';

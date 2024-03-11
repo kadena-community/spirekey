@@ -1,4 +1,4 @@
-import { asyncPipe } from '@/utils/asyncPipe';
+import { asyncPipe } from '@/utils/shared/asyncPipe';
 import {
   IClient,
   IUnsignedCommand,

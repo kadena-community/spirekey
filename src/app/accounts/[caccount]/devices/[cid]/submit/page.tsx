@@ -1,6 +1,6 @@
 'use client';
 
-import { useSubmit } from '@/hooks/useSubmit';
+import { useSubmit } from '@/hooks/shared/useSubmit';
 import { useEffect } from 'react';
 
 type SubmitPageProps = {

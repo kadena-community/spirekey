@@ -1,4 +1,4 @@
-import { customTokens } from '@/styles/tokens.css';
+import { customTokens } from '@/styles/shared/tokens.css';
 import { atoms, tokens } from '@kadena/react-ui/styles';
 import { keyframes, style } from '@vanilla-extract/css';
 

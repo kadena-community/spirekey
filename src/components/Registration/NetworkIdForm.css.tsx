@@ -1,2 +1,2 @@
-import { customTokens } from '@/styles/tokens.css';
+import { customTokens } from '@/styles/shared/tokens.css';
 import { globalStyle, style } from '@vanilla-extract/css';

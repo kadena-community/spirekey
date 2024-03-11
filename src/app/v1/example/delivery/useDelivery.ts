@@ -1,6 +1,6 @@
-import { OrderItems } from '@/context/OrderContext';
-import { asyncPipe } from '@/utils/asyncPipe';
-import { l1Client } from '@/utils/client';
+import { OrderItems } from '@/app/v1/example/delivery/context/OrderContext';
+import { asyncPipe } from '@/utils/shared/asyncPipe';
+import { l1Client } from '@/utils/shared/client';
 import { generateCapabilityHash } from '@/utils/translation';
 import { ChainId, createTransaction } from '@kadena/client';
 import {

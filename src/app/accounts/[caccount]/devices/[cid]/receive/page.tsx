@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/Button/Button';
+import { Button } from '@/components/shared/Button/Button';
 import { Box, TextField } from '@kadena/react-ui';
 import { useParams } from 'next/navigation';
 import React from 'react';

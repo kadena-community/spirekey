@@ -1,12 +1,12 @@
 'use client';
 
-import { AccountButton } from '@/components/AccountButton';
-import { DeliveredOrder } from '@/components/Delivery/DeliveredOrder/DeliveredOrder';
-import { DeliveryTransit } from '@/components/Delivery/DeliveryTransit/DeliveryTransit';
-import { PickUpApproval } from '@/components/Delivery/PickUpApproval/PickUpApproval';
-import { ReadyForPickUp } from '@/components/Delivery/ReadyForPickUp/ReadyForPickUp';
+import { AccountButton } from '@/app/v1/example/delivery/components/AccountButton';
+import { DeliveredOrder } from '@/app/v1/example/delivery/components/DeliveredOrder/DeliveredOrder';
+import { DeliveryTransit } from '@/app/v1/example/delivery/components/DeliveryTransit/DeliveryTransit';
+import { PickUpApproval } from '@/app/v1/example/delivery/components/PickUpApproval/PickUpApproval';
+import { ReadyForPickUp } from '@/app/v1/example/delivery/components/ReadyForPickUp/ReadyForPickUp';
+import { OrderProvider } from '@/app/v1/example/delivery/context/OrderContext';
 import { PizzaWorld } from '@/components/icons/PizzaWorld';
-import { OrderProvider } from '@/context/OrderContext';
 import { Box, Heading, Stack, Text } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
 import { useSearchParams } from 'next/navigation';

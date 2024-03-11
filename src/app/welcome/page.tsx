@@ -2,7 +2,7 @@
 
 import logo from '@/assets/images/SpireKey-logo.svg';
 import { Background } from '@/components/Background/Background';
-import { ButtonLink } from '@/components/ButtonLink/ButtonLink';
+import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { Stack } from '@kadena/react-ui';
 import Image from 'next/image';
 
