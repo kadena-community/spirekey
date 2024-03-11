@@ -1,8 +1,8 @@
 'use client';
 
-import { AccountButton } from '@/components/AccountButton';
-import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { decodeAccount } from '@/utils/decodeAccount';
+import { AccountButton } from '@/app/v1/example/delivery/components/AccountButton';
+import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
+import { decodeAccount } from '@/utils/shared/decodeAccount';
 import {
   Box,
   Button,

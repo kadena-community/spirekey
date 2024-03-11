@@ -4,9 +4,9 @@ import { darkThemeClass } from '@kadena/react-ui/styles';
 import { ThemeProvider } from 'next-themes';
 import { ReactNode } from 'react';
 
-import { NotificationContainer } from '@/components/NotificationsContainer/NotificationsContainer';
+import { NotificationContainer } from '@/components/shared/NotificationsContainer/NotificationsContainer';
 import { AccountsProvider } from '@/context/AccountsContext';
-import { NotificationsProvider } from '@/context/NotificationsContext';
+import { NotificationsProvider } from '@/context/shared/NotificationsContext';
 import { SWRConfig } from 'swr';
 
 function localStorageProvider() {

@@ -1,4 +1,4 @@
-import { deviceColors } from '@/styles/tokens.css';
+import { deviceColors } from '@/styles/shared/tokens.css';
 import { hexadecimalToRGB } from '@/utils/color';
 import { Box, Stack } from '@kadena/react-ui';
 import classnames from 'classnames';

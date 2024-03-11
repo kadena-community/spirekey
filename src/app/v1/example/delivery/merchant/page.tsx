@@ -1,15 +1,15 @@
 'use client';
 
-import { AccountButton } from '@/components/AccountButton';
-import { AcceptOrder } from '@/components/Delivery/AcceptOrder/AcceptOrder';
-import { AcceptedOrder } from '@/components/Delivery/AcceptedOrder/AcceptedOrder';
-import { OrderDelivery } from '@/components/Delivery/OrderDelivery/OrderDelivery';
-import { ReadyForDelivery } from '@/components/Delivery/ReadyForDelivery/ReadyForDelivery';
+import { AcceptOrder } from '@/app/v1/example/delivery/components/AcceptOrder/AcceptOrder';
+import { AcceptedOrder } from '@/app/v1/example/delivery/components/AcceptedOrder/AcceptedOrder';
+import { AccountButton } from '@/app/v1/example/delivery/components/AccountButton';
+import { OrderDelivery } from '@/app/v1/example/delivery/components/OrderDelivery/OrderDelivery';
+import { ReadyForDelivery } from '@/app/v1/example/delivery/components/ReadyForDelivery/ReadyForDelivery';
+import { OrderProvider } from '@/app/v1/example/delivery/context/OrderContext';
 import { PizzaWorld } from '@/components/icons/PizzaWorld';
-import { OrderProvider } from '@/context/OrderContext';
-import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
-import { getSmartContractMeta } from '@/utils/smartContractMeta';
+import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
+import { SubmitStatus, useSubmit } from '@/hooks/shared/useSubmit';
+import { getSmartContractMeta } from '@/utils/shared/smartContractMeta';
 import { Box, Heading, Stack, Text } from '@kadena/react-ui';
 import { ChainId, ISigner } from '@kadena/types';
 import { useEffect } from 'react';

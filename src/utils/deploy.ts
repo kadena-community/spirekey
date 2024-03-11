@@ -14,7 +14,7 @@ import {
   setNetworkId,
 } from '@kadena/client/fp';
 import { readFile } from 'fs/promises';
-import { asyncPipe } from './asyncPipe';
+import { asyncPipe } from './shared/asyncPipe';
 import { signWithKeyPair } from './signSubmitListen';
 
 type ProfileConfig = {

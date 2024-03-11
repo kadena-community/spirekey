@@ -5,7 +5,7 @@ import {
   filterAcceptorCapabilities,
   filterGranterCapabilities,
   getSmartContractMeta,
-} from '@/utils/smartContractMeta';
+} from '@/utils/shared/smartContractMeta';
 import { ICap } from '@kadena/types';
 
 describe('smartContractMeta', () => {

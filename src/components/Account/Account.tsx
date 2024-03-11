@@ -1,19 +1,19 @@
 import { useAccounts, type Account } from '@/context/AccountsContext';
 
 import { calculateBalancePercentage } from '@/utils/balance';
-import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
+import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { Grid, Stack } from '@kadena/react-ui';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { Fragment, useEffect, useState } from 'react';
 import { AccountButton } from '../AccountButton/AccountButton';
 import { FundButton } from '../AccountButton/FundButton';
-import { ButtonLink } from '../ButtonLink/ButtonLink';
 import DeviceCard from '../Card/DeviceCard';
 import { Carousel } from '../Carousel/Carousel';
 import { Request } from '../icons/Request';
 import { Send } from '../icons/Send';
 import { Transactions } from '../icons/Transactions';
+import { ButtonLink } from '../shared/ButtonLink/ButtonLink';
 import { detailLink } from './Account.css';
 
 import * as styles from './Account.css';

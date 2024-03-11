@@ -1,6 +1,6 @@
 'use client';
 
-import { useReturnUrl } from '@/hooks/useReturnUrl';
+import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { Box, Button, Stack, Text } from '@kadena/react-ui';
 import { useRouter } from 'next/navigation';
 import { FC } from 'react';

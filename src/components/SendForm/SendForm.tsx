@@ -1,12 +1,12 @@
 'use client';
 
+import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { useAccounts } from '@/context/AccountsContext';
-import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { transfer } from '@/utils/transfer';
+import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
+import { transfer } from '@/utils/shared/transfer';
 import { Button, Stack, TextField } from '@kadena/react-ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { ButtonLink } from '../ButtonLink/ButtonLink';
 import * as style from './SendForm.css';
 
 const isCAccount = (account: string | string[]): account is string =>

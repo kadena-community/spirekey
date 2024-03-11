@@ -1,6 +1,10 @@
 import { hash } from '@kadena/cryptography-utils';
 import { ICap } from '@kadena/types';
-import { CapabilityMeta, Meta, getCapabilityMeta } from './smartContractMeta';
+import {
+  CapabilityMeta,
+  Meta,
+  getCapabilityMeta,
+} from './shared/smartContractMeta';
 
 const formatValue = (value: any) => {
   if (value?.decimal)

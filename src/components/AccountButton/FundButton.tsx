@@ -1,5 +1,5 @@
 import { Account } from '@/context/AccountsContext';
-import { useNotifications } from '@/context/NotificationsContext';
+import { useNotifications } from '@/context/shared/NotificationsContext';
 import { fundAccount } from '@/utils/fund';
 import { Box, Stack, SystemIcon, Text } from '@kadena/react-ui';
 import { AnimatePresence, motion } from 'framer-motion';

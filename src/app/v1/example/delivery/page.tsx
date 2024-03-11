@@ -1,7 +1,7 @@
 'use client';
 
-import Customer from '@/components/Customer/Customer';
-import { OrderProvider } from '@/context/OrderContext';
+import Customer from '@/app/v1/example/delivery/components/Customer/Customer';
+import { OrderProvider } from '@/app/v1/example/delivery/context/OrderContext';
 import React, { useEffect, useState } from 'react';
 
 type DeliveryProps = {

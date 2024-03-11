@@ -1,8 +1,8 @@
 'use client';
 
-import { asyncPipe } from '@/utils/asyncPipe';
-import { l1Client } from '@/utils/client';
 import { getSig } from '@/utils/getSig';
+import { asyncPipe } from '@/utils/shared/asyncPipe';
+import { l1Client } from '@/utils/shared/client';
 import { signWithKeyPair } from '@/utils/signSubmitListen';
 import { ChainId, createTransaction } from '@kadena/client';
 import {

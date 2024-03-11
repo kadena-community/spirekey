@@ -1,5 +1,5 @@
-import { asyncPipe } from '@/utils/asyncPipe';
-import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
+import { asyncPipe } from '@/utils/shared/asyncPipe';
+import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { ChainId, createTransaction, Pact } from '@kadena/client';
 import {
   addSigner,

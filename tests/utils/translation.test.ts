@@ -1,4 +1,4 @@
-import { getSmartContractMeta } from '@/utils/smartContractMeta';
+import { getSmartContractMeta } from '@/utils/shared/smartContractMeta';
 import { getCustomTranslation, getTranslation } from '@/utils/translation';
 import assert from 'node:assert';
 import { describe, it } from 'node:test';

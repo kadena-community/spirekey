@@ -1,6 +1,6 @@
 'use client';
 
-import { useNotifications } from '@/context/NotificationsContext';
+import { useNotifications } from '@/context/shared/NotificationsContext';
 import { hash } from '@kadena/cryptography-utils';
 import type Peer from 'peerjs';
 import type { DataConnection } from 'peerjs';

@@ -1,10 +1,10 @@
 'use client';
 
-import { Button } from '@/components/Button/Button';
+import { Button } from '@/components/shared/Button/Button';
 import { useAccounts, type Account } from '@/context/AccountsContext';
-import { deviceColors } from '@/styles/tokens.css';
-import { getAccountFrom } from '@/utils/account';
-import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
+import { deviceColors } from '@/styles/shared/tokens.css';
+import { getAccountFrom } from '@/utils/shared/account';
+import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { Heading, TextField } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
 import { startAuthentication } from '@simplewebauthn/browser';

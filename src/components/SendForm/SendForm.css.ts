@@ -1,4 +1,4 @@
-import { customTokens } from '@/styles/tokens.css';
+import { customTokens } from '@/styles/shared/tokens.css';
 import { style } from '@vanilla-extract/css';
 
 export const button = style({

@@ -1,6 +1,6 @@
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { Account } from '@/context/AccountsContext';
-import { useNotifications } from '@/context/NotificationsContext';
+import { useNotifications } from '@/context/shared/NotificationsContext';
 import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { Grid, GridItem } from '@kadena/react-ui';

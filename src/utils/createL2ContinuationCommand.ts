@@ -1,18 +1,15 @@
 import { genesisAccount, genesisPubKey } from '@/utils/constants';
 import { IContinuationPayloadObject } from '@kadena/client';
 import {
-  addKeyset,
   addSigner,
   composePactCommand,
   continuation,
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
-import { getDevnetNetworkId } from './getDevnetNetworkId';
 
 export function createL2ContinuationCommand(
   options: IContinuationPayloadObject['cont'],
-  signerPubKey: string,
 ) {
   return composePactCommand(
     continuation(options),

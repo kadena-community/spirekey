@@ -1,7 +1,7 @@
 'use client';
 
-import { SubmitResult } from '@/components/SubmitResult';
-import { useSubmit } from '@/hooks/useSubmit';
+import { SubmitResult } from '@/components/shared/SubmitResult';
+import { useSubmit } from '@/hooks/shared/useSubmit';
 import {
   Box,
   Button,

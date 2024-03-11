@@ -1,5 +1,5 @@
-import { useNotifications } from '@/context/NotificationsContext';
-import { l1Client } from '@/utils/client';
+import { useNotifications } from '@/context/shared/NotificationsContext';
+import { l1Client } from '@/utils/shared/client';
 import type { IPactEvent } from '@kadena/types';
 import { useEffect, useState } from 'react';
 
