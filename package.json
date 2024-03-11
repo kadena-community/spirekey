@@ -19,6 +19,7 @@
     "update": "tsx src/utils/deploy.ts ./pact/deploy/update.json",
     "update:del": "tsx src/utils/deploy.ts ./pact/deploy/local-delivery.json",
     "update:dev": "tsx src/utils/deploy.ts ./pact/deploy/local-update.json",
+    "update:hosted": "tsx src/utils/deploy.ts ./pact/deploy/hosted-update.json",
     "update:test": "tsx src/utils/deploy.ts ./pact/deploy/testnet-update.json"
   },
   "lint-staged": {
