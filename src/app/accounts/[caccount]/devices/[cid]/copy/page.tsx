@@ -55,25 +55,20 @@ export default function CopyPage() {
     const temp = localStorage.getItem('temp');
     if (temp) {
       // handle spv
-      console.log('temp', temp);
       const txStep1 = JSON.parse(temp);
-      console.log('txStep1', txStep1);
-      l1Client.listen(txStep1).then(async (result) => {
-        console.log('result', result);
+      l1Client.listen(txStep1).then(async (result: any) => {
         const spv = await l1Client.pollCreateSpv(txStep1, '3');
-        console.log('spv', spv);
         const continueTx = await continueCopy({
           pactId: result.continuation?.pactId || '',
           rollback: false,
           step: 1,
           proof: spv,
         });
-        console.log('continueTx', continueTx);
         const res = await l1Client.local(continueTx);
         console.log('res', res);
       });
     } else {
-      l1Client.submit(tx).then((result) => {
+      l1Client.submit(tx).then((result: any) => {
         console.log('result', result);
         localStorage.setItem('temp', JSON.stringify(result));
       });
