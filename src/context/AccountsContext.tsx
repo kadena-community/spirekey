@@ -276,6 +276,10 @@ const AccountsProvider = ({ children }: Props) => {
     credentialPubkey,
     networkId,
   }: AccountRecovery): Promise<ITransactionDescriptor> => {
+    // TODO: remove this when we support mainnet
+    if (networkId === 'mainnet01')
+      throw new Error('We do not support mainnet yet');
+
     const accountName = await getAccountName(credentialPubkey, networkId);
 
     if (!accountName) throw new Error('Wallet smart contract not found.');
