@@ -166,6 +166,9 @@
       (resume 
         { 'guard-name := guard-name }
         (continue (webauthn-guard.copy-account guard-name target))
+        (write guard-lookup-table target
+          { 'webauthn-guard-name : guard-name }
+        )
         (coin.create-account (get-account-name guard-name) (get-account-guard guard-name))
       )
     )
