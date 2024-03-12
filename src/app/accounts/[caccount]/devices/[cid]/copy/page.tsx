@@ -1,10 +1,10 @@
 'use client';
 
 import { useAccounts } from '@/context/AccountsContext';
-import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
-import { l1Client } from '@/utils/client';
+import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
+import { SubmitStatus, useSubmit } from '@/hooks/shared/useSubmit';
 import { continueCopy, copyAccount } from '@/utils/copyAccount';
+import { l1Client } from '@/utils/shared/client';
 import { Box, Button, Card, ContentHeader, Stack } from '@kadena/react-ui';
 import type { ChainId } from '@kadena/types';
 import { useParams, useRouter } from 'next/navigation';
@@ -18,7 +18,7 @@ export default function CopyPage() {
   const [error, setError] = useState<string>('');
 
   const { getReturnUrl } = useReturnUrl();
-  const { status, doSubmit, tx } = useSubmit({ transaction: '' });
+  const { status, tx } = useSubmit({ transaction: '' });
 
   const caccount = decodeURIComponent(params.caccount.toString());
 
