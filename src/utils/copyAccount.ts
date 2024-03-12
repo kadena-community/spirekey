@@ -69,7 +69,7 @@ export function continueCopy(options: IContinuationPayloadObject['cont']) {
       continuation(options),
       setMeta({
         chainId: '3',
-        gasLimit: 1000,
+        gasLimit: 2000,
         gasPrice: 0.0000001,
         ttl: 60000,
         senderAccount: gasStation,
