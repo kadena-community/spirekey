@@ -23,14 +23,24 @@
       limit         : integer
       price         : decimal
     )
-    (enforce
-      (= (format "({}." [NS_HASH])
-         (take 44 (at 0 (read-msg 'exec-code))))
-      (format "only {} namespace is payed for" [NS_HASH])
+    (enforce-one
+      (format "only {} namespace is payed for" [(read-msg)])
+      [
+        (enforce
+          (= (format "({}." [NS_HASH])
+             (take 44 (at 0 (read-msg 'exec-code))))
+          (format "only {} namespace is payed for" [NS_HASH])
+        )
+        (enforce
+          (= (read-msg 'tx-type) 'cont)
+          "only continuation transactions are payed for"
+        )
+      ]
     )
     (enforce-below-or-at-gas-price 0.0000001)
     (compose-capability (ALLOW_GAS))
   )
+
   ; UTIL FUNCTIONS extracted so no additional deploy is necessary
   (defun enforce-below-or-at-gas-price:bool (gasPrice:decimal)
     (enforce
