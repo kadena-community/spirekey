@@ -3,7 +3,7 @@ import { useLoggedInAccount } from '@/app/v1/example/delivery/useLoggedInAccount
 import { Button } from '@/components/Button/Button';
 import { Surface } from '@/components/Surface/Surface';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { getAccountFrom } from '@/utils/account';
+import { getAccountFromChain } from '@/utils/account';
 import { getTranslations } from '@/utils/getTranslationBundle';
 import { getSmartContractMeta } from '@/utils/smartContractMeta';
 import { Heading, Stack, maskValue } from '@kadena/react-ui';
@@ -27,7 +27,7 @@ export function DeliveryTransit({ order }: Props) {
     ({ buyer, orderId }: { buyer: string; orderId: string }) =>
     async () => {
       if (!account) return;
-      const buyerAccount = await getAccountFrom({
+      const buyerAccount = await getAccountFromChain({
         accountName: buyer,
         networkId: process.env.DAPP_NETWORK_ID!,
       });

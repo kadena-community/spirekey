@@ -1,7 +1,7 @@
 'use client';
 
 import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { getAccountFrom } from '@/utils/account';
+import { getAccountFromChain } from '@/utils/account';
 import { l1Client } from '@/utils/client';
 import { fundAccount } from '@/utils/fund';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
@@ -81,16 +81,16 @@ const getAccountsFromLocalStorage = (): Account[] => {
   }
 };
 
+const networks = ['mainnet01', 'testnet04', getDevnetNetworkId()];
+
 const defaultState = {
-  networks: ['mainnet01', 'testnet04', getDevnetNetworkId()],
+  networks,
   accounts: getAccountsFromLocalStorage(),
   registerAccount: async (
     data: AccountRegistration,
   ): Promise<ITransactionDescriptor | undefined> => undefined,
   setAccount: (account: Account): void => undefined,
 };
-
-const networks = ['mainnet01', 'testnet04', getDevnetNetworkId()];
 
 export const AccountsContext = createContext(defaultState);
 
@@ -141,7 +141,7 @@ const AccountsProvider = ({ children }: Props) => {
       localAccounts.map(async (localAccount) => {
         const { accountName, networkId, alias, devices } = localAccount;
         try {
-          const remoteAccount = await getAccountFrom({
+          const remoteAccount = await getAccountFromChain({
             networkId,
             accountName,
           });

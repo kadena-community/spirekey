@@ -11,7 +11,7 @@ import { useNotifications } from '@/context/NotificationsContext';
 import { useOrder } from '@/context/OrderContext';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/useSubmit';
-import { getAccountFrom } from '@/utils/account';
+import { getAccountFromChain } from '@/utils/account';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { getSmartContractMeta } from '@/utils/smartContractMeta';
 import { Heading, Stack } from '@kadena/react-ui';
@@ -139,7 +139,7 @@ export default function Customer({ searchParams }: Props) {
     if (!merchantAccount) return;
     const fetchMerchantAccount = async () => {
       try {
-        const remoteMerchantAccount = await getAccountFrom({
+        const remoteMerchantAccount = await getAccountFromChain({
           networkId: process.env.NETWORK_ID || getDevnetNetworkId(),
           accountName: merchantAccount,
         });

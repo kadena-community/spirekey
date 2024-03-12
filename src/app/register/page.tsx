@@ -18,12 +18,14 @@ type Props = {
 };
 
 export default function Register({ searchParams }: Props) {
-  const redirectUrl = searchParams.redirectUrl;
-  const networkId = searchParams.networkId;
+  const { redirectUrl, networkId } = searchParams;
+
+  const decodedRedirectUrl =
+    redirectUrl && Buffer.from(redirectUrl, 'base64').toString();
 
   return (
     <Stack flexDirection="column" gap="md">
-      <Registration redirectUrl={redirectUrl} networkId={networkId} />
+      <Registration redirectUrl={decodedRedirectUrl} networkId={networkId} />
     </Stack>
   );
 }

@@ -38,18 +38,7 @@ export function AccountDetails({ account }: AccountDetailsProps) {
   );
 
   return (
-    <Grid
-      className={details}
-      gap="xs"
-      columns={{
-        lg: 5,
-        md: 5,
-        sm: 5,
-        xl: 5,
-        xs: 5,
-        xxl: 5,
-      }}
-    >
+    <Grid className={details} gap="xs" columns={5}>
       {data?.map((tx: any, index: number) => (
         <Fragment key={index}>
           <GridItem columnSpan={2}>
@@ -70,7 +59,7 @@ export function AccountDetails({ account }: AccountDetailsProps) {
               transactionAmount,
               transactionAmountVariants({
                 variant:
-                  tx.fromAccount === account.accountName ? 'debet' : 'credit',
+                  tx.fromAccount === account.accountName ? 'debit' : 'credit',
               }),
             ])}
           >

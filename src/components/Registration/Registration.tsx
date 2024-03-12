@@ -105,11 +105,8 @@ export default function Registration({ redirectUrl, networkId }: Props) {
     goTo,
   } = useRegistrationForm(formStepComponents, data, onSubmit);
 
-  const decodedRedirectUrl = redirectUrl
-    ? Buffer.from(redirectUrl, 'base64').toString()
-    : '';
-  const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
-  const completeRedirectUrl = decodedRedirectUrl || '/';
+  const cancelRedirectUrl = redirectUrl || '/welcome';
+  const completeRedirectUrl = redirectUrl || '/';
 
   const goBack = () => {
     if (currentStepIndex === 0) {
@@ -165,7 +162,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
         </motion.div>
       </div>
 
-      {!isSubmitting && (
+      {!isSubmitting && false && (
         <Stack flexDirection="row" gap="xl" marginBlock="lg" paddingInline="lg">
           <Button
             variant="secondary"

@@ -3,7 +3,7 @@
 import { Button } from '@/components/Button/Button';
 import { useAccounts, type Account } from '@/context/AccountsContext';
 import { deviceColors } from '@/styles/tokens.css';
-import { getAccountFrom } from '@/utils/account';
+import { getAccountFromChain } from '@/utils/account';
 import { getDevnetNetworkId } from '@/utils/getDevnetNetworkId';
 import { Heading, TextField } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
@@ -35,7 +35,7 @@ export default function Recover() {
     const results = await Promise.all(
       networks.map(async (networkId) => {
         try {
-          const acc = await getAccountFrom({
+          const acc = await getAccountFromChain({
             accountName,
             networkId,
           });

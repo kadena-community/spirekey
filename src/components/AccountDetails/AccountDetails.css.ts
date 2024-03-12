@@ -41,7 +41,7 @@ export const transactionAmountVariants = recipe({
       credit: {
         color: 'green',
       },
-      debet: {
+      debit: {
         color: 'red',
       },
     },

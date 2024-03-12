@@ -3,7 +3,7 @@ import { useLoggedInAccount } from '@/app/v1/example/delivery/useLoggedInAccount
 import { Button } from '@/components/Button/Button';
 import { Surface } from '@/components/Surface/Surface';
 import { useReturnUrl } from '@/hooks/useReturnUrl';
-import { getAccountFrom } from '@/utils/account';
+import { getAccountFromChain } from '@/utils/account';
 import { Heading, Stack, maskValue } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
 import { useRouter } from 'next/navigation';
@@ -25,7 +25,7 @@ export function ReadyForPickUp({ order }: Props) {
     ({ merchant, orderId }: Pick<Order, 'merchant' | 'orderId'>) =>
     async () => {
       if (!account) return;
-      const merchantAcc = await getAccountFrom({
+      const merchantAcc = await getAccountFromChain({
         accountName: merchant,
         networkId: process.env.DAPP_NETWORK_ID!,
       });
