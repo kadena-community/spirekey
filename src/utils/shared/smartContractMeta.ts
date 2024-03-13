@@ -14,10 +14,7 @@ const coinMeta = {
   capabilities: {
     TRANSFER: {
       granter: {
-        argIndex: 0,
-      },
-      acceptor: {
-        argIndex: 1,
+        isSigner: true,
       },
     },
   },

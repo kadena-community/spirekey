@@ -27,12 +27,18 @@
       (format "only {} namespace is payed for" [(read-msg)])
       [
         (enforce
-          (= (format "({}." [NS_HASH])
-             (take 44 (at 0 (read-msg 'exec-code))))
+          (try
+            false
+            (= (format "({}." [NS_HASH])
+               (take 44 (at 0 (read-msg 'exec-code))))
+          )
           (format "only {} namespace is payed for" [NS_HASH])
         )
         (enforce
-          (= (read-msg 'tx-type) 'cont)
+          (try
+            false
+            (= (read-msg 'tx-type) 'cont)
+          )
           "only continuation transactions are payed for"
         )
       ]
