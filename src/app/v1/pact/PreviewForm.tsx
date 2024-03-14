@@ -187,7 +187,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <ButtonLink
-        href={`${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(
+        href={`${process.env.WALLET_URL}/connect?returnUrl=${getReturnUrl(
           '/pact',
         )}`}
       >
@@ -215,7 +215,7 @@ export const PreviewForm: FC<PreviewFormProps> = ({
               value: account.credentials[0].publicKey,
             },
           ]}
-          helperText="This is the account you will use to login."
+          helperText="This is the account you will use to connect."
         />
       )}
       <Card fullWidth>

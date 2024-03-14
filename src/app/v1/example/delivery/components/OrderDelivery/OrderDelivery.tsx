@@ -1,4 +1,4 @@
-import { LoginAccount } from '@/app/v1/example/delivery/components/AccountButton';
+import { ConnectAccount } from '@/app/v1/example/delivery/components/AccountButton';
 import { Order as OrderComponent } from '@/app/v1/example/delivery/components/Order/Order';
 import { Order } from '@/app/v1/example/delivery/useDelivery';
 import { Surface } from '@/components/Surface/Surface';
@@ -10,7 +10,7 @@ interface Props {
   signers: ISigner[];
   order: Order;
   transaction?: any;
-  account: LoginAccount;
+  account: ConnectAccount;
   message: any;
 }
 

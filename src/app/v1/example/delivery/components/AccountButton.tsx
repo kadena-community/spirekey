@@ -10,7 +10,7 @@ interface Credential {
   id?: string;
 }
 
-export interface LoginAccount {
+export interface ConnectAccount {
   credentials: Credential[];
   accountName: string;
   alias: string;
@@ -23,7 +23,7 @@ export const AccountButton = ({
   className,
   onLogout,
 }: {
-  user?: LoginAccount | null;
+  user?: ConnectAccount | null;
   returnPath: string;
   className?: string;
   onLogout?: () => void;
@@ -31,9 +31,9 @@ export const AccountButton = ({
   const router = useRouter();
   const { getReturnUrl } = useReturnUrl();
 
-  const onLogin = useCallback(() => {
+  const onConnect = useCallback(() => {
     router.push(
-      `${process.env.WALLET_URL}/login?returnUrl=${getReturnUrl(
+      `${process.env.WALLET_URL}/connect?returnUrl=${getReturnUrl(
         returnPath,
       )}&networkId=${process.env.DAPP_NETWORK_ID}`,
     );
@@ -44,7 +44,7 @@ export const AccountButton = ({
       <Button
         variant="primary"
         className={className}
-        onPress={onLogin}
+        onPress={onConnect}
         style={{
           paddingBlock: '0.25rem',
           paddingInline: '0.5rem',

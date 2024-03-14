@@ -1,17 +1,17 @@
-import { LoginAccount } from '@/app/v1/example/delivery/components/AccountButton';
+import { ConnectAccount } from '@/app/v1/example/delivery/components/AccountButton';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export const useLoggedInAccount = (encodedAccountString?: string) => {
   const urlParams = new URLSearchParams(window?.location?.search);
   const encodedAccount = urlParams.get('user') || encodedAccountString;
-  const [account, setAccount] = useState<LoginAccount | undefined>();
+  const [account, setAccount] = useState<ConnectAccount | undefined>();
   const router = useRouter();
 
   useEffect(() => {
     const storedAccount = localStorage.getItem('account');
     if (encodedAccount) {
-      const account: LoginAccount = JSON.parse(
+      const account: ConnectAccount = JSON.parse(
         Buffer.from(encodedAccount, 'base64').toString(),
       );
       localStorage.setItem('account', JSON.stringify(account));

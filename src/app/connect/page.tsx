@@ -3,8 +3,8 @@
 import { Stack } from '@kadena/react-ui';
 import dynamic from 'next/dynamic';
 
-const LoginHeader = dynamic(
-  () => import('@/components/shared/Login/LoginHeader'),
+const ConnectHeader = dynamic(
+  () => import('@/components/shared/Connect/ConnectHeader'),
   {
     ssr: false,
   },
@@ -15,7 +15,7 @@ const CardCollection = dynamic(
   { ssr: false },
 );
 
-type LoginProps = {
+type ConnectProps = {
   searchParams: {
     returnUrl: string;
     reason?: string;
@@ -24,7 +24,7 @@ type LoginProps = {
   };
 };
 
-export default function Login({ searchParams }: LoginProps) {
+export default function Connect({ searchParams }: ConnectProps) {
   const {
     returnUrl,
     reason = '',
@@ -34,7 +34,7 @@ export default function Login({ searchParams }: LoginProps) {
 
   return (
     <Stack flexDirection="column" gap="lg" style={{ height: '100svh' }}>
-      <LoginHeader
+      <ConnectHeader
         returnUrl={returnUrl}
         reason={Buffer.from(reason, 'base64').toString()}
         networkId={networkId}

@@ -155,7 +155,7 @@ export function Account({
                         }),
                       ).toString('base64')}`}
                     >
-                      Login
+                      Connect
                     </ButtonLink>
                   )}
                 </Stack>

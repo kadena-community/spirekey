@@ -1,9 +1,9 @@
-import type { LoginAccount } from '@/app/v1/example/delivery/components/AccountButton';
+import type { ConnectAccount } from '@/app/v1/example/delivery/components/AccountButton';
 
-export const decodeAccount = (response: string): LoginAccount | null => {
+export const decodeAccount = (response: string): ConnectAccount | null => {
   if (!response) return null;
 
-  const account: LoginAccount = JSON.parse(
+  const account: ConnectAccount = JSON.parse(
     Buffer.from(response, 'base64').toString(),
   );
 
