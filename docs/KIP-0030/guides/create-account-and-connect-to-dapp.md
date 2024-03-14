@@ -66,23 +66,6 @@ they registered in their Kadena Spirekey wallet. The network determines on what
 network users will create their account. Choose Devnet if you are following
 along with this guide.
 
-Depending on the network, confirming the account creation transaction on the
-blockchain can take quite some time. If you want to optimize the onboarding of
-users to your app for speed, you can opt to allow users to connect their account
-optimistically, by adding the `optimistic=true` query parameter to the Kadena
-Spirekey wallet dApp URL. This allows users to connect their account to your
-dApp before the corresponding transaction is confirmed on the blockchain.
-Without this parameter, users without an account have to wait until their
-account is successfully created on the blockchain before they can continue
-connecting to your dApp. In most cases, dApps can already prepare transactions
-involving a user's account before it is minted. Only when users sign a
-transaction it is required that the account in question exists on chain. Signing
-transactions will be explained in another chapter.
-
-```JavaScript
-const href = `/login?redirectUrl=${redirectUrl}&optimistic=true`;
-```
-
 ## Connect an account
 
 After users have created their first Kadena Spirekey account or if they already
@@ -138,12 +121,12 @@ credential object. The most notable field in that object is the `publicKey` of
 the Webauthn credential. Note that the private key is not present here. It is
 securely encrypted and stored on the user's device. The `pendingTxIds` field
 will contain the account creation transaction identifier, in case the user
-connected with an account that was created on the fly with the optimistic
-connection mode enabled. You can poll the status of this transaction against the
-Chainweb Data API to ensure that you are not creating transactions for this
-account before it is confirmed on the blockchain. If an account creation
-transaction is completed before users confirm connecting to your dApp, then
-`pendingTxIds` will be empty, even in optmitistic mode.
+connected with an account that was created on the fly. You can poll the status
+of this transaction against the Chainweb Data API to ensure that you are not
+creating transactions involving this account for the user to sign before it is
+confirmed on the blockchain. If an account creation transaction is completed
+before users confirm connecting to your dApp, then `pendingTxIds` will be empty,
+even in optmitistic mode.
 
 ```HTML
 <a id="connect" href="">Connect</a>
@@ -174,7 +157,7 @@ transaction is completed before users confirm connecting to your dApp, then
     // Prepare the link to Kadena Spirekey
     const spirekeyHost = 'http://localhost:1337';
     const redirectUrl = Buffer.from(window.location.href).toString('base64');
-    const href = `/login?redirectUrl=${redirectUrl}&optimistic=true`;
+    const href = `/login?redirectUrl=${redirectUrl}`;
     connectElement.setAttribute('href', href);
   }
 </script>
