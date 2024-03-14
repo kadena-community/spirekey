@@ -43,6 +43,13 @@ the `/register` page of Kadena Spirekey to create an account on the fly and
 subsequently be redirected back to your dApp with the newly created account
 selected.
 
+A deployment of your dApp may be configured for a specific network to make
+transactions on, like Devnet, Testnet, or Mainnet only. A transaction on Devnet
+will fail if users connect an account they created on Testnet. To prevent this
+from happening you can force users to select an account on a specific network.
+Add a second query parameter `networkId` to the Kadena Spirekey wallet URL, with
+the required network identifier as value.
+
 ```HTML
 <a id="connect" href="">Connect</a>
 
@@ -51,7 +58,7 @@ selected.
   // Your dApp URL
   const redirectUrl = Buffer.from(window.location.href).toString('base64');
   const connectElement = document.getElementById('connect');
-  const href = `/login?redirectUrl=${redirectUrl}`;
+  const href = `/login?redirectUrl=${redirectUrl}&networkId=${networkId}`;
   connectElement.setAttribute('href', href);
 </script>
 ```
@@ -75,31 +82,19 @@ to login. Then, they will be redirected back to your dApp with their public
 account details appended as a base64 encoded query parameter `user` to the
 `redirectUrl` that you initially provided as part of the link to Kadena
 Spirekey. Before moving on to handling the received account data in your dApp,
-there are two more features related to the Kadena Spirekey connection worth
-mentioning.
-
-### Force a network
-
-A deployment of your dApp may be configured for a specific network to make
-transactions on, like Devnet, Testnet, or Mainnet only. A transaction on Devnet
-will fail if users connect an account they created on Testnet. To prevent this
-from happening you can force users to select an account on a specific network.
-It can be achieved by adding the query parameter `networkId` to the Kadena
-Spirekey wallet URL, with the required network identifier as value. See the
-example below.
-
-```JavaScript
-const href = `/login?redirectUrl=${redirectUrl}&networkId=${networkId}`;
-```
+it is worth mentioning that it is possible to customize the reason that your
+dApp asks users to connect their Kadena Spirekey account.
 
 ### Show the reason
 
-Add the query parameter `networkId` to the Kadena Spirekey wallet URL with a
-value containing a more elaborate description of the reason that your dApp
-requires account information from the user. See the example below.
+Add the query parameter `reason` to the Kadena Spirekey wallet URL with a value
+containing a more elaborate description of the reason that your dApp requires
+account information from the user. The value for this parameter must be base64
+encoded. See the example below.
 
 ```JavaScript
-const href = `/login?redirectUrl=${redirectUrl}&reason=Creating+transactions+for+in+game+purchases.`;
+const reason = 'Creating transactions for in-game purchases';
+const href = `/login?redirectUrl=${redirectUrl}&reason=Q3JlYXRpbmcgdHJhbnNhY3Rpb25zIGZvciBpbi1nYW1lIHB1cmNoYXNlcw==`;
 ```
 
 ### Use the account data
@@ -125,8 +120,7 @@ connected with an account that was created on the fly. You can poll the status
 of this transaction against the Chainweb Data API to ensure that you are not
 creating transactions involving this account for the user to sign before it is
 confirmed on the blockchain. If an account creation transaction is completed
-before users confirm connecting to your dApp, then `pendingTxIds` will be empty,
-even in optmitistic mode.
+before users confirm connecting to your dApp, then `pendingTxIds` will be empty.
 
 ```HTML
 <a id="connect" href="">Connect</a>

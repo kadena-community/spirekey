@@ -20,7 +20,7 @@ type LoginProps = {
     returnUrl: string;
     reason?: string;
     optimistic?: boolean;
-    networkId?: string;
+    networkId: string;
   };
 };
 
@@ -36,7 +36,7 @@ export default function Login({ searchParams }: LoginProps) {
     <Stack flexDirection="column" gap="lg" style={{ height: '100svh' }}>
       <LoginHeader
         returnUrl={returnUrl}
-        reason={reason}
+        reason={Buffer.from(reason, 'base64').toString()}
         networkId={networkId}
       />
       <CardCollection
