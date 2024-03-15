@@ -35,12 +35,12 @@ export default function Connect({ searchParams }: ConnectProps) {
   return (
     <Stack flexDirection="column" gap="lg" style={{ height: '100svh' }}>
       <ConnectHeader
-        returnUrl={returnUrl}
+        returnUrl={Buffer.from(returnUrl, 'base64').toString()}
         reason={Buffer.from(reason, 'base64').toString()}
         networkId={networkId}
       />
       <CardCollection
-        returnUrl={returnUrl}
+        returnUrl={Buffer.from(returnUrl, 'base64').toString()}
         optimistic={optimistic}
         networkId={networkId}
       />

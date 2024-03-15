@@ -20,10 +20,10 @@ transaction creation and signing are elaborated in subsequent chapters.
 ## Before you begin
 
 Set up a project scaffold for your dApp using the platform and framework of your
-choice. This guide assumes a JavaScript based web application. Your dApp will
-connect to a Kadena SpireKey wallet dApp that can be hosted anywhere. You could
-for instance use [spirekey.kadena.io](spirekey.kadena.io), host it yourself, or
-run it locally as described in the official Kadena Spirekey
+choice. This guide assumes a React based web application. Your dApp will connect
+to a Kadena SpireKey wallet dApp that can be hosted anywhere. You could for
+instance use [spirekey.kadena.io](spirekey.kadena.io), host it yourself, or run
+it locally as described in the official Kadena Spirekey
 [Github repository](https://github.com/kadena-community/webauthn-wallet/). This
 guide assumes that you will be using the latter approach. Kadena SpireKey offers
 you the freedom to adapt and deploy its smart contracts to fit your needs.
@@ -34,14 +34,14 @@ provided in the offical Github repository to your locally running Devnet.
 
 On the homepage of your dApp, create a simple link to the `/connect` page of the
 Kadena SpireKey wallet dApp, using the example code below. You need to pass the
-URL of your dApp as a base64 encoded query parameter `redirectUrl`, so the
-Kadena SpireKey wallet knows where to redirect users back to after they connect.
-On the `/connect` page, the Kadena SpireKey wallet will check if the user
-already has an account. If so, the user can simply select an existing account to
-connect to your dApp here. Users without a Kadena SpireKey account will be
-redirected to the `/register` page of Kadena SpireKey to create an account on
-the fly and subsequently be redirected back to your dApp with the newly created
-account selected.
+URL of your dApp as a base64 encoded query parameter `returnUrl`, so the Kadena
+SpireKey wallet knows where to redirect users back to after they connect. On the
+`/connect` page, the Kadena SpireKey wallet will check if the user already has
+an account. If so, the user can simply select an existing account to connect to
+your dApp here. Users without a Kadena SpireKey account will be redirected to
+the `/register` page of Kadena SpireKey to create an account on the fly and
+subsequently be redirected back to your dApp with the newly created account
+selected.
 
 A deployment of your dApp may be configured for a specific network to make
 transactions on, like Devnet, Testnet, or Mainnet only. A transaction on Devnet
@@ -50,17 +50,23 @@ from happening you can force users to select an account on a specific network.
 Add a second query parameter `networkId` to the Kadena SpireKey wallet URL, with
 the required network identifier as value.
 
-```HTML
-<a id="connect" href="">Connect</a>
+```jsx
+/* ./src/App.js */
 
-<script type="text/javascript">
+export default function App() {
   const spirekeyHost = 'http://localhost:1337';
-  // Your dApp URL
-  const redirectUrl = btoa(window.location.href);
-  const connectElement = document.getElementById('connect');
-  const href = `/connect?redirectUrl=${redirectUrl}&networkId=${networkId}`;
-  connectElement.setAttribute('href', href);
-</script>
+  const networkId = 'development';
+  const returnUrl = btoa(window.location.href);
+  const href = `${spirekeyHost}/connect?returnUrl=${returnUrl}&networkId=${networkId}`;
+
+  return (
+    <div className="App">
+      <a id="connect" href={href}>
+        Connect
+      </a>
+    </div>
+  );
+}
 ```
 
 ## Create an account
@@ -80,10 +86,10 @@ have an account, they will be redirected to the `/connect` page of the Kadena
 SpireKey wallet dApp. Here, they select one of their account and press a button
 to connect. Then, they will be redirected back to your dApp with their public
 account details appended as a base64 encoded query parameter `user` to the
-`redirectUrl` that you initially provided as part of the link to Kadena
-SpireKey. Before moving on to handling the received account data in your dApp,
-it is worth mentioning that it is possible to customize the reason that your
-dApp asks users to connect their Kadena SpireKey account.
+`returnUrl` that you initially provided as part of the link to Kadena SpireKey.
+Before moving on to handling the received account data in your dApp, it is worth
+mentioning that it is possible to customize the reason that your dApp asks users
+to connect their Kadena SpireKey account.
 
 ### Show the reason
 
@@ -93,8 +99,10 @@ account information from the user. The value for this parameter must be base64
 encoded. See the example below.
 
 ```JavaScript
-const reason = 'Creating transactions for in-game purchases';
-const href = `/connect?redirectUrl=${redirectUrl}&reason=Q3JlYXRpbmcgdHJhbnNhY3Rpb25zIGZvciBpbi1nYW1lIHB1cmNoYXNlcw==`;
+/* ./src/App.js */
+
+const reason = btoa('Creating transactions for in-game purchases');
+const href = `${spirekeyHost}/connect?returnUrl=${returnUrl}&networkId=${networkId}&reason=${reason}`;
 ```
 
 ### Use the account data
@@ -113,39 +121,51 @@ accountName, alias and pendingTxIds. The alias has already been explained above.
 The account name is the actual name of the account on the blockchain. It is a
 string consisting of a `c:` prefix followed by a hash.
 
-```HTML
-<a id="connect" href="">Connect</a>
-<div id="account">
-    <p id="welcome"></p>
-    <pre id="details"></pre>
-</div>
+```jsx
+/* ./src/App.js */
 
-<script type="text/javascript">
+export default function App() {
+  const spirekeyHost = 'http://localhost:1337';
+  const networkId = 'development';
+  const returnUrl = btoa(window.location.href);
+  const href = `${spirekeyHost}/connect?returnUrl=${returnUrl}&networkId=${networkId}`;
+
   const urlParams = new URLSearchParams(window?.location?.search);
   const user = urlParams.get('user');
+  const account = user ? JSON.parse(atob(user)) : null;
 
-  const connectElement = document.getElementById('connect');
-  const accountElement = document.getElementById('account');
-
-  if (user) {
-    // Hide the link to SpireKey
-    connectElement.style.display = 'none';
-    // Decode and parse the account data from the URL
-    const account = JSON.parse(atob(user));
-    // Greet the user by the account alias
-    document.getElementById('welcome').innerText = `Welcome, ${account.alias}`,
-    // Display all account details
-    document.getElementById('details').innerText = account;
-  } else {
-    // Hide the user details
-    accountElement.style.display = 'none';
-    // Prepare the link to Kadena SpireKey
-    const spireKeyHost = 'http://localhost:1337';
-    const redirectUrl = btoa(window.location.href);
-    const href = `/connect?redirectUrl=${redirectUrl}`;
-    connectElement.setAttribute('href', href);
-  }
-</script>
+  return (
+    <div className="App">
+      {!account && (
+        <a id="connect" href={href}>
+          Connect
+        </a>
+      )}
+      {!!account && (
+        <>
+          <h1>Welcome, {account.alias}!</h1>
+          <h2>Account name</h2>
+          <p>{account.accountName}</p>
+          <h2>Credentials</h2>
+          {account.credentials.map((credential, index) => (
+            <div key={index}>
+              <h3>Credential</h3>
+              <h4>Type</h4>
+              <p>{credential.type}</p>
+              <h4>Public key</h4>
+              <p>{credential.publicKey}</p>
+              <h4>Identifier</h4>
+              <p>{credential.id}</p>
+            </div>
+          ))}
+          {JSON.stringify(account)}
+          <h2>Pending transaction identifiers</h2>
+          <p>{JSON.stringify(account.pendingTxIds)}</p>
+        </>
+      )}
+    </div>
+  );
+}
 ```
 
 ### Check if the connected account is minted on the blockchain
