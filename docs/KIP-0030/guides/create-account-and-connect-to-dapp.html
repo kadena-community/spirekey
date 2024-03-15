@@ -22,8 +22,11 @@
         (document.getElementById('welcome').innerText =
           `Welcome, ${account.alias}`),
           // Display all account details
-          (document.getElementById('details').innerText =
-            JSON.stringify(account));
+          (document.getElementById('details').innerText = JSON.stringify(
+            account,
+            null,
+            2,
+          ));
       } else {
         // Hide the user details
         accountElement.style.display = 'none';
