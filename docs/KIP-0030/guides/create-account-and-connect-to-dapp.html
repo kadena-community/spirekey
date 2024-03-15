@@ -1,0 +1,39 @@
+<html>
+  <body>
+    <a id="connect" href="">Connect</a>
+    <div id="account">
+      <p id="welcome"></p>
+      <pre id="details"></pre>
+    </div>
+
+    <script type="text/javascript">
+      const urlParams = new URLSearchParams(window?.location?.search);
+      const user = urlParams.get('user');
+
+      const connectElement = document.getElementById('connect');
+      const accountElement = document.getElementById('account');
+
+      if (user) {
+        // Hide the link to SpireKey
+        connectElement.style.display = 'none';
+        // Decode and parse the account data from the URL
+        const account = JSON.parse(atob(user));
+        // Greet the user by the account alias
+        (document.getElementById('welcome').innerText =
+          `Welcome, ${account.alias}`),
+          // Display all account details
+          (document.getElementById('details').innerText =
+            JSON.stringify(account));
+      } else {
+        // Hide the user details
+        accountElement.style.display = 'none';
+        // Prepare the link to Kadena SpireKey
+        const spireKeyHost = 'http://localhost:1337';
+        const networkId = 'development';
+        const returnUrl = btoa(window.location.href);
+        const href = `${spireKeyHost}/connect?returnUrl=${returnUrl}&networkId=${networkId}`;
+        connectElement.setAttribute('href', href);
+      }
+    </script>
+  </body>
+</html>
