@@ -1,0 +1,197 @@
+# Guide to Translate Capabilities for dApps
+
+Your users will need to approve of transactions at some point in your dApp. When
+that moment arises you would want your users to fully comprehend what they are
+signing for. It's an explicit way for you as a dApp developer to communicate the
+terms of your interaction. In this guide you will learn how to effectively
+provide translations for capabilities in a smart contract that your dApp will
+use to govern the interaction between you and your users.
+
+## Smart Contract translation bundle registration
+
+Your users will be interacting with your smart contract. This smart contract is
+the backbone describing the rules of engagement. Part of describing the rules of
+engagement is to make sure all parties involved understand the rules.
+
+To further assist users in understanding the rules of engagement, you can
+categorize the capabilities into two types: `acceptor` and `granter`
+capabilities.
+
+### Acceptor Capabilities
+
+The `acceptor` capabilities asks the user for consent to accept something to
+come in their possession. Think of a user making an order and confirming the
+product that they will receive.
+
+### Granter Capabilities
+
+The `granter` capabilities asks the user to consent of something leaving their
+possession. Think of a user approving a transaction of up to 100.0 KDA.
+
+### Meta data
+
+Now that you understand the two types of capabilities, you can detail the which
+capabilities belong in which category. You need to define a JSON object
+describing your smart contract. This JSON object starts with the description of
+your smart contract on a general level and then delves into the meta data of
+descriptions.
+
+#### Granter Capabilities (Implied)
+
+In most cases the signer of a capability will implicitely take on the role of
+either a `granter` or an `acceptor`. When a capability is not explicitly defined
+as an `acceptor` capability, it will default to a `granter` capability. The
+rational is that granting is more sensitive than accepting in general.
+
+In the below example, the `TRANSFER` capability is a `granter` capability. The
+wallet will display the capability as part of the `granter` capabilities for the
+user who is signing for this capability.
+
+```json
+{
+  "name": "Coin",
+  "module": "coin",
+  "description": "Coin smart contract that governs KDA token.",
+  "hash": "M1gabakqkEi_1N8dRKt4z5lEv1kuC_nxLTnyDCuZIK0",
+  "blessed": [
+    "1os_sLAUYvBzspn5jjawtRpJWiH1WPfhyNraeVvSIwU",
+    "ut_J_ZNkoyaPUEJhiwVeWnkSQn9JT9sQCWKdjjVVrWo",
+    "BjZW0T2ac6qE_I5X8GE4fal6tTqjhLTC7my0ytQSxLU"
+  ],
+  "capabilities": {
+    "TRANSFER": {
+      "granter": {
+        "isSigner": true
+      }
+    }
+  }
+}
+```
+
+#### Acceptor Capabilities
+
+You can also define an `acceptor` capability. For example when minting a NFT, we
+could ask the user to sign for accepting this NFT. The wallet can display this
+capability to signify the NFT coming in their possession, while the `TRANSFER`
+will indicate the amount of KDA they need to pay.
+
+Every smart contract will have their own meta data and will be retrieved by the
+Wallet separately. The `MINT` capability you could define as such:
+
+```json
+{
+  "name": "My NFT",
+  "module": "free.nft",
+  "description": "NFT smart contract that governs NFT tokens.",
+  "hash": "M1gabakqkEi_1N8dRKt4z5lEv1kuC_nxLTnyDCuZIK0",
+  "blessed": [],
+  "capabilities": {
+    "MINT": {
+      "acceptor": {
+        "isSigner": true
+      }
+    }
+  }
+}
+```
+
+#### Multiple roles for a single capability
+
+For some capabilities you might want to define both `granter` and `acceptor`.
+For example when ordering a product, you might want to define the `ORDER`
+capability where the `customer` will take on the role of `acceptor` and the
+`merchant` will take on the role of `granter`. However the wallet needs to
+understand how to assign those roles to the signers accordingly. This requires
+the capability to include both the `acceptor` and `granter` to be part of the
+`capability params`.
+
+For example the `ORDER` capability could be defined as such:
+
+```pact
+(ORDER "order-id" "customer-account" "merchant-account")
+```
+
+The wallet will then try to identify the assosciation of a `customer-account`
+with one of the accounts stored in the wallet. If the account is not found the
+wallet will default to the `granter` role.
+
+```json
+{
+  "name": "Delivery",
+  "module": "user.delivery",
+  "description": "Delivery smart contract that governs delivery of products.",
+  "hash": "M1gabakqkEi_1N8dRKt4z5lEv1kuC_nxLTnyDCuZIK0",
+  "blessed": [],
+  "capabilities": {
+    "ORDER": {
+      "acceptor": {
+        "argIndex": 1
+      },
+      "granter": {
+        "argIndex": 2
+      }
+    }
+  }
+}
+```
+
+### Translation bundle
+
+You can define how the capabilities are displayed in the wallet by providing a
+translation bundle. The translation bundle is a JSON object that contains the
+translations for the capabilities. Each entry for a capability should contain
+either a `granter` or `acceptor` key, but can have both defined.
+
+Each entry can provide for the following information:
+
+| key   | type   | description                               |
+| :---- | :----- | :---------------------------------------- |
+| title | string | The title used in the capability template |
+| value | string | The value used in the capability template |
+| image | string | The image used in the capability template |
+
+You can imagine the translation template defined as such:
+
+```html
+<div class="capability">
+  <div class="image"><img src="{{image}}" alt="{{title + value}}" /></div>
+  <div class="title">{{title}}</div>
+  <div class="value">{{value}}</div>
+</div>
+```
+
+The arguments provided to the capability can be accessed by the string `{1}`,
+`{2}`, `{3}`, etc. The wallet will replace these strings with the arguments
+provided to the capability. You can then proceed to define the translations for
+`TRANSFER`, `MINT` and `ORDER` as:
+
+```json
+{
+  "coin.TRANSFER": {
+    "granter": {
+      "title": "You are sending KDA to {1}",
+      "value": "{2} KDA",
+      "image": "https://example.com/transfer.png"
+    }
+  },
+  "free.nft.MINT": {
+    "acceptor": {
+      "title": "You are receiving a NFT",
+      "value": "NFT ID: {0}",
+      "image": "https://example.com/mint.png"
+    }
+  },
+  "user.delivery.ORDER": {
+    "acceptor": {
+      "title": "You are ordering a product",
+      "value": "Order ID: {0}",
+      "image": "https://example.com/order.png"
+    },
+    "granter": {
+      "title": "You are fulfilling an order",
+      "value": "Order ID: {0}",
+      "image": "https://example.com/fulfill.png"
+    }
+  }
+}
+```
