@@ -2,7 +2,7 @@ import { Surface } from '@/components/Surface/Surface';
 import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { useAccounts } from '@/context/AccountsContext';
 import { Box, ContentHeader, Stack } from '@kadena/react-ui';
-import './LoginHeader.css';
+import './ConnectHeader.css';
 
 type Props = {
   returnUrl: string;
@@ -10,7 +10,7 @@ type Props = {
   networkId?: string;
 };
 
-export default function LoginHeader({ returnUrl, reason, networkId }: Props) {
+export default function ConnectHeader({ returnUrl, reason, networkId }: Props) {
   const { accounts } = useAccounts();
 
   const filteredAccounts = accounts.filter(
@@ -26,11 +26,11 @@ export default function LoginHeader({ returnUrl, reason, networkId }: Props) {
       : `Create an account to identify yourself with on ${returnUrl}.${displayReason}`;
 
   return (
-    <Box padding="lg" className={'login-header'}>
+    <Box padding="lg" className={'connect-header'}>
       <Surface>
         <ContentHeader
           description={description}
-          heading="Login"
+          heading="Connect"
           icon="Account"
         />
         {filteredAccounts.length === 0 && typeof window !== 'undefined' && (

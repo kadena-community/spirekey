@@ -1,4 +1,4 @@
-import { LoginAccount } from '@/app/v1/example/delivery/components/AccountButton';
+import { ConnectAccount } from '@/app/v1/example/delivery/components/AccountButton';
 import { Order } from '@/app/v1/example/delivery/components/Order/Order';
 import { useDelivery } from '@/app/v1/example/delivery/useDelivery';
 import { Surface } from '@/components/Surface/Surface';
@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 interface Props {
   signers: ISigner[];
   orderId: string;
-  account: LoginAccount;
+  account: ConnectAccount;
   order: any;
 }
 

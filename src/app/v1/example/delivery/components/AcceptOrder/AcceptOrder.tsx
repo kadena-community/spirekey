@@ -1,4 +1,4 @@
-import { LoginAccount } from '@/app/v1/example/delivery/components/AccountButton';
+import { ConnectAccount } from '@/app/v1/example/delivery/components/AccountButton';
 import { Order } from '@/app/v1/example/delivery/components/Order/Order';
 import { Surface } from '@/components/Surface/Surface';
 import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
@@ -8,7 +8,7 @@ import { ICap, ISigner } from '@kadena/types';
 interface Props {
   signers: ISigner[];
   signingLink: string;
-  account: LoginAccount;
+  account: ConnectAccount;
   order: any;
 }
 
