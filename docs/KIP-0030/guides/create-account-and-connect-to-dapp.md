@@ -56,9 +56,11 @@ needed.
 
 ## Create an account
 
-In the account creation flow of the Kadena SpireKey wallet dApp, users need to
-provide an account alias, a network, webauthn credentials, an icon and a color.
-The alias helps users easily identify different accounts in their Kadena
+Users without a Kadena SpireKey account on the network you specified will be
+redirected to the `/register` page of Kadena SpireKey to create an account on
+the fly. In the account creation flow of the Kadena SpireKey wallet dApp, users
+need to provide an account alias, a network, webauthn credentials, an icon and a
+color. The alias helps users easily identify different accounts in their Kadena
 SpireKey wallet. The icon and color help users help users recognize the device
 they registered in their Kadena SpireKey wallet. The network determines on what
 network users will create their account. Choose Devnet if you are following
@@ -127,7 +129,9 @@ this account for the user to sign before it is confirmed on the blockchain. If
 an account creation transaction is completed before users confirm connecting to
 your dApp, then `pendingTxIds` will be empty. The Chainweb Data API to poll
 would look as follows, given the pending transaction id from the example account
-object above.
+object above. Other scenarios exist where `pendingTxIds` contains transaction
+identifiers related to transactions other than account creation, but these are
+beyond the scope of this guide.
 
 ```
 https://estats.testnet.chainweb.com/txs/tx?requestkey=gzlhITOU8hMaOXHKcSJgxLl0Ir8j2crUnFh20cGcxsR
