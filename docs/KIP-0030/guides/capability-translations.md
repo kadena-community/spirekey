@@ -4,8 +4,8 @@ Your users will need to approve of transactions at some point in your dApp. When
 that moment arises you would want your users to fully comprehend what they are
 signing for. It's an explicit way for you as a dApp developer to communicate the
 terms of your interaction. In this guide you will learn how to effectively
-provide translations for capabilities in a smart contract that your dApp will
-use to govern the interaction between you and your users.
+provide translations for capabilities in a smart contract. Those translations
+are effectively asking your users for explicit consent.
 
 ## Smart Contract translation bundle registration
 
@@ -194,4 +194,106 @@ provided to the capability. You can then proceed to define the translations for
     }
   }
 }
+```
+
+### Registering the translation bundle and meta data
+
+You can register the translation bundle and meta data as part of your smart
+contract by implementing: `translatable` and `meta` in your smart contract:
+
+```pact
+(interface translatable
+  (defschema translation
+    bundle-hash : string
+    uri         : string
+  )
+  (defun get-translation:object{translation}(country:string locale:string)
+    @doc "Returns the hash and uri associated to the requested bundle"
+  )
+)
+(interface meta
+  (defschema meta-data
+    meta-hash : string
+    uri       : string
+  )
+  (defun get-meta:object{meta-data}()
+    @doc "Returns the hash and uri associated to the meta data"
+  )
+)
+```
+
+After your smart contract has the `translatable` and `meta` interfaces
+implemented, the wallet will have all the necessary information to display the
+capabilities in the user's preferred language. This includes dApps that make use
+of your smart contract that are not developed by you.
+
+#### Translation bundle registration
+
+You first need to implement the `translatable` interface in your smart contract.
+You will need to create a table holding the translation bundle hashes and URIs.
+Wallets will use the `get-bundle-hash` function to retrieve the translation
+bundle and verify the hash with the one computed from the translation bundle.
+
+In psuedo code the wallet will do the following:
+
+```js
+var translation = getTranslation('us', 'en');
+var bundle = getBundle(translation.uri);
+if (blake2b256(JSON.stringify(bundle)) != translation.bundle - hash)
+  throw 'Invalid translation bundle';
+```
+
+In your smart contract you will have to provide a way to store the bundles. Here
+is an example implementation:
+
+```pact
+(module my-module G
+  (defcap G() (enforce false "Not upgradable module"))
+  (implements translatable)
+  (deftable translation-table:{translatable.translation-schema})
+  (defun get-translation:object{translatable.translation-schema}(country:string locale:string)
+    (read translation-table (format "{}_{}" [country locale]))
+  )
+
+  ; register or update bundle
+  (defun register-bundle (country:string locale:string bundle-hash:string uri:string)
+    (write translation-table (format "{}_{}" [country locale])
+      { 'bundle-hash : bundle-hash
+      , 'uri         : uri
+      }
+    )
+  )
+)
+```
+
+#### Meta data registration
+
+You also need to implement the `meta` interface in your smart contract. The
+wallet will similarly to the translation bundle, get the meta data and verify
+the integrity of the data with the hash provided.
+
+In pseudo code the wallet will do the following:
+
+```js
+var meta = getMeta();
+var data = getMeta(meta.uri);
+if (blake2b256(JSON.stringify(data)) != meta.meta - hash)
+  throw 'Invalid meta data';
+```
+
+In your smart contract you will have to provide a way for the wallet to retrieve
+the meta data. Here is an example implementation:
+
+```pact
+(module my-module G
+  (defcap G() (enforce false "Not upgradable module"))
+  (implements meta)
+  (defconst meta-data "M1gabakqkEi_1N8dRKt4z5lEv1kuC_nxLTnyDCuZIK0")
+  (defconst meta-uri "https://example.com/meta.json")
+  (defun get-meta:object{meta.meta-data}()
+    { 'meta-hash : meta-data
+    , 'uri       : meta-uri
+    }
+  )
+)
 ```
