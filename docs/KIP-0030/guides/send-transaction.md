@@ -125,10 +125,10 @@ navigate to the wallet to handle the signing.
 ### Step 3 - Getting your signed transaction from the SpireKey wallet
 
 Once all signatures for a transaction have been successfully collected from the
-wallet, the signed transaction as well as other optional parameters will be
-returned in the url parameters. In the case that the transaction was not
-successfully signed, the unsigned transaction will be returned in the url
-parameters.
+wallet, the user will be navigated back to the returnUrl you provided and the
+signed transaction as well as other optional parameters will be returned in the
+url parameters. In the case that the transaction was not successfully signed,
+the unsigned transaction will be returned in the url parameters.
 
 | Parameter    | Type     | Required | Description                                                                                |
 | ------------ | -------- | -------- | ------------------------------------------------------------------------------------------ |
@@ -138,7 +138,7 @@ parameters.
 The signed transaction will be valid for the amount of time specified as the
 value of `ttl` in the meta data used to construct the transaction. During this
 time frame the dApp can choose perform a `local/preflight=true` call to see if
-the transaction is valid before sending it to be mined.
+the transaction is valid and then send it to be mined.
 
 Once the transaction is submitted, you can poll for the transaction status
 against the Chainweb Data API and deem the transaction successfully mined when
