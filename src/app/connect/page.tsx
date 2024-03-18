@@ -25,22 +25,17 @@ type ConnectProps = {
 };
 
 export default function Connect({ searchParams }: ConnectProps) {
-  const {
-    returnUrl,
-    reason = '',
-    optimistic = false,
-    networkId,
-  } = searchParams;
+  const { returnUrl, reason = '', optimistic = true, networkId } = searchParams;
 
   return (
     <Stack flexDirection="column" gap="lg" style={{ height: '100svh' }}>
       <ConnectHeader
-        returnUrl={Buffer.from(returnUrl, 'base64').toString()}
-        reason={Buffer.from(reason, 'base64').toString()}
+        returnUrl={decodeURIComponent(returnUrl)}
+        reason={decodeURIComponent(reason)}
         networkId={networkId}
       />
       <CardCollection
-        returnUrl={Buffer.from(returnUrl, 'base64').toString()}
+        returnUrl={decodeURIComponent(returnUrl)}
         optimistic={optimistic}
         networkId={networkId}
       />
