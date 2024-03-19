@@ -42,6 +42,11 @@ JSON object describing your smart contract. This JSON object starts with the
 description of your smart contract on a general level and then delves into the
 meta data of descriptions.
 
+This JSON object will be stored outside of your smart contract. You'll have to
+provide a way for the wallets to retrieve the raw meta data and translation
+bundle. Both will have their uri stored along with the hash resulting from the
+blake2b256 encoded hash of the JSON.
+
 #### Granter Capabilities
 
 When signing for capabilities the wallet will display the capabilities grouped
