@@ -37,10 +37,10 @@ contracts like `coin` cannot bring this capability into scope when trying to
 debit an account.
 
 To simplify working with the `coin` contract, the `webauthn-wallet` contract has
-implemented custom capabilities `webauthn-wallet.GAS_PAYER` and
-`webauthn-wallet.TRANSFER` that can be used in place of the original
-corresponding `coin.GAS` and `coin.TRANSFER` capabilities to satisfy the guard
-necessary for debiting an account.
+implemented its own function `webauthn-wallet.transfer` and custom capabilities
+`webauthn-wallet.GAS_PAYER` and `webauthn-wallet.TRANSFER` that can be used in
+place of the original corresponding `coin.GAS` and `coin.TRANSFER` capabilities
+to satisfy the guard necessary for debiting an account.
 
 The following is an example of what the `cmd` value for an unsigned `coin`
 transfer transaction from a SpireKey wallet could look like:
@@ -90,6 +90,13 @@ transfer transaction from a SpireKey wallet could look like:
 }
 ```
 
+> NOTE: `coin` is a non-upgradable contract which means that it will likely not
+> be updated to accomodate `webauthn-wallet` accounts. This is a special case
+> which is why the `webauthn-wallet` contract implements specific functions and
+> capabilities that can be used in place of the corresponding versions in the
+> `coin` contract. Other contracts should be implemented to be compatible with
+> `webauthn-wallet` accounts by default.
+
 ### Step 2 - Send data to the SpireKey wallet
 
 When you are finished creating the unsigned transaction, you can then send that
@@ -135,10 +142,15 @@ the unsigned transaction will be returned in the url parameters.
 | transaction  | string   | Required | A base64 encoded string of the signed or unsigned transaction                              |
 | pendingTxIds | string[] | Optional | Pending transaction IDs that can be used to move forward in an optimistic flow application |
 
-The signed transaction will be valid for the amount of time specified as the
-value of `ttl` in the meta data used to construct the transaction. During this
-time frame the dApp can choose perform a `local/preflight=true` call to see if
-the transaction is valid and then send it to be mined.
+To verify that your transaction has been successfully signed, you can check the
+`sigs` field in your transactions. If it has undefined signatures, then you will
+not be able to proceed with submitting the transaction.
+
+If the transaction has been successfully signed, it will be valid for the amount
+of time specified as the value of `ttl` in the meta data used to construct the
+transaction. During this time frame the dApp can choose perform a
+`local/preflight=true` call to see if the transaction is valid and then send it
+to be mined.
 
 Once the transaction is submitted, you can poll for the transaction status
 against the Chainweb Data API and deem the transaction successfully mined when
