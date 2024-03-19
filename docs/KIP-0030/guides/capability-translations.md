@@ -2,10 +2,10 @@
 
 Your users will need to approve of transactions at some point in your dApp. When
 that moment arises you would want your users to fully comprehend what they are
-signing for. It's an explicit way for you as a dApp developer to communicate the
-terms of your interaction. In this guide you will learn how to effectively
-provide translations for capabilities in a smart contract. Those translations
-are effectively asking your users for explicit consent.
+signing for. When asking a user for consent, translations can provide an
+explicit way for you as a dApp developer to communicate the terms of your
+interaction. In this guide you will learn how to effectively provide
+translations for capabilities in a smart contract.
 
 ## Smart Contract translation bundle registration
 
@@ -13,9 +13,15 @@ Your users will be interacting with your smart contract. This smart contract is
 the backbone describing the rules of engagement. Part of describing the rules of
 engagement is to make sure all parties involved understand the rules.
 
-To further assist users in understanding the rules of engagement, you can
-categorize the capabilities into two types: `acceptor` and `granter`
-capabilities.
+At Kadena we already made the smart contract human readable. However having the
+smart contract human readible, does not mean everyone will understand the smart
+contract. Translations allow you to explain the capability in human
+understandable way. The capabilities are a form of abstraction that allows the
+smart contract to communicate the required consent of a user.
+
+Before we delve into the details of how to provide translations for capabilities
+we will categorize the capabilities into two types: `acceptor` and `granter`.
+This will further assist users in understanding the rules of engagement.
 
 ### Acceptor Capabilities
 
@@ -38,15 +44,20 @@ meta data of descriptions.
 
 #### Granter Capabilities
 
-When signing for a capability the wallet will display the capability divided
-into `granter` and `acceptor` capabilities. A capability will be classified as a
-`granter` capability by default, but should regardless be explicitely defined as
-such when applicable. The rational is that granting is more sensitive than
+When signing for capabilities the wallet will display the capabilities grouped
+by `granter` and `acceptor` capabilities. A capability will be classified as a
+`granter` capability by default, but should regardless be explicitly defined as
+such when applicable. The rationale is that granting is more sensitive than
 accepting in general.
 
 In the following example, the `TRANSFER` capability is a `granter` capability.
 The wallet will display the capability as part of the `granter` capabilities for
 the user who is signing for this capability.
+
+NOTE: The `name, module, description, hash` and `blessed` fields are fields that
+currently are not used. They are already there to allow wallets to make use of
+those fields in the future. For example to help a user understand the smart
+contract with a explorer view.
 
 ```json
 {
@@ -236,14 +247,14 @@ After your smart contract has the `translatable` and `meta` interfaces
 implemented, the wallet will have all the necessary information to display the
 capabilities in the user's preferred language, given you have provided a
 translation for that language. This includes dApps that make use of your smart
-contract that are not developed by you or smart contract embedding your smart
+contract that are not developed by you or smart contracts embedding your smart
 contract.
 
 #### Translation bundle registration
 
 You first need to implement the `translatable` interface in your smart contract.
 You will need to create a table holding the translation bundle hashes and URIs.
-Wallets will use the `get-bundle-hash` function to retrieve the translation
+Wallets will use the `get-translation` function to retrieve the translation
 bundle and verify the hash with the one computed from the translation bundle.
 
 In pseudo code the wallet will do the following:
@@ -251,7 +262,7 @@ In pseudo code the wallet will do the following:
 ```js
 var translation = getTranslation('us', 'en');
 var bundle = getBundle(translation.uri);
-if (blake2b256(JSON.stringify(bundle)) != translation.bundle - hash)
+if (blake2b256(JSON.stringify(bundle)) != translation['bundle-hash'])
   throw 'Invalid translation bundle';
 ```
 
@@ -288,8 +299,8 @@ In pseudo code the wallet will do the following:
 
 ```js
 var meta = getMeta();
-var data = getMeta(meta.uri);
-if (blake2b256(JSON.stringify(data)) != meta.meta - hash)
+var data = getMetaData(meta.uri);
+if (blake2b256(JSON.stringify(data)) != meta['meta-hash'])
   throw 'Invalid meta data';
 ```
 
@@ -300,6 +311,8 @@ the meta data. Here is an example implementation:
 (module my-module G
   (defcap G() (enforce false "Not upgradable module"))
   (implements meta)
+
+  ; compute the hash blake2b256(JSON.stringify(meta-data))
   (defconst meta-data "M1gabakqkEi_1N8dRKt4z5lEv1kuC_nxLTnyDCuZIK0"
     "The hash of the JSON object describing the meta data"
   )
