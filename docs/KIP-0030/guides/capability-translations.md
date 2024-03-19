@@ -30,22 +30,23 @@ possession. Think of a user approving a transaction of up to 100.0 KDA.
 
 ### Meta data
 
-Now that you understand the two types of capabilities, you can detail the which
-capabilities belong in which category. You need to define a JSON object
-describing your smart contract. This JSON object starts with the description of
-your smart contract on a general level and then delves into the meta data of
-descriptions.
+Now that you understand the two types of capabilities, you can detail in which
+category a capability belongs. To define these categories you need to define a
+JSON object describing your smart contract. This JSON object starts with the
+description of your smart contract on a general level and then delves into the
+meta data of descriptions.
 
-#### Granter Capabilities (Implied)
+#### Granter Capabilities
 
-In most cases the signer of a capability will implicitely take on the role of
-either a `granter` or an `acceptor`. When a capability is not explicitly defined
-as an `acceptor` capability, it will default to a `granter` capability. The
-rational is that granting is more sensitive than accepting in general.
+When signing for a capability the wallet will display the capability divided
+into `granter` and `acceptor` capabilities. A capability will be classified as a
+`granter` capability by default, but should regardless be explicitely defined as
+such when applicable. The rational is that granting is more sensitive than
+accepting in general.
 
-In the below example, the `TRANSFER` capability is a `granter` capability. The
-wallet will display the capability as part of the `granter` capabilities for the
-user who is signing for this capability.
+In the following example, the `TRANSFER` capability is a `granter` capability.
+The wallet will display the capability as part of the `granter` capabilities for
+the user who is signing for this capability.
 
 ```json
 {
@@ -60,6 +61,11 @@ user who is signing for this capability.
   ],
   "capabilities": {
     "TRANSFER": {
+      "granter": {
+        "isSigner": true
+      }
+    }
+    "other capabilities": {
       "granter": {
         "isSigner": true
       }
@@ -139,8 +145,8 @@ wallet will default to the `granter` role.
 
 You can define how the capabilities are displayed in the wallet by providing a
 translation bundle. The translation bundle is a JSON object that contains the
-translations for the capabilities. Each entry for a capability should contain
-either a `granter` or `acceptor` key, but can have both defined.
+translations for capabilities. Each entry for a capability should contain either
+a `granter` or `acceptor` key, but can have both defined.
 
 Each entry can provide for the following information:
 
@@ -150,7 +156,7 @@ Each entry can provide for the following information:
 | value | string | The value used in the capability template |
 | image | string | The image used in the capability template |
 
-You can imagine the translation template defined as such:
+You can imagine the translation template defined in a wallet as such:
 
 ```html
 <div class="capability">
@@ -196,6 +202,10 @@ provided to the capability. You can then proceed to define the translations for
 }
 ```
 
+Keep in mind that the translations should be provided by the smart contract
+developer. So despite this example showing `coin` translations, you would not be
+providing translations for the `coin` smart contract.
+
 ### Registering the translation bundle and meta data
 
 You can register the translation bundle and meta data as part of your smart
@@ -224,8 +234,10 @@ contract by implementing: `translatable` and `meta` in your smart contract:
 
 After your smart contract has the `translatable` and `meta` interfaces
 implemented, the wallet will have all the necessary information to display the
-capabilities in the user's preferred language. This includes dApps that make use
-of your smart contract that are not developed by you.
+capabilities in the user's preferred language, given you have provided a
+translation for that language. This includes dApps that make use of your smart
+contract that are not developed by you or smart contract embedding your smart
+contract.
 
 #### Translation bundle registration
 
@@ -234,7 +246,7 @@ You will need to create a table holding the translation bundle hashes and URIs.
 Wallets will use the `get-bundle-hash` function to retrieve the translation
 bundle and verify the hash with the one computed from the translation bundle.
 
-In psuedo code the wallet will do the following:
+In pseudo code the wallet will do the following:
 
 ```js
 var translation = getTranslation('us', 'en');
@@ -288,8 +300,12 @@ the meta data. Here is an example implementation:
 (module my-module G
   (defcap G() (enforce false "Not upgradable module"))
   (implements meta)
-  (defconst meta-data "M1gabakqkEi_1N8dRKt4z5lEv1kuC_nxLTnyDCuZIK0")
-  (defconst meta-uri "https://example.com/meta.json")
+  (defconst meta-data "M1gabakqkEi_1N8dRKt4z5lEv1kuC_nxLTnyDCuZIK0"
+    "The hash of the JSON object describing the meta data"
+  )
+  (defconst meta-uri "https://example.com/meta.json"
+    "The URI to retrieve the meta data"
+  )
   (defun get-meta:object{meta.meta-data}()
     { 'meta-hash : meta-data
     , 'uri       : meta-uri
