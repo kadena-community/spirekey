@@ -113,7 +113,7 @@ SpireKey.
 | Parameter    | Type    | Required | Description                                                                                                                                                                                                                                                                                                                                                                               |
 | ------------ | ------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | transaction  | string  | Required | A base64 encoded string of the unsigned transaction                                                                                                                                                                                                                                                                                                                                       |
-| returnUrl    | string  | Required | The url that the wallet should redirect users to when they have signed the transaction                                                                                                                                                                                                                                                                                                    |
+| returnUrl    | string  | Required | The encoded url that the wallet should redirect users to when they have signed the transaction                                                                                                                                                                                                                                                                                            |
 | translations | string  | Optional | TBD                                                                                                                                                                                                                                                                                                                                                                                       |
 | optimistic   | boolean | Optional | This allows dApps to optimistically move forward in their transaction flows without having to wait for the transaction to be confirmed on the blockchain. When this is enabled, `pendingTxIds` will be returned so that the dApp can keep track of the status of the submitted transactions and update the UI accordingly. Please see the docs for more information about how this works. |
 
@@ -121,9 +121,9 @@ The following is an example of how you would construct the route:
 
 ```ts
 // tx is the unsigned transaction from the previous step
-const encodedTx = Buffer.from(JSON.stringify(tx)).toString('base64'); //needs an update?
-const returnUrl = 'YOUR_DAPP_RETURN_LOCATION';
-const sendTransactionUrl = `https://spirekey.kadena.io/sign?transaction=${encodedTx}&returnUrl=${returnUrl}`;
+const encodedTx = Buffer.from(JSON.stringify(tx)).toString('base64');
+const encodedReturnUrl = encodeURIComponent(RETURN_URL); // NOTE: this is not how it works right now
+const sendTransactionUrl = `https://spirekey.kadena.io/sign?transaction=${encodedTx}&returnUrl=${encodedReturnUrl}`;
 ```
 
 Once you construct the route to the wallet with the required parameters, you can
