@@ -11,13 +11,15 @@ translations for capabilities in a smart contract.
 
 Your users will be interacting with your smart contract. This smart contract is
 the backbone describing the rules of engagement. Part of describing the rules of
-engagement is to make sure all parties involved understand the rules.
+engagement is to make sure all users involved understand the rules.
 
-At Kadena we already made the smart contract human readable. However having the
-smart contract human readible, does not mean everyone will understand the smart
-contract. Translations allow you to explain the capability in human
-understandable way. The capabilities are a form of abstraction that allows the
-smart contract to communicate the required consent of a user.
+Kadena created Pact, a smart contract language, to write contracts that are more
+human readable than other languages, however, we still want to further simplify
+concepts for users who are just interacting with a dApp. In Pact, capabilities
+are a form of abstraction that allows the smart contract to communicate the
+required consent of a user. To communicate the most relevant information to the
+user, we offer the ability to provide translations for capabilities and do so by
+categorizing them into two types: `acceptor` and `granter`.
 
 Before we delve into the details of how to provide translations for capabilities
 we will categorize the capabilities into two types: `acceptor` and `granter`.
