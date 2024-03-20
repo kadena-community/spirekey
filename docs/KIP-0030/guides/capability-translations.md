@@ -99,8 +99,10 @@ could ask the user to sign for accepting this NFT. The wallet can display this
 capability to signify the NFT coming in their possession, while the `TRANSFER`
 will indicate the amount of KDA they need to pay.
 
-Every smart contract will have their own meta data and will be retrieved by the
-Wallet separately. The `MINT` capability you could define as such:
+For example, you are utilizing functionality from the `coin` contract and an NFT
+contract to construct a transaction. Keep in mind that every smart contract will
+have its own meta data and translations that will be retrieved by the Wallet
+separately. The `MINT` capability you could define as such:
 
 ```json
 {
@@ -118,6 +120,10 @@ Wallet separately. The `MINT` capability you could define as such:
   }
 }
 ```
+
+With the provided meta data for the `My NFT` and `coin` contracts, the wallet
+knows that `free.nft.MINT` is an `acceptor` capability and `coin.TRANSFER` is a
+`granting` capability.
 
 #### Multiple roles for a single capability
 
