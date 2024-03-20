@@ -68,7 +68,7 @@ export function continueCopy(options: IContinuationPayloadObject['cont']) {
     composePactCommand(
       continuation(options),
       setMeta({
-        chainId: '3',
+        chainId: '15',
         gasLimit: 2000,
         gasPrice: 0.0000001,
         ttl: 60000,
@@ -82,7 +82,7 @@ export function continueCopy(options: IContinuationPayloadObject['cont']) {
           1,
         ),
       ]),
-      setNetworkId('development'),
+      setNetworkId('testnet04'),
     ),
     createTransaction,
     signWithKeyPair({

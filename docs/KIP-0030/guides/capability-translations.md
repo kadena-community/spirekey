@@ -40,7 +40,7 @@ Now that you understand the two types of capabilities, you can detail in which
 category a capability belongs. To define these categories you need to define a
 JSON object describing your smart contract. This JSON object starts with the
 description of your smart contract on a general level and then delves into the
-meta data of descriptions.
+meta data of capabilities.
 
 This JSON object will be stored outside of your smart contract. You'll have to
 provide a way for the wallets to retrieve the raw meta data and translation
@@ -133,9 +133,11 @@ For example the `ORDER` capability could be defined as such:
 (ORDER "order-id" "customer-account" "merchant-account")
 ```
 
-The wallet will then try to identify the assosciation of a `customer-account`
-with one of the accounts stored in the wallet. If the account is not found the
-wallet will default to the `granter` role.
+The wallet will try to identify if the signer is associated with the `customer`
+or with the `merchant` by comparing the provided `customer-account` and
+`merchant-account` with the accounts stored in the wallet. This allows the
+wallet to display the capability in the correct category and looks up the
+translation for the correct role.
 
 ```json
 {
@@ -188,7 +190,9 @@ provided to the capability. You can then proceed to define the translations for
 `TRANSFER`, `MINT` and `ORDER` as:
 
 ```json
+// coin module
 {
+  ...,
   "coin.TRANSFER": {
     "granter": {
       "title": "You are sending KDA to {1}",
@@ -196,13 +200,22 @@ provided to the capability. You can then proceed to define the translations for
       "image": "https://example.com/transfer.png"
     }
   },
+  ...
+},
+// free.nft module
+{
+  ...,
   "free.nft.MINT": {
     "acceptor": {
       "title": "You are receiving a NFT",
       "value": "NFT ID: {0}",
       "image": "https://example.com/mint.png"
     }
-  },
+  }
+},
+// user.delivery module
+{
+  ...,
   "user.delivery.ORDER": {
     "acceptor": {
       "title": "You are ordering a product",
@@ -215,12 +228,15 @@ provided to the capability. You can then proceed to define the translations for
       "image": "https://example.com/fulfill.png"
     }
   }
+  ...,
 }
 ```
 
-Keep in mind that the translations should be provided by the smart contract
-developer. So despite this example showing `coin` translations, you would not be
-providing translations for the `coin` smart contract.
+The wallet will fetch all translation bundles registered with the smart contract
+separately. This means dApp developers only need to make sure the translations
+are registered with the smart contract correctly. The wallet will then take over
+the responsibility of fetching the translations and displaying the capabilities
+in the user's preferred language.
 
 ### Registering the translation bundle and meta data
 
@@ -262,6 +278,18 @@ You will need to create a table holding the translation bundle hashes and URIs.
 Wallets will use the `get-translation` function to retrieve the translation
 bundle and verify the hash with the one computed from the translation bundle.
 
+```pact
+(interface translatable
+  (defschema translation
+    bundle-hash : string
+    uri         : string
+  )
+  (defun get-translation:object{translation}(country:string locale:string)
+    @doc "Returns the hash and uri associated to the requested bundle"
+  )
+)
+```
+
 In pseudo code the wallet will do the following:
 
 ```js
@@ -299,6 +327,18 @@ is an example implementation:
 You also need to implement the `meta` interface in your smart contract. The
 wallet will similarly to the translation bundle, get the meta data and verify
 the integrity of the data with the hash provided.
+
+```pact
+(interface meta
+  (defschema meta-data
+    meta-hash : string
+    uri       : string
+  )
+  (defun get-meta:object{meta-data}()
+    @doc "Returns the hash and uri associated to the meta data"
+  )
+)
+```
 
 In pseudo code the wallet will do the following:
 
