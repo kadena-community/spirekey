@@ -83,9 +83,8 @@ A Kadena SpireKey account has one or more devices, but initially it will only
 have the one device you created a Webauthn credential with in the previous step.
 Adding and removing devices of an account will be explained in another guide. To
 help you recognize your device among other devices associated with an account
-you must choose a `Device type` in this step. The device type is only stored on
-your device and cannot been seen by others. You can choose one of the following
-options:
+you must choose a `Device type` in this step. You can choose one of the
+following options:
 
 - phone
 - desktop
@@ -95,10 +94,9 @@ options:
 
 On the `Color` step you pick a color to make your device even more recognizable
 among other devices with your account. This is particularly useful when you add
-more than one device of the same device type. The color is only stored on your
-device and cannot been seen by others. The `Color` step is the final step of the
-registration flow. Press the `Complete` button to send a transaction to the
-blockchain and definitively create your new account.
+more than one device of the same device type. The `Color` step is the final step
+of the registration flow. Press the `Complete` button to send a transaction to
+the blockchain and definitively create your new account.
 
 ## Registration completed
 
