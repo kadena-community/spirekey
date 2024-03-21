@@ -137,7 +137,7 @@ export default function Sign(props: Props) {
 
     // No more available signers in this wallet (we don't use `tx` here since setTx is async)
     if (newAmountOfSigsToSign === 0) {
-      const params = new URLSearchParams();
+      const params = new URLSearchParams(new URL(returnUrl).search);
       params.append(
         'transaction',
         Buffer.from(JSON.stringify(signedTx)).toString('base64'),

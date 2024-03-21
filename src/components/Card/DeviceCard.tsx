@@ -7,18 +7,18 @@ import CardBottom from './CardBottom';
 import DeviceIcons from './DeviceIcons';
 
 type CardProps = {
+  color: string;
   account: Account;
   balancePercentage?: number;
   isLoading?: boolean;
 };
 
 export default function DeviceCard({
+  color,
   account,
   balancePercentage = 10,
   isLoading,
 }: CardProps) {
-  // @todo: use the color of a specific device
-  const color = account.devices[0].color;
   // @todo: check isRegistered for a specific device
   const hasPendingTX = !!account.devices[0].pendingRegistrationTx;
 

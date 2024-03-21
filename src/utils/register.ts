@@ -100,7 +100,7 @@ const registerAccountCommand = ({
   domain: string;
   networkId: string;
 }) => {
-  const displayName = `${deviceType}_${color} `;
+  const displayName = `${deviceType}_${color}`;
   return composePactCommand(
     execution(
       `

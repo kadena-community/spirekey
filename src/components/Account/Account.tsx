@@ -66,6 +66,7 @@ export function Account({
         return (
           <Fragment key={d['credential-id']}>
             <DeviceCard
+              color={d.color}
               account={account}
               balancePercentage={balancePercentage}
             />

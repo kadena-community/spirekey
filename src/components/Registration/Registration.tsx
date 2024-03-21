@@ -67,7 +67,6 @@ export default function Registration({ redirectUrl, networkId }: Props) {
     ...defaultFormData,
     networkId: networkId || defaultFormData.networkId,
   });
-  console.log('data', data);
 
   const updateFields = (fields: Partial<FormData>) =>
     setData((current) => ({ ...current, ...fields }));
@@ -122,6 +121,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
     <Stack flexDirection="column" gap="md">
       <Box width="100%" padding="lg">
         <DeviceCard
+          color={data.color}
           account={{
             alias: data.alias,
             accountName: data.accountName,
