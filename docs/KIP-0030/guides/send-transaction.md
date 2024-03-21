@@ -8,15 +8,16 @@ wallet, and how you should proceed with the data you receive in return.
 
 ### Step 1 - Create a transaction using a SpireKey account
 
-Constructing a transaction using a SpireKey account is primarly going to be the
-same as typical transactions however there are some things to keep in mind.
+Constructing a transaction that requires a signature from a SpireKey account is
+primarly going to be the same as typical transactions however there are some
+things to keep in mind.
 
 #### WebAuthn public key scheme
 
 WebAuthn registration uses a different crytographic algorithm to generate public
 key pairs than previous accounts on Kadena. This means that the structure of the
-public key will need to be differentiated from the previous public keys using
-the `scheme` attribute.
+public key will need to be differentiated from the other public keys using the
+`scheme` attribute.
 
 So instead of providing a public key as a string, you will need to pass in an
 object to represent a webAuthn public key:
@@ -25,7 +26,7 @@ object to represent a webAuthn public key:
 { pubKey: webAuthnPublicKey, scheme: 'WebAuthn' }
 ```
 
-### WebAuthn account guard
+#### WebAuthn account guard
 
 SpireKey uses the `webauthn-wallet` contract to create and manage accounts. When
 creating an account for the `coin` contract or other `fungible-v2` contracts, a
@@ -42,51 +43,59 @@ implemented its own function `webauthn-wallet.transfer` and custom capabilities
 place of the original corresponding `coin.GAS` and `coin.TRANSFER` capabilities
 to satisfy the guard necessary for debiting an account.
 
-The following is an example of what the `cmd` value for an unsigned `coin`
-transfer transaction from a SpireKey wallet could look like:
+The following is an example of what an unsigned `coin` transfer transaction from
+a SpireKey wallet could look like:
 
 ```json
 {
-  "payload": {
-    "exec": {
-      "code": "(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.transfer \"c:bF51UeSqhrSjEET1yUWBYabDTfujlAZke4R70I4rrHc\" \"k:9cb650e653f563d782182a67b73a4d5d553aaf6f1c4928087bb7d91d59b8a227\" 2.0)",
-      "data": {}
-    }
+  "cmd": {
+    "payload": {
+      "exec": {
+        "code": "(n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.transfer \"c:bF51UeSqhrSjEET1yUWBYabDTfujlAZke4R70I4rrHc\" \"k:9cb650e653f563d782182a67b73a4d5d553aaf6f1c4928087bb7d91d59b8a227\" 2.00000000000)",
+        "data": {}
+      }
+    },
+    "nonce": "kjs:nonce:1710872658811",
+    "signers": [
+      {
+        "pubKey": "WEBAUTHN-a50102032620012158200df3845d4ad0f626a3c860715ad3d4bd7bbee03330aa32878d6baa045e98f64f2258206a93722f35f3d0692dc4c26703653498eae51816ffb7b70e4670b010103bd9eb",
+        "scheme": "WebAuthn",
+        "clist": [
+          {
+            "name": "n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.GAS_PAYER",
+            "args": [
+              "c:bF51UeSqhrSjEET1yUWBYabDTfujlAZke4R70I4rrHc",
+              {
+                "int": 1
+              },
+              1
+            ]
+          },
+          {
+            "name": "n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.TRANSFER",
+            "args": [
+              "c:bF51UeSqhrSjEET1yUWBYabDTfujlAZke4R70I4rrHc",
+              "k:9cb650e653f563d782182a67b73a4d5d553aaf6f1c4928087bb7d91d59b8a227",
+              {
+                "decimal": "2.00000000000"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "gasLimit": 2000,
+      "gasPrice": 1e-7,
+      "sender": "c:bF51UeSqhrSjEET1yUWBYabDTfujlAZke4R70I4rrHc",
+      "ttl": 60000,
+      "creationTime": 1710872658,
+      "chainId": "1"
+    },
+    "networkId": "testnet04"
   },
-  "nonce": "kjs:nonce:1710783727628",
-  "signers": [
-    {
-      "pubKey": "WEBAUTHN-a50102032620012158200df3845d4ad0f626a3c860715ad3d4bd7bbee03330aa32878d6baa045e98f64f2258206a93722f35f3d0692dc4c26703653498eae51816ffb7b70e4670b010103bd9eb",
-      "scheme": "WebAuthn",
-      "clist": [
-        {
-          "name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.GAS_PAYER",
-          "args": [
-            "c:bF51UeSqhrSjEET1yUWBYabDTfujlAZke4R70I4rrHc",
-            { "int": 1 },
-            1
-          ]
-        },
-        {
-          "name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.TRANSFER",
-          "args": [
-            "c:bF51UeSqhrSjEET1yUWBYabDTfujlAZke4R70I4rrHc",
-            "k:9cb650e653f563d782182a67b73a4d5d553aaf6f1c4928087bb7d91d59b8a227",
-            { "decimal": "2" }
-          ]
-        }
-      ]
-    }
-  ],
-  "meta": {
-    "gasLimit": 2000,
-    "gasPrice": 1e-7,
-    "sender": "c:bF51UeSqhrSjEET1yUWBYabDTfujlAZke4R70I4rrHc",
-    "ttl": 60000,
-    "creationTime": 1710783727,
-    "chainId": "1"
-  },
-  "networkId": "testnet04"
+  "hash": "6DGS9ML91o6S9BLgo_lBzLPkRZSb5RImCL06zjrbkD0",
+  "sigs": [null]
 }
 ```
 
@@ -113,16 +122,20 @@ SpireKey.
 | Parameter    | Type    | Required | Description                                                                                                                                                                                                                                                                                                                                                                               |
 | ------------ | ------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | transaction  | string  | Required | A base64 encoded string of the unsigned transaction                                                                                                                                                                                                                                                                                                                                       |
-| returnUrl    | string  | Required | The encoded url that the wallet should redirect users to when they have signed the transaction                                                                                                                                                                                                                                                                                            |
-| translations | string  | Optional | TBD                                                                                                                                                                                                                                                                                                                                                                                       |
+| returnUrl    | string  | Required | The url, encoded as a uriComponent, that the wallet should redirect users to when they have signed the transaction                                                                                                                                                                                                                                                                        |
+| translations | string  | Optional | This allows dApp developers to pass custom translations. You can read more about this in the Translations guide                                                                                                                                                                                                                                                                           |
 | optimistic   | boolean | Optional | This allows dApps to optimistically move forward in their transaction flows without having to wait for the transaction to be confirmed on the blockchain. When this is enabled, `pendingTxIds` will be returned so that the dApp can keep track of the status of the submitted transactions and update the UI accordingly. Please see the docs for more information about how this works. |
 
 The following is an example of how you would construct the route:
 
 ```ts
 // tx is the unsigned transaction from the previous step
-const encodedTx = Buffer.from(JSON.stringify(tx)).toString('base64');
-const encodedReturnUrl = encodeURIComponent(RETURN_URL); // NOTE: this is not how it works right now
+const encodedTx = btoa(JSON.stringify(tx));
+
+// We are using `encodeURIComponent` so that the return url is still readable
+const encodedReturnUrl = encodeURIComponent(RETURN_URL);
+
+// The url you need to navigate to sign and return the transaction
 const sendTransactionUrl = `https://spirekey.kadena.io/sign?transaction=${encodedTx}&returnUrl=${encodedReturnUrl}`;
 ```
 
