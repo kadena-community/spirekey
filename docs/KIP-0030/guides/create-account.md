@@ -65,17 +65,15 @@ localStorage.setItem('devMode', true);
 When you refresh the page, you will see that the registration flow now does
 include the `Network` step.
 
-to Because the network to create an account on is fixed to `Testnet`
-
 ### Biometrics
 
 On the `Biometrics` step you create a Webauthn credential on the device that you
 are currently using to register an account. A private key will be stored
 encrypted on your device, protected with your biometric data, such as your
 fingerprint or Face ID, depending on what is available on your device. Only the
-public key associated with this private key will be stored on the blockchain
-upon completing the registration flow. This ensures that no sensitive
-information will be stored publically on the blockchain.
+public key and credential identifier associated with this private key will be
+stored on the blockchain upon completing the registration flow. This ensures
+that no sensitive information will be stored publically on the blockchain.
 
 ### Device type
 
