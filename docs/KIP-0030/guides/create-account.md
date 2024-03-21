@@ -28,9 +28,9 @@ information you provide during registration will be stored on the blockchain.
 On the `Alias` step you provide a human-readable name for your account. This
 enables you to easily recognize your account in your Kadena SpireKey wallet,
 which is particularly useful once you have added more accounts to your wallet.
-Make sure not to enter sensitive data in this step, considering that the `Alias`
-will be stored publically on the blockchain. Click `Next` to proceed to the next
-step of the registration flow or `Cancel` to exit the registration flow.
+The `Alias` is only stored on your device and cannot been seen by others. Click
+`Next` to proceed to the next step of the registration flow or `Cancel` to exit
+the registration flow.
 
 ### Network
 
@@ -83,20 +83,22 @@ A Kadena SpireKey account has one or more devices, but initially it will only
 have the one device you created a Webauthn credential with in the previous step.
 Adding and removing devices of an account will be explained in another guide. To
 help you recognize your device among other devices associated with an account
-you must choose a `Device type` in this step. You can choose one of the
-following options:
+you must choose a `Device type` in this step. The device type is only stored on
+your device and cannot been seen by others. You can choose one of the following
+options:
 
 - phone
 - desktop
-- USB device
+- security key
 
 ### Color
 
 On the `Color` step you pick a color to make your device even more recognizable
 among other devices with your account. This is particularly useful when you add
-more than one device of the same device type. The `Color` step is the final step
-of the registration flow. Press the `Complete` button to send a transaction to
-the blockchain and definitively create your new account.
+more than one device of the same device type. The color is only stored on your
+device and cannot been seen by others. The `Color` step is the final step of the
+registration flow. Press the `Complete` button to send a transaction to the
+blockchain and definitively create your new account.
 
 ## Registration completed
 
