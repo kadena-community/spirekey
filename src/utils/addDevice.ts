@@ -14,5 +14,4 @@ export const addDeviceOnChain = async (
     (tx) => l1Client.local(tx).then((res) => [tx, res]),
     ([tx, res]) => (res.result.status === 'success' ? tx : Promise.reject(res)),
     (tx) => l1Client.submit(tx),
-    (tx) => l1Client.listen(tx),
   )({});

@@ -1,8 +1,6 @@
 import { Account } from '@/context/AccountsContext';
+import { getDeviceIcon } from '@/utils/getDeviceIcon';
 import { Box, SystemIcon } from '@kadena/react-ui';
-import { DeviceDesktop } from '../icons/DeviceDesktop';
-import { DevicePhone } from '../icons/DevicePhone';
-import { DeviceSecurityKey } from '../icons/DeviceSecurityKey';
 import { device } from './Card.css';
 
 type DeviceIconsProps = {
@@ -10,38 +8,15 @@ type DeviceIconsProps = {
 };
 
 export default function DeviceIcons({ account }: DeviceIconsProps) {
-  const uniqueDeviceTypes = new Set();
+  const uniqueDeviceTypes = new Set<string>();
   account.devices.map((d) => uniqueDeviceTypes.add(d.deviceType));
 
   return Array.from(uniqueDeviceTypes).map((type, i) => {
-    switch (type) {
-      case 'security-key':
-        return (
-          <Box key={i} className={device}>
-            <DeviceSecurityKey />
-          </Box>
-        );
-
-      case 'phone':
-        return (
-          <Box key={i} className={device}>
-            <DevicePhone />
-          </Box>
-        );
-
-      case 'desktop':
-        return (
-          <Box key={i} className={device}>
-            <DeviceDesktop />
-          </Box>
-        );
-
-      default:
-        return (
-          <Box key={i} className={device}>
-            <SystemIcon.Information />
-          </Box>
-        );
-    }
+    const icon = getDeviceIcon(type);
+    return (
+      <Box key={i} className={device}>
+        {icon}
+      </Box>
+    );
   });
 }

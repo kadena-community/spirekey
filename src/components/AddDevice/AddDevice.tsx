@@ -7,12 +7,14 @@ import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useAddDeviceForm } from '@/hooks/useAddDeviceForm';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { addDeviceOnChain } from '@/utils/addDevice';
-import { Box, Heading, Stack, Text } from '@kadena/react-ui';
+import { getDeviceIconSrc } from '@/utils/getDeviceIconSrc';
+import { Box, ProgressCircle, Stack, Text } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
 import { ICommand } from '@kadena/types';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { SurfaceCard } from '../SurfaceCard/SurfaceCard';
 import { BiometricsForm } from './BiometricsForm';
 import { ColorForm } from './ColorForm';
 import { DeviceTypeForm } from './DeviceTypeForm';
@@ -52,8 +54,6 @@ interface Props {
 export default function AddDevice({ caccount, transaction, device }: Props) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isListening, setIsListening] = useState<boolean>(!!transaction);
-  const redirectUrl = '/';
   const { addNotification } = useNotifications();
 
   const { accounts, setAccount } = useAccounts();
@@ -97,11 +97,20 @@ export default function AddDevice({ caccount, transaction, device }: Props) {
     };
 
     const transaction = await addDevice(signingDevice, account, deviceToAdd);
+    const translations = Buffer.from(
+      JSON.stringify({
+        [`${process.env.NAMESPACE}.webauthn-wallet.ADD_DEVICE`]: {
+          title: 'Add device',
+          value: 'Add a new device to your account: {0}',
+          image: getDeviceIconSrc(deviceToAdd.deviceType),
+        },
+      }),
+    ).toString('base64');
 
     router.push(
       `/sign?transaction=${Buffer.from(JSON.stringify(transaction)).toString(
         'base64',
-      )}&returnUrl=${returnUrl(deviceToAdd)}`,
+      )}&returnUrl=${returnUrl(deviceToAdd)}&translations=${translations}`,
     );
   };
 
@@ -117,38 +126,27 @@ export default function AddDevice({ caccount, transaction, device }: Props) {
     goTo,
   } = useAddDeviceForm(formStepComponents, data, onSubmit);
 
-  const decodedRedirectUrl = redirectUrl;
-  const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
-  const completeRedirectUrl = decodedRedirectUrl || '/';
-
   const goBack = () => {
     if (currentStepIndex === 0) {
-      router.push(cancelRedirectUrl);
+      router.push('/');
     }
     previous();
   };
 
   useEffect(() => {
-    if (!transaction) return;
+    if (!transaction || !device) return;
 
     const sendTransaction = async () => {
       const tx: ICommand = JSON.parse(
         Buffer.from(transaction, 'base64').toString(),
       );
+      const deviceToAdd: Device = JSON.parse(
+        Buffer.from(device || '{}', 'base64').toString(),
+      );
       try {
-        const result = await addDeviceOnChain(tx);
-        if (result.result.status !== 'success') {
-          addNotification({
-            variant: 'error',
-            title:
-              'Something went wrong while adding the device to your account on chain.',
-            message: JSON.stringify(result.result.error),
-          });
-          return;
-        }
-        account.devices.push(
-          JSON.parse(Buffer.from(device || '{}', 'base64').toString()),
-        );
+        const pendingTransaction = await addDeviceOnChain(tx);
+        deviceToAdd.pendingRegistrationTx = pendingTransaction.requestKey;
+        account.devices.push(deviceToAdd);
         setAccount(account);
         router.push('/');
       } catch (error: unknown) {
@@ -167,8 +165,31 @@ export default function AddDevice({ caccount, transaction, device }: Props) {
 
   return (
     <>
-      <Heading>Add Device</Heading>
-      {!!transaction && <Text>Adding device to your account on chain.</Text>}
+      {!!transaction && (
+        <Stack flexDirection="column" gap="md" padding="md">
+          <SurfaceCard
+            title="Adding your device"
+            description="Submitting the transaction to the blockchain."
+          >
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              flexDirection="column"
+              gap="xs"
+            >
+              <ProgressCircle
+                color="inherit"
+                isIndeterminate
+                label="Progress"
+                maxValue={100}
+                minValue={0}
+                size="md"
+                value={25}
+              />
+            </Stack>
+          </SurfaceCard>
+        </Stack>
+      )}
       {!transaction && (
         <Stack flexDirection="column" gap="md">
           <div className={styles.wrapper}>

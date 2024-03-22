@@ -1,5 +1,6 @@
 'use client';
 
+import { PageTitle } from '@/components/Layout/PageTitle';
 import { Stack } from '@kadena/react-ui';
 import dynamic from 'next/dynamic';
 
@@ -23,6 +24,7 @@ export default function AddDevicePage(req: Props) {
 
   return (
     <Stack flexDirection="column" gap="md">
+      <PageTitle>Add device</PageTitle>
       <AddDevice
         caccount={caccount}
         transaction={transaction}
