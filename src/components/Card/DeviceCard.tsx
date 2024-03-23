@@ -9,7 +9,7 @@ import DeviceIcons from './DeviceIcons';
 type CardProps = {
   color: string;
   account: Account;
-  device: Device;
+  device?: Device;
   balancePercentage?: number;
   isLoading?: boolean;
 };

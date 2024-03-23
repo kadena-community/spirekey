@@ -5,14 +5,17 @@ import * as styles from './Card.css';
 
 type DeviceIconsProps = {
   account: Account;
-  device: Device;
+  device?: Device;
 };
 
 export default function DeviceIcons({ account, device }: DeviceIconsProps) {
-  const uniqueDeviceTypes = new Set<string>([device.deviceType]);
+  const firstDevice = account.devices[0];
+  const uniqueDeviceTypes = new Set<string>([
+    device?.deviceType || firstDevice.deviceType,
+  ]);
 
   // Display all unique device types on the first card
-  if (account.devices[0]['credential-id'] === device['credential-id']) {
+  if (!device || firstDevice['credential-id'] === device['credential-id']) {
     account.devices.map((d) => uniqueDeviceTypes.add(d.deviceType));
   }
 
