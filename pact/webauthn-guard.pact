@@ -50,6 +50,7 @@
   (defcap AUTHORIZED() true)
 
   (defcap AUTHENTICATE(account:string)
+    @event
     (with-read account-table account
       { 'devices       := devices
       , 'min-approvals := min-approvals
@@ -66,6 +67,7 @@
   )
 
   (defcap ADD_DEVICE(account:string)
+    @event
     (with-read account-table account
       { 'devices := devices
       , 'min-registration-approvals := min-registration-approvals
@@ -135,7 +137,7 @@
     (enforce (<= min-approvals (length devices)) "Min approvals cannot be greater than the number of devices")
     (enforce (<= min-registration-approvals (length devices)) "Min registration approvals cannot be greater than the number of devices")
     (let ((first-guard (at 'guard (at 0 devices))))
-      (with-capability (REGISTER account first-guard)
+      (with-capability (REGISTER account first-guard (at 'credential-id (at 0 devices)))
         (insert account-table account
           { 'devices : devices
           , 'min-approvals : min-approvals
