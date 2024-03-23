@@ -69,6 +69,7 @@ export const Carousel = ({
         </AnimatePresence>
         {Children.map(children, (child, index) => (
           <div
+            key={index}
             className={carouselItem({
               variant: !showCarouselItems(isActive, index)
                 ? 'hidden'

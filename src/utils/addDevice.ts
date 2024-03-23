@@ -1,11 +1,11 @@
 import { asyncPipe } from '@/utils/shared/asyncPipe';
 import { l1Client } from '@/utils/shared/client';
-import { ICommand, ICommandResult } from '@kadena/client';
+import { ICommand, ITransactionDescriptor } from '@kadena/client';
 import { isSignedCommand } from '@kadena/pactjs';
 
 export const addDeviceOnChain = async (
   transaction: ICommand,
-): Promise<ICommandResult> =>
+): Promise<ITransactionDescriptor> =>
   asyncPipe(
     () =>
       isSignedCommand(transaction)

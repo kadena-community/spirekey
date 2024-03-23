@@ -1,4 +1,4 @@
-import { Account } from '@/context/AccountsContext';
+import { Account, Device } from '@/context/AccountsContext';
 import { useState } from 'react';
 import AccountNetwork from './AccountNetwork';
 import Alias from './Alias';
@@ -9,6 +9,7 @@ import DeviceIcons from './DeviceIcons';
 type CardProps = {
   color: string;
   account: Account;
+  device: Device;
   balancePercentage?: number;
   isLoading?: boolean;
 };
@@ -16,6 +17,7 @@ type CardProps = {
 export default function DeviceCard({
   color,
   account,
+  device,
   balancePercentage = 10,
   isLoading,
 }: CardProps) {
@@ -27,7 +29,7 @@ export default function DeviceCard({
       color={color}
       balancePercentage={balancePercentage}
       title={<Alias title={account.alias} />}
-      icons={<DeviceIcons account={account} />}
+      icons={<DeviceIcons account={account} device={device} />}
       center={
         <AccountNetwork
           account={account}

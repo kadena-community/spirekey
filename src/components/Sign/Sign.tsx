@@ -137,7 +137,7 @@ export default function Sign(props: Props) {
 
     // No more available signers in this wallet (we don't use `tx` here since setTx is async)
     if (newAmountOfSigsToSign === 0) {
-      const params = new URLSearchParams(new URL(returnUrl).search);
+      const params = new URLSearchParams();
       params.append(
         'transaction',
         Buffer.from(JSON.stringify(signedTx)).toString('base64'),
@@ -150,8 +150,12 @@ export default function Sign(props: Props) {
         );
       }
 
+      const returnUrlHasSearchParams = !!new URL(returnUrl).search;
+
       setTimeout(() => {
-        setRedirectLocation(`${returnUrl}?${params.toString()}`);
+        setRedirectLocation(
+          `${returnUrl}${returnUrlHasSearchParams ? '&' : '?'}${params.toString()}`,
+        );
       }, 2000);
     }
   };

@@ -68,6 +68,7 @@ export function Account({
             <DeviceCard
               color={d.color}
               account={account}
+              device={d}
               balancePercentage={balancePercentage}
             />
             <AnimatePresence>

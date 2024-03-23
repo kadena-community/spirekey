@@ -2,7 +2,7 @@
 
 import { addDevice } from '@/app/register/addDevice';
 import { Button } from '@/components/shared/Button/Button';
-import { useAccounts, type Device } from '@/context/AccountsContext';
+import { Account, useAccounts, type Device } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useAddDeviceForm } from '@/hooks/useAddDeviceForm';
 import { deviceColors } from '@/styles/shared/tokens.css';
@@ -15,9 +15,10 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { SurfaceCard } from '../SurfaceCard/SurfaceCard';
-import { BiometricsForm } from './BiometricsForm';
 import { ColorForm } from './ColorForm';
 import { DeviceTypeForm } from './DeviceTypeForm';
+import { PasskeyForm } from './PasskeyForm';
+import { SigningDeviceForm } from './SigningDeviceForm';
 import * as styles from './styles.css';
 
 const defaultFormData = {
@@ -28,6 +29,7 @@ const defaultFormData = {
   credentialId: '',
   deviceType: 'security-key',
   color: deviceColors.purple,
+  signingDeviceCredentialId: '',
 };
 
 export type FormData = typeof defaultFormData;
@@ -38,6 +40,7 @@ export interface StepProps {
   defaultValues: FormData;
   updateFields: (fields: Partial<FormData>) => void;
   formValues: FormData;
+  account: Account;
   navigation: {
     next: () => void;
     previous: () => void;
@@ -63,6 +66,9 @@ export default function AddDevice({ caccount, transaction, device }: Props) {
     throw new Error('Account does not exist.');
   }
 
+  defaultFormData.signingDeviceCredentialId =
+    account.devices[0]['credential-id'];
+
   const [data, setData] = useState<FormData>({
     ...defaultFormData,
     alias: account.alias,
@@ -84,7 +90,15 @@ export default function AddDevice({ caccount, transaction, device }: Props) {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    const signingDevice: Device = account?.devices[0];
+    const signingDevice: Device | undefined = account?.devices.find(
+      (d) => d['credential-id'] === data.signingDeviceCredentialId,
+    );
+
+    if (!signingDevice) {
+      // This condition should never be met in practice
+      throw new Error('The signing device does not exist on this account.');
+    }
+
     const deviceToAdd: Device = {
       ...signingDevice,
       color: data.color,
@@ -114,7 +128,12 @@ export default function AddDevice({ caccount, transaction, device }: Props) {
     );
   };
 
-  const formStepComponents = [BiometricsForm, DeviceTypeForm, ColorForm];
+  const formStepComponents = [
+    SigningDeviceForm,
+    PasskeyForm,
+    DeviceTypeForm,
+    ColorForm,
+  ];
 
   const {
     steps,
@@ -153,7 +172,8 @@ export default function AddDevice({ caccount, transaction, device }: Props) {
         if (error instanceof Error) {
           addNotification({
             variant: 'error',
-            title: 'Failed to add the device to your account on chain.',
+            title:
+              'Failed to send transaction for adding the device to your account.',
             message: error.message,
           });
         }
@@ -206,6 +226,7 @@ export default function AddDevice({ caccount, transaction, device }: Props) {
                     isVisible={currentStepIndex === stepIndex}
                     defaultValues={defaultFormData}
                     formValues={data}
+                    account={account}
                     updateFields={updateFields}
                     navigation={{ next, previous, goTo }}
                   />

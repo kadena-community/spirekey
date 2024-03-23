@@ -1,20 +1,25 @@
-import { Account } from '@/context/AccountsContext';
+import { Account, Device } from '@/context/AccountsContext';
 import { getDeviceIcon } from '@/utils/getDeviceIcon';
-import { Box, SystemIcon } from '@kadena/react-ui';
-import { device } from './Card.css';
+import { Box } from '@kadena/react-ui';
+import * as styles from './Card.css';
 
 type DeviceIconsProps = {
   account: Account;
+  device: Device;
 };
 
-export default function DeviceIcons({ account }: DeviceIconsProps) {
-  const uniqueDeviceTypes = new Set<string>();
-  account.devices.map((d) => uniqueDeviceTypes.add(d.deviceType));
+export default function DeviceIcons({ account, device }: DeviceIconsProps) {
+  const uniqueDeviceTypes = new Set<string>([device.deviceType]);
+
+  // Display all unique device types on the first card
+  if (account.devices[0]['credential-id'] === device['credential-id']) {
+    account.devices.map((d) => uniqueDeviceTypes.add(d.deviceType));
+  }
 
   return Array.from(uniqueDeviceTypes).map((type, i) => {
     const icon = getDeviceIcon(type);
     return (
-      <Box key={i} className={device}>
+      <Box key={i} className={styles.device}>
         {icon}
       </Box>
     );

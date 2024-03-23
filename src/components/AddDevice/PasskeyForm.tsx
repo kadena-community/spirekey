@@ -1,8 +1,6 @@
 import fingerprint from '@/assets/images/fingerprint.svg';
 import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
-import { useNotifications } from '@/context/shared/NotificationsContext';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
-import { getAccountName } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Stack, Text } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
@@ -11,9 +9,8 @@ import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { StepProps } from './AddDevice';
 import { animationVariants } from './animation';
-import * as styles from './styles.css';
 
-export const BiometricsForm: FC<StepProps> = ({
+export const PasskeyForm: FC<StepProps> = ({
   stepIndex,
   isVisible,
   updateFields,
