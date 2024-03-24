@@ -67,15 +67,15 @@ export default function Recover() {
       networkId,
     });
 
-    // @TODO: Let the user fill in the alias, deviceType and color
+    console.log(acc.devices);
     setAccount({
       accountName: acc.accountName,
       networkId: acc.networkId,
       alias: alias || '',
       devices: acc.devices.map((device) => ({
         ...device,
-        deviceType: device.deviceType || 'phone',
-        color: device.color || deviceColors.purple,
+        deviceType: device.name?.split('_')[0] || 'phone',
+        color: device.name?.split('_')[1] || deviceColors.purple,
       })),
       balance: acc.balance,
     });

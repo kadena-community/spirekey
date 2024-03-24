@@ -32,6 +32,7 @@ export type Device = {
     pred: 'keys-any';
   };
   pendingRegistrationTx?: string;
+  name?: string;
 };
 
 export type AccountRegistration = {
