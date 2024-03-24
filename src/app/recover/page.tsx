@@ -9,31 +9,66 @@ import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { Heading, TextField } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
 import { startAuthentication } from '@simplewebauthn/browser';
-import cbor from 'cbor';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
-const FORM_DEFAULT = {
-  accountName: '',
+const getAccountNameFromRegisterEvent = async (
+  domain: string,
+  credentialId: string,
+): Promise<string> => {
+  const eventsResponse = await fetch(
+    `${domain}/txs/events?param=${credentialId}&name=REGISTER&modulename=${process.env.NAMESPACE}.webauthn-guard`,
+  );
+  const events = await eventsResponse.json();
+
+  if (events.length === 0) {
+    return '';
+  }
+
+  const requestKey = events[0].requestKey;
+
+  const txResponse = await fetch(`${domain}/txs/tx?requestkey=${requestKey}`);
+  const tx = await txResponse.json();
+
+  return tx.result;
 };
 
-const isAccount = (result: Account | null): result is Account => {
-  return result !== null;
+const getAccountNameFromAddDeviceEvent = async (
+  domain: string,
+  credentialId: string,
+): Promise<string> => {
+  const eventsResponse = await fetch(
+    `${domain}/txs/events?param=${credentialId}&name=ADD_DEVICE&modulename=${process.env.NAMESPACE}.webauthn-guard`,
+  );
+  const events = await eventsResponse.json();
+
+  if (events.length === 0) {
+    return '';
+  }
+
+  const requestKey = events[0].requestKey;
+
+  const txResponse = await fetch(`${domain}/txs/tx?requestkey=${requestKey}`);
+  const tx = await txResponse.json();
+
+  return tx.sender;
 };
+
+const networkMap = {
+  Devnet: getDevnetNetworkId(),
+  Testnet: 'testnet04',
+  Mainnet: 'mainnet01',
+};
+
+type NetworkDisplayName = keyof typeof networkMap;
 
 export default function Recover() {
   const router = useRouter();
   const { setAccount } = useAccounts();
-  const { register, handleSubmit, getValues } = useForm({
-    defaultValues: FORM_DEFAULT,
+  const { handleSubmit } = useForm({
+    defaultValues: {},
     reValidateMode: 'onBlur',
   });
-
-  const networkMap = {
-    Devnet: getDevnetNetworkId(),
-    Testnet: 'testnet04',
-    Mainnet: 'mainnet01',
-  };
 
   const onSubmit = async () => {
     const authResult = await startAuthentication({
@@ -44,21 +79,12 @@ export default function Recover() {
     const userHandle = authResult.response.userHandle;
     const alias = userHandle?.split('(')[0].trim();
     const network = userHandle?.split('(')[1].split(')')[0] || 'Devnet';
-    const networkId = networkMap[network];
-    console.log(networkId);
+    const networkId = networkMap[network as NetworkDisplayName];
     const domain = getChainwebDataUrl(networkId);
-    const response = await fetch(
-      `${domain}/txs/events?param=${authResult.id}&name=REGISTER&modulename=${process.env.NAMESPACE}.webauthn-guard`,
-    );
-    const json = await response.json();
-    const requestKey = json[0].requestKey;
 
-    const r = await fetch(`${domain}/txs/tx?requestkey=${requestKey}`);
-    const j = await r.json();
-
-    console.log(j.result);
-
-    const accountName = j.result;
+    const accountName =
+      (await getAccountNameFromRegisterEvent(domain, authResult.id)) ||
+      (await getAccountNameFromAddDeviceEvent(domain, authResult.id));
 
     if (!accountName) throw new Error('Account is required');
 

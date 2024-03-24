@@ -66,7 +66,7 @@
     (enforce (validate-principal first-guard account) "Principal must match the first provided device")
   )
 
-  (defcap ADD_DEVICE(account:string)
+  (defcap ADD_DEVICE(account:string credential-id:string)
     @event
     (with-read account-table account
       { 'devices := devices
@@ -149,7 +149,7 @@
   )
 
   (defun add-device(account:string device:object{device-schema})
-    (with-capability (ADD_DEVICE account)
+    (with-capability (ADD_DEVICE account (at 'credential-id device))
       (with-read account-table account
         { 'devices := devices }
         (let* (
