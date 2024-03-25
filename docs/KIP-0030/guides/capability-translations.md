@@ -7,6 +7,26 @@ explicit way for you as a dApp developer to communicate the terms of your
 interaction. In this guide you will learn how to effectively provide
 translations for capabilities in a smart contract.
 
+For example, when a user is asked to sign for a transfer of 100.0 KDA, without
+any translations will be displayed as:
+
+```pact
+(coin.TRANSFER "sender" "receiver" 100.0)
+```
+
+Which for a non technical user is still not clear what they are signing for.
+However imagine the same capability with translations:
+
+> You are approving a transfer of up to 100.0 KDA to "receiver"
+
+This is a lot more clear for the user to understand what they are signing for.
+If the translations provided are not secured, a malicious actor could provide
+translations to misslead the user. To prevent this from happening, the wallets
+will verify the integrity of the translations before showing them to the user.
+This means you as a dApp developer need to go through the process of registering
+your translations with the smart contract. This guide will walk you through the
+process of registering your translations with the smart contract.
+
 ## Smart Contract translation bundle registration
 
 Your users will be interacting with your smart contract. This smart contract is
