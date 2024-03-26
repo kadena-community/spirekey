@@ -59,7 +59,7 @@
     )
   )
 
-  (defcap ACCOUNT_DEVICE(account:string credential-id:string device-index:integer) @event true)
+  (defcap REGISTER_DEVICE(account:string credential-id:string) @event true)
 
   (defcap REGISTER(account:string first-guard:guard)
     (enforce (validate-principal first-guard account) "Principal must match the first provided device")
@@ -112,7 +112,7 @@
         "Principal must match the first provided device"
       )
       (register-guard account 1 1 [device])
-      (emit-event (ACCOUNT_DEVICE account (at 'credential-id device) 1))
+      (emit-event (REGISTER_DEVICE account (at 'credential-id device)))
     )
   )
 
@@ -159,7 +159,7 @@
           (update account-table account
             { 'devices : new-devices }
           )
-          (emit-event (ACCOUNT_DEVICE account (at 'credential-id device) expected-new-length))
+          (emit-event (REGISTER_DEVICE account (at 'credential-id device)))
         )
       )
     )

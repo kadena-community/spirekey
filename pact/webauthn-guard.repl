@@ -85,12 +85,11 @@
 (expect "An event to be fired after registering an account, containing the account name, credential-id and device index"
   (env-events true)
   [{
-    "module-hash": "rDuXCIMmEp2lU1-H4cNODA3vEDiNq150kpaO3TwGOhA",
-    "name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.ACCOUNT_DEVICE",
+    "module-hash": "QjS0UZ4LGPDudubzNK3WpGq2gEluwmE69OGJFrqokvw",
+    "name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.REGISTER_DEVICE",
     "params": [
       "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
       "cid-phone"
-      1
     ]
   }]
 )
@@ -141,12 +140,11 @@
 (expect "An event to be fired after adding a device to an account, containing the account name, credential-id and device index"
   (env-events true)
   [{
-    "module-hash": "rDuXCIMmEp2lU1-H4cNODA3vEDiNq150kpaO3TwGOhA",
-    "name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.ACCOUNT_DEVICE",
+    "module-hash": "QjS0UZ4LGPDudubzNK3WpGq2gEluwmE69OGJFrqokvw",
+    "name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.REGISTER_DEVICE",
     "params": [
       "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
       "cid-yubi"
-      2
     ]
   }]
 )
