@@ -21,11 +21,11 @@ However imagine the same capability with translations:
 
 This is a lot more clear for the user to understand what they are signing for.
 If the translations provided are not secured, a malicious actor could provide
-translations to misslead the user. To prevent this from happening, the wallets
+translations to mislead the user. To prevent this from happening, the wallets
 will verify the integrity of the translations before showing them to the user.
 This means you as a dApp developer need to go through the process of registering
 your translations with the smart contract. This guide will walk you through the
-process of registering your translations with the smart contract.
+process of registering meta data and translation bundles with your smart contract.
 
 ## Smart Contract translation bundle registration
 
