@@ -19,8 +19,7 @@ key pairs than previous accounts on Kadena. This means that the structure of the
 public key will need to be differentiated from the other public keys using the
 `scheme` attribute.
 
-So instead of providing a public key as a string, you will need to pass in an
-object to represent a webAuthn public key:
+You will need to use the 'WebAuthn' scheme:
 
 ```ts
 { pubKey: webAuthnPublicKey, scheme: 'WebAuthn' }
