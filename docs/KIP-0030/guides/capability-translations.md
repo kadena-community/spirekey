@@ -98,16 +98,8 @@ contract with a explorer view.
     "BjZW0T2ac6qE_I5X8GE4fal6tTqjhLTC7my0ytQSxLU"
   ],
   "capabilities": {
-    "TRANSFER": {
-      "granter": {
-        "isSigner": true
-      }
-    }
-    "other capabilities": {
-      "granter": {
-        "isSigner": true
-      }
-    }
+    "granter": [{ "name": "TRANSFER" }],
+    "acceptor": []
   }
 }
 ```
@@ -132,11 +124,8 @@ separately. The `MINT` capability you could define as such:
   "hash": "M1gabakqkEi_1N8dRKt4z5lEv1kuC_nxLTnyDCuZIK0",
   "blessed": [],
   "capabilities": {
-    "MINT": {
-      "acceptor": {
-        "isSigner": true
-      }
-    }
+    "granter": [],
+    "acceptor": [{ "name": "MINT" }]
   }
 }
 ```
@@ -175,14 +164,21 @@ translation for the correct role.
   "hash": "M1gabakqkEi_1N8dRKt4z5lEv1kuC_nxLTnyDCuZIK0",
   "blessed": [],
   "capabilities": {
-    "ORDER": {
-      "acceptor": {
-        "argIndex": 1
+    "granter": [
+      {
+        "name": "READY_FOR_DELIVERY"
       },
-      "granter": {
-        "argIndex": 2
+      {
+        "name": "ORDER_LINE_ID",
+        "argumentIndex": 2
       }
-    }
+    ],
+    "acceptor": [
+      {
+        "name": "ORDER_LINE_ID",
+        "argumentIndex": 1
+      }
+    ]
   }
 }
 ```
