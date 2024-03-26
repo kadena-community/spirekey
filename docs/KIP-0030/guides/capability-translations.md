@@ -14,18 +14,19 @@ any translations will be displayed as:
 (coin.TRANSFER "sender" "receiver" 100.0)
 ```
 
-Which for a non technical user is still not clear what they are signing for.
-However imagine the same capability with translations:
+For non-technical users this may not be clear enough to understand what they are
+signing for. However imagine the same capability with translations:
 
 > You are approving a transfer of up to 100.0 KDA to "receiver"
 
-This is a lot more clear for the user to understand what they are signing for.
-If the translations provided are not secured, a malicious actor could provide
+This is a lot clearer for the user to understand what they are signing for. If
+the translations provided are not secured, a malicious actor could provide
 translations to mislead the user. To prevent this from happening, the wallets
 will verify the integrity of the translations before showing them to the user.
 This means you as a dApp developer need to go through the process of registering
 your translations with the smart contract. This guide will walk you through the
-process of registering meta data and translation bundles with your smart contract.
+process of registering meta data and translation bundles with your smart
+contract.
 
 ## Smart Contract translation bundle registration
 
@@ -45,17 +46,6 @@ Before we delve into the details of how to provide translations for capabilities
 we will categorize the capabilities into two types: `acceptor` and `granter`.
 This will further assist users in understanding the rules of engagement.
 
-### Acceptor Capabilities
-
-The `acceptor` capabilities asks the user for consent to accept something to
-come in their possession. Think of a user making an order and confirming the
-product that they will receive.
-
-### Granter Capabilities
-
-The `granter` capabilities asks the user to consent of something leaving their
-possession. Think of a user approving a transaction of up to 100.0 KDA.
-
 ### Meta data
 
 Now that you understand the two types of capabilities, you can detail in which
@@ -70,6 +60,9 @@ bundle. Both will have their uri stored along with the hash resulting from the
 blake2b256 encoded hash of the JSON.
 
 #### Granter Capabilities
+
+The `granter` capabilities asks the user to consent of something leaving their
+possession. Think of a user approving a transaction of up to 100.0 KDA.
 
 When signing for capabilities the wallet will display the capabilities grouped
 by `granter` and `acceptor` capabilities. A capability will be classified as a
@@ -88,15 +81,7 @@ contract with a explorer view.
 
 ```json
 {
-  "name": "Coin",
-  "module": "coin",
-  "description": "Coin smart contract that governs KDA token.",
-  "hash": "M1gabakqkEi_1N8dRKt4z5lEv1kuC_nxLTnyDCuZIK0",
-  "blessed": [
-    "1os_sLAUYvBzspn5jjawtRpJWiH1WPfhyNraeVvSIwU",
-    "ut_J_ZNkoyaPUEJhiwVeWnkSQn9JT9sQCWKdjjVVrWo",
-    "BjZW0T2ac6qE_I5X8GE4fal6tTqjhLTC7my0ytQSxLU"
-  ],
+  ...,
   "capabilities": {
     "granter": [{ "name": "TRANSFER" }],
     "acceptor": []
@@ -105,6 +90,10 @@ contract with a explorer view.
 ```
 
 #### Acceptor Capabilities
+
+The `acceptor` capabilities asks the user for consent to accept something to
+come in their possession. Think of a user making an order and confirming the
+product that they will receive.
 
 You can also define an `acceptor` capability. For example when minting a NFT, we
 could ask the user to sign for accepting this NFT. The wallet can display this
@@ -118,11 +107,7 @@ separately. The `MINT` capability you could define as such:
 
 ```json
 {
-  "name": "My NFT",
-  "module": "free.nft",
-  "description": "NFT smart contract that governs NFT tokens.",
-  "hash": "M1gabakqkEi_1N8dRKt4z5lEv1kuC_nxLTnyDCuZIK0",
-  "blessed": [],
+  ...,
   "capabilities": {
     "granter": [],
     "acceptor": [{ "name": "MINT" }]
