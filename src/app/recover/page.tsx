@@ -1,68 +1,19 @@
 'use client';
 
+import Recover from '@/components/Recover/Recover';
 import { Button } from '@/components/shared/Button/Button';
 import { useAccounts, type Account } from '@/context/AccountsContext';
 import { deviceColors } from '@/styles/shared/tokens.css';
+import { getAccountNameFromRegisterDeviceEvent } from '@/utils/getAccountNameFromRegisterDeviceEvent';
 import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
 import { getAccountFrom } from '@/utils/shared/account';
-import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
-import { Heading, TextField } from '@kadena/react-ui';
+import { Heading } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
-const getAccountNameFromRegisterEvent = async (
-  domain: string,
-  credentialId: string,
-): Promise<string> => {
-  const eventsResponse = await fetch(
-    `${domain}/txs/events?param=${credentialId}&name=REGISTER&modulename=${process.env.NAMESPACE}.webauthn-guard`,
-  );
-  const events = await eventsResponse.json();
-
-  if (events.length === 0) {
-    return '';
-  }
-
-  const requestKey = events[0].requestKey;
-
-  const txResponse = await fetch(`${domain}/txs/tx?requestkey=${requestKey}`);
-  const tx = await txResponse.json();
-
-  return tx.result;
-};
-
-const getAccountNameFromAddDeviceEvent = async (
-  domain: string,
-  credentialId: string,
-): Promise<string> => {
-  const eventsResponse = await fetch(
-    `${domain}/txs/events?param=${credentialId}&name=ADD_DEVICE&modulename=${process.env.NAMESPACE}.webauthn-guard`,
-  );
-  const events = await eventsResponse.json();
-
-  if (events.length === 0) {
-    return '';
-  }
-
-  const requestKey = events[0].requestKey;
-
-  const txResponse = await fetch(`${domain}/txs/tx?requestkey=${requestKey}`);
-  const tx = await txResponse.json();
-
-  return tx.sender;
-};
-
-const networkMap = {
-  Devnet: getDevnetNetworkId(),
-  Testnet: 'testnet04',
-  Mainnet: 'mainnet01',
-};
-
-type NetworkDisplayName = keyof typeof networkMap;
-
-export default function Recover() {
+export default function RecoverPage() {
   const router = useRouter();
   const { setAccount } = useAccounts();
   const { handleSubmit } = useForm({
@@ -77,33 +28,33 @@ export default function Recover() {
     });
 
     const userHandle = authResult.response.userHandle;
-    const alias = userHandle?.split('(')[0].trim();
-    const network = userHandle?.split('(')[1].split(')')[0] || 'Devnet';
-    const networkId = networkMap[network as NetworkDisplayName];
+
+    if (!userHandle) throw new Error('User handle is required');
+
+    const alias = userHandle.split('(')[0].trim();
+
+    const networkId = process.env.WALLET_NETWORK_ID || '';
     const domain = getChainwebDataUrl(networkId);
 
-    const accountName =
-      (await getAccountNameFromRegisterEvent(domain, authResult.id)) ||
-      (await getAccountNameFromAddDeviceEvent(domain, authResult.id));
+    const accountName = await getAccountNameFromRegisterDeviceEvent(
+      domain,
+      authResult.id,
+    );
 
     if (!accountName) throw new Error('Account is required');
 
-    const acc = await getAccountFrom({
-      accountName,
-      networkId,
-    });
+    const account = await getAccountFrom({ accountName, networkId });
 
-    console.log(acc.devices);
     setAccount({
-      accountName: acc.accountName,
-      networkId: acc.networkId,
+      accountName: account.accountName,
+      networkId: account.networkId,
       alias: alias || '',
-      devices: acc.devices.map((device) => ({
+      devices: account.devices.map((device) => ({
         ...device,
         deviceType: device.name?.split('_')[0] || 'phone',
         color: device.name?.split('_')[1] || deviceColors.purple,
       })),
-      balance: acc.balance,
+      balance: account.balance,
     });
 
     router.push(`/`);
@@ -117,17 +68,7 @@ export default function Recover() {
       })}
     >
       <Heading>Recover</Heading>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className={atoms({
-          marginBlockStart: 'lg',
-          display: 'flex',
-          gap: 'lg',
-          flexDirection: 'column',
-        })}
-      >
-        <Button type="submit">Recover</Button>
-      </form>
+      <Recover />
     </div>
   );
 }
