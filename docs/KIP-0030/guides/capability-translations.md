@@ -38,13 +38,9 @@ Kadena created Pact, a smart contract language, to write contracts that are more
 human readable than other languages, however, we still want to further simplify
 concepts for users who are just interacting with a dApp. In Pact, capabilities
 are a form of abstraction that allows the smart contract to communicate the
-required consent of a user. To communicate the most relevant information to the
-user, we offer the ability to provide translations for capabilities and do so by
-categorizing them into two types: `acceptor` and `granter`.
-
-Before we delve into the details of how to provide translations for capabilities
-we will categorize the capabilities into two types: `acceptor` and `granter`.
-This will further assist users in understanding the rules of engagement.
+required consent of a user. By providing more intuitive translations for these
+capabilities and presenting them in categories, we can make it easier for the
+user to understand what they are signing for.
 
 ### Meta data
 
