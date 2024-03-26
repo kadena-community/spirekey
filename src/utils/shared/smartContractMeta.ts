@@ -12,11 +12,8 @@ const coinMeta = {
     'BjZW0T2ac6qE_I5X8GE4fal6tTqjhLTC7my0ytQSxLU',
   ],
   capabilities: {
-    TRANSFER: {
-      granter: {
-        isSigner: true,
-      },
-    },
+    granter: [{ name: 'TRANSFER' }],
+    acceptor: [],
   },
 };
 
@@ -28,48 +25,41 @@ const deliveryMeta = {
   hash: 'hxK8VcEQFl2CkyXxKGwSz02_ccPUoYb24jElkBI_vCk',
   blessed: [],
   capabilities: {
-    CREATE_ORDER_LINE: {
-      granter: {
-        argIndex: 2,
+    granter: [
+      {
+        name: 'CREATE_ORDER_LINE',
+        argumentIndex: 2,
+        hashValues: [0, 2, 3, 4],
+        hashIndex: 1,
       },
-      acceptor: {
-        argIndex: 3,
+      {
+        name: 'SET_READY_FOR_DELIVERY',
       },
-      // TODO: Discuss if this could provide for customizing the lines securely
-      // 0: order-id, 2: buyer, 3: merchant, 4: price
-      // hash = order-id + buyer + merchant + price + translation provided by dApp
-      // Only capabilities who have this hashValues can provide for such customizations
-      // Wallet will look up the capability of the smart contract and hash the JSON
-      // along with the hashValues and compare with the hash. If it does not match,
-      // it will throw an error.
-      hashValues: [0, 2, 3, 4],
-      hashIndex: 1,
-      // translation bundle:
-      // hash ( order-id + buyer + merchant + price + translation provided by dApp )
-      // { "value": "Pizza margahritate x1 costs 10 KDA",
-      // "image": "https://example.com/pizza-margahritate.jpg" }
-    },
-    SET_READY_FOR_DELIVERY: {
-      granter: {
-        isSigner: true,
+      {
+        name: 'PICKUP_DELIVERY',
+        argumentIndex: 0,
       },
-    },
-    PICKUP_DELIVERY: {
-      granter: {
-        argIndex: 0,
+      {
+        name: 'DELIVER_ORDER',
+        argumentIndex: 0,
       },
-      acceptor: {
-        argIndex: 1,
+    ],
+    acceptor: [
+      {
+        name: 'CREATE_ORDER_LINE',
+        argumentIndex: 3,
+        hashValues: [0, 2, 3, 4],
+        hashIndex: 1,
       },
-    },
-    DELIVER_ORDER: {
-      granter: {
-        argIndex: 0,
+      {
+        name: 'PICKUP_DELIVERY',
+        argumentIndex: 1,
       },
-      acceptor: {
-        argIndex: 1,
+      {
+        name: 'DELIVER_ORDER',
+        argumentIndex: 1,
       },
-    },
+    ],
   },
 };
 
@@ -80,31 +70,26 @@ const webauthnWalletMeta = {
   hash: 'eMkmlzPgQP4eg_t4qHyYqU6Micw4DlrOlGAjDRQplrY',
   blessed: [],
   capabilities: {
-    TRANSFER: {
-      granter: {
-        isSigner: true,
+    granter: [
+      {
+        name: 'TRANSFER',
       },
-    },
-    GAS_PAYER: {
-      granter: {
-        isSigner: true,
+      {
+        name: 'GAS_PAYER',
       },
-    },
+    ],
+    acceptor: [],
   },
 };
 type CoinMeta = typeof coinMeta;
 type DeliveryMeta = typeof deliveryMeta;
 type WebAuthnWalletMeta = typeof webauthnWalletMeta;
 export type Meta = CoinMeta | DeliveryMeta | WebAuthnWalletMeta;
-type MetaDescriptor = {
-  isSigner?: boolean;
-  argIndex?: number;
-};
 export type CapabilityMeta = {
-  granter?: MetaDescriptor;
-  acceptor?: MetaDescriptor;
-  hashValues: number[];
-  hashIndex: number;
+  name: string;
+  argumentIndex?: number;
+  hashValues?: number[];
+  hashIndex?: number;
 };
 
 export const getSmartContractMeta = () => {
@@ -113,10 +98,16 @@ export const getSmartContractMeta = () => {
   return [coinMeta, deliveryMeta, webauthnWalletMeta];
 };
 
-export const getCapabilityMeta = (meta: Meta, capability: string) => {
-  return (meta.capabilities as any)[
-    capability.replace(new RegExp(`^${meta.module}\.`), '')
-  ] as CapabilityMeta;
+export const getGranterCapabilityMeta = (meta: Meta, capability: string) => {
+  return meta.capabilities.granter.find(({ name }) =>
+    new RegExp(`^${meta.module}\.${name}`).test(capability),
+  ) as CapabilityMeta;
+};
+
+export const getAcceptorCapabilityMeta = (meta: Meta, capability: string) => {
+  return meta.capabilities.acceptor.find(({ name }) =>
+    new RegExp(`^${meta.module}\.${name}`).test(capability),
+  ) as CapabilityMeta;
 };
 
 export const filterGranterCapabilities =
@@ -132,14 +123,13 @@ export const filterGranterCapabilities =
       new RegExp(`^${m.module}\.`).test(capability.name),
     );
     if (!smartContractMeta) return true;
-    const capabilityMeta = getCapabilityMeta(
+    const capabilityMeta = getGranterCapabilityMeta(
       smartContractMeta,
       capability.name,
     );
-    if (!capabilityMeta?.granter) return false;
-    if (capabilityMeta.granter.isSigner) return true;
-    if (!capabilityMeta.granter.argIndex) return false;
-    const granter = capability.args[capabilityMeta.granter.argIndex];
+    if (!capabilityMeta) return false;
+    if (capabilityMeta.argumentIndex === undefined) return true;
+    const granter = capability.args[capabilityMeta.argumentIndex];
     return granter === account.accountName;
   };
 
@@ -156,13 +146,12 @@ export const filterAcceptorCapabilities =
       new RegExp(`^${m.module}\.`).test(capability.name),
     );
     if (!smartContractMeta) return false;
-    const capabilityMeta = getCapabilityMeta(
+    const capabilityMeta = getAcceptorCapabilityMeta(
       smartContractMeta,
       capability.name,
     );
-    if (!capabilityMeta?.acceptor) return false;
-    if (capabilityMeta.acceptor.isSigner) return true;
-    if (!capabilityMeta.acceptor.argIndex) return false;
-    const acceptor = capability.args[capabilityMeta.acceptor.argIndex];
+    if (!capabilityMeta) return false;
+    if (capabilityMeta.argumentIndex === undefined) return true;
+    const acceptor = capability.args[capabilityMeta.argumentIndex];
     return acceptor === account.accountName;
   };

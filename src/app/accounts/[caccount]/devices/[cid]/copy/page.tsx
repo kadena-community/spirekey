@@ -34,9 +34,9 @@ export default function CopyPage() {
       const tx = await copyAccount({
         accountName: caccount,
         chainId: process.env.CHAIN_ID as ChainId,
-        networkId: 'development',
+        networkId: 'testnet04',
         publicKey: account.devices[0].guard.keys[0],
-        targetChainId: '3',
+        targetChainId: '15',
       });
       router.push(
         `/sign?transaction=${Buffer.from(JSON.stringify(tx)).toString('base64')}&returnUrl=${getReturnUrl()}`,
@@ -57,7 +57,7 @@ export default function CopyPage() {
       // handle spv
       const txStep1 = JSON.parse(temp);
       l1Client.listen(txStep1).then(async (result: any) => {
-        const spv = await l1Client.pollCreateSpv(txStep1, '3');
+        const spv = await l1Client.pollCreateSpv(txStep1, '15');
         const continueTx = await continueCopy({
           pactId: result.continuation?.pactId || '',
           rollback: false,
@@ -65,7 +65,10 @@ export default function CopyPage() {
           proof: spv,
         });
         const res = await l1Client.local(continueTx);
-        console.log('res', res);
+        if (res.result.status !== 'success') return console.error('Error', res);
+        const submitRes = await l1Client.submit(continueTx);
+        const listenRes = await l1Client.listen(submitRes);
+        console.log('res', listenRes);
       });
     } else {
       l1Client.submit(tx).then((result: any) => {

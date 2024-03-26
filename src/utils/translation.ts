@@ -3,7 +3,8 @@ import { ICap } from '@kadena/types';
 import {
   CapabilityMeta,
   Meta,
-  getCapabilityMeta,
+  getAcceptorCapabilityMeta,
+  getGranterCapabilityMeta,
 } from './shared/smartContractMeta';
 
 const formatValue = (value: any) => {
@@ -62,7 +63,11 @@ export const getCustomTranslation = ({
   type: 'granter' | 'acceptor';
 }) => {
   const [capabilityMeta]: CapabilityMeta[] = metas
-    .map((meta) => getCapabilityMeta(meta, capability.name))
+    .map((meta) => {
+      if (type === 'acceptor')
+        return getAcceptorCapabilityMeta(meta, capability.name);
+      return getGranterCapabilityMeta(meta, capability.name);
+    })
     .filter(Boolean);
   if (!capabilityMeta) return getTranslation(bundle, capability, type);
   // intentional == I want to check if null or undefined
@@ -112,6 +117,7 @@ const getCustomCapabilityTranslation = ({
   bundle: any;
   capability: ICap;
 }) => {
+  if (!capabilityMeta.hashValues) return null;
   const capValues = capabilityMeta.hashValues
     .map((value) => capability.args[value])
     .map((v) => JSON.stringify(v));
