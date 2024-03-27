@@ -65,7 +65,7 @@
     (enforce (validate-principal first-guard account) "Principal must match the first provided device")
   )
 
-  (defcap ADD_DEVICE(account:string credential-id:string)
+  (defcap ADD_DEVICE(account:string)
     (with-read account-table account
       { 'devices := devices
       , 'min-registration-approvals := min-registration-approvals
@@ -135,7 +135,7 @@
     (enforce (<= min-approvals (length devices)) "Min approvals cannot be greater than the number of devices")
     (enforce (<= min-registration-approvals (length devices)) "Min registration approvals cannot be greater than the number of devices")
     (let ((first-guard (at 'guard (at 0 devices))))
-      (with-capability (REGISTER account first-guard (at 'credential-id (at 0 devices)))
+      (with-capability (REGISTER account first-guard)
         (insert account-table account
           { 'devices : devices
           , 'min-approvals : min-approvals
@@ -147,7 +147,7 @@
   )
 
   (defun add-device(account:string device:object{device-schema})
-    (with-capability (ADD_DEVICE account (at 'credential-id device))
+    (with-capability (ADD_DEVICE account)
       (with-read account-table account
         { 'devices := devices }
         (let* (
