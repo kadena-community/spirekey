@@ -10,17 +10,19 @@ import {
   setNetworkId,
 } from '@kadena/client/fp';
 
+export const transactionDeviceFromDevice = (device: Device) => ({
+  name: `${device.deviceType}_${device.color}`,
+  domain: device.domain,
+  ['credential-id']: device['credential-id'],
+  guard: device.guard,
+});
+
 export const addDevice = async (
   signingDevice: Device,
   account: Account,
   device: Device,
 ) => {
-  const d = {
-    name: `${device.deviceType}_${device.color}`,
-    domain: device.domain,
-    ['credential-id']: device['credential-id'],
-    guard: device.guard,
-  };
+  const d = transactionDeviceFromDevice(device);
   const result = await asyncPipe(
     composePactCommand(
       execution(

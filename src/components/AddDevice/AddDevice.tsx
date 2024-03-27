@@ -1,12 +1,12 @@
 'use client';
 
-import { addDevice } from '@/app/register/addDevice';
 import { Button } from '@/components/shared/Button/Button';
 import { Account, useAccounts, type Device } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useAddDeviceForm } from '@/hooks/useAddDeviceForm';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { addDeviceOnChain } from '@/utils/addDevice';
+import { addDevice } from '@/utils/device';
 import { getDeviceIconSrc } from '@/utils/getDeviceIconSrc';
 import { Box, ProgressCircle, Stack, Text } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
