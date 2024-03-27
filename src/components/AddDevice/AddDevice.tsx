@@ -5,7 +5,6 @@ import { Account, useAccounts, type Device } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useAddDeviceForm } from '@/hooks/useAddDeviceForm';
 import { deviceColors } from '@/styles/shared/tokens.css';
-import { addDeviceOnChain } from '@/utils/addDevice';
 import { addDevice } from '@/utils/device';
 import {
   addDeviceTranslations,
@@ -13,6 +12,7 @@ import {
   returnUrlWithDevice,
   searchParamsToString,
 } from '@/utils/searchParameters';
+import { submitTransaction } from '@/utils/submitTransaction';
 import { Box, ProgressCircle, Stack, Text } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
 import { ICommand } from '@kadena/types';
@@ -148,7 +148,7 @@ export default function AddDevice({ caccount, transaction, device }: Props) {
 
     const sendTransaction = async () => {
       try {
-        const pendingTransaction = await addDeviceOnChain(transaction);
+        const pendingTransaction = await submitTransaction(transaction);
         device.pendingRegistrationTx = pendingTransaction.requestKey;
         account.devices.push(device);
         setAccount(account);
