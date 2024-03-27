@@ -7,7 +7,12 @@ import { useAddDeviceForm } from '@/hooks/useAddDeviceForm';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { addDeviceOnChain } from '@/utils/addDevice';
 import { addDevice } from '@/utils/device';
-import { getDeviceIconSrc } from '@/utils/getDeviceIconSrc';
+import {
+  addDeviceTranslations,
+  objectParameterValue,
+  returnUrlWithDevice,
+  searchParamsToString,
+} from '@/utils/searchParameters';
 import { Box, ProgressCircle, Stack, Text } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
 import { ICommand } from '@kadena/types';
@@ -79,13 +84,6 @@ export default function AddDevice({ caccount, transaction, device }: Props) {
   const updateFields = (fields: Partial<FormData>) =>
     setData((current) => ({ ...current, ...fields }));
 
-  const returnUrl = (device: Device) =>
-    encodeURIComponent(
-      `${window.location.href}?device=${Buffer.from(
-        JSON.stringify(device),
-      ).toString('base64')}`,
-    );
-
   const onSubmit = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
@@ -111,20 +109,13 @@ export default function AddDevice({ caccount, transaction, device }: Props) {
     };
 
     const transaction = await addDevice(signingDevice, account, deviceToAdd);
-    const translations = Buffer.from(
-      JSON.stringify({
-        [`${process.env.NAMESPACE}.webauthn-wallet.ADD_DEVICE`]: {
-          title: 'Add device',
-          value: 'Add a new device to your account: {0}',
-          image: getDeviceIconSrc(deviceToAdd.deviceType),
-        },
-      }),
-    ).toString('base64');
 
     router.push(
-      `/sign?transaction=${Buffer.from(JSON.stringify(transaction)).toString(
-        'base64',
-      )}&returnUrl=${returnUrl(deviceToAdd)}&translations=${translations}`,
+      `/sign?${searchParamsToString({
+        transaction: objectParameterValue(transaction),
+        returnUrl: returnUrlWithDevice(window.location.href, deviceToAdd),
+        translations: addDeviceTranslations(deviceToAdd),
+      })}`,
     );
   };
 

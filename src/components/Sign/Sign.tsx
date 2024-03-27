@@ -14,6 +14,11 @@ import { useEffect, useState } from 'react';
 
 import fingerprint from '@/assets/images/fingerprint.svg';
 import { usePreviewEvents } from '@/hooks/usePreviewEvents';
+import {
+  arrayParameterValue,
+  objectParameterValue,
+  urlWithSearchParams,
+} from '@/utils/searchParameters';
 import { getTranslations } from '@/utils/shared/getTranslationBundle';
 import {
   filterAcceptorCapabilities,
@@ -137,25 +142,15 @@ export default function Sign(props: Props) {
 
     // No more available signers in this wallet (we don't use `tx` here since setTx is async)
     if (newAmountOfSigsToSign === 0) {
-      const params = new URLSearchParams();
-      params.append(
-        'transaction',
-        Buffer.from(JSON.stringify(signedTx)).toString('base64'),
-      );
+      const params = { transaction: '', pendingTxIds: '[]' };
+      params.transaction = objectParameterValue(signedTx);
 
       if (optimistic && pendingRegistrationTxs) {
-        params.append(
-          'pendingTxIds',
-          encodeURIComponent(JSON.stringify(pendingRegistrationTxs)),
-        );
+        params.pendingTxIds = arrayParameterValue(pendingRegistrationTxs);
       }
 
-      const returnUrlHasSearchParams = !!new URL(returnUrl).search;
-
       setTimeout(() => {
-        setRedirectLocation(
-          `${returnUrl}${returnUrlHasSearchParams ? '&' : '?'}${params.toString()}`,
-        );
+        setRedirectLocation(urlWithSearchParams(returnUrl, params));
       }, 2000);
     }
   };

@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { beforeEach, describe, it, mock } from 'node:test';
+import { describe, it } from 'vitest';
 
 import {
   filterAcceptorCapabilities,
