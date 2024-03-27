@@ -5,10 +5,7 @@ import { useNotifications } from '@/context/shared/NotificationsContext';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { getAccountNameFromRegisterDeviceEvent } from '@/utils/getAccountNameFromRegisterDeviceEvent';
 import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
-import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
-import { getAccountName } from '@/utils/register';
 import { getAccountFrom } from '@/utils/shared/account';
-import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Stack, Text } from '@kadena/react-ui';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { motion } from 'framer-motion';
@@ -22,11 +19,10 @@ import { animationVariants } from './animation';
 export const PasskeyForm: FC<StepProps> = ({
   stepIndex,
   isVisible,
-  updateFields,
   formValues,
   navigation,
 }) => {
-  const { handleSubmit, register } = useForm();
+  const { handleSubmit } = useForm();
   const { addNotification } = useNotifications();
   const { setAccount } = useAccounts();
   const router = useRouter();
@@ -36,7 +32,7 @@ export const PasskeyForm: FC<StepProps> = ({
 
     try {
       authResult = await startAuthentication({
-        challenge: 'arbitrary',
+        challenge: 'doesnotreallymatter',
         rpId: window.location.hostname,
       });
     } catch (error: unknown) {
