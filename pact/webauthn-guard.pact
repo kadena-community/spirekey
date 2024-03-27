@@ -50,7 +50,6 @@
   (defcap AUTHORIZED() true)
 
   (defcap AUTHENTICATE(account:string)
-    @event
     (with-read account-table account
       { 'devices       := devices
       , 'min-approvals := min-approvals
@@ -67,7 +66,6 @@
   )
 
   (defcap ADD_DEVICE(account:string credential-id:string)
-    @event
     (with-read account-table account
       { 'devices := devices
       , 'min-registration-approvals := min-registration-approvals
