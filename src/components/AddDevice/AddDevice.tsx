@@ -50,8 +50,8 @@ export interface StepProps {
 
 interface Props {
   caccount: string;
-  transaction?: string;
-  device?: string;
+  transaction?: ICommand;
+  device?: Device;
 }
 
 export default function AddDevice({ caccount, transaction, device }: Props) {
@@ -156,16 +156,10 @@ export default function AddDevice({ caccount, transaction, device }: Props) {
     if (!transaction || !device) return;
 
     const sendTransaction = async () => {
-      const tx: ICommand = JSON.parse(
-        Buffer.from(transaction, 'base64').toString(),
-      );
-      const deviceToAdd: Device = JSON.parse(
-        Buffer.from(device || '{}', 'base64').toString(),
-      );
       try {
-        const pendingTransaction = await addDeviceOnChain(tx);
-        deviceToAdd.pendingRegistrationTx = pendingTransaction.requestKey;
-        account.devices.push(deviceToAdd);
+        const pendingTransaction = await addDeviceOnChain(transaction);
+        device.pendingRegistrationTx = pendingTransaction.requestKey;
+        account.devices.push(device);
         setAccount(account);
         router.push('/');
       } catch (error: unknown) {

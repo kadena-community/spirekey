@@ -2,7 +2,9 @@
 
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
-import { Heading, Stack } from '@kadena/react-ui';
+import { Device } from '@/context/AccountsContext';
+import { Stack } from '@kadena/react-ui';
+import { ICommand } from '@kadena/types';
 import dynamic from 'next/dynamic';
 import * as styles from './page.css';
 
@@ -24,6 +26,14 @@ export default function AddDevicePage(req: Props) {
   const caccount = decodeURIComponent(req.params.caccount);
   const { transaction, device } = req.searchParams;
 
+  const decodedTransaction: ICommand | undefined = transaction
+    ? JSON.parse(Buffer.from(transaction, 'base64').toString())
+    : undefined;
+
+  const decodedDevice: Device | undefined = device
+    ? JSON.parse(Buffer.from(device || '{}', 'base64').toString())
+    : undefined;
+
   return (
     <Stack flexDirection="column" gap="md">
       <PageTitle>Add device to account</PageTitle>
@@ -36,8 +46,8 @@ export default function AddDevicePage(req: Props) {
       </Stack>
       <AddDevice
         caccount={caccount}
-        transaction={transaction}
-        device={device}
+        transaction={decodedTransaction}
+        device={decodedDevice}
       />
     </Stack>
   );
