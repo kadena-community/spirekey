@@ -7,10 +7,9 @@ another browser, the [Kadena SpireKey wallet](https://spirekey.kadena.io) has no
 way of knowing which of all the accounts stored on the blockchain belong to you.
 However, the device you registered your account with still holds the passkey you
 created to guard your account. Kadena SpireKey has a feature to recover your
-account based on a passkey associated with your account. It works with the
-passkey that you initially created your account with, but also with the passkey
-of devices that you added to your account after registration. This guide walks
-you through the process of recovering an account.
+account based on a passkey associated with your account. Your account can be
+recovered using any device that belongs to the account. This guide walks you
+through the process of recovering an account.
 
 ## Create an account
 
