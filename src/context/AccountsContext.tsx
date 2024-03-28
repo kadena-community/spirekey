@@ -11,7 +11,11 @@ import { retryPromises } from '@/utils/retryPromises';
 import { getAccountFrom } from '@/utils/shared/account';
 import { l1Client } from '@/utils/shared/client';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
-import { ChainId, ITransactionDescriptor } from '@kadena/client';
+import {
+  BuiltInPredicate,
+  ChainId,
+  ITransactionDescriptor,
+} from '@kadena/client';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 export type Account = {
@@ -29,7 +33,7 @@ export type Device = {
   ['credential-id']: string;
   guard: {
     keys: string[];
-    pred: 'keys-any';
+    pred: BuiltInPredicate;
   };
   pendingRegistrationTx?: string;
   name?: string;
