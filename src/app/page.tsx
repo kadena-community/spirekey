@@ -1,8 +1,9 @@
 'use client';
 
 import { Background } from '@/components/Background/Background';
+import { PageTitle } from '@/components/Layout/PageTitle';
 import { useAccounts } from '@/context/AccountsContext';
-import { Heading, Stack, SystemIcon } from '@kadena/react-ui';
+import { Stack } from '@kadena/react-ui';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -32,15 +33,7 @@ export default function Accounts() {
         width="100%"
         style={{ height: '100svh' }}
       >
-        <Stack
-          paddingInline="lg"
-          paddingBlock="md"
-          alignItems="center"
-          justifyContent="space-between"
-          width="100%"
-        >
-          <Heading variant="h5">Accounts</Heading>
-        </Stack>
+        <PageTitle>Accounts</PageTitle>
         <CardCollection />
       </Stack>
     </>

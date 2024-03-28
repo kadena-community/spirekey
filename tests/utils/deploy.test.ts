@@ -5,7 +5,8 @@ import {
   resolveConfiguration,
 } from '@/utils/deploy';
 import assert from 'node:assert';
-import { beforeEach, describe, it, mock } from 'node:test';
+import { mock } from 'node:test';
+import { beforeEach, describe, it } from 'vitest';
 
 describe('deploy', () => {
   const config: DeployConfiguration = {

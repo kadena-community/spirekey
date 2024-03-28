@@ -1,6 +1,5 @@
 import type { Account, Device } from '@/context/AccountsContext';
 import { asyncPipe } from '@/utils/shared/asyncPipe';
-import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { ChainId, createTransaction } from '@kadena/client';
 import {
   addData,
@@ -11,18 +10,26 @@ import {
   setNetworkId,
 } from '@kadena/client/fp';
 
+export const transactionDeviceFromDevice = (device: Device) => ({
+  name: `${device.deviceType}_${device.color}`,
+  domain: device.domain,
+  ['credential-id']: device['credential-id'],
+  guard: device.guard,
+});
+
 export const addDevice = async (
   signingDevice: Device,
   account: Account,
   device: Device,
 ) => {
+  const d = transactionDeviceFromDevice(device);
   const result = await asyncPipe(
     composePactCommand(
       execution(
         `(${process.env.NAMESPACE}.webauthn-wallet.add-device
           "${account.accountName}" (read-msg 'device))`,
       ),
-      addData('device', device),
+      addData('device', d),
       setMeta({
         senderAccount: account.accountName,
         gasLimit: 4000,

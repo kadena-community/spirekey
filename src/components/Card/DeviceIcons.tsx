@@ -1,47 +1,30 @@
-import { Account } from '@/context/AccountsContext';
-import { Box, SystemIcon } from '@kadena/react-ui';
-import { DeviceDesktop } from '../icons/DeviceDesktop';
-import { DevicePhone } from '../icons/DevicePhone';
-import { DeviceSecurityKey } from '../icons/DeviceSecurityKey';
-import { device } from './Card.css';
+import { Account, Device } from '@/context/AccountsContext';
+import { getDeviceIcon } from '@/utils/getDeviceIcon';
+import { Box } from '@kadena/react-ui';
+import * as styles from './Card.css';
 
 type DeviceIconsProps = {
   account: Account;
+  device?: Device;
 };
 
-export default function DeviceIcons({ account }: DeviceIconsProps) {
-  const uniqueDeviceTypes = new Set();
-  account.devices.map((d) => uniqueDeviceTypes.add(d.deviceType));
+export default function DeviceIcons({ account, device }: DeviceIconsProps) {
+  const firstDevice = account.devices[0];
+  const uniqueDeviceTypes = new Set<string>([
+    device?.deviceType || firstDevice.deviceType,
+  ]);
+
+  // Display all unique device types on the first card
+  if (!device || firstDevice['credential-id'] === device['credential-id']) {
+    account.devices.map((d) => uniqueDeviceTypes.add(d.deviceType));
+  }
 
   return Array.from(uniqueDeviceTypes).map((type, i) => {
-    switch (type) {
-      case 'security-key':
-        return (
-          <Box key={i} className={device}>
-            <DeviceSecurityKey />
-          </Box>
-        );
-
-      case 'phone':
-        return (
-          <Box key={i} className={device}>
-            <DevicePhone />
-          </Box>
-        );
-
-      case 'desktop':
-        return (
-          <Box key={i} className={device}>
-            <DeviceDesktop />
-          </Box>
-        );
-
-      default:
-        return (
-          <Box key={i} className={device}>
-            <SystemIcon.Information />
-          </Box>
-        );
-    }
+    const icon = getDeviceIcon(type);
+    return (
+      <Box key={i} className={styles.device}>
+        {icon}
+      </Box>
+    );
   });
 }
