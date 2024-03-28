@@ -3,7 +3,7 @@
 After you register a Kadena SpireKey account, the account details are stored on
 the blockchain and in the localStorage of your browser. When the localStorage of
 your browser is cleared or you want to use your Kadena SpireKey account on
-another device, the [Kadena SpireKey wallet](https://spirekey.kadena.io) has no
+another browser, the [Kadena SpireKey wallet](https://spirekey.kadena.io) has no
 way of knowing which of all the accounts stored on the blockchain belong to you.
 However, the device you registered your account with still holds the passkey you
 created to guard your account. Kadena SpireKey has a feature to recover your
