@@ -3,7 +3,7 @@
 import { Button } from '@/components/shared/Button/Button';
 import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { Surface } from '@/components/Surface/Surface';
-import { Account, useAccounts } from '@/context/AccountsContext';
+import { useAccounts } from '@/context/AccountsContext';
 import { useSign } from '@/hooks/useSign';
 import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
 import { Box, Heading, ProductIcon, Stack, Text } from '@kadena/react-ui';
@@ -13,7 +13,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import fingerprint from '@/assets/images/fingerprint.svg';
-import { usePreviewEvents } from '@/hooks/usePreviewEvents';
 import {
   arrayParameterValue,
   objectParameterValue,
@@ -24,7 +23,7 @@ import {
   filterAcceptorCapabilities,
   filterGranterCapabilities,
 } from '@/utils/shared/smartContractMeta';
-import type { ICommandPayload, IPactEvent } from '@kadena/types';
+import type { ICommandPayload } from '@kadena/types';
 import { Capability } from '../Capability/Capability';
 import { container, step, wrapper } from './Sign.css';
 
@@ -114,9 +113,9 @@ export default function Sign(props: Props) {
   const devices = pubkeysForTx.map((publicKey) =>
     getDeviceByPublicKey(accounts, publicKey),
   );
-  const pendingRegistrationTxs = devices.map(
-    (device) => device?.pendingRegistrationTx,
-  );
+  const pendingRegistrationTxs = devices
+    .map((device) => device?.pendingRegistrationTx)
+    .filter(Boolean);
 
   const isReadyToSubmit =
     (!optimistic && !!pendingRegistrationTxs.length) || optimistic;
@@ -130,8 +129,6 @@ export default function Sign(props: Props) {
       router.push(redirectLocation);
     }
   }, [redirectLocation, isReadyToSubmit, router, returnUrl, autoRedirect]);
-
-  const { events } = usePreviewEvents(props);
 
   const onSign = async (deviceIndex: number) => {
     const signedTx = await sign(tx, devices?.[deviceIndex]?.['credential-id']!);
@@ -158,22 +155,6 @@ export default function Sign(props: Props) {
   const onAutoRedirectChange = () => {
     setAutoRedirect(!autoRedirect);
   };
-
-  const isCoinEventForAccounts =
-    (accounts: Account[]) => (event: IPactEvent) => {
-      if (event.module.name !== 'coin') return false;
-      if (event.module.namespace) return false;
-      if (!event.params[0]) return false;
-      return accounts.some(
-        (account) => event.params[0] === account.accountName,
-      );
-    };
-  const coinEvents = events?.filter(isCoinEventForAccounts(accounts));
-  const otherEvents = events?.filter((event) => {
-    if (event.module.name === 'webauthn-wallet' && event.name === 'TRANSFER')
-      return false;
-    return !isCoinEventForAccounts(accounts)(event);
-  });
 
   const signerGranterCapabilities = signers.flatMap(
     (signer) => signer.granterCapabilities,
