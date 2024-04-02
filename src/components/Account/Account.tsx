@@ -1,5 +1,5 @@
-import { useAccounts, type Account } from '@/context/AccountsContext';
-
+import type { Account } from '@/context/AccountsContext';
+import { useAccounts } from '@/context/AccountsContext';
 import { calculateBalancePercentage } from '@/utils/balance';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { Grid, Stack } from '@kadena/react-ui';
@@ -21,7 +21,7 @@ import * as styles from './Account.css';
 interface AccountProps {
   account: Account;
   isActive?: boolean;
-  returnUrl?: string;
+  returnUrl: string;
   optimistic?: boolean;
 }
 
@@ -52,6 +52,7 @@ export function Account({
     () => setDelayedIsActive(false);
   }, [isActive]);
 
+  const cancelUrl = new URL(returnUrl);
   return (
     <Carousel
       account={account}
@@ -62,7 +63,22 @@ export function Account({
       {account.devices.map((d) => {
         const caccount = encodeURIComponent(account.accountName);
         const cid = encodeURIComponent(d['credential-id']);
-
+        const url = new URL(returnUrl);
+        const user = Buffer.from(
+          JSON.stringify({
+            alias: account.alias,
+            accountName: account.accountName,
+            pendingTxIds: [d.pendingRegistrationTx].filter(Boolean),
+            credentials: [
+              {
+                type: 'WebAuthn',
+                publicKey: d.guard.keys[0],
+                id: d['credential-id'],
+              },
+            ],
+          }),
+        ).toString('base64');
+        url.searchParams.set('user', user);
         return (
           <Fragment key={d['credential-id']}>
             <DeviceCard
@@ -134,29 +150,14 @@ export function Account({
                   marginBlockStart="lg"
                   paddingInline="lg"
                 >
-                  <ButtonLink variant="secondary" href={returnUrl}>
+                  <ButtonLink
+                    variant="secondary"
+                    href={new URL(returnUrl).toString()}
+                  >
                     Cancel
                   </ButtonLink>
                   {(optimistic || !d.pendingRegistrationTx) && (
-                    <ButtonLink
-                      variant="primary"
-                      href={`${returnUrl}?user=${Buffer.from(
-                        JSON.stringify({
-                          alias: account.alias,
-                          accountName: account.accountName,
-                          pendingTxIds: [d.pendingRegistrationTx].filter(
-                            Boolean,
-                          ),
-                          credentials: [
-                            {
-                              type: 'WebAuthn',
-                              publicKey: d.guard.keys[0],
-                              id: d['credential-id'],
-                            },
-                          ],
-                        }),
-                      ).toString('base64')}`}
-                    >
+                    <ButtonLink variant="primary" href={url.toString()}>
                       Connect
                     </ButtonLink>
                   )}
