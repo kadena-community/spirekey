@@ -59,7 +59,7 @@ export const BiometricsForm: FC<StepProps> = ({
       >
         <SurfaceCard
           title="Passkey"
-          description="Create your account by using PassKey"
+          description="Create your account by using Passkey"
           onClick={() => onSubmit()}
         >
           <Stack
