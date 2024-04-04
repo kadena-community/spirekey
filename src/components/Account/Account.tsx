@@ -21,7 +21,7 @@ import * as styles from './Account.css';
 interface AccountProps {
   account: Account;
   isActive?: boolean;
-  returnUrl: string;
+  returnUrl?: string;
   optimistic?: boolean;
 }
 
@@ -52,7 +52,6 @@ export function Account({
     () => setDelayedIsActive(false);
   }, [isActive]);
 
-  const cancelUrl = new URL(returnUrl);
   return (
     <Carousel
       account={account}
@@ -63,7 +62,7 @@ export function Account({
       {account.devices.map((d) => {
         const caccount = encodeURIComponent(account.accountName);
         const cid = encodeURIComponent(d['credential-id']);
-        const url = new URL(returnUrl);
+        const url = returnUrl ? new URL(returnUrl) : '';
         const user = Buffer.from(
           JSON.stringify({
             alias: account.alias,
@@ -78,7 +77,7 @@ export function Account({
             ],
           }),
         ).toString('base64');
-        url.searchParams.set('user', user);
+        if (url) url.searchParams.set('user', user);
         return (
           <Fragment key={d['credential-id']}>
             <DeviceCard

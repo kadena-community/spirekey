@@ -14,8 +14,11 @@
   (defcap GOVERNANCE()
     (enforce-guard GOVERNANCE_KEYSET)
   )
+  
+  (defconst fungible-enabled (read-msg 'fungible-enabled))
 
   (defcap DEBIT(account:string)
+    (enforce fungible-enabled "Fungible is not enabled")
     (webauthn-guard.enforce-authenticated account)
   )
 

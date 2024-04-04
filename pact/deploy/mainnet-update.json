@@ -1,30 +1,9 @@
 {
   "profiles": {
     "default": {
-      "host": "https://devnet.kadena.network",
-      "networkId": "development",
-      "chains": [
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-        "16",
-        "17",
-        "18",
-        "19"
-      ]
+      "host": "https://api.chainweb.com",
+      "networkId": "mainnet01",
+      "chains": ["8"]
     }
   },
   "steps": [
@@ -45,17 +24,7 @@
         "webauthn-keyset-name": "n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-keyset",
         "webauthn-namespace": "n_eef68e581f767dd66c4d4c39ed922be944ede505",
         "upgrade": true,
-        "fungible-enabled": true
-      },
-      "sender": "w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any"
-    },
-    {
-      "profile": "default",
-      "codeFile": "./pact/coin-delivery.pact",
-      "data": {
-        "webauthn-keyset-name": "n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-keyset",
-        "webauthn-namespace": "n_eef68e581f767dd66c4d4c39ed922be944ede505",
-        "upgrade": true
+        "fungible-enabled": false
       },
       "sender": "w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any"
     },

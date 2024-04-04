@@ -15,7 +15,7 @@ interface CardCollectionProps {
 
 // Something we might be able to use for the scroll-enlarge-effect: https://codesandbox.io/p/sandbox/fervent-pasteur-dqs9ry?file=%2FApp.js%3A75%2C18-75%2C25
 export default function CardCollection({
-  returnUrl = '',
+  returnUrl,
   optimistic,
   networkId,
 }: CardCollectionProps) {
