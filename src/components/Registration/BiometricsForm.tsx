@@ -58,8 +58,8 @@ export const BiometricsForm: FC<StepProps> = ({
         onSubmit={handleSubmit(onSubmit)}
       >
         <SurfaceCard
-          title="Biometrics"
-          description="To secure your account we need you to confirm with your biometrics"
+          title="Passkey"
+          description="Create your account by using Passkey"
           onClick={() => onSubmit()}
         >
           <Stack
