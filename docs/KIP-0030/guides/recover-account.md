@@ -73,7 +73,7 @@ blockchain.
 ### Before you begin
 
 This part of the guide assumes that you are developing your own wallet dApp
-using TypeScript against a locally running Devnet.
+using TypeScript against Testnet.
 
 ### Select a passkey
 
@@ -81,7 +81,13 @@ Prompt users to select a passkey on their device that is associated with your
 wallet domain. Use the `startAuthentication` method from the
 `@simplewebauthn/browser` package and pass the domain as the value of `rpId`. In
 the example below `window.location.hostname` is used, but you can pass the
-domain in any way you want.
+domain in any way you want. Either way, the the rpId needs to match with the
+host name, otherwise the domain this app is running on. Furthermore, if the host
+is not localhost, the host needs to be secured with https. Otherwise the request
+will fail. The value of the `challenge` field is required, but the exact value
+does not really matter, because no session will be created and
+`startAuthentication` is only used to retrieve the credential id of a device
+associated with an account to recover.
 
 ```typescript
 import { startAuthentication } from '@simplewebauthn/browser';
@@ -117,7 +123,7 @@ Data API endpoint `/txs/events` with the following query parameters.
 
 The code sample below extends the previous example with example code for finding
 the `REGISTER_DEVICE` event including the previously obtained credential
-identifier. If you are not developing a wallet dApp against a locally running
+identifier. If you are developing a wallet dApp against a locally running
 Devnet, replace the `chainwebDataUrl` and module `namespace` accordingly. For
 the sake of brevity, the code sample does not handle edge cases like no events
 being found.
@@ -129,8 +135,8 @@ interface Event {
   requestKey: string;
 }
 
-const chainwebDataUrl = 'http://localhost:8080';
-const namespace = 'n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9';
+const chainwebDataUrl = 'https://estats.testnet.chainweb.com';
+const namespace = 'n_eef68e581f767dd66c4d4c39ed922be944ede505';
 
 const fetchEvent = async (credentialId: string): Promise<Event> => {
   const eventsResponse = await fetch(
@@ -180,7 +186,7 @@ interface Transaction {
   sender: string;
 }
 
-const chainwebDataUrl = 'http://localhost:8080';
+const chainwebDataUrl = 'https://estats.testnet.chainweb.com';
 
 const getAccountName = async (requestKey: string): Promise<string> => {
   const txResponse = await fetch(
@@ -188,6 +194,9 @@ const getAccountName = async (requestKey: string): Promise<string> => {
   );
   const tx = await txResponse.json();
 
+  // Register transactions return the created account name in the result.
+  // Add device transactions have the account name in the sender field and
+  // only return 'Write succeeded'.
   return tx.result === 'Write succeeded' ? tx.sender : tx.result;
 };
 
@@ -205,14 +214,14 @@ recoverAccount();
 Now that you recovered the name of the account that the credential id of the
 passkey on the user's device belongs to you can proceed to retrieve all details
 of the account. This can be achieved by executing a local transaction against
-your locally running Devnet or any other network you may be developing your
-wallet dApp against. The code example below uses the functional pattern for
-creating and executing transactions provided by the `@kadena/client` package.
-The transaction includes a call to the `get-webauthn-guard` function of the
-`webauthn-wallet` module for retrieving the account details and a call to the
-`get-balance` function of the `coin` module to retrieve the account balance. So,
-the gist of the Pact command to be executed is as follows and it is, of course,
-up to you what programming pattern you want to use to execute it locally.
+Testnet or any other network you may be developing your wallet dApp against. The
+code example below uses the functional pattern for creating and executing
+transactions provided by the `@kadena/client` package. The transaction includes
+a call to the `get-webauthn-guard` function of the `webauthn-wallet` module for
+retrieving the account details and a call to the `get-balance` function of the
+`coin` module to retrieve the account balance. So, the gist of the Pact command
+to be executed is as follows and it is, of course, up to you what programming
+pattern you want to use to execute it locally.
 
 ```pact
 [
@@ -258,10 +267,10 @@ interface Account {
   devices: Device[];
 }
 
-const chainwebDataUrl = 'http://localhost:8080';
-const networkId = 'development';
+const chainwebDataUrl = 'https://estats.testnet.chainweb.com';
+const networkId = 'testnet04';
 const chainId: ChainId = '14';
-const namespace = 'n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9';
+const namespace = 'n_eef68e581f767dd66c4d4c39ed922be944ede505';
 
 const client = createClient(({ chainId, networkId }) => {
   return `${chainwebDataUrl}/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
@@ -350,10 +359,10 @@ interface Account {
   devices: Device[];
 }
 const domain = window.location.hostname;
-const chainwebDataUrl = 'http://localhost:8080';
-const networkId = 'development';
+const chainwebDataUrl = 'https://estats.testnet.chainweb.com';
+const networkId = 'testnet04';
 const chainId: ChainId = '14';
-const namespace = 'n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9';
+const namespace = 'n_eef68e581f767dd66c4d4c39ed922be944ede505';
 
 const getCredentialId = async (): string => {
   const authResult = await startAuthentication({
