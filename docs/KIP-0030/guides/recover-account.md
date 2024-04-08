@@ -255,14 +255,12 @@ display the account details in your wallet dApp.
 ```typescript
 // Existing implementation omitted for clarity.
 
-import { BuiltInPredicate } from '@kadena/client';
-
 interface Device {
   domain: string;
   ['credential-id']: string;
   guard: {
     keys: string[];
-    pred: BuiltInPredicate;
+    pred: 'keys-any';
   };
   name: string;
 }
