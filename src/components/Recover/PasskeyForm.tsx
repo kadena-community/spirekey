@@ -10,7 +10,6 @@ import { Stack, Text } from '@kadena/react-ui';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { StepProps } from './Recover';
@@ -25,7 +24,6 @@ export const PasskeyForm: FC<StepProps> = ({
   const { handleSubmit } = useForm();
   const { addNotification } = useNotifications();
   const { setAccount } = useAccounts();
-  const router = useRouter();
 
   const onSubmit = async () => {
     let authResult;

@@ -1,10 +1,16 @@
-interface Event {
-  requestKey: string;
-}
+import { createTransaction } from '@kadena/client';
+import {
+  composePactCommand,
+  execution,
+  setMeta,
+  setNetworkId,
+} from '@kadena/client/fp';
+import { ChainId } from '@kadena/types';
+import { asyncPipe } from './shared/asyncPipe';
+import { l1Client } from './shared/client';
 
-interface Transaction {
-  result: string;
-  sender: string;
+interface Event {
+  params: string[];
 }
 
 export const getAccountNameFromRegisterDeviceEvent = async (
@@ -18,10 +24,10 @@ export const getAccountNameFromRegisterDeviceEvent = async (
   }
 
   try {
-    const transaction = await fetchTransaction(domain, events[0].requestKey);
-    return transaction.result === 'Write succeeded'
-      ? transaction.sender
-      : transaction.result;
+    return getAccountName(
+      events[0].params[0],
+      process.env.WALLET_NETWORK_ID || '',
+    );
   } catch (e: unknown) {
     throw new Error('No transaction found for event.');
   }
@@ -41,10 +47,25 @@ const fetchEvents = async (
   }
 };
 
-const fetchTransaction = async (
-  domain: string,
-  requestKey: string,
-): Promise<Transaction> => {
-  const txResponse = await fetch(`${domain}/txs/tx?requestkey=${requestKey}`);
-  return await txResponse.json();
-};
+export const getAccountName = async (
+  account: string,
+  networkId: string,
+): Promise<string> =>
+  asyncPipe(
+    composePactCommand(
+      execution(
+        `(${process.env.NAMESPACE}.webauthn-wallet.get-account-name "${account}")`,
+      ),
+      setMeta({
+        chainId: process.env.CHAIN_ID as ChainId,
+        gasLimit: 1000,
+        gasPrice: 0.0000001,
+        ttl: 60000,
+      }),
+      setNetworkId(networkId),
+    ),
+    createTransaction,
+    (tx) =>
+      l1Client.local(tx, { preflight: false, signatureVerification: false }),
+    (tx) => tx.result.data,
+  )({});
