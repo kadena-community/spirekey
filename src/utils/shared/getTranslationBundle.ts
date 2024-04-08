@@ -1,4 +1,4 @@
-import { deliveryTranslations } from '@/app/v1/example/delivery/utils/getDeliveryTranslations';
+import { deliveryTranslations } from '@/app/(examples)/v1/example/delivery/utils/getDeliveryTranslations';
 import devWorld from '@/assets/images/devworld.png';
 import transfer from '@/components/icons/mono_credit_score.svg';
 import gas from '@/components/icons/mono_local_gas_station.svg';

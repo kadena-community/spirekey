@@ -2,7 +2,7 @@
 
 import { darkThemeClass } from '@kadena/react-ui/styles';
 import { ThemeProvider } from 'next-themes';
-import {ReactNode, useEffect} from 'react';
+import { ReactNode, useEffect } from 'react';
 
 import { NotificationContainer } from '@/components/shared/NotificationsContainer/NotificationsContainer';
 import { AccountsProvider } from '@/context/AccountsContext';
@@ -34,11 +34,18 @@ function localStorageProvider() {
   return map as any;
 }
 
-export default function Providers({ children }: { children: ReactNode }) {
-
+export default function Providers({
+  children,
+  allowDevMode = true,
+}: {
+  children: ReactNode;
+  allowDevMode?: boolean;
+}) {
   useEffect(() => {
-      const devMode:boolean = !!localStorage.getItem("devMode");
-      devMode && document.body.classList.add("developer");
+    if (!allowDevMode) return;
+    const devMode: boolean = !!localStorage.getItem('devMode');
+    if (!devMode) return;
+    devMode && document.body.classList.add('developer');
   });
 
   return (
