@@ -136,3 +136,43 @@ beyond the scope of this guide.
 ```
 https://estats.testnet.chainweb.com/txs/tx?requestkey=gzlhITOU8hMaOXHKcSJgxLl0Ir8j2crUnFh20cGcxsR
 ```
+
+### Optimistic flow
+
+Depending on the network, confirming the account creation transaction on the
+blockchain can take some time. If you want to optimize the onboarding of users
+to your app for speed, you can opt to allow users to connect their account
+optimistically, by adding the `optimistic=true` query parameter to the Kadena
+Spirekey wallet dApp URL. This allows users to connect their account to your
+dApp before the corresponding transaction (to create the account) is confirmed
+on the blockchain. Without this parameter, users without an account will have to
+wait until their account is successfully created on the blockchain before they
+can return to your dApp. In most cases, dApps can already prepare transactions
+involving a user's account before it is minted, so the account can be minted in
+the background. Only when the dApp submits a signed transaction it is required
+that all signers exist on chain. It's the dApp's responsibility to handle this
+case. When there are pending transactions for the connected account, the
+requestKeys are appended to the url in an URL encoded way. You can get the array
+of pending transactions by decoding the `pendingTxIds` query parameter.
+
+| Optimistic flow                                                     | Non-optimistic flow                                                                                       |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Redirects the user back to the dApp immediately after signing       | Redirects the user back to the dApp after the account creation transaction is confirmed on the blockchain |
+| dApp is responsible for monitoring the account creation transaction | Wallet is responsible for monitoring the account creation transaction                                     |
+|                                                                     |                                                                                                           |
+
+With the `optimistic=true` parameter, the connect url would look like this:
+
+```
+https://spirekey.kadena.io/connect?returnUrl=http://localhost:3000&networkId=development&reason=Your%20reason&optimistic=true
+```
+
+With this connect url, the user will be redirected to the following url after
+connecting their account:
+
+```
+https://localhost:3000?user=eyJhY2NvdW50TmFtZSI6ImM6NjhmbyI2bk5BWV9hNk51X0NORUdpS3lWREpseUd4S0MwZE9aTEJxNlp1IiwiYWxpYXMiOiJBbGljZSIsImNyZWRlbnRpYWxzIjpbeyJpZCI6ImQyZVlUM3pBa2xNZ1paSk5qUTN6SnhaNmt1VDR0a2RfbmRlUElFV0szTmQiLCJwdWJsaWNQb2ludCI6IldFQkFVVEhOLWE1MDEwMjMyNjIwMDEyMTU4MjA5YTRlODNiNmQ3MzQ4ODBiOTI2YzBlNzRiY2U4ZTg0OWFjMDNmMDk5OGNiMjI0OTk5ZDUwMzk2NTFjMjQ1MzQxZDIyNTgyMDYwZjI4MDRmM2M0MjQ5MTg3ODZhOTc4YzU2OTU2MjhkYzkzZDQzMjE4MjkyNzNkYjE4NzA4NDU3OTUwM2NlYTNhM2MifV19XQ==&pendingTxIds=%5B%22Z3psaElUT1U4aE1hT1hIS2NTSkd4TGwwSXJoMmNyVW5GaDIwY0djOHhzUg%3D%3D%22%5D
+```
+
+In this example there is a pending transaction with requestKey
+`Z3psaElUT1U4aE1hT1hIS2NTSkd4TGwwSXJoMmNyVW5GaDIwY0djOHhzUg==`.
