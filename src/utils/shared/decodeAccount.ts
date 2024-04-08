@@ -1,4 +1,4 @@
-import type { ConnectAccount } from '@/app/v1/example/delivery/components/AccountButton';
+import type { ConnectAccount } from '@/app/(examples)/v1/example/delivery/components/AccountButton';
 
 export const decodeAccount = (response: string): ConnectAccount | null => {
   if (!response) return null;
