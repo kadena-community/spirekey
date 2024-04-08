@@ -132,7 +132,7 @@ being found.
 // Existing implementation omitted for clarity.
 
 interface Event {
-  requestKey: string;
+  params: string[];
 }
 
 const chainwebDataUrl = 'https://estats.testnet.chainweb.com';
@@ -158,52 +158,71 @@ recoverAccount();
 
 ### Find account name
 
-The event object contains a field `requestKey`. Use the value of this field to
-find the transaction that caused the event to be emitted. The transaction can be
-found by calling the Chainweb Data API endpoint `/txs/tx` with the following
-query parameter.
+The event object contains a field `params`. The first parameter in this array is
+the Webauthn Guard account (w:account). Use the value of this field to retrieve
+the Webauthn Wallet account (c:account) by making a local transaction that calls
+the `get-account-name` function of the `webauthn-wallet` contract. The code
+example below uses the functional pattern for creating and executing
+transactions provided by the `@kadena/client` package. The gist of the Pact
+command to be executed is as follows and it is, of course, up to you what
+programming pattern you want to use to execute it locally.
 
-| parameter  | description                        |
-| :--------- | :--------------------------------- |
-| requestkey | The request key of the transaction |
+```pact
+`(n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.get-account-name "w:lImvUWTPtU99aeL9IY8eSxqnbD6bIBzczlMqGlh6OLB:keys-any")`
+```
 
-The `REGISTER_DEVICE` event can be emitted from the `register` and the
-`add-device` functions of the `webauthn-guard` module. A completed transaction
-that contains a call to the `register` function contains the account name in the
-`result` field of the transaction object returned by the Chainweb Data API. A
-completed transaction that contains a call to the `add-device` function contains
-the account name in the `sender` field of the transaction object returned by the
-Chainweb Data API. The code sample below provides an example implementation of
-finding the account name based on the `requestKey` of a `REGISTER_DEVICE` event.
-For the sake of brevity, the code sample does not handle edge cases like no
-transaction being found.
+Add the following code to retrieve the Webauthn Wallet account name from the
+Webauthn Guard account name in the event.
 
 ```typescript
 // Existing implementation omitted for clarity.
 
-interface Transaction {
-  result: string;
-  sender: string;
-}
+import { createTransaction, createClient } from '@kadena/client';
+import {
+  composePactCommand,
+  execution,
+  setMeta,
+  setNetworkId,
+} from '@kadena/client/fp';
+import { ChainId } from '@kadena/types';
 
 const chainwebDataUrl = 'https://estats.testnet.chainweb.com';
+const networkId = 'testnet04';
+const chainId: ChainId = '14';
 
-const getAccountName = async (requestKey: string): Promise<string> => {
-  const txResponse = await fetch(
-    `${chainwebDataUrl}/txs/tx?requestkey=${requestKey}`,
-  );
-  const tx = await txResponse.json();
+const client = createClient(({ chainId, networkId }) => {
+  return `${chainwebDataUrl}/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
+});
 
-  // Register transactions return the created account name in the result.
-  // Add device transactions have the account name in the sender field and
-  // only return 'Write succeeded'.
-  return tx.result === 'Write succeeded' ? tx.sender : tx.result;
-};
+const asyncPipe =
+  (...args: Array<(arg: any) => any>): ((init: any) => Promise<any>) =>
+  (init: any): Promise<any> =>
+    args.reduce((chain, fn) => chain.then(fn), Promise.resolve(init));
+
+const getAccountName = async (wAccount: string): Promise<string> =>
+  asyncPipe(
+    composePactCommand(
+      execution(
+        `(${namespace}.webauthn-wallet.get-account-name "${wAccount}")`,
+      ),
+      setMeta({
+        chainId: process.env.CHAIN_ID as ChainId,
+        gasLimit: 1000,
+        gasPrice: 0.0000001,
+        ttl: 60000,
+      }),
+      setNetworkId(networkId),
+    ),
+    createTransaction,
+    (tx) =>
+      client.local(tx, { preflight: false, signatureVerification: false }),
+    (tx) => tx.result.data,
+  )({});
 
 const recoverAccount = async () => {
   // Existing implementation omitted for clarity.
 
-  const accountName = await getAccountName(event.requestKey);
+  const accountName = await getAccountName(event.params[0]);
 };
 
 recoverAccount();
@@ -215,17 +234,16 @@ Now that you recovered the name of the account that the credential id of the
 passkey on the user's device belongs to you can proceed to retrieve all details
 of the account. This can be achieved by executing a local transaction against
 Testnet or any other network you may be developing your wallet dApp against. The
-code example below uses the functional pattern for creating and executing
+code example below again uses the functional pattern for creating and executing
 transactions provided by the `@kadena/client` package. The transaction includes
 a call to the `get-webauthn-guard` function of the `webauthn-wallet` module for
 retrieving the account details and a call to the `get-balance` function of the
 `coin` module to retrieve the account balance. So, the gist of the Pact command
-to be executed is as follows and it is, of course, up to you what programming
-pattern you want to use to execute it locally.
+to be executed is as follows.
 
 ```pact
 [
-    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-webauthn-guard "c:JYqXwmvVTNV5dDiUwoecY-DWRlBUq3j0nGSjxaf6PsE")
+    (n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.get-webauthn-guard "c:JYqXwmvVTNV5dDiUwoecY-DWRlBUq3j0nGSjxaf6PsE")
     (coin.get-balance "c:JYqXwmvVTNV5dDiUwoecY-DWRlBUq3j0nGSjxaf6PsE")
 ]
 ```
@@ -237,19 +255,7 @@ display the account details in your wallet dApp.
 ```typescript
 // Existing implementation omitted for clarity.
 
-import {
-  BuiltInPredicate,
-  ChainId,
-  createTransaction,
-  createClient,
-} from '@kadena/client';
-
-import {
-  composePactCommand,
-  execution,
-  setMeta,
-  setNetworkId,
-} from '@kadena/client/fp';
+import { BuiltInPredicate } from '@kadena/client';
 
 interface Device {
   domain: string;
@@ -267,20 +273,6 @@ interface Account {
   devices: Device[];
 }
 
-const chainwebDataUrl = 'https://estats.testnet.chainweb.com';
-const networkId = 'testnet04';
-const chainId: ChainId = '14';
-const namespace = 'n_eef68e581f767dd66c4d4c39ed922be944ede505';
-
-const client = createClient(({ chainId, networkId }) => {
-  return `${chainwebDataUrl}/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
-});
-
-const asyncPipe =
-  (...args: Array<(arg: any) => any>): ((init: any) => Promise<any>) =>
-  (init: any): Promise<any> =>
-    args.reduce((chain, fn) => chain.then(fn), Promise.resolve(init));
-
 const getAccountDetails = async (accountName: string): Promise<Account> =>
   asyncPipe(
     composePactCommand(
@@ -294,7 +286,7 @@ const getAccountDetails = async (accountName: string): Promise<Account> =>
       setNetworkId(networkId),
     ),
     createTransaction,
-    (tx) => l1Client.local(tx, { preflight: false }),
+    (tx) => client.local(tx, { preflight: false }),
     (tx) => {
       if (tx?.result?.status !== 'success') return null;
       const [devices, balance] = tx.result.data;
@@ -334,13 +326,10 @@ import {
   setNetworkId,
 } from '@kadena/client/fp';
 
-interface Event {
-  requestKey: string;
-}
+import { ChainId } from '@kadena/types';
 
-interface Transaction {
-  result: string;
-  sender: string;
+interface Event {
+  params: string[];
 }
 
 interface Device {
@@ -381,15 +370,6 @@ const fetchEvent = async (credentialId: string): Promise<Event> => {
   return events[0];
 };
 
-const getAccountName = async (requestKey: string): Promise<string> => {
-  const txResponse = await fetch(
-    `${chainwebDataUrl}/txs/tx?requestkey=${requestKey}`,
-  );
-  const tx = await txResponse.json();
-
-  return tx.result === 'Write succeeded' ? tx.sender : tx.result;
-};
-
 const client = createClient(({ chainId, networkId }) => {
   return `${chainwebDataUrl}/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
 });
@@ -398,6 +378,26 @@ const asyncPipe =
   (...args: Array<(arg: any) => any>): ((init: any) => Promise<any>) =>
   (init: any): Promise<any> =>
     args.reduce((chain, fn) => chain.then(fn), Promise.resolve(init));
+
+const getAccountName = async (wAccount: string): Promise<string> =>
+  asyncPipe(
+    composePactCommand(
+      execution(
+        `(${namespace}.webauthn-wallet.get-account-name "${wAccount}")`,
+      ),
+      setMeta({
+        chainId: process.env.CHAIN_ID as ChainId,
+        gasLimit: 1000,
+        gasPrice: 0.0000001,
+        ttl: 60000,
+      }),
+      setNetworkId(networkId),
+    ),
+    createTransaction,
+    (tx) =>
+      client.local(tx, { preflight: false, signatureVerification: false }),
+    (tx) => tx.result.data,
+  )({});
 
 const getAccountDetails = async (accountName: string): Promise<Account> =>
   asyncPipe(
@@ -412,7 +412,7 @@ const getAccountDetails = async (accountName: string): Promise<Account> =>
       setNetworkId(networkId),
     ),
     createTransaction,
-    (tx) => l1Client.local(tx, { preflight: false }),
+    (tx) => client.local(tx, { preflight: false }),
     (tx) => {
       if (tx?.result?.status !== 'success') return null;
       const [devices, balance] = tx.result.data;
@@ -427,7 +427,7 @@ const getAccountDetails = async (accountName: string): Promise<Account> =>
 const recoverAccount = async () => {
   const credentialId = await getCredentialId();
   const event = await fetchEvent(credentialId);
-  const accountName = await getAccountName(event.requestKey);
+  const accountName = await getAccountName(event.params[0]);
   const account = await getAccountDetails(accountName);
 };
 

@@ -91,6 +91,7 @@ export const PasskeyForm: FC<StepProps> = ({
       return;
     }
 
+    console.log(accountName, account);
     setAccount({
       accountName: account.accountName,
       networkId: account.networkId,
