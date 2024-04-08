@@ -39,7 +39,7 @@ export default function Sign(props: Props) {
   const {
     transaction,
     returnUrl,
-    optimistic = false,
+    optimistic = true,
     meta,
     translations,
   } = props;
@@ -118,7 +118,7 @@ export default function Sign(props: Props) {
     .filter(Boolean);
 
   const isReadyToSubmit =
-    (!optimistic && !!pendingRegistrationTxs.length) || optimistic;
+    (!optimistic && !pendingRegistrationTxs.length) || optimistic;
 
   const [signaturesToSign, setSignaturesToSign] = useState<number>(
     devices.length,

@@ -17,7 +17,7 @@ export default function SignPage(req: SignProps) {
   const {
     transaction,
     returnUrl,
-    optimistic = false,
+    optimistic = true,
     meta,
     translations,
   } = req.searchParams;
