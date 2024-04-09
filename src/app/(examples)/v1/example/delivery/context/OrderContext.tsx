@@ -1,5 +1,5 @@
 import { products } from '@/app/(examples)/v1/example/delivery/mock/products';
-import devWorld from '@/assets/images/devworld.png';
+import kadenaK from '@/assets/images/k.svg';
 import { StaticImageData } from 'next/image';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -19,7 +19,7 @@ const defaultOrderItems: OrderItems = [];
 const defaultState = {
   products,
   deliveryFee: {
-    image: devWorld,
+    image: kadenaK.src,
     name: 'Delivery Fee',
     price: 6.25,
     quantity: 1,

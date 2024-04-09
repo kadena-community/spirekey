@@ -1,5 +1,5 @@
 import { deliveryTranslations } from '@/app/(examples)/v1/example/delivery/utils/getDeliveryTranslations';
-import devWorld from '@/assets/images/devworld.png';
+import kadenaK from '@/assets/images/k.svg';
 import transfer from '@/components/icons/mono_credit_score.svg';
 import gas from '@/components/icons/mono_local_gas_station.svg';
 
@@ -27,19 +27,19 @@ const coinTranslations = {
 
 const proofOfUsTranslations = {
   'n_31cd1d224d06ca2b327f1b03f06763e305099250.proof-of-us.ATTEND': {
-    title: 'DevWorld',
+    title: 'Kadena',
     value: 'Your proof of attendance',
-    image: devWorld.src,
+    image: kadenaK.src,
   },
   'n_31cd1d224d06ca2b327f1b03f06763e305099250.proof-of-us.CONNECT': {
-    title: 'DevWorld',
+    title: 'Kadena',
     value: 'Your proof of connection',
-    image: devWorld.src,
+    image: kadenaK.src,
   },
   'n_31cd1d224d06ca2b327f1b03f06763e305099250.proof-of-us-gas-station.GAS_PAYER':
     {
-      title: 'The gas has been payed for',
-      value: 'This transaction has been payed for',
+      title: 'The gas has been paid for',
+      value: 'This transaction has been paid for',
       image: gas.src,
     },
 };
