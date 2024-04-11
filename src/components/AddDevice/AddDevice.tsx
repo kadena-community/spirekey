@@ -113,7 +113,11 @@ export default function AddDevice({ caccount, transaction, device }: Props) {
     router.push(
       `/sign?${searchParamsToString({
         transaction: objectParameterValue(transaction),
-        returnUrl: returnUrlWithDevice(window.location.href, deviceToAdd),
+        returnUrl: returnUrlWithDevice(
+          window.location.href,
+          deviceToAdd,
+          false,
+        ),
         translations: addDeviceTranslations(deviceToAdd),
       })}`,
     );

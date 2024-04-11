@@ -26,6 +26,7 @@ export default function SignPage(req: SignProps) {
   const [rUrl, setRUrl] = useState(returnUrl);
   const [trans, setTrans] = useState(translations);
   const [op, setOp] = useState(optimistic);
+  const [useHash, setUseHash] = useState(false);
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (!window.location.hash) return;
@@ -39,6 +40,7 @@ export default function SignPage(req: SignProps) {
     setRUrl(r);
     setTrans(params.get('translations') || undefined);
     setOp(params.get('optimistic') !== 'false');
+    setUseHash(true);
   }, []);
   return (
     <Sign
@@ -48,6 +50,7 @@ export default function SignPage(req: SignProps) {
         optimistic: op,
         meta,
         translations: trans,
+        useHash,
       }}
     />
   );

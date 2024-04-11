@@ -1,10 +1,18 @@
 import { Device } from '@/context/AccountsContext';
 import { getDeviceIconSrc } from './getDeviceIconSrc';
 
-export const returnUrlWithDevice = (url: string, device: Device) =>
-  urlWithSearchParams(url, {
-    device: objectParameterValue(device),
-  });
+export const returnUrlWithDevice = (
+  url: string,
+  device: Device,
+  useHash: boolean,
+) =>
+  urlWithSearchParams(
+    url,
+    {
+      device: objectParameterValue(device),
+    },
+    useHash,
+  );
 
 /**
  * @todo: remove and add translations to smart contract
@@ -26,11 +34,13 @@ export const arrayParameterValue = (arr: any): string => JSON.stringify(arr);
 export const urlWithSearchParams = (
   url: string,
   searchParameters: Record<string, string>,
+  useHash: boolean,
 ): string => {
   const newUrl = new URL(url);
   Object.entries(searchParameters).forEach(([name, value]) =>
     newUrl.searchParams.append(name, value),
   );
+  if (useHash) return newUrl.toString().replace('?', '#');
   return newUrl.toString();
 };
 
