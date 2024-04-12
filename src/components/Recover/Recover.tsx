@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/shared/Button/Button';
+import { useSettings } from '@/context/SettingsContext';
 import { useRecoverForm } from '@/hooks/useRecoverForm';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { Box, Stack } from '@kadena/react-ui';
@@ -12,18 +13,9 @@ import { NetworkIdForm } from './NetworkIdForm';
 import { PasskeyForm } from './PasskeyForm';
 import * as styles from './styles.css';
 
-const skipNetworkId =
-  process.env.WALLET_NETWORK_ID &&
-  typeof window !== 'undefined' &&
-  localStorage.getItem('devMode') !== 'true';
-
-const defaultFormData = {
-  networkId: skipNetworkId
-    ? process.env.WALLET_NETWORK_ID!
-    : getDevnetNetworkId(),
-};
-
-export type FormData = typeof defaultFormData;
+interface FormData {
+  networkId: string;
+}
 
 export interface StepProps {
   stepIndex: number;
@@ -40,6 +32,15 @@ export interface StepProps {
 
 export default function Recover() {
   const router = useRouter();
+  const { devMode } = useSettings();
+
+  const skipNetworkId = process.env.WALLET_NETWORK_ID && devMode;
+
+  const defaultFormData = {
+    networkId: skipNetworkId
+      ? process.env.WALLET_NETWORK_ID!
+      : getDevnetNetworkId(),
+  };
 
   const [data, setData] = useState<FormData>(defaultFormData);
 

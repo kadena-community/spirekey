@@ -5,6 +5,7 @@ import { PageTitle } from '@/components/Layout/PageTitle';
 import { useAccounts } from '@/context/AccountsContext';
 import { Stack } from '@kadena/react-ui';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -33,7 +34,10 @@ export default function Accounts() {
         width="100%"
         style={{ height: '100svh' }}
       >
-        <PageTitle>Accounts</PageTitle>
+        <PageTitle append={<Link href="/settings">Settings</Link>}>
+          Accounts
+        </PageTitle>
+
         <CardCollection />
       </Stack>
     </>

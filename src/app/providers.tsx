@@ -6,6 +6,7 @@ import { ReactNode, useEffect } from 'react';
 
 import { NotificationContainer } from '@/components/shared/NotificationsContainer/NotificationsContainer';
 import { AccountsProvider } from '@/context/AccountsContext';
+import { SettingsProvider } from '@/context/SettingsContext';
 import { NotificationsProvider } from '@/context/shared/NotificationsContext';
 import { SWRConfig } from 'swr';
 
@@ -36,37 +37,32 @@ function localStorageProvider() {
 
 export default function Providers({
   children,
-  allowDevMode = true,
+  displayDevMode = true,
 }: {
   children: ReactNode;
-  allowDevMode?: boolean;
+  displayDevMode?: boolean;
 }) {
-  useEffect(() => {
-    if (!allowDevMode) return;
-    const devMode: boolean = !!localStorage.getItem('devMode');
-    if (!devMode) return;
-    devMode && document.body.classList.add('developer');
-  });
-
   return (
-    <SWRConfig value={{ provider: localStorageProvider }}>
-      <NotificationsProvider>
-        <AccountsProvider>
-          <ThemeProvider
-            attribute="class"
-            enableSystem={false}
-            value={{
-              dark: darkThemeClass,
-            }}
-            defaultTheme="dark"
-          >
-            <>
-              {children}
-              <NotificationContainer />
-            </>
-          </ThemeProvider>
-        </AccountsProvider>
-      </NotificationsProvider>
-    </SWRConfig>
+    <SettingsProvider displayDevMode={displayDevMode}>
+      <SWRConfig value={{ provider: localStorageProvider }}>
+        <NotificationsProvider>
+          <AccountsProvider>
+            <ThemeProvider
+              attribute="class"
+              enableSystem={false}
+              value={{
+                dark: darkThemeClass,
+              }}
+              defaultTheme="dark"
+            >
+              <>
+                {children}
+                <NotificationContainer />
+              </>
+            </ThemeProvider>
+          </AccountsProvider>
+        </NotificationsProvider>
+      </SWRConfig>
+    </SettingsProvider>
   );
 }

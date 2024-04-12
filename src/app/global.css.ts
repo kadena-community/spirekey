@@ -11,10 +11,12 @@ globalStyle('body', {
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
   backgroundAttachment: 'fixed',
+  borderTop: `3px solid transparent`,
+  borderBottom: `3px solid transparent`,
 });
 
 globalStyle('body.developer', {
   backgroundColor: developerBackgroundColor,
-  borderBottom: `3px solid ${developerBorderColor}`,
   borderTop: `3px solid ${developerBorderColor}`,
+  borderBottom: `3px solid ${developerBorderColor}`,
 });
