@@ -31,7 +31,8 @@ export default function ConnectHeader({
     filteredAccounts.length > 0
       ? `Which account do you want to use to identify on ${returnUrl}?${displayReason}`
       : `Create an account to identify yourself with on ${returnUrl}.${displayReason}`;
-  const urlParams = new URLSearchParams({
+
+  const urlParams = new window.URLSearchParams({
     returnUrl,
     networkId,
     chainId,

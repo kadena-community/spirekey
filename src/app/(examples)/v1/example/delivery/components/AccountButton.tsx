@@ -37,7 +37,7 @@ export const AccountButton = ({
     router.push(
       `${process.env.WALLET_URL}/connect?returnUrl=${getReturnUrl(
         returnPath,
-      )}&networkId=${process.env.DAPP_NETWORK_ID}`,
+      )}&networkId=${process.env.DAPP_NETWORK_ID}&chainId=${process.env.CHAIN_ID}`,
     );
   }, [getReturnUrl, returnPath]);
 
