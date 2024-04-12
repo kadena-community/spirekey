@@ -24,7 +24,7 @@
       price         : decimal
     )
     (enforce-one
-      (format "only {} namespace is payed for" [(read-msg)])
+      (format "only {} namespace is paid for" [(read-msg)])
       [
         (enforce
           (try
@@ -32,14 +32,14 @@
             (= (format "({}." [NS_HASH])
                (take 44 (at 0 (read-msg 'exec-code))))
           )
-          (format "only {} namespace is payed for" [NS_HASH])
+          (format "only {} namespace is paid for" [NS_HASH])
         )
         (enforce
           (try
             false
             (= (read-msg 'tx-type) 'cont)
           )
-          "only continuation transactions are payed for"
+          "only continuation transactions are paid for"
         )
       ]
     )
