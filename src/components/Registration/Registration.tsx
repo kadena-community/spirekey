@@ -8,6 +8,7 @@ import { deviceColors } from '@/styles/shared/tokens.css';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { Box, Stack } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
+import { ChainId } from '@kadena/types';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -55,9 +56,14 @@ export interface StepProps {
 interface Props {
   redirectUrl?: string;
   networkId?: string;
+  chainId: ChainId;
 }
 
-export default function Registration({ redirectUrl, networkId }: Props) {
+export default function Registration({
+  redirectUrl,
+  networkId,
+  chainId,
+}: Props) {
   const router = useRouter();
   const { registerAccount } = useAccounts();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -85,6 +91,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
       credentialId: data.credentialId,
       domain: host,
       networkId: data.networkId,
+      chainId,
     });
 
     router.push(completeRedirectUrl);

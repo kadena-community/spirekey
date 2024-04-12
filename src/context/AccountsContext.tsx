@@ -46,7 +46,7 @@ export type AccountRegistration = {
   credentialId: string;
   credentialPubkey: string;
   networkId: string;
-  chainId?: ChainId;
+  chainId: ChainId;
 };
 
 export type AccountRecovery = Omit<AccountRegistration, 'accountName'>;
@@ -190,6 +190,7 @@ const AccountsProvider = ({ children }: Props) => {
                 color: devices[0].color,
                 deviceType: devices[0].deviceType,
                 domain: host,
+                chainId: process.env.CHAIN_ID as ChainId,
               }),
             );
           } catch (e: unknown) {
@@ -225,8 +226,9 @@ const AccountsProvider = ({ children }: Props) => {
     credentialId,
     credentialPubkey,
     networkId,
+    chainId,
   }: AccountRegistration): Promise<ITransactionDescriptor> => {
-    const { requestKey, chainId } = await registerAccountOnChain({
+    const { requestKey } = await registerAccountOnChain({
       accountName,
       color,
       deviceType,
@@ -234,6 +236,7 @@ const AccountsProvider = ({ children }: Props) => {
       credentialId,
       credentialPubkey,
       networkId,
+      chainId,
     });
 
     const devices: Device[] = [
@@ -249,6 +252,7 @@ const AccountsProvider = ({ children }: Props) => {
         pendingRegistrationTx: requestKey,
       },
     ];
+
     const account = {
       accountName,
       alias,
@@ -258,6 +262,7 @@ const AccountsProvider = ({ children }: Props) => {
       minApprovals: 1,
       minRegistrationApprovals: 1,
     };
+
     addAccount(account);
 
     if (
@@ -283,6 +288,7 @@ const AccountsProvider = ({ children }: Props) => {
     credentialId,
     credentialPubkey,
     networkId,
+    chainId,
   }: AccountRecovery): Promise<ITransactionDescriptor> => {
     // TODO: remove this when we support mainnet
     if (networkId === 'mainnet01')
@@ -292,7 +298,7 @@ const AccountsProvider = ({ children }: Props) => {
 
     if (!accountName) throw new Error('Wallet smart contract not found.');
 
-    const { requestKey, chainId } = await registerAccount({
+    const { requestKey } = await registerAccount({
       accountName,
       alias,
       color,
@@ -301,6 +307,7 @@ const AccountsProvider = ({ children }: Props) => {
       credentialId,
       credentialPubkey,
       networkId,
+      chainId,
     });
 
     return {

@@ -2,15 +2,22 @@ import { Surface } from '@/components/Surface/Surface';
 import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { useAccounts } from '@/context/AccountsContext';
 import { Box, ContentHeader, Stack, SystemIcon } from '@kadena/react-ui';
+import { ChainId } from '@kadena/types';
 import './ConnectHeader.css';
 
 type Props = {
   returnUrl: string;
   reason: string;
-  networkId?: string;
+  networkId: string;
+  chainId: ChainId;
 };
 
-export default function ConnectHeader({ returnUrl, reason, networkId }: Props) {
+export default function ConnectHeader({
+  returnUrl,
+  reason,
+  networkId,
+  chainId,
+}: Props) {
   const { accounts } = useAccounts();
 
   const filteredAccounts = accounts.filter(
@@ -24,7 +31,11 @@ export default function ConnectHeader({ returnUrl, reason, networkId }: Props) {
     filteredAccounts.length > 0
       ? `Which account do you want to use to identify on ${returnUrl}?${displayReason}`
       : `Create an account to identify yourself with on ${returnUrl}.${displayReason}`;
-
+  const urlParams = new URLSearchParams({
+    returnUrl,
+    networkId,
+    chainId,
+  });
   return (
     <Box padding="lg" className={'connect-header'}>
       <Surface>
@@ -47,7 +58,7 @@ export default function ConnectHeader({ returnUrl, reason, networkId }: Props) {
             </ButtonLink>
             <ButtonLink
               variant="primary"
-              href={`/register?redirectUrl=${Buffer.from(window.location.href).toString('base64')}&networkId=${networkId}`}
+              href={`/register?${urlParams.toString()}`}
             >
               Create
             </ButtonLink>

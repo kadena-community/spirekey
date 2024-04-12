@@ -2,6 +2,7 @@
 
 import type { ChainId } from '@kadena/client';
 import { Stack } from '@kadena/react-ui';
+import { ChainId } from '@kadena/types';
 import dynamic from 'next/dynamic';
 
 const ConnectHeader = dynamic(
@@ -41,6 +42,7 @@ export default function Connect({ searchParams }: ConnectProps) {
         returnUrl={decodeURIComponent(returnUrl)}
         reason={decodeURIComponent(reason)}
         networkId={networkId}
+        chainId={chainId}
       />
       <CardCollection
         returnUrl={decodeURIComponent(returnUrl)}
