@@ -24,6 +24,7 @@ import {
 export const getAccountName = async (
   publicKey: string,
   networkId: string,
+  chainId: ChainId,
 ): Promise<string> =>
   asyncPipe(
     composePactCommand(
@@ -35,7 +36,7 @@ export const getAccountName = async (
 )
 `),
       setMeta({
-        chainId: process.env.CHAIN_ID as ChainId,
+        chainId,
         gasLimit: 1000,
         gasPrice: 0.0000001,
         ttl: 60000,

@@ -294,7 +294,11 @@ const AccountsProvider = ({ children }: Props) => {
     if (networkId === 'mainnet01')
       throw new Error('We do not support mainnet yet');
 
-    const accountName = await getAccountName(credentialPubkey, networkId);
+    const accountName = await getAccountName(
+      credentialPubkey,
+      networkId,
+      chainId,
+    );
 
     if (!accountName) throw new Error('Wallet smart contract not found.');
 

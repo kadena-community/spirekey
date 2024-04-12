@@ -27,7 +27,11 @@ export const BiometricsForm: FC<StepProps> = ({
       `${formValues.alias} (${getNetworkDisplayName(formValues.networkId)})`,
     );
     try {
-      const accountName = await getAccountName(publicKey, formValues.networkId);
+      const accountName = await getAccountName(
+        publicKey,
+        formValues.networkId,
+        formValues.chainId,
+      );
       updateFields({
         accountName,
         credentialId,

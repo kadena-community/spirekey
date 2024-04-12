@@ -36,6 +36,7 @@ const defaultFormData = {
   credentialId: '',
   deviceType: 'security-key',
   color: deviceColors.purple,
+  chainId: '8' as ChainId,
 };
 
 export type FormData = typeof defaultFormData;
@@ -72,6 +73,7 @@ export default function Registration({
   const [data, setData] = useState<FormData>({
     ...defaultFormData,
     networkId: networkId || defaultFormData.networkId,
+    chainId,
   });
 
   const updateFields = (fields: Partial<FormData>) =>
