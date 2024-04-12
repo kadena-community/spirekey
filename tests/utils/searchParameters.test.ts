@@ -51,7 +51,7 @@ describe('searchParameters', () => {
         foo: 'bar',
       };
       const url = 'http://localhost';
-      expect(urlWithSearchParams(url, searchParameters)).toBe(
+      expect(urlWithSearchParams(url, searchParameters, false)).toBe(
         'http://localhost/?hello=world&foo=bar',
       );
     });
@@ -62,7 +62,7 @@ describe('searchParameters', () => {
         foo: 'bar',
       };
       const url = 'http://localhost?alice=bob';
-      expect(urlWithSearchParams(url, searchParameters)).toBe(
+      expect(urlWithSearchParams(url, searchParameters, false)).toBe(
         'http://localhost/?alice=bob&hello=world&foo=bar',
       );
     });
@@ -70,7 +70,7 @@ describe('searchParameters', () => {
     it('encodes URI components', async () => {
       const searchParameters = { returnUrl: 'http://localhost' };
       const url = 'http://localhost';
-      expect(urlWithSearchParams(url, searchParameters)).toBe(
+      expect(urlWithSearchParams(url, searchParameters, false)).toBe(
         'http://localhost/?returnUrl=http%3A%2F%2Flocalhost',
       );
     });

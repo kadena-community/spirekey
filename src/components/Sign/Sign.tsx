@@ -33,6 +33,7 @@ interface Props {
   optimistic?: boolean;
   meta?: string;
   translations?: string;
+  useHash: boolean;
 }
 
 export default function Sign(props: Props) {
@@ -42,6 +43,7 @@ export default function Sign(props: Props) {
     optimistic = true,
     meta,
     translations,
+    useHash,
   } = props;
   const [autoRedirect, setAutoRedirect] = useState<boolean>(true);
   const [redirectLocation, setRedirectLocation] = useState<string>('');
@@ -147,7 +149,7 @@ export default function Sign(props: Props) {
       }
 
       setTimeout(() => {
-        setRedirectLocation(urlWithSearchParams(returnUrl, params));
+        setRedirectLocation(urlWithSearchParams(returnUrl, params, useHash));
       }, 2000);
     }
   };
