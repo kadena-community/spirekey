@@ -7,6 +7,7 @@ import { getAccountNameFromRegisterDeviceEvent } from '@/utils/getAccountNameFro
 import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
 import { getAccountFrom } from '@/utils/shared/account';
 import { Stack, Text } from '@kadena/react-ui';
+import { ChainId } from '@kadena/types';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -80,7 +81,11 @@ export const PasskeyForm: FC<StepProps> = ({
     let account;
 
     try {
-      account = await getAccountFrom({ accountName, networkId });
+      account = await getAccountFrom({
+        accountName,
+        networkId,
+        chainIds: [process.env.CHAIN_ID], // @ TODO check all chains(?)
+      });
     } catch (error: unknown) {
       addNotification({
         variant: 'error',
@@ -102,6 +107,8 @@ export const PasskeyForm: FC<StepProps> = ({
           color: deviceName.split('_')[1] || deviceColors.purple,
         };
       }),
+      balance: account.balance,
+      chainId: process.env.CHAIN_ID as ChainId,
     });
 
     navigation.next();

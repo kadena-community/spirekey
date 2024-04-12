@@ -22,6 +22,7 @@ export type Account = {
   balance: string;
   devices: Device[];
   networkId: string;
+  chainId: ChainId;
 };
 
 export type Device = {
@@ -143,11 +144,18 @@ const AccountsProvider = ({ children }: Props) => {
   const fetchAccountsFromChain = async (localAccounts: Account[]) => {
     return Promise.all(
       localAccounts.map(async (localAccount) => {
-        const { accountName, networkId, alias, devices } = localAccount;
+        const {
+          accountName,
+          networkId,
+          alias,
+          devices,
+          chainId = process.env.CHAIN_ID as ChainId,
+        } = localAccount;
         try {
           const remoteAccount = await getAccountFrom({
             networkId,
             accountName,
+            chainId,
           });
 
           if (remoteAccount === null) {
@@ -167,6 +175,7 @@ const AccountsProvider = ({ children }: Props) => {
           return {
             accountName,
             networkId,
+            chainId,
             alias,
             minApprovals: remoteAccount.minApprovals,
             minRegistrationApprovals: remoteAccount.minRegistrationApprovals,

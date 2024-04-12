@@ -150,6 +150,7 @@ export default function Registration({
                 },
               },
             ],
+            chainId,
           }}
           isLoading
         />
