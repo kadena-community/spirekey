@@ -1,0 +1,25 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+        show-progress: false
+    
+    - name: Runner setup
+      uses: ./.github/actions/runner-setup
+    
+    - name: Build SpireKey
+      run: pnpm build
+    
+    - name: Test SpireKey
+      run: pnpm test
