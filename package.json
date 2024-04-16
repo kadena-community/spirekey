@@ -16,6 +16,12 @@
     "lint": "next lint",
     "prepare": "husky",
     "start": "next start --port 1337",
+    "test": "vitest run --coverage",
+    "update": "tsx src/utils/deploy.ts ./pact/deploy/update.json",
+    "update:del": "tsx src/utils/deploy.ts ./pact/deploy/local-delivery.json",
+    "update:dev": "tsx src/utils/deploy.ts ./pact/deploy/local-update.json",
+    "update:hosted": "tsx src/utils/deploy.ts ./pact/deploy/hosted-update.json",
+    "update:test": "tsx src/utils/deploy.ts ./pact/deploy/testnet-update.json"
     "test": "vitest run",
     "update": "tsx ./deploy.ts ./pact/deploy/update.json",
     "update:del": "tsx ./deploy.ts ./pact/deploy/local-delivery.json",
@@ -73,6 +79,7 @@
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.2.60",
     "@types/react-dom": "^18.2.19",
+    "@vitest/coverage-v8": "^1.5.0",
     "husky": "^9.0.11",
     "jsdom": "^24.0.0",
     "prettier": "^3.2.5",
@@ -80,6 +87,6 @@
     "prettier-plugin-packagejson": "^2.4.12",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
-    "vitest": "^1.4.0"
+    "vitest": "^1.5.0"
   }
 }
