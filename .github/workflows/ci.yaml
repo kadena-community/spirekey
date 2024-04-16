@@ -18,8 +18,28 @@ jobs:
     - name: Runner setup
       uses: ./.github/actions/runner-setup
     
-    - name: Build SpireKey
+    - name: Build
       run: pnpm build
     
-    - name: Test SpireKey
+    - name: Test
+      run: pnpm test
+  
+  e2e:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+        show-progress: false
+    
+    - name: Runner setup
+      uses: ./.github/actions/runner-setup
+    
+    - name: Setup Kadena sandbox
+      uses: ./.github/actions/sandbox
+
+    - name: end-to-end test
       run: pnpm test
