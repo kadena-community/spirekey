@@ -41,5 +41,8 @@ jobs:
     - name: Setup Kadena sandbox
       uses: ./.github/actions/sandbox
 
-    - name: end-to-end test
-      run: pnpm test
+    - name: Install browser
+      run: pnpm install:chromium
+
+    - name: End-to-end test
+      run: pnpm test:e2e
