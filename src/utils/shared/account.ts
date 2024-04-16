@@ -13,10 +13,12 @@ export const getAccountFrom = async ({
   accountName,
   networkId,
   namespace = process.env.NAMESPACE,
+  chainId = process.env.CHAIN_ID as ChainId,
 }: {
   accountName: string;
   networkId: string;
   namespace?: string;
+  chainId?: ChainId;
 }): Promise<Account> =>
   asyncPipe(
     composePactCommand(
@@ -26,9 +28,7 @@ export const getAccountFrom = async ({
           (coin.get-balance "${accountName}")
         ]`,
       ),
-      setMeta({
-        chainId: process.env.CHAIN_ID as ChainId,
-      }),
+      setMeta({ chainId }),
       setNetworkId(networkId),
     ),
     createTransaction,
