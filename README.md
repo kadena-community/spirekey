@@ -28,7 +28,7 @@ When devnet is up and running, you can deploy the contracts using:
 
 ```sh
 pnpm install
-pnpm run deploy /absolute/path/to/your/signers.json
+pnpm run deploy --signersPath=/absolute/path/to/your/signers.json
 ```
 
 Here is an example of the [signers.json](./signers-example.json).

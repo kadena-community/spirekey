@@ -145,6 +145,9 @@ devDependencies:
   '@vitest/coverage-v8':
     specifier: ^1.5.0
     version: 1.5.0(vitest@1.5.0)
+  cross-fetch:
+    specifier: ~3.1.5
+    version: 3.1.8(encoding@0.1.13)
   husky:
     specifier: ^9.0.11
     version: 9.0.11

@@ -8,6 +8,7 @@ export default defineConfig({
     },
   },
   test: {
+    include: ['./src/*.test.ts', './tests/**/*.test.ts'],
     environment: 'jsdom',
     env: {
       NAMESPACE: 'n_eef68e581f767dd66c4d4c39ed922be944ede505',
