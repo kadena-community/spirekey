@@ -23,11 +23,9 @@ setup('Deploy WebAuthN contract', async () => {
     case true:
       configFilePath = path.join(__dirname, '../../pact/deploy/update.json');
       break;
-    case false:
-      configFilePath = path.join(__dirname, '../../pact/deploy/deploy.json');
-      break;
     default:
       configFilePath = path.join(__dirname, '../../pact/deploy/deploy.json');
+      break;
   }
 
   const config = JSON.parse(await readFile(configFilePath, 'utf-8'));

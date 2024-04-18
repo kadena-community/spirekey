@@ -13,7 +13,7 @@ export default defineConfig({
       : [['list'], ['html', { open: 'never' }]],
   use: {
     headless: process.env.CI !== undefined,
-    baseURL: 'http://localhost:3000/',
+    baseURL: 'http://localhost:1337/',
     channel: 'chromium',
     trace: 'retain-on-failure',
   },

@@ -25,26 +25,20 @@ export async function fetchModule(
     method: 'POST',
   });
 
-  try {
-    const responseJson = (await response.clone().json()) as ICommandResult;
-    if (responseJson.result.status === 'success') {
-      return { code: (responseJson.result.data as any).code };
-    }
-    const { error } = responseJson.result;
-    if (error === undefined || typeof error === 'string') {
-      return {
-        error: error || 'unknown error',
-      };
-    }
+  const responseJson = (await response.clone().json()) as ICommandResult;
+  if (responseJson.result.status === 'success') {
+    return { code: (responseJson.result.data as any).code };
+  }
+  const { error } = responseJson.result;
+  if (error === undefined || typeof error === 'string') {
     return {
-      error:
-        'message' in error
-          ? (error.message as string)
-          : JSON.stringify(responseJson.result.error),
-    };
-  } catch (e) {
-    return {
-      error: (await response.text()) || ('message' in e ? e.message : e),
+      error: error || 'unknown error',
     };
   }
+  return {
+    error:
+      'message' in error
+        ? (error.message as string)
+        : JSON.stringify(responseJson.result.error),
+  };
 }
