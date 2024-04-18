@@ -9,7 +9,8 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  timeout: 5 * 60 * 1000,
+  timeout: 5 * 60 * 1000, // Timeout for a single test
+  globalTimeout: 30 * 60 * 1000, // Timeout for the whole test run
   forbidOnly: process.env.CI !== undefined,
   retries: process.env.CI !== undefined ? 1 : 0,
   workers: 1,
