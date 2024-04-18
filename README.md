@@ -1,7 +1,7 @@
 # WebAuthn Wallet
 
 To get a grasp of the reason to build a WebAuthn Wallet, please read the
-[KIP](./KIP.md)
+[KIP](./docs/KIP-0023/KIP-0023.md)
 
 ## Prerequisite
 
