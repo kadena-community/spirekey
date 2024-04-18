@@ -40,7 +40,12 @@ jobs:
     
     - name: Setup Kadena sandbox
       uses: ./.github/actions/sandbox
-
+    
+    - name: Build
+      run: pnpm build
+      env: 
+        NODE_ENV: test
+        
     - name: Install browser
       run: pnpm install:chromium
 
