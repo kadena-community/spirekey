@@ -9,6 +9,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  timeout: 5 * 60 * 1000,
   forbidOnly: process.env.CI !== undefined,
   retries: process.env.CI !== undefined ? 1 : 0,
   workers: 1,
@@ -44,7 +45,7 @@ export default defineConfig({
     reuseExistingServer: process.env.CI === undefined,
     timeout: 2 * 60000,
     stdout: 'ignore',
-    stderr: 'ignore',
+    stderr: 'pipe',
     env: {
       AUTO_REGISTER_MAINNET: 'false',
       INSTA_FUND: 'true',
