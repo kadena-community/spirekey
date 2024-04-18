@@ -1,12 +1,11 @@
 import { deploy } from '@/utils/deploy';
 import {
-  devnetHost,
   devnetUrl,
   networkId,
   webauthnWalletModule,
 } from '@e2e/constants/network.constants';
 import { isContractDeployed } from '@e2e/helpers/contract.helper';
-import { expect, test as setup } from '@playwright/test';
+import { test as setup } from '@playwright/test';
 import { readFile } from 'fs/promises';
 import path from 'node:path';
 
