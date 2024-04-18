@@ -46,10 +46,10 @@ export default defineConfig({
     reuseExistingServer: process.env.CI === undefined,
     timeout: 2 * 60000,
     stdout: 'ignore',
-    stderr: 'pipe',
+    stderr: 'ignore',
     env: {
       AUTO_REGISTER_MAINNET: 'false',
-      INSTA_FUND: 'true',
+      INSTA_FUND: 'false',
       DEVNET_NETWORK_ID: networkId,
       DAPP_NETWORK_ID: networkId,
       WALLET_NETWORK_ID: networkId,
