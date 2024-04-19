@@ -1,3 +1,4 @@
+import { network } from '@/components/Card/AccountNetwork.css';
 import { Locator, Page } from '@playwright/test';
 
 export class RegisterPage {
@@ -20,6 +21,15 @@ export class RegisterPage {
   async setAliasTo(alias: string): Promise<void> {
     await this.page.getByRole('heading', { name: 'Alias' }).waitFor();
     await this.aliasInput.fill(alias);
+  }
+
+  async setNetworkTo(
+    networkId: 'devnet' | 'testnet' | 'mainnet',
+  ): Promise<void> {
+    await this.page.getByRole('heading', { name: 'Network' }).waitFor();
+    await this.page
+      .locator(`[for=network-${networkId}] > span:has-text("${networkId}")`)
+      .click();
   }
 
   async proceedToNextStep(): Promise<void> {

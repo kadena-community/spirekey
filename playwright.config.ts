@@ -22,7 +22,7 @@ export default defineConfig({
     headless: process.env.CI !== undefined,
     baseURL: 'http://localhost:1337/',
     channel: 'chromium',
-    trace: 'retain-on-failure',
+    trace: 'on',
   },
   projects: [
     {
