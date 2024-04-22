@@ -117,6 +117,166 @@
 (env-data {})
 (env-sigs [])
 
+(env-sigs [
+  { 'key  : "WEBAUTHN-key"
+  , 'caps : [
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.UPDATE_ACCOUNT "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA" 0 1)
+  ]
+  }
+])
+(begin-tx "Update account with zero minimum approvals")
+(expect-failure
+  "Must authenticate with at least one device"
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.update-account "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA" 0 1)
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(env-sigs [
+  { 'key  : "WEBAUTHN-key"
+  , 'caps : [
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.UPDATE_ACCOUNT "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA" 1 0)
+  ]
+  }
+])
+(begin-tx "Update account with zero minimum registration approvals")
+(expect-failure
+  "Must register at least one device"
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.update-account "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA" 1 0)
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(env-sigs [
+  { 'key  : "WEBAUTHN-key"
+  , 'caps : [
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.UPDATE_ACCOUNT "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA" 1 3)
+  ]
+  }
+])
+(begin-tx "Update account with too many required approvals")
+(expect-failure
+  "Min approvals cannot be greater than the number of devices"
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.update-account "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA" 1 3)
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(env-sigs [
+  { 'key  : "WEBAUTHN-key"
+  , 'caps : [
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.UPDATE_ACCOUNT "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA" 3 1)
+  ]
+  }
+])
+(begin-tx "Update account with too many required registration approvals")
+(expect-failure
+  "Min registration approvals cannot be greater than the number of devices"
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.update-account "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA" 3 1)
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(env-data
+  { 'bob-ks: 
+    { 'keys : ["WEBAUTHN-key-bob"]
+    , 'pred : "keys-any"
+    }
+  }
+)
+(env-sigs [
+  { 'key  : "WEBAUTHN-key-bob"
+  , 'caps : [
+    ]
+  }
+])
+(begin-tx "Register another webauthn-wallet")
+(let* ((guard (read-keyset 'bob-ks))
+  (caccount (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.create-wallet 
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-account-name
+      (create-principal guard)
+    )
+    { 'name          : 'desktop
+    , 'credential-id : 'abcdef
+    , 'domain        : "www.example.com"
+    , 'guard         : guard
+    }
+  ))
+)
+  (print caccount)
+  (test-capability (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.GAS_PAYER caccount 1 1.0))
+  (require-capability (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.GAS_PAYER caccount 1 1.0))
+  (coin.coinbase caccount (at 'guard (coin.details caccount)) 100.0)
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(env-sigs [
+  { 'key  : "WEBAUTHN-key"
+  , 'caps : [
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.UPDATE_ACCOUNT "c:IXIiKfkPHSI4tIyrrkg0kubHCFXJKjD8gk4XSvU3TgA" 1 1)
+  ]
+  }
+])
+(begin-tx "Update someone else's account")
+(expect-failure
+  "You can only update your own account"
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.update-account "c:IXIiKfkPHSI4tIyrrkg0kubHCFXJKjD8gk4XSvU3TgA" 1 1)
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(env-data
+  { 'alice-ks: 
+    { 'keys : ["WEBAUTHN-key"]
+    , 'pred : "keys-any"
+    }
+  }
+)
+(env-sigs [
+  { 'key  : "WEBAUTHN-key"
+  , 'caps : [
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.UPDATE_ACCOUNT "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA" 2 2)
+  ]
+  }
+])
+(begin-tx "successfully updating your account")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.update-account "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA" 2 2)
+(expect "Alice's account is updated"
+  (format "{}" 
+    [(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-wallet.get-webauthn-guard
+      "c:nFae5KlRcGvozEw-7tGtV-4LkRTixpIAP6tkljQywCA"
+    )]
+  )
+  (format "{}" 
+    [{ "devices": 
+      [
+        { 'name          : 'phone
+        , 'credential-id : 'xysDsaI
+        , 'domain        : "www.example.com"
+        , 'guard         : (read-keyset 'alice-ks)
+        }
+        , { 'name        : 'phone
+        , 'credential-id : 'xsyIad
+        , 'domain        : "www.other.com"
+        , 'guard         : (read-keyset 'alice-ks)
+        }
+      ]
+    , "min-approvals": 2
+    , "min-registration-approvals": 2
+    }]
+  )
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
 (env-sigs
   [
     { 'key : "WEBAUTHN-key"

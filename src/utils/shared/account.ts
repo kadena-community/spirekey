@@ -35,10 +35,12 @@ export const getAccountFrom = async ({
     (tx) => l1Client.local(tx, { preflight: false }),
     (tx) => {
       if (tx?.result?.status !== 'success') return null;
-      const [devices, balance] = tx.result.data;
+      const [account, balance] = tx.result.data;
       return {
         accountName,
-        devices: devices.devices || [],
+        minApprovals: account['min-approvals'].int,
+        minRegistrationApprovals: account['min-registration-approvals'].int,
+        devices: account.devices || [],
         balance,
       };
     },

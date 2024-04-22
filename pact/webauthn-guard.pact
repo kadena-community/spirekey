@@ -92,6 +92,19 @@
     )
   )
 
+  (defcap UPDATE_ACCOUNT(
+    account:string
+    min-approvals:integer
+    min-registration-approvals:integer
+  )
+    (with-read account-table account
+      { 'devices := devices
+      , 'min-approvals := current-min-approvals}
+      (enforce-guard-min (map (extract-guard) devices) current-min-approvals)
+      (enforce-approval-settings min-approvals min-registration-approvals devices)
+    )
+  )
+
   (defun extract-guard(device:object{device-schema})
     (at 'guard device)
   )
@@ -116,6 +129,17 @@
     )
   )
 
+  (defun enforce-approval-settings:bool (
+    min-approvals:integer
+    min-registration-approvals:integer
+    devices:[object{device-schema}]
+  )
+    (enforce (> min-approvals 0) "Must authenticate with at least one device")
+    (enforce (> min-registration-approvals 0) "Must register at least one device")
+    (enforce (<= min-approvals (length devices)) "Min approvals cannot be greater than the number of devices")
+    (enforce (<= min-registration-approvals (length devices)) "Min registration approvals cannot be greater than the number of devices")
+  )
+
   (defun register-guard(
     account:string
     min-approvals:integer
@@ -130,10 +154,7 @@
     ]
     (enforce (> (length devices) 0) "Must register at least one device")
     (enforce (< (length devices) 5) "Must register less than 5 devices")
-    (enforce (> min-approvals 0) "Must authenticate with at least one device")
-    (enforce (> min-registration-approvals 0) "Must register at least one device")
-    (enforce (<= min-approvals (length devices)) "Min approvals cannot be greater than the number of devices")
-    (enforce (<= min-registration-approvals (length devices)) "Min registration approvals cannot be greater than the number of devices")
+    (enforce-approval-settings min-approvals min-registration-approvals devices)
     (let ((first-guard (at 'guard (at 0 devices))))
       (with-capability (REGISTER account first-guard)
         (insert account-table account
@@ -142,6 +163,26 @@
           , 'min-registration-approvals : min-registration-approvals
           }
         )
+      )
+    )
+  )
+
+  (defun update-guard(
+    account:string
+    min-approvals:integer
+    min-registration-approvals:integer
+  )
+    @model [
+      (property (> min-approvals 0))
+      (property (> min-registration-approvals 0))
+      (property (is-principal account))
+    ]
+    (enforce (is-principal account) "Account must be a principal account")
+    (with-capability (UPDATE_ACCOUNT account min-approvals min-registration-approvals)
+      (update account-table account
+        { 'min-approvals : min-approvals
+        , 'min-registration-approvals : min-registration-approvals
+        }
       )
     )
   )

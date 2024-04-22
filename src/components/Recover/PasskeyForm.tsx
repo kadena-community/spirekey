@@ -92,8 +92,7 @@ export const PasskeyForm: FC<StepProps> = ({
     }
 
     setAccount({
-      accountName: account.accountName,
-      networkId: account.networkId,
+      ...account,
       alias: alias || '',
       devices: account.devices.map((device) => {
         const deviceName = device.name?.includes('_') ? device.name : '_';
@@ -103,7 +102,6 @@ export const PasskeyForm: FC<StepProps> = ({
           color: deviceName.split('_')[1] || deviceColors.purple,
         };
       }),
-      balance: account.balance,
     });
 
     navigation.next();

@@ -33,6 +33,14 @@
   (defcap COPY_ACCOUNT(account:string)
     true
   )
+  
+  (defcap UPDATE_ACCOUNT(
+    account:string
+    min-approvals:integer
+    min-registration-approvals:integer
+  )
+    true
+  )
 
   (defcap LOGIN(account:string)
     @doc "Login to account for duration seconds"
@@ -137,6 +145,19 @@
       (with-read guard-lookup-table account
         { 'webauthn-guard-name := guard-name }
         (webauthn-guard.remove-device guard-name credential-id)
+      )
+    )
+  )
+
+  (defun update-account(
+    account:string
+    min-approvals:integer
+    min-registration-approvals:integer
+  )
+    (with-capability (UPDATE_ACCOUNT account min-approvals min-registration-approvals)
+      (with-read guard-lookup-table account
+        { 'webauthn-guard-name := guard-name }
+        (webauthn-guard.update-guard guard-name min-approvals min-registration-approvals)
       )
     )
   )

@@ -58,6 +58,7 @@
     "react-aria-components": "^1.1.1",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.50.1",
+    "react-intersection-observer": "^9.8.2",
     "sharp": "^0.33.2",
     "swr": "^2.2.5",
     "three": "^0.161.0",

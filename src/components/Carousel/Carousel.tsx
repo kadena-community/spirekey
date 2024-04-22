@@ -1,11 +1,8 @@
 import { Account } from '@/context/AccountsContext';
 import classNames from 'classnames';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Children, useLayoutEffect, useRef } from 'react';
-import AddDeviceCard from '../Card/AddDeviceCard';
-import { Plus } from '../icons/Plus';
+import { Children, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { InView } from 'react-intersection-observer';
 import {
-  carouselAddItem,
   carouselItem,
   carouselItems,
   carouselNav,
@@ -27,7 +24,6 @@ const showCarouselItems = (isActive: boolean, index: number) => {
 };
 
 export const Carousel = ({
-  account,
   children,
   isActive,
   delayedIsActive,
@@ -35,12 +31,28 @@ export const Carousel = ({
 }: CarouselProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
 
   useLayoutEffect(() => {
     if (delayedIsActive && containerRef.current) {
       containerRef.current.scrollLeft = itemRef.current?.offsetWidth || 0;
     }
   }, [delayedIsActive]);
+
+  const onChangeCard = (inView: boolean, index: number) => {
+    if (inView) {
+      setActiveIndex(index);
+    }
+  };
+
+  const scrollToCard = (index: number) => () => {
+    containerRef.current?.scrollTo({
+      left:
+        ((containerRef.current?.children[index] as HTMLDivElement).offsetLeft ||
+          0) * index,
+      behavior: 'smooth',
+    });
+  };
 
   return (
     <>
@@ -51,24 +63,11 @@ export const Carousel = ({
           [carouselItems.nonScrollable]: !isActive,
         })}
       >
-        <AnimatePresence>
-          {!hideAddDeviceCard && delayedIsActive && (
-            <motion.div
-              initial={{ x: '-100px' }}
-              animate={{ x: '0' }}
-              exit={{ x: '-100px' }}
-              transition={{ duration: 0.3 }}
-              className={carouselItem({
-                variant: !delayedIsActive ? 'nonScrollable' : undefined,
-              })}
-              ref={itemRef}
-            >
-              <AddDeviceCard account={account} />
-            </motion.div>
-          )}
-        </AnimatePresence>
         {Children.map(children, (child, index) => (
-          <div
+          <InView
+            as="div"
+            onChange={(inView) => onChangeCard(inView, index)}
+            threshold={1}
             key={index}
             className={carouselItem({
               variant: !showCarouselItems(isActive, index)
@@ -77,19 +76,20 @@ export const Carousel = ({
             })}
           >
             {child}
-          </div>
+          </InView>
         ))}
       </div>
       {delayedIsActive && (
         <ol className={carouselNav}>
-          {!hideAddDeviceCard && (
-            <li className={carouselAddItem}>
-              <Plus />
-            </li>
-          )}
-          {(Children.count(children) > 1 || !hideAddDeviceCard) &&
-            Children.map(children, () => (
-              <li className={carouselNavItem({ variant: 'active' })} /> // @ TODO set variant when actually active
+          {Children.count(children) > 1 &&
+            !hideAddDeviceCard &&
+            Children.map(children, (child, index) => (
+              <li
+                onClick={scrollToCard(index)}
+                className={carouselNavItem({
+                  variant: index === activeIndex ? 'active' : 'default',
+                })}
+              />
             ))}
         </ol>
       )}

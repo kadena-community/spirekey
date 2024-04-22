@@ -21,7 +21,7 @@ describe('searchParameters', () => {
           pred: 'keys-any',
         },
       };
-      const returnUrl = returnUrlWithDevice('http://localhost', device);
+      const returnUrl = returnUrlWithDevice('http://localhost', device, false);
       expect(returnUrl).toBe(
         'http://localhost/?device=eyJkb21haW4iOiJodHRwOi8vbG9jYWxob3N0IiwiY29sb3IiOiIjMDAwMDAwIiwiZGV2aWNlVHlwZSI6InBob25lIiwiY3JlZGVudGlhbC1pZCI6Im15LXBob25lIiwiZ3VhcmQiOnsia2V5cyI6WyJteS1wdWJrZXkiXSwicHJlZCI6ImtleXMtYW55In19',
       );
