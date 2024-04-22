@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { useResizeObserver } from 'usehooks-ts';
 
 import { useAccounts } from '@/context/AccountsContext';
+import type { ChainId } from '@kadena/client';
 import { Account } from '../Account/Account';
 import { card, inner, wrapper } from './CardCollection.css';
 
@@ -11,6 +12,7 @@ interface CardCollectionProps {
   returnUrl?: string;
   optimistic?: boolean;
   networkId?: string;
+  chainId?: ChainId;
 }
 
 // Something we might be able to use for the scroll-enlarge-effect: https://codesandbox.io/p/sandbox/fervent-pasteur-dqs9ry?file=%2FApp.js%3A75%2C18-75%2C25
@@ -18,6 +20,7 @@ export default function CardCollection({
   returnUrl,
   optimistic,
   networkId,
+  chainId = process.env.CHAIN_ID as ChainId,
 }: CardCollectionProps) {
   const { accounts } = useAccounts();
   const [activeCard, setActiveCard] = useState<number | null>(
@@ -103,6 +106,7 @@ export default function CardCollection({
                   returnUrl={returnUrl}
                   optimistic={optimistic}
                   isActive={activeCard === i}
+                  chainId={chainId}
                 />
               </motion.div>
             );

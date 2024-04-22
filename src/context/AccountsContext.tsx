@@ -44,6 +44,7 @@ export type AccountRegistration = {
   credentialId: string;
   credentialPubkey: string;
   networkId: string;
+  chainId?: ChainId;
 };
 
 export type AccountRecovery = Omit<AccountRegistration, 'accountName'>;

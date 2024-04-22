@@ -16,6 +16,12 @@ import { Transactions } from '../icons/Transactions';
 import { ButtonLink } from '../shared/ButtonLink/ButtonLink';
 import { detailLink } from './Account.css';
 
+import { useNotifications } from '@/context/shared/NotificationsContext';
+import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
+import { registerAccountOnChain } from '@/utils/register';
+import { getAccountFrom } from '@/utils/shared/account';
+import type { ChainId } from '@kadena/client';
+import { Button } from '../shared/Button/Button';
 import * as styles from './Account.css';
 
 interface AccountProps {
@@ -23,6 +29,7 @@ interface AccountProps {
   isActive?: boolean;
   returnUrl?: string;
   optimistic?: boolean;
+  chainId?: ChainId;
 }
 
 export function Account({
@@ -30,8 +37,10 @@ export function Account({
   isActive = false,
   returnUrl,
   optimistic = false,
+  chainId = process.env.CHAIN_ID as ChainId,
 }: AccountProps) {
   const { accounts } = useAccounts();
+  const { addNotification } = useNotifications();
   const [delayedIsActive, setDelayedIsActive] = useState(false);
   const accountBalancesOnNetwork = accounts
     .filter((a) => a.networkId === account.networkId)
@@ -51,6 +60,61 @@ export function Account({
     }
     () => setDelayedIsActive(false);
   }, [isActive]);
+
+  const onConnect =
+    (url: URL, account: Account, chainId: ChainId) => async () => {
+      const remoteAccount = await getAccountFrom({
+        accountName: account.accountName,
+        networkId: account.networkId,
+        chainId,
+      });
+
+      if (remoteAccount) {
+        window.location.href = url.toString();
+        return;
+      }
+
+      /**
+       * The account does not exist on the given chain on the network.
+       * Create the account on the fly if it has only one device.
+       */
+      if (account.devices.length !== 1) {
+        addNotification({
+          variant: 'error',
+          title: `This account does not exist on ${getNetworkDisplayName(account.networkId)} on chain ${chainId} and cannot be created on the fly.`,
+        });
+        return;
+      }
+
+      const device = account.devices[0];
+
+      /**
+       * Register the account on the chain where it did not exist
+       */
+      const pendingTransaction = await registerAccountOnChain({
+        accountName: account.accountName,
+        color: device.color,
+        deviceType: device.deviceType,
+        domain: device.domain,
+        credentialId: device['credential-id'],
+        credentialPubkey: device.guard.keys[0],
+        networkId: account.networkId,
+        chainId: chainId,
+      });
+
+      /**
+       * Add the pending transaction id to the user object that is shared with the client dApp
+       */
+      const userParam = url.searchParams.get('user') || '';
+      const user = JSON.parse(Buffer.from(userParam, 'base64').toString());
+      user.pendingTxIds = [pendingTransaction.requestKey];
+      url.searchParams.set(
+        'user',
+        Buffer.from(JSON.stringify(user)).toString('base64'),
+      );
+
+      window.location.href = url.toString();
+    };
 
   return (
     <Carousel
@@ -156,9 +220,12 @@ export function Account({
                     Cancel
                   </ButtonLink>
                   {(optimistic || !d.pendingRegistrationTx) && (
-                    <ButtonLink variant="primary" href={url.toString()}>
+                    <Button
+                      onPress={onConnect(url as URL, account, chainId)}
+                      variant="primary"
+                    >
                       Connect
-                    </ButtonLink>
+                    </Button>
                   )}
                 </Stack>
               </motion.div>

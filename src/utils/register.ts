@@ -61,6 +61,7 @@ export const registerAccountOnChain = async ({
   credentialId,
   credentialPubkey,
   networkId,
+  chainId = process.env.CHAIN_ID as ChainId,
 }: Omit<AccountRegistration, 'alias'>): Promise<ITransactionDescriptor> => {
   return asyncPipe(
     registerAccountCommand({
@@ -71,6 +72,7 @@ export const registerAccountOnChain = async ({
       credentialId,
       credentialPubkey,
       networkId,
+      chainId,
     }),
     createTransaction,
     signWithKeyPair({ publicKey: genesisPubKey, secretKey: genesisPrivateKey }),
@@ -91,6 +93,7 @@ const registerAccountCommand = ({
   credentialPubkey,
   domain,
   networkId,
+  chainId = process.env.CHAIN_ID as ChainId,
 }: {
   accountName: string;
   color: string;
@@ -99,6 +102,7 @@ const registerAccountCommand = ({
   credentialPubkey: string;
   domain: string;
   networkId: string;
+  chainId?: ChainId;
 }) => {
   const displayName = `${deviceType}_${color}`;
   return composePactCommand(
@@ -128,7 +132,7 @@ const registerAccountCommand = ({
       pred: 'keys-any',
     }),
     setMeta({
-      chainId: process.env.CHAIN_ID as ChainId,
+      chainId,
       gasLimit: 2000,
       gasPrice: 0.0000001,
       ttl: 60000,
