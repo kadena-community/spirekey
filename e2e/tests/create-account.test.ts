@@ -48,12 +48,12 @@ test('Create new account using SpireKey with dev mode enabled', async ({
   welcomePage,
   registerPage,
   accountsPage,
-  devModeHelper,
+  localStorageHelper,
 }) => {
   const alias = await generateAlias();
 
   await test.step('Enable devMode.', async () => {
-    await devModeHelper.enableDevMode();
+    await localStorageHelper.enableDevMode();
   });
 
   await test.step('Start Registration', async () => {

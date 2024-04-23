@@ -1,15 +1,15 @@
-import { DevModeHelper } from '@e2e/helpers/devMode.helper';
+import { LocalStorageHelper } from '@e2e/helpers/localStorage.helper';
 import { WebAuthNHelper } from '@e2e/helpers/webauthn.helper';
 import { test as baseTest } from '@playwright/test';
 
 export const test = baseTest.extend<{
   webAuthnHelper: WebAuthNHelper;
-  devModeHelper: DevModeHelper;
+  localStorageHelper: LocalStorageHelper;
 }>({
   webAuthnHelper: async ({ page }, use) => {
     await use(new WebAuthNHelper(page));
   },
-  devModeHelper: async ({ page }, use) => {
-    await use(new DevModeHelper(page));
+  localStorageHelper: async ({ page }, use) => {
+    await use(new LocalStorageHelper(page));
   },
 });

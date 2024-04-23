@@ -1,10 +1,8 @@
-import { network } from '@/components/Card/AccountNetwork.css';
 import { Locator, Page } from '@playwright/test';
 
 export class RegisterPage {
   private page: Page;
   private aliasInput: Locator;
-  private cancelBtn: Locator;
   private nextBtn: Locator;
   private passKeyBtn: Locator;
   private completeBtn: Locator;
@@ -12,7 +10,6 @@ export class RegisterPage {
   constructor(page: Page) {
     this.page = page;
     this.aliasInput = this.page.getByRole('textbox', { name: 'Your alias' });
-    this.cancelBtn = this.page.getByRole('button', { name: 'Cancel' });
     this.nextBtn = this.page.getByRole('button', { name: 'Next' });
     this.passKeyBtn = this.page.getByAltText('fingerprint icon');
     this.completeBtn = this.page.getByRole('button', { name: 'Complete' });

@@ -1,7 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 
 export class WelcomePage {
-  private page: Page;
+  public page: Page;
   private recoverBtn: Locator;
   private registerBtn: Locator;
 
@@ -13,5 +13,9 @@ export class WelcomePage {
 
   async startRegistration(): Promise<void> {
     await this.registerBtn.click();
+  }
+
+  async startRecovery(): Promise<void> {
+    await this.recoverBtn.click();
   }
 }
