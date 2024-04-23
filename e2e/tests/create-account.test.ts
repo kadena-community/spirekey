@@ -3,7 +3,7 @@ import { generateAlias } from '@e2e/helpers/generator.helper';
 import { expect } from '@playwright/test';
 
 test.beforeEach(async ({ spireKeyApp, webAuthnHelper }) => {
-  await spireKeyApp.OpenSpireKeyApp();
+  await spireKeyApp.openSpireKeyApp();
   await webAuthnHelper.enableWebAuthN();
 });
 

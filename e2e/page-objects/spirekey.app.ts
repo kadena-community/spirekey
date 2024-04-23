@@ -7,7 +7,7 @@ export class SpireKeyApp {
     this.page = page;
   }
 
-  async OpenSpireKeyApp(): Promise<void> {
+  async openSpireKeyApp(): Promise<void> {
     await this.page.goto('./');
   }
 }
