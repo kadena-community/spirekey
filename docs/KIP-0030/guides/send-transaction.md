@@ -1,49 +1,107 @@
-## How to send a transaction from a dApp to SpireKey
+---
+title: Send unsigned transactions to Kadena SpireKey
+description:
+  If you're an application developer, you can enable users to sign transactions
+  using their Kadena SpireKey accounts by constructing the transaction in the
+  proper format and sending the unsigned transaction to the SpireKey endpoint.
+menu: Authentication and authorization
+label: Send unsigned transactions to Kadena SpireKey
+order: 2
+layout: full
+---
 
-Once you've successfully connected your dApp to a SpireKey wallet, you should
-have all the necessary information to be able to construct and send a
-transaction. In this guide you will learn about constructing a transaction using
-a SpireKey account, how to send your unsigned transaction to the SpireKey
-wallet, and how you should proceed with the data you receive in return.
+# Send unsigned transactions to Kadena SpireKey
 
-### Step 1 - Create a transaction using a SpireKey account
+If you enable your application to connect to a Kadena SpireKey wallet as
+described in [Integrate with Kadena SpireKey](/build/authentication/integrate),
+you can construct transactions for users to sign using their Kadena SpireKey
+account.
 
-Constructing a transaction that requires a signature from a SpireKey account is
-primarly going to be the same as typical transactions however there are some
-things to keep in mind.
+In this guide you'll learn:
 
-#### WebAuthn public key scheme
+- How to construct an unsigned transaction to support signing using a Kadena
+  SpireKey account.
+- How to send unsigned transactions to the SpireKey wallet.
+- How to process the data you receive in signed transaction returned from the
+  Kadena SpireKey wallet.
 
-WebAuthn registration uses a different crytographic algorithm to generate public
-key pairs than previous accounts on Kadena. This means that the structure of the
-public key will need to be differentiated from the other public keys using the
-`scheme` attribute.
+## Construct an unsigned transaction
 
-You will need to use the 'WebAuthn' scheme:
+Transactions that can be signed using a Kadena SpireKey account are similar to
+transactions that are signed using other wallets. At a high level, you construct
+the transaction with the appropriate information, format the information as a
+JSON request, and submit the JSON request to a Chainweb node endpoint. For
+example, you can create an API request in a YAML file and use the
+`pact --apireq` command to convert the YAML file to an appropriate JSON
+representation of the transaction or you can construct a JSON object with the
+appropriate information within your application. For a typical `coin.transfer`
+transaction, you might use a YAML file similar to the following:
+
+```yaml
+code: |-
+  (coin.transfer 
+    <from> 
+    <to> 
+    1.0)
+publicMeta:
+  chainId: <chain-id>
+  sender: <from>
+  gasLimit: 600
+  gasPrice: 0.0000001
+  ttl: 600
+  creationTime: <time-in-seconds>
+networkId: 'testnet04'
+keyPairs:
+  - public: <public-key>
+    secret: <secret-key>
+    caps:
+      - name: 'coin.TRANSFER'
+        args: [<from>, <to>, 1.0]
+      - name: 'coin.GAS'
+        args: []
+type: exec
+```
+
+However, transactions involving Kadena SpireKey account have some unique
+requirements, including the cryptographic algorithm used to generate the public
+and secret keys and a separate contract to manage accounts and permissions.
+
+### Public key generation
+
+WHen you register an account using Kadena SpireKey, the cryptographic algorithm
+used to generate the public and secret keys is different from the cryptographic
+algorithm used to generate the public and secret keys for previous Kadena
+accounts. To differentiate Kadena SpireKey account public keys from other public
+keys, transactions must include both the public key and the `scheme` attribute
+set to `WebAuthn` as its value.
 
 ```ts
 { pubKey: webAuthnPublicKey, scheme: 'WebAuthn' }
 ```
 
-#### WebAuthn account guard
+### Account guard
 
-SpireKey uses the `webauthn-wallet` contract to create and manage accounts. When
-creating an account for the `coin` contract or other `fungible-v2` contracts, a
-user needs to provide an account name and a guard. There are many types of
-guards, however _keysets_ are often used to gaurd these types of accounts.
-SpireKey accounts are different in that they use a _capability_ defined in the
-`webauthn-guard` contract as a guard for these accounts, however, currently
-contracts like `coin` cannot bring this capability into scope when trying to
-debit an account.
+When users create an account for the `coin` contract or for other `fungible-v2`
+contracts, they provide an account name and a guard. In most cases, these
+accounts use **keysets** to enforce who must sign valid transactions and to
+prevent unauthorized signers from submitting transaction.
 
-To simplify working with the `coin` contract, the `webauthn-wallet` contract has
-implemented its own function `webauthn-wallet.transfer` and custom capabilities
-`webauthn-wallet.GAS_PAYER` and `webauthn-wallet.TRANSFER` that can be used in
-place of the original corresponding `coin.GAS` and `coin.TRANSFER` capabilities
-to satisfy the guard necessary for debiting an account.
+However, Kadena SpireKey uses its own `webauthn-wallet` and `webauthn-guard`
+contracts to create, manage, and secure accounts instead of using the `coin` or
+`fungible-v2` contract. Kadena SpireKey accounts use a _capability_ defined in
+the `webauthn-guard` contract instead of a keyset to enforce signing rules for
+transaction. Capability guards use the `c:` prefix.
+
+Because the `coin` contract can't bring this capability guard into scope when
+trying to debit an account, the `webauthn-wallet` contract implements its own
+`webauthn-wallet.transfer` function and custom `webauthn-wallet.GAS_PAYER` and
+`webauthn-wallet.TRANSFER` capabilities. You can use these custom capabilities
+in place of the corresponding `coin.GAS` and `coin.TRANSFER` capabilities in
+transactions to identify the guard required to debit an account.
 
 The following is an example of what an unsigned `coin` transfer transaction from
-a SpireKey wallet could look like:
+a Kadena SpireKey wallet might look like for the
+`n_eef68e581f767dd66c4d4c39ed922be944ede505` principal namespace:
 
 ```json
 {
@@ -98,72 +156,76 @@ a SpireKey wallet could look like:
 }
 ```
 
-> NOTE: `coin` is a non-upgradable contract which means that it will likely not
-> be updated to accomodate `webauthn-wallet` accounts. This is a special case
-> which is why the `webauthn-wallet` contract implements specific functions and
-> capabilities that can be used in place of the corresponding versions in the
-> `coin` contract. Other contracts should be implemented to be compatible with
-> `webauthn-wallet` accounts by default.
+The `webauthn-wallet` contract implements specific functions and capabilities to
+be used in place of the corresponding versions in the `coin` contract because
+the `coin` contract isn't likely to be updated to accommodate `webauthn-wallet`
+accounts. Other contracts should be compatible with `webauthn-wallet` accounts
+by default.
 
-### Step 2 - Send data to the SpireKey wallet
+## Send data to the SpireKey wallet
 
-When you are finished creating the unsigned transaction, you can then send that
-data along with a returnUrl to the wallet to handle the signing process and
-navigate users back to your dApp. This information will be passed via url
-parameters.
+After you construct the unsigned transaction in your application, you can send
+that data along with a `returnUrl` to the Kadena SpireKey wallet. Kadena
+SpireKey handles the signing process and redirects users back to your
+application. As with registration and authentication, the information is passed
+using URL parameters.
 
-You will use the same host that you used to connect the account and navigate to
-the sign page: https://spirekey.kadena.io/sign
+You can use the same host that you used to connect the account and navigate to
+the `sign` endpoint. For example, https://spirekey.kadena.io/sign
 
 In the following table you can see what parameters are currently accepted by
 SpireKey.
 
-| Parameter    | Type    | Required | Description                                                                                                                                                                                                                                                                                                                                                                               |
-| ------------ | ------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| transaction  | string  | Required | A base64 encoded string of the unsigned transaction                                                                                                                                                                                                                                                                                                                                       |
-| returnUrl    | string  | Required | The url, encoded as a uriComponent, that the wallet should redirect users to when they have signed the transaction                                                                                                                                                                                                                                                                        |
-| translations | string  | Optional | This allows dApp developers to pass custom translations. You can read more about this in the Translations guide                                                                                                                                                                                                                                                                           |
-| optimistic   | boolean | Optional | This allows dApps to optimistically move forward in their transaction flows without having to wait for the transaction to be confirmed on the blockchain. When this is enabled, `pendingTxIds` will be returned so that the dApp can keep track of the status of the submitted transactions and update the UI accordingly. Please see the docs for more information about how this works. |
+| Parameter      | Type    | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| -------------- | ------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `transaction`  | string  | Required | A base64 encoded string of the unsigned transaction.                                                                                                                                                                                                                                                                                                                                                                                                 |
+| retur`nUrl     | string  | Required | The url, encoded as a uriComponent, that the wallet should redirect users to after they have signed the transaction.                                                                                                                                                                                                                                                                                                                                 |
+| `translations` | string  | Optional | Custom descriptions that explain what capabilities or operations that tyhe user is user signing for. For more information about using translations to describe transaction details, see [Translate transaction operations](/build/authentication/translate).                                                                                                                                                                                         |
+| `optimistic`   | boolean | Optional | Allows applications to continue the transaction flows without having to wait for the transaction to be confirmed on the blockchain. When this parameter is included, `pendingTxIds` are returned so that the application can keep track of the status of the submitted transactions and update the UI accordingly. For more information about the optimistic transaction flow, see [Optimistic workflow](/build/authentication/optimistic-workflow). |
 
 The following is an example of how you would construct the route:
 
 ```ts
-// tx is the unsigned transaction from the previous step
+// tx is the unsigned transaction you constructed
 const encodedTx = btoa(JSON.stringify(tx));
 
-// We are using `encodeURIComponent` so that the return url is still readable
+// Use`encodeURIComponent` so that the return url is still readable
 const encodedReturnUrl = encodeURIComponent(RETURN_URL);
 
 // The url you need to navigate to sign and return the transaction
 const sendTransactionUrl = `https://spirekey.kadena.io/sign?transaction=${encodedTx}&returnUrl=${encodedReturnUrl}`;
 ```
 
-Once you construct the route to the wallet with the required parameters, you can
-navigate to the wallet to handle the signing.
+After you construct the route to the wallet with the required parameters, you
+can navigate to the wallet to handle the signing.
 
-### Step 3 - Getting your signed transaction from the SpireKey wallet
+## Verify the signed transaction from the SpireKey wallet
 
-Once all signatures for a transaction have been successfully collected from the
-wallet, the user will be navigated back to the returnUrl you provided and the
-signed transaction as well as other optional parameters will be returned in the
-url parameters. In the case that the transaction was not successfully signed,
-the unsigned transaction will be returned in the url parameters.
+After all signatures for a transaction have been successfully collected from the
+wallet, the user is redirected to the `returnUrl` you provided. The signed
+transaction and optional parameters are included as URL parameters. If the
+transaction was not successfully signed, the unsigned transaction is returned in
+the URL parameters.
 
-| Parameter    | Type     | Required | Description                                                                                |
-| ------------ | -------- | -------- | ------------------------------------------------------------------------------------------ |
-| transaction  | string   | Required | A base64 encoded string of the signed or unsigned transaction                              |
-| pendingTxIds | string[] | Optional | Pending transaction IDs that can be used to move forward in an optimistic flow application |
+| Parameter      | Type     | Required | Description                                                                                                                                       |
+| -------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `transaction`  | string   | Required | A base64 encoded string of the signed or unsigned transaction.                                                                                    |
+| `pendingTxIds` | string[] | Optional | Pending transaction identifiers that enable the application to move forward withut waiting for the transaction to be confirmed on the blockchain. |
 
-To verify that your transaction has been successfully signed, you can check the
-`sigs` field in your transactions. If it has undefined signatures, then you will
-not be able to proceed with submitting the transaction.
+To verify that a transaction has been successfully signed, you can check the
+`sigs` field in the transaction. If the field has undefined signatures, you
+won't be able to submit the transaction.
 
-If the transaction has been successfully signed, it will be valid for the amount
-of time specified as the value of `ttl` in the meta data used to construct the
-transaction. During this time frame the dApp can choose perform a
-`local/preflight=true` call to see if the transaction is valid and then send it
-to be mined.
+If the transaction has been successfully signed, it is valid for a limited
+period of time as specified in the `ttl` value of in the transaction
+`publicMeta` data. During this period of time, the application can call the
+`local/preflight=true` endpoint to check whether the transaction is valid, then
+send it to the blockchain to be executed.
 
-Once the transaction is submitted, you can poll for the transaction status
-against the Chainweb Data API and deem the transaction successfully mined when
-it reaches an appropriate confirmation depth.
+After the transaction is submitted to the blockchain, you can poll for the
+transaction status using the chainweb-data API. For example:
+
+https://estats.testnet.chainweb.com/txs/poll?requestkey=gzlhITOU8hMaOXHKcSJgxLl0Ir8j2crUnFh20cGcxsR&confirmationDepth=3
+
+You can deem the transaction successfully mined when it reaches an appropriate
+confirmation depth.
