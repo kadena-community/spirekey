@@ -7,6 +7,7 @@ import {
   objectParameterValue,
   searchParamsToString,
 } from '@/utils/searchParameters';
+import { l1Client } from '@/utils/shared/client';
 import { submitTransaction } from '@/utils/submitTransaction';
 import { updateAccount } from '@/utils/updateAccount';
 import { ChainId, ICommand, createClient } from '@kadena/client';
@@ -14,7 +15,6 @@ import {
   Box,
   Button,
   Heading,
-  NumberField,
   ProgressCircle,
   Stack,
   TextField,
@@ -87,8 +87,7 @@ export default function ApprovalForm() {
       try {
         const transactionDescriptor =
           await submitTransaction(signedTransaction);
-        const client = createClient();
-        const { result } = await client.listen(transactionDescriptor);
+        const { result } = await l1Client.listen(transactionDescriptor);
         if (result.status === 'success') {
           addNotification({
             variant: 'success',

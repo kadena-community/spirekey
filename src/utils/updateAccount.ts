@@ -47,8 +47,8 @@ export const updateAccount = async ({
           signFor(
             `${namespace}.webauthn-wallet.UPDATE_ACCOUNT`,
             accountName,
-            minApprovals,
-            minRegistrationApprovals,
+            { int: minApprovals },
+            { int: minRegistrationApprovals },
           ),
           signFor(
             `${namespace}.webauthn-wallet.GAS_PAYER`,
