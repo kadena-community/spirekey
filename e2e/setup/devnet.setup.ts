@@ -9,7 +9,7 @@ import { test as setup } from '@playwright/test';
 import { readFile } from 'fs/promises';
 import path from 'node:path';
 
-setup('Deploy WebAuthN contract', async () => {
+setup('Deploy WebAuthn contract', async () => {
   const isDeployed = await isContractDeployed(
     webauthnWalletModule,
     devnetUrl('0'),
