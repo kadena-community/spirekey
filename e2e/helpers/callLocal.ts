@@ -22,16 +22,5 @@ export async function isModuleDeployed(
   if (responseJson.result.status === 'success') {
     return true;
   }
-  const { error } = responseJson.result;
-  if (error === undefined || typeof error === 'string') {
-    return {
-      error: error || 'unknown error',
-    };
-  }
-  return {
-    error:
-      'message' in error
-        ? (error.message as string)
-        : JSON.stringify(responseJson.result.error),
-  };
+  return false;
 }
