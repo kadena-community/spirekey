@@ -20,7 +20,7 @@ export async function isModuleDeployed(
 
   const responseJson = (await response.json()) as ICommandResult;
   if (responseJson.result.status === 'success') {
-    return { code: (responseJson.result.data as any).code };
+    return true;
   }
   const { error } = responseJson.result;
   if (error === undefined || typeof error === 'string') {
