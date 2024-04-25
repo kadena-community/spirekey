@@ -1,8 +1,3 @@
-import {
-  devnetHost,
-  networkId,
-  webAuthnNamespace,
-} from '@e2e/constants/network.constants';
 import { defineConfig, devices } from '@playwright/test';
 
 /**
