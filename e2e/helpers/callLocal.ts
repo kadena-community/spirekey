@@ -5,14 +5,7 @@ export async function fetchModule(
   apiHost: string,
   body: string,
 ): Promise<
-  | {
-      error: string;
-      code?: undefined;
-    }
-  | {
-      error?: undefined;
-      code: string;
-    }
+  boolean
 > {
   const response = await fetch(`${apiHost}/api/v1/local`, {
     headers: {
