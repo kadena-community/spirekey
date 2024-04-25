@@ -7,7 +7,7 @@ export async function isContractDeployed(
   apiHost: string,
   chain: number | string,
   network: string,
-): Promise<Boolean> {
+): Promise<boolean> {
   const command = Pact.builder
     .execution(`(describe-module "${module}")`)
     .setNetworkId(network)
