@@ -93,3 +93,22 @@ docker volume create l1
 
 Now clear your local storage of your wallet domain. On localhost by default it
 will be [http://localhost:1337].
+
+## E2E testing
+
+E2E tests in CI are run automatically. If you'd like to run them locally, some
+specific steps are needed:
+
+- Build dApp with NODE_ENV set to test, this will use environment variables from
+  `.env.test` and `.env`
+- Start Devnet Sandbox using the above instructions
+- Optionally: Start the frontend.
+
+Deploying the smart contract is done by the test, if you've not done so
+yourself.
+
+```sh
+NODE_ENV=test pnpm run build
+pnpm run start (optional)
+pnpm run test:e2e
+```
