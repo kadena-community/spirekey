@@ -25,7 +25,7 @@ export async function fetchModule(
     method: 'POST',
   });
 
-  const responseJson = (await response.clone().json()) as ICommandResult;
+  const responseJson = (await response.json()) as ICommandResult;
   if (responseJson.result.status === 'success') {
     return { code: (responseJson.result.data as any).code };
   }

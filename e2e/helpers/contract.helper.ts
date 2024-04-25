@@ -16,11 +16,7 @@ export async function isContractDeployed(
 
   const { code, error } = await fetchModule(apiHost, JSON.stringify(command));
 
-  if (error !== undefined) {
-    return false;
-  } else if (code !== undefined) {
-    return true;
-  } else {
-    return false;
-  }
+  if (error !== undefined) return false;
+  if (code !== undefined) return true;
+  return false;
 }
