@@ -42,14 +42,8 @@ export function Account({
   const { accounts } = useAccounts();
   const { addNotification } = useNotifications();
   const [delayedIsActive, setDelayedIsActive] = useState(false);
-  const accountBalancesOnNetwork = accounts
-    .filter((a) => a.networkId === account.networkId)
-    .map((a) => parseFloat(a.balance));
 
-  const balancePercentage = calculateBalancePercentage(
-    parseFloat(account.balance),
-    accountBalancesOnNetwork,
-  );
+  const balancePercentage = calculateBalancePercentage(account, accounts);
 
   // We want to delay the rendering of the active state to prevent the height of the cards animating in `CardCollection`
   useEffect(() => {
@@ -190,11 +184,20 @@ export function Account({
                     flexDirection="row"
                     justifyContent="center"
                   >
+                    <Link href={`/accounts/${caccount}`} className={detailLink}>
+                      Account details
+                    </Link>
+                  </Stack>
+                  <Stack
+                    marginBlock="lg"
+                    flexDirection="row"
+                    justifyContent="center"
+                  >
                     <Link
-                      href={`/accounts/${caccount}/devices/${cid}#${cid}`}
+                      href={`/accounts/${caccount}/devices/add`}
                       className={detailLink}
                     >
-                      Account details
+                      Add device
                     </Link>
                   </Stack>
                 </motion.div>

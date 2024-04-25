@@ -85,7 +85,7 @@
 (expect "An event to be fired after registering an account, containing the account name, credential-id and device index"
   (env-events true)
   [{
-    "module-hash": "QjS0UZ4LGPDudubzNK3WpGq2gEluwmE69OGJFrqokvw",
+    "module-hash": "cfLcvxHsfYFhdd2Y1GmbIuMal-W7Jzv0FfLFqttRDB4",
     "name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.REGISTER_DEVICE",
     "params": [
       "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
@@ -140,13 +140,91 @@
 (expect "An event to be fired after adding a device to an account, containing the account name, credential-id and device index"
   (env-events true)
   [{
-    "module-hash": "QjS0UZ4LGPDudubzNK3WpGq2gEluwmE69OGJFrqokvw",
+    "module-hash": "cfLcvxHsfYFhdd2Y1GmbIuMal-W7Jzv0FfLFqttRDB4",
     "name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.REGISTER_DEVICE",
     "params": [
       "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
       "cid-yubi"
     ]
   }]
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(env-data
+  { 'ks     :
+    { 'keys : ["WEBAUTHN-alice-yubi"]
+    , 'pred : "keys-any"
+    } 
+  }
+)
+(env-sigs
+  [
+    { 'key  : "WEBAUTHN-alice-yubi"
+    , 'caps : 
+      [
+        (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.UPDATE_ACCOUNT 
+          "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any" 2 2
+        )
+      ]
+    }
+  ]
+)
+(begin-tx "Update the minimum approvals")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.update-guard
+  "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any" 2 2
+)
+(expect "Alice to require two approvals"
+  (at 'min-approvals 
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.get-account
+      "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
+    )
+  )
+  2
+)
+(expect "Alice to require two registration approvals"
+  (at 'min-registration-approvals 
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.get-account
+      "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
+    )
+  )
+  2
+)
+(commit-tx)
+(env-data {})
+(env-sigs [])
+
+(env-data
+  { 'ks     :
+    { 'keys : ["WEBAUTHN-alice-yubi"]
+    , 'pred : "keys-any"
+    } 
+  }
+)
+(env-sigs
+  [
+    { 'key  : "WEBAUTHN-alice-phone"
+    , 'caps : 
+      [
+        (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.UPDATE_ACCOUNT 
+          "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any" 1 1
+        )
+      ]
+    }
+    , { 'key  : "WEBAUTHN-alice-yubi"
+    , 'caps : 
+      [
+        (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.UPDATE_ACCOUNT 
+          "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any" 1 1
+        )
+      ]
+    }
+  ]
+)
+(begin-tx "Reset the minimum approvals")
+(n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.update-guard
+  "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any" 1 1
 )
 (commit-tx)
 (env-data {})

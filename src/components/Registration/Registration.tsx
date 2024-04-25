@@ -127,6 +127,8 @@ export default function Registration({ redirectUrl, networkId }: Props) {
             accountName: data.accountName,
             balance: '0',
             networkId: data.networkId,
+            minApprovals: 1,
+            minRegistrationApprovals: 1,
             devices: [
               {
                 'credential-id': data.credentialId,

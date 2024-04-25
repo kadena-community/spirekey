@@ -64,16 +64,6 @@ export const carouselNav = style([
   },
 ]);
 
-export const carouselAddItem = style({
-  width: '0.7em',
-  height: '0.7em',
-});
-
-globalStyle(`${carouselAddItem} svg`, {
-  width: '100%',
-  height: '100%',
-});
-
 export const carouselNavItem = recipe({
   base: {
     borderRadius: '50%',
@@ -83,6 +73,9 @@ export const carouselNavItem = recipe({
   },
   variants: {
     variant: {
+      default: {
+        backgroundColor: 'transparent',
+      },
       active: {
         backgroundColor: '#fff',
       },

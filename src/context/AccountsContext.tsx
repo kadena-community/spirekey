@@ -17,6 +17,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 export type Account = {
   alias: string;
   accountName: string;
+  minApprovals: number;
+  minRegistrationApprovals: number;
   balance: string;
   devices: Device[];
   networkId: string;
@@ -166,6 +168,8 @@ const AccountsProvider = ({ children }: Props) => {
             accountName,
             networkId,
             alias,
+            minApprovals: remoteAccount.minApprovals,
+            minRegistrationApprovals: remoteAccount.minRegistrationApprovals,
             balance: remoteAccount.balance || '0',
             devices: uniqueDevices.map((device: Device) => {
               const deviceOnChain = remoteAccount.devices.find(
@@ -251,6 +255,8 @@ const AccountsProvider = ({ children }: Props) => {
       networkId,
       devices,
       balance: '0',
+      minApprovals: 1,
+      minRegistrationApprovals: 1,
     };
     addAccount(account);
 
