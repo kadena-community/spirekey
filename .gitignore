@@ -33,3 +33,7 @@ next-env.d.ts
 
 .env.local
 signers.json
+
+# Playwight
+/playwright-report
+/test-results
