@@ -10,7 +10,3 @@ services:
     environment:
       - MINING_BATCH_PERIOD=0.05
       - MINING_CONFIRMATION_PERIOD=1
-    volumes:
-      - sandbox:/data
-volumes:
-  sandbox:

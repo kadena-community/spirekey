@@ -10,7 +10,7 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   timeout: 5 * 60 * 1000, // Timeout for a single test
-  globalTimeout: 30 * 60 * 1000, // Timeout for the whole test run
+  globalTimeout: 10 * 60 * 1000, // Timeout for the whole test run
   forbidOnly: process.env.CI !== undefined,
   retries: process.env.CI !== undefined ? 1 : 0,
   workers: 1,
@@ -44,22 +44,8 @@ export default defineConfig({
     command: `pnpm run start`,
     url: 'http://localhost:1337',
     reuseExistingServer: process.env.CI === undefined,
-    timeout: 2 * 60000,
+    timeout: 60000,
     stdout: 'ignore',
     stderr: 'ignore',
-    env: {
-      AUTO_REGISTER_MAINNET: 'false',
-      INSTA_FUND: 'false',
-      DEVNET_NETWORK_ID: networkId,
-      DAPP_NETWORK_ID: networkId,
-      WALLET_NETWORK_ID: networkId,
-      CHAIN_ID: '14',
-      NAMESPACE: webAuthnNamespace,
-      GAS_STATION:
-        'u:n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.gas-station.enforce-guard-any:7AdJhJTZk-wJEAWGaoO36HADDU58EtRw5La0LGw1ErI',
-      WALLET_URL: 'http://localhost:1337',
-      DEVNET_HOST: devnetHost,
-      CHAINWEB_URL: devnetHost,
-    },
   },
 });

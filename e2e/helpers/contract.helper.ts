@@ -1,6 +1,6 @@
 import type { ChainId } from '@kadena/client';
 import { Pact } from '@kadena/client';
-import { fetchModule } from './callLocal';
+import { isModuleDeployed } from './callLocal';
 
 export async function isContractDeployed(
   module: string,
@@ -14,9 +14,5 @@ export async function isContractDeployed(
     .setMeta({ chainId: chain.toString() as ChainId })
     .createTransaction();
 
-  const { code, error } = await fetchModule(apiHost, JSON.stringify(command));
-
-  if (error !== undefined) return false;
-  if (code !== undefined) return true;
-  return false;
+  return await isModuleDeployed(apiHost, JSON.stringify(command));
 }
