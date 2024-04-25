@@ -37,6 +37,7 @@ export default function ConnectHeader({
     networkId,
     chainId,
   });
+
   return (
     <Box padding="lg" className={'connect-header'}>
       <Surface>

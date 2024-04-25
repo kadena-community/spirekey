@@ -7,7 +7,10 @@ import DeviceIcons from './DeviceIcons';
 
 type CardProps = {
   color: string;
-  account: Account;
+  account: Pick<
+    Account,
+    'accountName' | 'networkId' | 'devices' | 'alias' | 'balance'
+  >;
   device?: Device;
   balancePercentage?: number;
   isLoading?: boolean;

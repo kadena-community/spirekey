@@ -32,7 +32,8 @@ export function DeliveryTransit({ order }: Props) {
       if (!account) return;
       const buyerAccount = await getAccountFrom({
         accountName: buyer,
-        networkId: process.env.DAPP_NETWORK_ID!,
+        networkId: process.env.DAPP_NETWORK_ID,
+        chainIds: [process.env.CHAIN_ID],
       });
       const tx = await deliverOrder({
         orderId,

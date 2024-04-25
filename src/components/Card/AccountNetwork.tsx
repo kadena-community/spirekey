@@ -8,7 +8,7 @@ import { AccountRevealer } from '../AccountRevealer/AccountRevealer';
 import * as styles from './AccountNetwork.css';
 
 type AccountNetworkProps = {
-  account: Account;
+  account: Pick<Account, 'accountName' | 'networkId'>;
   isLoading?: boolean;
 };
 

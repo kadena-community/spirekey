@@ -36,7 +36,6 @@ const defaultFormData = {
   credentialId: '',
   deviceType: 'security-key',
   color: deviceColors.purple,
-  chainId: '8' as ChainId,
 };
 
 export type FormData = typeof defaultFormData;
@@ -52,28 +51,28 @@ export interface StepProps {
     previous: () => void;
     goTo: (index: number) => void;
   };
+  chainId: ChainId;
 }
 
 interface Props {
   redirectUrl?: string;
   networkId?: string;
-  chainId: ChainId;
+  chainId?: ChainId;
 }
 
 export default function Registration({
   redirectUrl,
   networkId,
-  chainId,
+  chainId = process.env.CHAIN_ID,
 }: Props) {
   const router = useRouter();
   const { registerAccount } = useAccounts();
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { host } = useReturnUrl();
 
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [data, setData] = useState<FormData>({
     ...defaultFormData,
     networkId: networkId || defaultFormData.networkId,
-    chainId,
   });
 
   const updateFields = (fields: Partial<FormData>) =>
@@ -150,11 +149,11 @@ export default function Registration({
                 },
               },
             ],
-            chainId,
           }}
           isLoading
         />
       </Box>
+
       <div className={styles.wrapper}>
         <motion.div
           animate={{ x: `-${currentStepIndex * 100}%` }}
@@ -162,7 +161,7 @@ export default function Registration({
           className={styles.container}
         >
           {steps.map((FormStep, stepIndex) => (
-            <Box className={styles.step}>
+            <Box className={styles.step} key={stepIndex}>
               <FormStep
                 key={stepIndex}
                 stepIndex={stepIndex}
@@ -171,6 +170,7 @@ export default function Registration({
                 formValues={data}
                 updateFields={updateFields}
                 navigation={{ next, previous, goTo }}
+                chainId={chainId}
               />
             </Box>
           ))}

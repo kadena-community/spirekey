@@ -4,7 +4,7 @@ import { Box } from '@kadena/react-ui';
 import * as styles from './Card.css';
 
 type DeviceIconsProps = {
-  account: Account;
+  account: Pick<Account, 'devices'>;
   device?: Device;
   showSingleIcon?: boolean;
 };
@@ -24,7 +24,7 @@ export default function DeviceIcons({
     !showSingleIcon &&
     (!device || firstDevice['credential-id'] === device['credential-id'])
   ) {
-    account.devices.map((d) => uniqueDeviceTypes.add(d.deviceType));
+    account.devices.forEach((d) => uniqueDeviceTypes.add(d.deviceType));
   }
 
   return Array.from(uniqueDeviceTypes).map((type, i) => {

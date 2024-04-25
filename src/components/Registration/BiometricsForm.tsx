@@ -4,6 +4,7 @@ import { useNotifications } from '@/context/shared/NotificationsContext';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { getAccountName } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
+import { ChainId } from '@kadena/client';
 import { Stack, Text } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -12,11 +13,12 @@ import { useForm } from 'react-hook-form';
 import { StepProps } from './Registration';
 import { animationVariants } from './animation';
 
-export const BiometricsForm: FC<StepProps> = ({
+export const BiometricsForm: FC<StepProps & { chainId: ChainId }> = ({
   stepIndex,
   isVisible,
   updateFields,
   formValues,
+  chainId,
   navigation,
 }) => {
   const { handleSubmit, register } = useForm();
@@ -30,14 +32,16 @@ export const BiometricsForm: FC<StepProps> = ({
       const accountName = await getAccountName(
         publicKey,
         formValues.networkId,
-        formValues.chainId,
+        chainId,
       );
+
       updateFields({
         accountName,
         credentialId,
         credentialPubkey: publicKey,
         usedAlias: formValues.alias,
       });
+
       navigation.next();
     } catch (error: unknown) {
       if (error instanceof Error) {

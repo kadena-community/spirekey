@@ -206,7 +206,7 @@ const getAccountName = async (wAccount: string): Promise<string> =>
         `(${namespace}.webauthn-wallet.get-account-name "${wAccount}")`,
       ),
       setMeta({
-        chainId: process.env.CHAIN_ID as ChainId,
+        chainId: process.env.CHAIN_ID,
         gasLimit: 1000,
         gasPrice: 0.0000001,
         ttl: 60000,

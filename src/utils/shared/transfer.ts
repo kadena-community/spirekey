@@ -29,8 +29,9 @@ export const transfer = async ({
   // TODO: make a decicion which command to get (safe/unsafe transfer)
   const receiverAcc = await getAccountFrom({
     accountName: receiver,
-    namespace,
     networkId,
+    chainIds: [process.env.CHAIN_ID],
+    namespace,
   });
 
   return asyncPipe(

@@ -1,4 +1,4 @@
-import type { Account } from '@/context/AccountsContext';
+import type { Account, Device } from '@/context/AccountsContext';
 import { ChainId, createTransaction } from '@kadena/client';
 import {
   composePactCommand,
@@ -19,7 +19,7 @@ export const getAccountFrom = async ({
   networkId: string;
   chainIds: ChainId[];
   namespace?: string;
-}): Promise<Account> => {
+}): Promise<Omit<Account, 'alias'>> => {
   const results = await Promise.allSettled(
     chainIds.map((chainId) =>
       asyncPipe(
@@ -41,11 +41,9 @@ export const getAccountFrom = async ({
     ),
   );
 
-  const successfulResults = results.filter(
-    (result) =>
-      result.status === 'fulfilled' &&
-      result.value?.result?.status === 'success',
-  );
+  const successfulResults = results
+    .filter(assertFulfilled)
+    .filter((result) => result.value?.result?.status === 'success');
 
   let totalBalance = 0;
   const devices: Device[] = [];
@@ -54,27 +52,23 @@ export const getAccountFrom = async ({
   let minRegistrationApprovals = 1;
 
   successfulResults.forEach((result, index) => {
-    if (result.status === 'fulfilled') {
-      const [devicesResult, balanceResult] = result.value.result.data;
-      devices.push(...(devicesResult.devices || []));
-      totalBalance += parseFloat(balanceResult);
+    const [devicesResult, balanceResult] = result.value.data;
+    devices.push(...(devicesResult.devices || []));
+    totalBalance += parseFloat(balanceResult);
 
-      foundChainIds.push(chainIds[index]);
+    foundChainIds.push(chainIds[index]);
 
-      minApprovals =
-        minApprovals > devicesResult['min-approvals'].int
-          ? devicesResult['min-approvals'].int
-          : minApprovals;
-      minRegistrationApprovals =
-        minRegistrationApprovals >
-        devicesResult['min-registration-approvals'].int
-          ? devicesResult['min-registration-approvals'].int
-          : minRegistrationApprovals;
-    }
+    minApprovals =
+      minApprovals > devicesResult['min-approvals'].int
+        ? devicesResult['min-approvals'].int
+        : minApprovals;
+    minRegistrationApprovals =
+      minRegistrationApprovals > devicesResult['min-registration-approvals'].int
+        ? devicesResult['min-registration-approvals'].int
+        : minRegistrationApprovals;
   });
 
   return {
-    alias: accountName, // @TODO
     networkId,
     chainIds: foundChainIds,
     accountName,

@@ -142,6 +142,7 @@ export default function Customer({ searchParams }: Props) {
         const remoteMerchantAccount = await getAccountFrom({
           networkId: process.env.NETWORK_ID || getDevnetNetworkId(),
           accountName: merchantAccount,
+          chainIds: [process.env.CHAIN_ID],
         });
         setMerchantPublicKey(remoteMerchantAccount.devices[0].guard.keys[0]);
       } catch (error: unknown) {

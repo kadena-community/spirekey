@@ -24,10 +24,7 @@ export const getAccountNameFromRegisterDeviceEvent = async (
   }
 
   try {
-    return getAccountName(
-      events[0].params[0],
-      process.env.WALLET_NETWORK_ID || '',
-    );
+    return getAccountName(events[0].params[0], process.env.WALLET_NETWORK_ID);
   } catch (e: unknown) {
     throw new Error('No transaction found for event.');
   }
@@ -57,7 +54,7 @@ export const getAccountName = async (
         `(${process.env.NAMESPACE}.webauthn-wallet.get-account-name "${account}")`,
       ),
       setMeta({
-        chainId: process.env.CHAIN_ID as ChainId,
+        chainId: process.env.CHAIN_ID,
         gasLimit: 1000,
         gasPrice: 0.0000001,
         ttl: 60000,

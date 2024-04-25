@@ -2,7 +2,6 @@
 
 import type { ChainId } from '@kadena/client';
 import { Stack } from '@kadena/react-ui';
-import { ChainId } from '@kadena/types';
 import dynamic from 'next/dynamic';
 
 const ConnectHeader = dynamic(
@@ -22,8 +21,8 @@ type ConnectProps = {
     returnUrl: string;
     reason?: string;
     optimistic?: boolean;
-    networkId: string;
-    chainId: ChainId;
+    networkId?: string;
+    chainId?: ChainId;
   };
 };
 
@@ -32,8 +31,8 @@ export default function Connect({ searchParams }: ConnectProps) {
     returnUrl,
     reason = '',
     optimistic = true,
-    networkId,
-    chainId = process.env.CHAIN_ID as ChainId,
+    networkId = process.env.WALLET_NETWORK_ID,
+    chainId = process.env.CHAIN_ID,
   } = searchParams;
 
   return (

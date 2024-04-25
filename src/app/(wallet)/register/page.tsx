@@ -1,7 +1,7 @@
 'use client';
 
+import { ChainId } from '@kadena/client';
 import { Stack } from '@kadena/react-ui';
-import { ChainId } from '@kadena/types';
 import dynamic from 'next/dynamic';
 
 const Registration = dynamic(
@@ -11,20 +11,16 @@ const Registration = dynamic(
   },
 );
 
-type Props = {
+interface Props {
   searchParams: {
     redirectUrl?: string;
     networkId?: string;
     chainId?: ChainId;
   };
-};
+}
 
 export default function Register({ searchParams }: Props) {
-  const {
-    redirectUrl,
-    networkId,
-    chainId = process.env.CHAIN_ID as ChainId,
-  } = searchParams;
+  const { redirectUrl, networkId, chainId } = searchParams;
 
   return (
     <Stack flexDirection="column" gap="md">

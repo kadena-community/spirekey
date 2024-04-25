@@ -1,13 +1,11 @@
 'use client';
 
-import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { fundAccount } from '@/utils/fund';
 import {
   getAccountName,
   getWebAuthnPubkeyFormat,
   registerAccountOnChain,
 } from '@/utils/register';
-import { retryPromises } from '@/utils/retryPromises';
 import { getAccountFrom } from '@/utils/shared/account';
 import { l1Client } from '@/utils/shared/client';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
@@ -22,7 +20,7 @@ export type Account = {
   balance: string;
   devices: Device[];
   networkId: string;
-  chainId: ChainId;
+  chainIds: ChainId[];
 };
 
 export type Device = {
@@ -86,16 +84,16 @@ const getAccountsFromLocalStorage = (): Account[] => {
   }
 };
 
+const networks = ['mainnet01', 'testnet04', getDevnetNetworkId()];
+
 const defaultState = {
-  networks: ['mainnet01', 'testnet04', getDevnetNetworkId()],
+  networks,
   accounts: getAccountsFromLocalStorage(),
   registerAccount: async (
     data: AccountRegistration,
   ): Promise<ITransactionDescriptor | undefined> => undefined,
   setAccount: (account: Account): void => undefined,
 };
-
-const networks = ['mainnet01', 'testnet04', getDevnetNetworkId()];
 
 export const AccountsContext = createContext(defaultState);
 
@@ -104,8 +102,6 @@ type Props = {
 };
 
 const AccountsProvider = ({ children }: Props) => {
-  const { host } = useReturnUrl();
-
   const [accounts, setAccounts] = useState<Account[]>(
     getAccountsFromLocalStorage(),
   );
@@ -126,13 +122,15 @@ const AccountsProvider = ({ children }: Props) => {
 
     const checkPendingTxs = async () => {
       for (const account of accounts) {
-        for (const device of account.devices) {
-          if (device.pendingRegistrationTx) {
-            listenForRegistrationTransaction({
-              requestKey: device.pendingRegistrationTx,
-              chainId: process.env.CHAIN_ID as ChainId,
-              networkId: account.networkId,
-            });
+        for (const chainId of account.chainIds) {
+          for (const device of account.devices) {
+            if (device.pendingRegistrationTx) {
+              listenForRegistrationTransaction({
+                requestKey: device.pendingRegistrationTx,
+                chainId,
+                networkId: account.networkId,
+              });
+            }
           }
         }
       }
@@ -142,77 +140,58 @@ const AccountsProvider = ({ children }: Props) => {
   }, [accounts]);
 
   const fetchAccountsFromChain = async (localAccounts: Account[]) => {
-    return Promise.all(
+    const results = await Promise.allSettled(
       localAccounts.map(async (localAccount) => {
-        const {
+        const { accountName, networkId, alias, devices, chainIds } =
+          localAccount;
+
+        const remoteAccount = await getAccountFrom({
+          networkId,
+          accountName,
+          chainIds,
+        });
+
+        if (remoteAccount === null) {
+          // Account not found (yet?), return the account from localStorage
+          return localAccount;
+        }
+
+        const uniqueDevices = Array.from(
+          [...remoteAccount.devices, ...devices]
+            .reduce(
+              (allUniqueDevices, d) =>
+                allUniqueDevices.set(d['credential-id'], d),
+              new Map(),
+            )
+            .values(),
+        );
+
+        return {
           accountName,
           networkId,
           alias,
-          devices,
-          chainId = process.env.CHAIN_ID as ChainId,
-        } = localAccount;
-        try {
-          const remoteAccount = await getAccountFrom({
-            networkId,
-            accountName,
-            chainId,
-          });
-
-          if (remoteAccount === null) {
-            throw new Error('Account not found on chain');
-          }
-
-          const uniqueDevices = Array.from(
-            [...remoteAccount.devices, ...devices]
-              .reduce(
-                (allUniqueDevices, d) =>
-                  allUniqueDevices.set(d['credential-id'], d),
-                new Map(),
-              )
-              .values(),
-          );
-
-          return {
-            accountName,
-            networkId,
-            chainId,
-            alias,
-            minApprovals: remoteAccount.minApprovals,
-            minRegistrationApprovals: remoteAccount.minRegistrationApprovals,
-            balance: remoteAccount.balance || '0',
-            devices: uniqueDevices.map((device: Device) => {
-              const deviceOnChain = remoteAccount.devices.find(
-                (d) => d['credential-id'] === device['credential-id'],
-              );
-
-              return { ...deviceOnChain, ...device };
-            }),
-          };
-        } catch (e: unknown) {
-          try {
-            await retryPromises<ITransactionDescriptor>(() =>
-              recoverAccount({
-                alias,
-                networkId,
-                credentialPubkey: devices[0].guard.keys[0],
-                credentialId: devices[0]['credential-id'],
-                color: devices[0].color,
-                deviceType: devices[0].deviceType,
-                domain: host,
-                chainId: process.env.CHAIN_ID as ChainId,
-              }),
+          balance: remoteAccount.balance || '0',
+          devices: uniqueDevices.map((device: Device) => {
+            const deviceOnChain = remoteAccount.devices.find(
+              (d) => d['credential-id'] === device['credential-id'],
             );
-          } catch (e: unknown) {
-            console.error(
-              `Couldn't restore account ${accountName} on ${networkId}`,
-            );
-          }
 
-          // We've stored our local data on chain, so localAccount === remoteAccount
-          return localAccount;
-        }
+            return { ...deviceOnChain, ...device };
+          }),
+          chainIds: remoteAccount.chainIds,
+        };
       }),
     );
+
+    return results
+      .map((result) => {
+        if (result.status === 'rejected') {
+          console.error('Error fetching account from chain:', result.reason);
+          return null;
+        }
+        return result.value;
+      })
+      .filter((account) => account !== null);
   };
 
   const setAccount = (account: Account): void => {
@@ -268,16 +247,14 @@ const AccountsProvider = ({ children }: Props) => {
       networkId,
       devices,
       balance: '0',
+      chainIds: [chainId],
       minApprovals: 1,
       minRegistrationApprovals: 1,
     };
 
     addAccount(account);
 
-    if (
-      process.env.INSTA_FUND === 'true' &&
-      networkId === getDevnetNetworkId()
-    ) {
+    if (process.env.INSTA_FUND === true && networkId === getDevnetNetworkId()) {
       await l1Client.listen({ requestKey, chainId, networkId });
       await fundAccount(account);
     }
@@ -299,10 +276,6 @@ const AccountsProvider = ({ children }: Props) => {
     networkId,
     chainId,
   }: AccountRecovery): Promise<ITransactionDescriptor> => {
-    // TODO: remove this when we support mainnet
-    if (networkId === 'mainnet01')
-      throw new Error('We do not support mainnet yet');
-
     const accountName = await getAccountName(
       credentialPubkey,
       networkId,

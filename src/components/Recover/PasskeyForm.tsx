@@ -108,7 +108,7 @@ export const PasskeyForm: FC<StepProps> = ({
         };
       }),
       balance: account.balance,
-      chainId: process.env.CHAIN_ID as ChainId,
+      chainIds: account.chainIds,
     });
 
     navigation.next();

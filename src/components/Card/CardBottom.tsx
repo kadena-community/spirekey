@@ -7,7 +7,7 @@ import useSWR from 'swr';
 import * as styles from './Card.css';
 
 interface CardBottomProps {
-  account: Account;
+  account: Pick<Account, 'accountName' | 'networkId' | 'alias' | 'balance'>;
 }
 
 export default function CardBottom({ account }: CardBottomProps) {

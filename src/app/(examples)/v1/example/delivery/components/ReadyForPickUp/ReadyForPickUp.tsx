@@ -20,8 +20,8 @@ export function ReadyForPickUp({ order }: Props) {
   const router = useRouter();
   const { getReturnUrl } = useReturnUrl();
   const { pickupDelivery } = useDelivery({
-    chainId: process.env.CHAIN_ID as ChainId,
-    networkId: process.env.DAPP_NETWORK_ID!,
+    chainId: process.env.CHAIN_ID,
+    networkId: process.env.DAPP_NETWORK_ID,
   });
 
   const onPickupDelivery =
@@ -30,7 +30,8 @@ export function ReadyForPickUp({ order }: Props) {
       if (!account) return;
       const merchantAcc = await getAccountFrom({
         accountName: merchant,
-        networkId: process.env.DAPP_NETWORK_ID!,
+        networkId: process.env.DAPP_NETWORK_ID,
+        chainIds: [process.env.CHAIN_ID],
       });
       const tx = await pickupDelivery({
         orderId,
