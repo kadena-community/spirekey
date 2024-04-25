@@ -1,7 +1,7 @@
 import type { ICommandResult } from '@kadena/client';
 import fetch from 'cross-fetch';
 
-export async function fetchModule(
+export async function isModuleDeployed(
   apiHost: string,
   body: string,
 ): Promise<
