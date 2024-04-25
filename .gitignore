@@ -35,5 +35,5 @@ next-env.d.ts
 signers.json
 
 # Playwight
-playwright-report/
-test-results/
+/playwright-report
+/test-results
