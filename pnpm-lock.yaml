@@ -118,6 +118,9 @@ devDependencies:
   '@kadena/pactjs-cli':
     specifier: ^1.8.1
     version: 1.8.1(encoding@0.1.13)
+  '@testing-library/dom':
+    specifier: ^10.0.0
+    version: 10.0.0
   '@testing-library/react':
     specifier: ^15.0.4
     version: 15.0.4(react-dom@18.2.0)(react@18.2.0)
