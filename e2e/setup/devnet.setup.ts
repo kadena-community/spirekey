@@ -1,22 +1,19 @@
 import { deploy } from '@/utils/deploy';
-import {
-  devnetUrl,
-  networkId,
-  webauthnWalletModule,
-} from '@e2e/constants/network.constants';
 import { getConfigFilePath } from '@e2e/helpers/configPath.helper';
 import { isContractDeployed } from '@e2e/helpers/contract.helper';
 import { test as setup } from '@playwright/test';
+import dotenv from 'dotenv';
 import { readFile } from 'fs/promises';
-import { get } from 'http';
 import path from 'node:path';
+
+dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') });
 
 setup('Deploy WebAuthn contract', async () => {
   const isDeployed = await isContractDeployed(
-    webauthnWalletModule,
-    devnetUrl('0'),
+    `${process.env.NAMESPACE}.webauthn-wallet`,
+    `${process.env.DEVNET_HOST}/chainweb/0.0/${process.env.DEVNET_NETWORK_ID}/chain/0/pact`,
     0,
-    networkId,
+    process.env.DEVNET_NETWORK_ID as string,
   );
 
   const configFilePath = getConfigFilePath(isDeployed);
