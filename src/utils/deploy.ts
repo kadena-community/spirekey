@@ -1,5 +1,3 @@
-#!/usr/bin/env tsx
-
 import {
   ChainId,
   IClient,
@@ -147,10 +145,3 @@ export const deployFile = async (
   const signers = JSON.parse(await readFile(signersFilePath, 'utf-8'));
   await deploy({ ...config, signers });
 };
-
-if (process.argv.length > 1) {
-  const [configFilePath, signersFilePath] = process.argv.slice(2);
-  if (!configFilePath) throw new Error('No config file path provided');
-  if (!signersFilePath) throw new Error('No signers file path provided');
-  deployFile(configFilePath, signersFilePath);
-}

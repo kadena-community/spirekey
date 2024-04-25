@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "deploy": "tsx src/utils/deploy.ts ./pact/deploy/deploy.json",
-    "deploy:dev": "tsx src/utils/deploy.ts ./pact/deploy/local-init.json",
-    "deploy:hosted": "tsx src/utils/deploy.ts ./pact/deploy/hosted-init.json",
-    "deploy:mainnet": "tsx src/utils/deploy.ts ./pact/deploy/mainnet-init.json",
-    "deploy:testnet": "tsx src/utils/deploy.ts ./pact/deploy/testnet-init.json",
+    "deploy": "tsx ./deploy.ts ./pact/deploy/deploy.json",
+    "deploy:dev": "tsx ./deploy.ts ./pact/deploy/local-init.json",
+    "deploy:hosted": "tsx ./deploy.ts ./pact/deploy/hosted-init.json",
+    "deploy:mainnet": "tsx ./deploy.ts ./pact/deploy/mainnet-init.json",
+    "deploy:testnet": "tsx ./deploy.ts ./pact/deploy/testnet-init.json",
     "dev": "next dev --port 1337",
     "format": "prettier --write .",
     "generate": "npx pactjs contract-generate --file=\"./pact/webauthn.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
@@ -17,11 +17,11 @@
     "prepare": "husky",
     "start": "next start --port 1337",
     "test": "vitest run",
-    "update": "tsx src/utils/deploy.ts ./pact/deploy/update.json",
-    "update:del": "tsx src/utils/deploy.ts ./pact/deploy/local-delivery.json",
-    "update:dev": "tsx src/utils/deploy.ts ./pact/deploy/local-update.json",
-    "update:hosted": "tsx src/utils/deploy.ts ./pact/deploy/hosted-update.json",
-    "update:test": "tsx src/utils/deploy.ts ./pact/deploy/testnet-update.json"
+    "update": "tsx ./deploy.ts ./pact/deploy/update.json",
+    "update:del": "tsx ./deploy.ts ./pact/deploy/local-delivery.json",
+    "update:dev": "tsx ./deploy.ts ./pact/deploy/local-update.json",
+    "update:hosted": "tsx ./deploy.ts ./pact/deploy/hosted-update.json",
+    "update:test": "tsx ./deploy.ts ./pact/deploy/testnet-update.json"
   },
   "lint-staged": {
     "*.{ts,tsx,md}": "prettier --write"
