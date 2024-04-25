@@ -1,28 +1,44 @@
-# **Recover a Kadena Spirekey account**
+---
+title: Recover Kadena SpireKey accounts
+description:
+  If you're an application developer and have integrated Kadena SpireKey
+  accounts and WebAuthN authentication and authorization services into your
+  application, you can also implement account recovery using a Kadena SpireKey
+  passkey.
+menu: Authenticate and authorize
+label: Recover accounts
+order: 2
+layout: full
+---
 
-After you register a Kadena SpireKey account, the account details are stored on
-the blockchain and in the localStorage of your browser. When the localStorage of
-your browser is cleared or you want to use your Kadena SpireKey account on
-another browser, the [Kadena SpireKey wallet](https://spirekey.kadena.io) has no
-way of knowing which of all the accounts stored on the blockchain belong to you.
-However, the device you registered your account with still holds the passkey you
-created to guard your account. Kadena SpireKey has a feature to recover your
-account based on a passkey associated with your account. Your account can be
-recovered using any device that belongs to the account. This guide walks you
-through the process of recovering an account and explains how to implement
-account recovery in your own wallet dApp.
+# Recover a Kadena Spirekey account
 
-## Create an account
+After you register a device for a Kadena SpireKey account, the account details
+are stored on the Kadena blockchain and in the `Local storage` property for the
+browser you used to register the account. You can view this information using
+the Developer Tools for the browser by selecting **Application**, then expanding
+**Storage**. If you clear local storage—for example, by selecting **Clear
+browsing data**—or try to use a different browser to access your Kadena SpireKey
+account, the [Kadena SpireKey wallet](https://spirekey.kadena.io) won't be able
+to identify the account that belongs to you or recognize you as a registered
+user. However, you can recover your account information through the passkey
+stored on any device you added to your account. For example, if you used a smart
+phone to register a Kadena SpireKey accoun, you can use the passkey stored on
+that phone to recover your account information.
 
-To demonstrate how account recovery works, create an account first, following
-the steps in the [create account guide](create-account.md). Note that a passkey
-is created with a name that is based on the `Alias` you provided and the
-`Network` used by the wallet dApp. In developer mode, you can choose a `Network`
-yourself. With an `Alias` "Alice" and `Network` "Testnet", you would see a
-passkey with name "Alice (Testnet)" being created during the account creation
-process.
+## Identify the passkey for an account
 
-## Clear localStorage
+When you register an account as described in
+[Register an account](/build/authentication/register), Kadena SpireKey creates a
+passkey for the device you are using with the name you use for the account
+**Alias** and a selected **Network**. For example, if you access Kadena SpireKey
+deployed on the Kadena test network and specify Lola as the alias for tha new
+account, the passkey created for the device and account combination would be
+Lola (Testnet). If you used a laptop to register this account, your passkey
+might be based on a fingerprint stored in a secure enclave on the device or
+recorded on a security key you attached to the device.
+
+## Clear local storage
 
 Visit [spirekey.kadena.io](https://spirekey.kadena.io) in the browser on your
 computer. If you created an account on your phone in the previous step, the
