@@ -34,46 +34,21 @@ JSON request, and submit the JSON request to a Chainweb node endpoint. For
 example, you can create an API request in a YAML file and use the
 `pact --apireq` command to convert the YAML file to an appropriate JSON
 representation of the transaction or you can construct a JSON object with the
-appropriate information within your application. For a typical `coin.transfer`
-transaction, you might use a YAML file similar to the following:
+appropriate information within your application.
 
-```yaml
-code: |-
-  (coin.transfer 
-    <from> 
-    <to> 
-    1.0)
-publicMeta:
-  chainId: <chain-id>
-  sender: <from>
-  gasLimit: 600
-  gasPrice: 0.0000001
-  ttl: 600
-  creationTime: <time-in-seconds>
-networkId: 'testnet04'
-keyPairs:
-  - public: <public-key>
-    secret: <secret-key>
-    caps:
-      - name: 'coin.TRANSFER'
-        args: [<from>, <to>, 1.0]
-      - name: 'coin.GAS'
-        args: []
-type: exec
-```
-
-However, transactions involving Kadena SpireKey account have some unique
+However, transactions involving Kadena SpireKey accounts have some unique
 requirements, including the cryptographic algorithm used to generate the public
-and secret keys and a separate contract to manage accounts and permissions.
+and secret keys and separate WebAuthN-specific contracts to manage accounts and
+permissions.
 
 ### Public key generation
 
-WHen you register an account using Kadena SpireKey, the cryptographic algorithm
-used to generate the public and secret keys is different from the cryptographic
-algorithm used to generate the public and secret keys for previous Kadena
-accounts. To differentiate Kadena SpireKey account public keys from other public
-keys, transactions must include both the public key and the `scheme` attribute
-set to `WebAuthn` as its value.
+When users register an account using Kadena SpireKey, the cryptographic
+algorithm used to generate the public and secret keys is different from the
+cryptographic algorithm used to generate the public and secret keys for previous
+Kadena accounts. To differentiate Kadena SpireKey account public keys from other
+public keys, transactions must include both the public key and the `scheme`
+attribute set to `WebAuthn` as its value.
 
 ```ts
 { pubKey: webAuthnPublicKey, scheme: 'WebAuthn' }
@@ -84,13 +59,13 @@ set to `WebAuthn` as its value.
 When users create an account for the `coin` contract or for other `fungible-v2`
 contracts, they provide an account name and a guard. In most cases, these
 accounts use **keysets** to enforce who must sign valid transactions and to
-prevent unauthorized signers from submitting transaction.
+prevent unauthorized signers from submitting transactions.
 
 However, Kadena SpireKey uses its own `webauthn-wallet` and `webauthn-guard`
 contracts to create, manage, and secure accounts instead of using the `coin` or
 `fungible-v2` contract. Kadena SpireKey accounts use a _capability_ defined in
 the `webauthn-guard` contract instead of a keyset to enforce signing rules for
-transaction. Capability guards use the `c:` prefix.
+transactions. Capability guards use the `c:` prefix.
 
 Because the `coin` contract can't bring this capability guard into scope when
 trying to debit an account, the `webauthn-wallet` contract implements its own
@@ -99,8 +74,14 @@ trying to debit an account, the `webauthn-wallet` contract implements its own
 in place of the corresponding `coin.GAS` and `coin.TRANSFER` capabilities in
 transactions to identify the guard required to debit an account.
 
-The following is an example of what an unsigned `coin` transfer transaction from
-a Kadena SpireKey wallet might look like for the
+The `webauthn-wallet` contract implements these functions and capabilities for
+you to use instead of the corresponding functions and capabilities in the `coin`
+contract because the `coin` contract isn't likely to be updated to accommodate
+`webauthn-wallet` accounts. Other contracts should be compatible with
+`webauthn-wallet` accounts by default.
+
+The following is an example of what an unsigned transfer transaction from a
+Kadena SpireKey wallet might look like for the
 `n_eef68e581f767dd66c4d4c39ed922be944ede505` principal namespace:
 
 ```json
@@ -156,11 +137,14 @@ a Kadena SpireKey wallet might look like for the
 }
 ```
 
-The `webauthn-wallet` contract implements specific functions and capabilities to
-be used in place of the corresponding versions in the `coin` contract because
-the `coin` contract isn't likely to be updated to accommodate `webauthn-wallet`
-accounts. Other contracts should be compatible with `webauthn-wallet` accounts
-by default.
+In this example, the `n_eef68e581f767dd66c4d4c39ed922be944ede505` namespace is
+the namespace for the Kadena SpireKey wallet deployed on the Kadena test and
+main networks. If you deploy your own versions of the `webauthn-wallet` and
+`webauthn-guard` contracts, you'll use a different namespace. To construct a
+transaction similar to this example in your application, you can use the `c:`
+account and `WEBAUTHN` public key returned by the Kadena SpireKey wallet in the
+`accountName` and `credentials` properties from the account details for a user
+object.
 
 ## Send data to the SpireKey wallet
 
@@ -170,17 +154,17 @@ SpireKey handles the signing process and redirects users back to your
 application. As with registration and authentication, the information is passed
 using URL parameters.
 
-You can use the same host that you used to connect the account and navigate to
-the `sign` endpoint. For example, https://spirekey.kadena.io/sign
+You can use the same host that you used to register or connect to an account and
+navigate to the `sign` endpoint. For example, https://spirekey.kadena.io/sign.
 
-In the following table you can see what parameters are currently accepted by
-SpireKey.
+In the following table, you can see the parameters that are currently accepted
+by Kadena SpireKey.
 
 | Parameter      | Type    | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | -------------- | ------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `transaction`  | string  | Required | A base64 encoded string of the unsigned transaction.                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `returnUrl`    | string  | Required | The url, encoded as a uriComponent, that the wallet should redirect users to after they have signed the transaction.                                                                                                                                                                                                                                                                                                                                 |
-| `translations` | string  | Optional | Custom descriptions that explain what capabilities or operations that tyhe user is user signing for. For more information about using translations to describe transaction details, see [Translate transaction operations](/build/authentication/translate).                                                                                                                                                                                         |
+| `translations` | string  | Optional | Custom descriptions that explain what capabilities or operations that the user is user signing for. For more information about using translations to describe transaction details, see [Translate transaction operations](/build/authentication/translate).                                                                                                                                                                                          |
 | `optimistic`   | boolean | Optional | Allows applications to continue the transaction flows without having to wait for the transaction to be confirmed on the blockchain. When this parameter is included, `pendingTxIds` are returned so that the application can keep track of the status of the submitted transactions and update the UI accordingly. For more information about the optimistic transaction flow, see [Optimistic workflow](/build/authentication/optimistic-workflow). |
 
 The following is an example of how you would construct the route:
@@ -217,15 +201,25 @@ To verify that a transaction has been successfully signed, you can check the
 won't be able to submit the transaction.
 
 If the transaction has been successfully signed, it is valid for a limited
-period of time as specified in the `ttl` value of in the transaction
-`publicMeta` data. During this period of time, the application can call the
+period of time as specified in the `ttl` value in the transaction `publicMeta`
+data. During this period of time, the application can call the
 `local/preflight=true` endpoint to check whether the transaction is valid, then
 send it to the blockchain to be executed.
 
-After the transaction is submitted to the blockchain, you can poll for the
-transaction status using the chainweb-data API. For example:
+After the transaction is submitted to the blockchain, you can check the
+transaction status using the request key and chainweb-data API or the Kadena
+client. For example, to check the status of a transaction sent to the Kadena
+test network using the request key
+`uOyDol7dZTd96kzUhGz_ZPURIRYOEocR8IGZKuO6T6Y`:
 
-https://estats.testnet.chainweb.com/txs/poll?requestkey=gzlhITOU8hMaOXHKcSJgxLl0Ir8j2crUnFh20cGcxsR&confirmationDepth=3
+https://estats.testnet.chainweb.com/txs/tx?requestkey=uOyDol7dZTd96kzUhGz_ZPURIRYOEocR8IGZKuO6T6Y
 
-You can deem the transaction successfully mined when it reaches an appropriate
-confirmation depth.
+Alternatively, you can poll for the transaction status using Kadena client:
+
+```ts
+const results = pollStatus(transactionDescriptors, {
+  onPoll: (requestKey) => {
+    console.log('polling status of', requestKey);
+  },
+});
+```
