@@ -67,7 +67,13 @@ export default function Card({
           <Stack flexDirection="column" className={styles.txAndBalance}>
             {cardBottom}
           </Stack>
-          <Image src={CardLogo} alt="Card logo" className={styles.cardLogo} />
+          <Image
+            src={CardLogo}
+            alt="Card logo"
+            className={styles.cardLogo}
+            width={64}
+            height={64}
+          />
         </Stack>
       </Stack>
     </Box>

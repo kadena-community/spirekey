@@ -1,7 +1,10 @@
+import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
+import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  plugins: [vanillaExtractPlugin(), react()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -24,5 +27,6 @@ export default defineConfig({
         autoUpdate: true,
       },
     },
+    setupFiles: ['./tests/components/router-mock.ts'],
   },
 });
