@@ -67,6 +67,7 @@
   "devDependencies": {
     "@kadena/pactjs-cli": "^1.8.1",
     "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^15.0.4",
     "@types/node": "^20.11.21",
     "@types/qrcode": "^1.5.5",
