@@ -90,6 +90,7 @@
     "typescript": "^5.3.3",
     "vitest": "^1.5.0",
     "@faker-js/faker": "^8.4.1",
-    "vitest-matchmedia-mock": "^1.0.4"
+    "vitest-matchmedia-mock": "^1.0.4",
+    "dotenv": "16.4.5"
   }
 }
