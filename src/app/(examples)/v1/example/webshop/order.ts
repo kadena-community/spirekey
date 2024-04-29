@@ -1,6 +1,5 @@
 import { asyncPipe } from '@/utils/shared/asyncPipe';
-import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
-import { ChainId, createTransaction, Pact } from '@kadena/client';
+import { createTransaction } from '@kadena/client';
 import {
   addSigner,
   composePactCommand,
@@ -28,7 +27,7 @@ export const createOrder = async ({
         )})`,
       ),
       setMeta({
-        chainId: process.env.CHAIN_ID as ChainId,
+        chainId: process.env.CHAIN_ID,
         gasLimit: 1000,
         gasPrice: 0.0000001,
         ttl: 60000,
@@ -36,7 +35,6 @@ export const createOrder = async ({
       }),
       setNetworkId(process.env.DAPP_NETWORK_ID!),
       addSigner(
-        // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
         {
           pubKey: signerPubKey,
           scheme: 'WebAuthn',

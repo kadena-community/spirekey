@@ -51,7 +51,7 @@ export interface StepProps {
     previous: () => void;
     goTo: (index: number) => void;
   };
-  chainId: ChainId;
+  chainIds: ChainId[];
 }
 
 interface Props {
@@ -140,6 +140,7 @@ export default function Registration({
                 domain: host,
                 color: data.color,
                 deviceType: data.deviceType,
+                pendingRegistrationTxs: [],
                 guard: {
                   keys: [data.credentialPubkey],
                   pred: 'keys-any',
@@ -167,7 +168,7 @@ export default function Registration({
                 formValues={data}
                 updateFields={updateFields}
                 navigation={{ next, previous, goTo }}
-                chainId={chainIds[0]}
+                chainIds={chainIds}
               />
             </Box>
           ))}

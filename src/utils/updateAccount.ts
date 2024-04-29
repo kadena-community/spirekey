@@ -38,7 +38,6 @@ export const updateAccount = async ({
       }),
       setNetworkId(networkId),
       addSigner(
-        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         {
           pubKey: publicKey,
           scheme: 'WebAuthn',

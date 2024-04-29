@@ -7,7 +7,6 @@ import { getAccountNameFromRegisterDeviceEvent } from '@/utils/getAccountNameFro
 import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
 import { getAccountFrom } from '@/utils/shared/account';
 import { Stack, Text } from '@kadena/react-ui';
-import { ChainId } from '@kadena/types';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { motion } from 'framer-motion';
 import Image from 'next/image';

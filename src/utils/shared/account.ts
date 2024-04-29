@@ -1,4 +1,5 @@
 import type { Account, Device } from '@/context/AccountsContext';
+import { assertFulfilled } from '@/utils/assertFulfilled';
 import { ChainId, createTransaction } from '@kadena/client';
 import {
   composePactCommand,

@@ -96,9 +96,13 @@ export default function CardCollection({
                     hasActiveCard ? marginBlockEnd : cardOverlap
                   }px`,
                   bottom:
-                    hasActiveCard && activeCard !== i ? `-${cardHeight}px` : 0,
+                    hasActiveCard && activeCard !== i
+                      ? `-${cardHeight}px`
+                      : '0',
                 }}
-                ref={(ref) => (cardRefs.current[i] = ref)}
+                ref={(ref) => {
+                  cardRefs.current[i] = ref;
+                }}
               >
                 <Account
                   key={account.accountName + account.networkId}

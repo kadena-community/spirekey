@@ -1,6 +1,6 @@
 import {
-  Product as IProduct,
   useOrder,
+  type Product,
 } from '@/app/(examples)/v1/example/delivery/context/OrderContext';
 import { Button } from '@/components/shared/Button/Button';
 import { Box, Heading, Stack, Text } from '@kadena/react-ui';
@@ -8,7 +8,7 @@ import Image from 'next/image';
 import * as styles from './Product.css';
 
 interface Props {
-  product: IProduct;
+  product: Product;
 }
 
 export function Product({ product }: Props) {

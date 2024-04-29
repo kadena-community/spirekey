@@ -18,7 +18,7 @@ export const BiometricsForm: FC<StepProps> = ({
   isVisible,
   updateFields,
   formValues,
-  chainId,
+  chainIds,
   navigation,
 }) => {
   const { handleSubmit, register } = useForm();
@@ -32,7 +32,7 @@ export const BiometricsForm: FC<StepProps> = ({
       const accountName = await getAccountName(
         publicKey,
         formValues.networkId,
-        chainId,
+        chainIds[0],
       );
 
       updateFields({

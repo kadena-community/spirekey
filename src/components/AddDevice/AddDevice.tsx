@@ -153,7 +153,7 @@ export default function AddDevice({ caccount, transaction, device }: Props) {
     const sendTransaction = async () => {
       try {
         const pendingTransaction = await submitTransaction(transaction);
-        device.pendingRegistrationTx = pendingTransaction.requestKey;
+        device.pendingRegistrationTxs.push(pendingTransaction);
         account.devices.push(device);
         setAccount(account);
         router.push('/');

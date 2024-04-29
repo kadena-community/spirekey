@@ -1,5 +1,6 @@
 'use client';
 
+import { assertFulfilled } from '@/utils/assertFulfilled';
 import { fundAccount } from '@/utils/fund';
 import {
   getAccountName,
@@ -32,7 +33,7 @@ export type Device = {
     keys: string[];
     pred: 'keys-any';
   };
-  pendingRegistrationTxs?: ITransactionDescriptor[];
+  pendingRegistrationTxs: ITransactionDescriptor[];
   name?: string;
 };
 
@@ -166,19 +167,19 @@ const AccountsProvider = ({ children }: Props) => {
           balance: remoteAccount.balance || '0',
           devices: uniqueDevices.map((device: Device) => {
             const deviceOnChain = remoteAccount.devices.find(
-              (d) => d['credential-id'] === device['credential-id'],
+              (d) => device['credential-id'] === device['credential-id'],
             );
 
             return { ...deviceOnChain, ...device };
           }),
           chainIds: remoteAccount.chainIds,
+          minApprovals: remoteAccount.minApprovals,
+          minRegistrationApprovals: remoteAccount.minRegistrationApprovals,
         };
       }),
     );
 
-    return results
-      .filter((result) => result.status === 'fulfilled')
-      .map((result) => result.value);
+    return results.filter(assertFulfilled).map((result) => result.value);
   };
 
   const setAccount = (account: Account): void => {
@@ -229,9 +230,8 @@ const AccountsProvider = ({ children }: Props) => {
       }),
     );
 
-    const successfulRegisterAccountResults = registerAccountResults.filter(
-      (result) => result.status === 'fulfilled',
-    );
+    const successfulRegisterAccountResults =
+      registerAccountResults.filter(assertFulfilled);
 
     const devices: Device[] = [
       {

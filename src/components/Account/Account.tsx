@@ -60,7 +60,7 @@ export function Account({
       const remoteAccount = await getAccountFrom({
         accountName: account.accountName,
         networkId: account.networkId,
-        chainId,
+        chainIds: account.chainIds,
       });
 
       if (remoteAccount) {
@@ -117,31 +117,31 @@ export function Account({
       isActive={isActive}
       hideAddDeviceCard={!!returnUrl}
     >
-      {account.devices.map((d) => {
+      {account.devices.map((device) => {
         const caccount = encodeURIComponent(account.accountName);
-        const cid = encodeURIComponent(d['credential-id']);
+        const cid = encodeURIComponent(device['credential-id']);
         const url = returnUrl ? new URL(returnUrl) : '';
         const user = Buffer.from(
           JSON.stringify({
             alias: account.alias,
             accountName: account.accountName,
-            pendingTxIds: [d.pendingRegistrationTx].filter(Boolean),
+            pendingTxIds: [device.pendingRegistrationTxs].filter(Boolean),
             credentials: [
               {
                 type: 'WebAuthn',
-                publicKey: d.guard.keys[0],
-                id: d['credential-id'],
+                publicKey: device.guard.keys[0],
+                id: device['credential-id'],
               },
             ],
           }),
         ).toString('base64');
         if (url) url.searchParams.set('user', user);
         return (
-          <Fragment key={d['credential-id']}>
+          <Fragment key={device['credential-id']}>
             <DeviceCard
-              color={d.color}
+              color={device.color}
               account={account}
-              device={d}
+              device={device}
               balancePercentage={balancePercentage}
             />
             <AnimatePresence>
@@ -222,7 +222,8 @@ export function Account({
                   >
                     Cancel
                   </ButtonLink>
-                  {(optimistic || !d.pendingRegistrationTx) && (
+                  {(optimistic ||
+                    device.pendingRegistrationTxs?.length === 0) && (
                     <Button
                       onPress={onConnect(url as URL, account, chainId)}
                       variant="primary"
