@@ -10,6 +10,21 @@ vi.mock('@simplewebauthn/browser', async () => {
   return {
     base64URLStringToBuffer,
     bufferToBase64URLString,
-    startRegistration: vi.fn(),
+    startRegistration: vi.fn().mockReturnValue({
+      response: {
+        publicKey: 'bW9ja2VkLXdlYmF1dGhuLWtleQ==',
+        attestationObject: 'fakedata',
+      },
+    }),
+  };
+});
+
+vi.mock('cbor', async () => {
+  return {
+    default: {
+      decode: vi.fn().mockReturnValue({
+        authData: new Array(100),
+      }),
+    },
   };
 });

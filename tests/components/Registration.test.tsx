@@ -1,16 +1,16 @@
 import { BiometricsForm } from '@/components/Registration/BiometricsForm';
 import { startRegistration } from '@simplewebauthn/browser';
-import { before, beforeEach } from 'node:test';
 import React from 'react';
-import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import MatchMediaMock from 'vitest-matchmedia-mock';
-import { render, screen } from './setup';
+import { cleanup, render, screen } from './setup';
 
 describe('Registration Form', () => {
   let matchMediaMock = new MatchMediaMock();
   beforeAll(() => {
     matchMediaMock.useMediaQuery('(prefers-color-scheme: dark)');
   });
+  afterEach(() => cleanup());
   describe('When showing the BiometricsForm', () => {
     const formValues = {
       alias: '',
