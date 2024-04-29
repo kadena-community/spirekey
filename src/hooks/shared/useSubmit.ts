@@ -1,4 +1,5 @@
 import { l1Client } from '@/utils/shared/client';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 type Props = {
@@ -19,9 +20,9 @@ export const useSubmit = ({ transaction }: Props) => {
   const [status, setStatus] = useState(SubmitStatus.IDLE);
   const [tx, setTx] = useState<any>(null);
   const [preview, setPreview] = useState<any>(null);
+  const txSearchParams = useSearchParams();
 
   useEffect(() => {
-    const txSearchParams = new URLSearchParams(window.location.search);
     const txParam = txSearchParams.get('transaction') as string;
 
     if (!transaction && !txParam) return;

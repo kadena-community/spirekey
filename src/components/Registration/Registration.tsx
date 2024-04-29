@@ -57,13 +57,13 @@ export interface StepProps {
 interface Props {
   redirectUrl?: string;
   networkId?: string;
-  chainId?: ChainId;
+  chainIds?: ChainId[];
 }
 
 export default function Registration({
   redirectUrl,
   networkId,
-  chainId = process.env.CHAIN_ID,
+  chainIds = [process.env.CHAIN_ID],
 }: Props) {
   const router = useRouter();
   const { registerAccount } = useAccounts();
@@ -84,7 +84,6 @@ export default function Registration({
     setIsSubmitting(true);
 
     await registerAccount({
-      accountName: data.accountName,
       alias: data.alias,
       color: data.color,
       deviceType: data.deviceType,
@@ -92,7 +91,7 @@ export default function Registration({
       credentialId: data.credentialId,
       domain: host,
       networkId: data.networkId,
-      chainId,
+      chainIds,
     });
 
     router.push(completeRedirectUrl);
@@ -135,8 +134,6 @@ export default function Registration({
             accountName: data.accountName,
             balance: '0',
             networkId: data.networkId,
-            minApprovals: 1,
-            minRegistrationApprovals: 1,
             devices: [
               {
                 'credential-id': data.credentialId,
@@ -170,7 +167,7 @@ export default function Registration({
                 formValues={data}
                 updateFields={updateFields}
                 navigation={{ next, previous, goTo }}
-                chainId={chainId}
+                chainId={chainIds[0]}
               />
             </Box>
           ))}

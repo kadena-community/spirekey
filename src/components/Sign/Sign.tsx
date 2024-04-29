@@ -116,7 +116,7 @@ export default function Sign(props: Props) {
     getDeviceByPublicKey(accounts, publicKey),
   );
   const pendingRegistrationTxs = devices
-    .map((device) => device?.pendingRegistrationTx)
+    .map((device) => device?.pendingRegistrationTxs)
     .filter(Boolean);
 
   const isReadyToSubmit =

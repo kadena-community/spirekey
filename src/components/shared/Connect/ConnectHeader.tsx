@@ -9,14 +9,14 @@ type Props = {
   returnUrl: string;
   reason: string;
   networkId: string;
-  chainId: ChainId;
+  chainIds: ChainId[];
 };
 
 export default function ConnectHeader({
   returnUrl,
   reason,
   networkId,
-  chainId,
+  chainIds,
 }: Props) {
   const { accounts } = useAccounts();
 
@@ -32,14 +32,11 @@ export default function ConnectHeader({
       ? `Which account do you want to use to identify on ${returnUrl}?${displayReason}`
       : `Create an account to identify yourself with on ${returnUrl}.${displayReason}`;
 
-  const urlParams = new window.URLSearchParams({
-    returnUrl,
-    networkId,
-    chainId,
-  });
+  const urlParams = new URLSearchParams({ returnUrl, networkId });
+  chainIds.forEach((chainId) => urlParams.append('chainId', chainId));
 
   return (
-    <Box padding="lg" className={'connect-header'}>
+    <Box padding="lg" className="connect-header">
       <Surface>
         <ContentHeader
           description={description}

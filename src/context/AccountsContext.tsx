@@ -32,12 +32,11 @@ export type Device = {
     keys: string[];
     pred: 'keys-any';
   };
-  pendingRegistrationTx?: string;
+  pendingRegistrationTxs?: ITransactionDescriptor[];
   name?: string;
 };
 
 export type AccountRegistration = {
-  accountName: string;
   alias: string;
   color: string;
   deviceType: string;
@@ -45,7 +44,7 @@ export type AccountRegistration = {
   credentialId: string;
   credentialPubkey: string;
   networkId: string;
-  chainId: ChainId;
+  chainIds: ChainId[];
 };
 
 export type AccountRecovery = Omit<AccountRegistration, 'accountName'>;
@@ -91,7 +90,7 @@ const defaultState = {
   accounts: getAccountsFromLocalStorage(),
   registerAccount: async (
     data: AccountRegistration,
-  ): Promise<ITransactionDescriptor | undefined> => undefined,
+  ): Promise<ITransactionDescriptor[] | undefined> => undefined,
   setAccount: (account: Account): void => undefined,
 };
 
@@ -122,15 +121,9 @@ const AccountsProvider = ({ children }: Props) => {
 
     const checkPendingTxs = async () => {
       for (const account of accounts) {
-        for (const chainId of account.chainIds) {
-          for (const device of account.devices) {
-            if (device.pendingRegistrationTx) {
-              listenForRegistrationTransaction({
-                requestKey: device.pendingRegistrationTx,
-                chainId,
-                networkId: account.networkId,
-              });
-            }
+        for (const device of account.devices) {
+          if (device.pendingRegistrationTxs) {
+            listenForRegistrationTransactions(device.pendingRegistrationTxs);
           }
         }
       }
@@ -184,14 +177,8 @@ const AccountsProvider = ({ children }: Props) => {
     );
 
     return results
-      .map((result) => {
-        if (result.status === 'rejected') {
-          console.error('Error fetching account from chain:', result.reason);
-          return null;
-        }
-        return result.value;
-      })
-      .filter((account) => account !== null);
+      .filter((result) => result.status === 'fulfilled')
+      .map((result) => result.value);
   };
 
   const setAccount = (account: Account): void => {
@@ -206,7 +193,6 @@ const AccountsProvider = ({ children }: Props) => {
   };
 
   const registerAccount = async ({
-    accountName,
     alias,
     color,
     deviceType,
@@ -214,18 +200,38 @@ const AccountsProvider = ({ children }: Props) => {
     credentialId,
     credentialPubkey,
     networkId,
-    chainId,
-  }: AccountRegistration): Promise<ITransactionDescriptor> => {
-    const { requestKey } = await registerAccountOnChain({
-      accountName,
-      color,
-      deviceType,
-      domain,
-      credentialId,
-      credentialPubkey,
-      networkId,
-      chainId,
-    });
+    chainIds,
+  }: AccountRegistration): Promise<ITransactionDescriptor[]> => {
+    const registerAccountResults: PromiseSettledResult<{
+      accountName: string;
+      transactionDescriptor: ITransactionDescriptor;
+    }>[] = await Promise.allSettled(
+      chainIds.map(async (chainId: ChainId) => {
+        const accountName = await getAccountName(
+          credentialPubkey,
+          networkId,
+          chainId,
+        );
+
+        return {
+          accountName,
+          transactionDescriptor: await registerAccountOnChain({
+            accountName,
+            color,
+            deviceType,
+            domain,
+            credentialId,
+            credentialPubkey,
+            networkId,
+            chainId,
+          }),
+        };
+      }),
+    );
+
+    const successfulRegisterAccountResults = registerAccountResults.filter(
+      (result) => result.status === 'fulfilled',
+    );
 
     const devices: Device[] = [
       {
@@ -237,17 +243,23 @@ const AccountsProvider = ({ children }: Props) => {
           keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
           pred: 'keys-any',
         },
-        pendingRegistrationTx: requestKey,
+        pendingRegistrationTxs: successfulRegisterAccountResults.map(
+          (result) => {
+            return result.value.transactionDescriptor;
+          },
+        ),
       },
     ];
 
     const account = {
-      accountName,
+      accountName: successfulRegisterAccountResults.map(
+        (result) => result.value.accountName,
+      )[0], // @TODO maybe handle this better? In theory all accountNames should be the same
       alias,
       networkId,
       devices,
       balance: '0',
-      chainIds: [chainId],
+      chainIds,
       minApprovals: 1,
       minRegistrationApprovals: 1,
     };
@@ -255,15 +267,25 @@ const AccountsProvider = ({ children }: Props) => {
     addAccount(account);
 
     if (process.env.INSTA_FUND === true && networkId === getDevnetNetworkId()) {
-      await l1Client.listen({ requestKey, chainId, networkId });
-      await fundAccount(account);
+      for (const device of account.devices) {
+        if (device.pendingRegistrationTxs) {
+          await Promise.allSettled(
+            device.pendingRegistrationTxs.map(async (tx) => {
+              await l1Client.listen({
+                requestKey: tx.requestKey,
+                chainId: tx.chainId,
+                networkId,
+              });
+              await fundAccount(account);
+            }),
+          );
+        }
+      }
     }
 
-    return {
-      requestKey,
-      chainId,
-      networkId,
-    };
+    return successfulRegisterAccountResults.map(
+      (result) => result.value.transactionDescriptor,
+    );
   };
 
   const recoverAccount = async ({
@@ -274,38 +296,35 @@ const AccountsProvider = ({ children }: Props) => {
     credentialId,
     credentialPubkey,
     networkId,
-    chainId,
-  }: AccountRecovery): Promise<ITransactionDescriptor> => {
-    const accountName = await getAccountName(
-      credentialPubkey,
-      networkId,
-      chainId,
-    );
+    chainIds,
+  }: AccountRecovery): Promise<ITransactionDescriptor[]> => {
+    try {
+      const transactionsResults = await registerAccount({
+        alias,
+        color,
+        deviceType,
+        domain,
+        credentialId,
+        credentialPubkey,
+        networkId,
+        chainIds,
+      });
 
-    if (!accountName) throw new Error('Wallet smart contract not found.');
-
-    const { requestKey } = await registerAccount({
-      accountName,
-      alias,
-      color,
-      deviceType,
-      domain,
-      credentialId,
-      credentialPubkey,
-      networkId,
-      chainId,
-    });
-
-    return {
-      requestKey,
-      chainId,
-      networkId,
-    };
+      return transactionsResults;
+    } catch (error) {
+      throw new Error(
+        `Recovery failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
+    }
   };
 
   const removePendingTransaction = (requestKey: string) => {
     const account = accounts.find((a) =>
-      a.devices.map((d) => d.pendingRegistrationTx).includes(requestKey),
+      a.devices
+        .map((d) => d.pendingRegistrationTxs)
+        .some((pendingRegistrationTxs) =>
+          pendingRegistrationTxs?.some((tx) => tx.requestKey === requestKey),
+        ),
     );
 
     if (!account) {
@@ -313,8 +332,14 @@ const AccountsProvider = ({ children }: Props) => {
     }
 
     for (let device of account.devices) {
-      if (device.pendingRegistrationTx === requestKey) {
-        delete device.pendingRegistrationTx;
+      if (
+        device.pendingRegistrationTxs?.some(
+          (tx) => tx.requestKey === requestKey,
+        )
+      ) {
+        device.pendingRegistrationTxs = device.pendingRegistrationTxs?.filter(
+          (tx) => tx.requestKey !== requestKey,
+        );
         break;
       }
     }
@@ -322,13 +347,20 @@ const AccountsProvider = ({ children }: Props) => {
     setAccount(account);
   };
 
-  const listenForRegistrationTransaction = async (
-    tx: ITransactionDescriptor,
+  const listenForRegistrationTransactions = async (
+    txs: ITransactionDescriptor[],
   ) => {
-    const result = await l1Client.listen(tx);
-    if (result.result.status === 'success') {
-      removePendingTransaction(tx.requestKey);
-    }
+    const results = await Promise.allSettled(
+      txs.map((tx) => l1Client.listen(tx)),
+    );
+    results.forEach((result, index) => {
+      if (
+        result.status === 'fulfilled' &&
+        result.value.result.status === 'success'
+      ) {
+        removePendingTransaction(txs[index].requestKey);
+      }
+    });
   };
 
   return (

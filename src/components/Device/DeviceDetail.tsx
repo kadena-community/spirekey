@@ -22,7 +22,7 @@ export function DeviceDetail({ accountName, credentialId }: Props) {
       variant: 'error',
       title: 'Device not found',
     });
-    return <></>;
+    return null;
   }
 
   return (
@@ -33,7 +33,7 @@ export function DeviceDetail({ accountName, credentialId }: Props) {
           account={account}
           device={device}
           balancePercentage={calculateBalancePercentage(account, accounts)}
-          showSingleIcon={true}
+          showSingleIcon
         />
       </Box>
     </Stack>

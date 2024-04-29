@@ -244,7 +244,6 @@ const createOrder = async ({
       }),
       setNetworkId(networkId),
       addSigner(
-        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: customerPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
           ...orderLines.map((orderLine) => {
@@ -272,7 +271,6 @@ const createOrder = async ({
         ],
       ),
       addSigner(
-        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: merchantPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
           ...orderLines.map((orderLine) => {
@@ -322,7 +320,6 @@ const markOrderAsReady = async ({
       }),
       setNetworkId(networkId),
       addSigner(
-        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: merchantPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
           withCap(
@@ -377,27 +374,22 @@ const pickupDelivery = async ({
         senderAccount: courierAccount,
       }),
       setNetworkId(networkId),
+      addSigner({ pubKey: courierPublicKey, scheme: 'WebAuthn' }, (withCap) => [
+        withCap(`${process.env.NAMESPACE}.delivery.PICKUP_DELIVERY`, orderId),
+        withCap(
+          `${process.env.NAMESPACE}.webauthn-wallet.TRANSFER`,
+          courierAccount,
+          escrowId,
+          { decimal: (order.orderPrice * 2).toFixed(12) },
+        ),
+        withCap(
+          `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
+          courierAccount,
+          { int: 1 },
+          1,
+        ),
+      ]),
       addSigner(
-        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
-        { pubKey: courierPublicKey, scheme: 'WebAuthn' },
-        (withCap) => [
-          withCap(`${process.env.NAMESPACE}.delivery.PICKUP_DELIVERY`, orderId),
-          withCap(
-            `${process.env.NAMESPACE}.webauthn-wallet.TRANSFER`,
-            courierAccount,
-            escrowId,
-            { decimal: (order.orderPrice * 2).toFixed(12) },
-          ),
-          withCap(
-            `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
-            courierAccount,
-            { int: 1 },
-            1,
-          ),
-        ],
-      ),
-      addSigner(
-        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         { pubKey: merchantPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
           withCap(`${process.env.NAMESPACE}.delivery.PICKUP_DELIVERY`, orderId),
@@ -433,26 +425,18 @@ const completeDelivery = async ({
         senderAccount: buyerAccount,
       }),
       setNetworkId(networkId),
-      addSigner(
-        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
-        { pubKey: buyerPublicKey, scheme: 'WebAuthn' },
-        (withCap) => [
-          withCap(`${process.env.NAMESPACE}.delivery.DELIVER_ORDER`, orderId),
-          withCap(
-            `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
-            buyerAccount,
-            { int: 1 },
-            1,
-          ),
-        ],
-      ),
-      addSigner(
-        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
-        { pubKey: courierPublicKey, scheme: 'WebAuthn' },
-        (withCap) => [
-          withCap(`${process.env.NAMESPACE}.delivery.DELIVER_ORDER`, orderId),
-        ],
-      ),
+      addSigner({ pubKey: buyerPublicKey, scheme: 'WebAuthn' }, (withCap) => [
+        withCap(`${process.env.NAMESPACE}.delivery.DELIVER_ORDER`, orderId),
+        withCap(
+          `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
+          buyerAccount,
+          { int: 1 },
+          1,
+        ),
+      ]),
+      addSigner({ pubKey: courierPublicKey, scheme: 'WebAuthn' }, (withCap) => [
+        withCap(`${process.env.NAMESPACE}.delivery.DELIVER_ORDER`, orderId),
+      ]),
     ),
     createTransaction,
   )({});

@@ -21,12 +21,18 @@ import {
   setNetworkId,
 } from '@kadena/client/fp';
 
+/*
+  All functions in this file are designed to operate on a SINGLE chain only.
+  Abstraction for handling multiple chains should be implemented in other parts
+  of the application, such as in the AccountsContext.
+*/
+
 export const getAccountName = async (
   publicKey: string,
   networkId: string,
   chainId: ChainId,
-): Promise<string> =>
-  asyncPipe(
+): Promise<string> => {
+  return asyncPipe(
     composePactCommand(
       execution(`
       (let* ((guard (read-keyset 'ks))
@@ -53,6 +59,7 @@ export const getAccountName = async (
       l1Client.local(tx, { preflight: false, signatureVerification: false }),
     (tx) => tx.result.data,
   )({});
+};
 
 export const registerAccountOnChain = async ({
   accountName,
@@ -63,7 +70,10 @@ export const registerAccountOnChain = async ({
   credentialPubkey,
   networkId,
   chainId,
-}: Omit<AccountRegistration, 'alias'>): Promise<ITransactionDescriptor> => {
+}: Omit<AccountRegistration, 'alias' | 'chainIds'> & {
+  chainId: ChainId;
+  accountName: string;
+}): Promise<ITransactionDescriptor> => {
   return asyncPipe(
     registerAccountCommand({
       accountName,

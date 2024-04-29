@@ -29,7 +29,8 @@ export const addDeviceTranslations = (device: Device) =>
 export const objectParameterValue = (obj: any): string =>
   Buffer.from(JSON.stringify(obj)).toString('base64');
 
-export const arrayParameterValue = (arr: any): string => JSON.stringify(arr);
+export const arrayParameterValue = (arr: unknown[]): string =>
+  JSON.stringify(arr);
 
 export const urlWithSearchParams = (
   url: string,

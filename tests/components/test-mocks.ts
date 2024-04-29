@@ -28,3 +28,29 @@ vi.mock('cbor', async () => {
     },
   };
 });
+
+export const mockL1Client = {
+  local: vi.fn().mockResolvedValue({
+    result: { status: 'success', data: {} },
+    reqKey: 'test-request-key',
+    gas: 700,
+    logs: 'abc',
+    continuation: null,
+    txId: 1,
+    metaData: {
+      blockHash: 'abc',
+      blockTime: 123,
+      blockHeight: 123,
+      prevBlockHash: 'abc',
+    },
+  }),
+};
+
+vi.mock('@kadena/client', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@kadena/client')>();
+
+  return {
+    ...actual,
+    createClient: () => mockL1Client,
+  };
+});

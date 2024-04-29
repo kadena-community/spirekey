@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form';
 import { StepProps } from './Registration';
 import { animationVariants } from './animation';
 
-export const BiometricsForm: FC<StepProps & { chainId: ChainId }> = ({
+export const BiometricsForm: FC<StepProps> = ({
   stepIndex,
   isVisible,
   updateFields,

@@ -3,6 +3,7 @@
 import type { ChainId } from '@kadena/client';
 import { Stack } from '@kadena/react-ui';
 import dynamic from 'next/dynamic';
+import { useSearchParams } from 'next/navigation';
 
 const ConnectHeader = dynamic(
   () => import('@/components/shared/Connect/ConnectHeader'),
@@ -19,21 +20,24 @@ const CardCollection = dynamic(
 type ConnectProps = {
   searchParams: {
     returnUrl: string;
+    networkId: string;
     reason?: string;
     optimistic?: boolean;
-    networkId?: string;
     chainId?: ChainId;
   };
 };
 
-export default function Connect({ searchParams }: ConnectProps) {
-  const {
+export default function Connect({
+  searchParams: {
     returnUrl,
     reason = '',
     optimistic = true,
-    networkId = process.env.WALLET_NETWORK_ID,
+    networkId,
     chainId = process.env.CHAIN_ID,
-  } = searchParams;
+  },
+}: ConnectProps) {
+  const searchParams = useSearchParams();
+  const chainIds = searchParams.getAll('chainId') as ChainId[];
 
   return (
     <Stack flexDirection="column" gap="lg" style={{ height: '100svh' }}>
@@ -41,7 +45,7 @@ export default function Connect({ searchParams }: ConnectProps) {
         returnUrl={decodeURIComponent(returnUrl)}
         reason={decodeURIComponent(reason)}
         networkId={networkId}
-        chainId={chainId}
+        chainIds={chainIds}
       />
       <CardCollection
         returnUrl={decodeURIComponent(returnUrl)}

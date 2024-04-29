@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-import { Notification } from '../../components/shared/Notification/Notification';
+import { Notification } from '@/components/shared/Notification/Notification';
 
 export type NotificationVariant = 'error' | 'warning' | 'notice' | 'success';
 
