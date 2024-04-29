@@ -1,5 +1,5 @@
 import pizzaBackground from '@/app/(examples)/v1/example/delivery/pizzabackground.jpg';
-import { globalStyle } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 
 globalStyle('body', {
   backgroundSize: 'cover',

@@ -11,6 +11,8 @@ export const container = style({
   display: 'flex',
 });
 
+export const goBack = style({ wordBreak: 'break-all' });
+
 export const step = style([
   atoms({
     paddingInline: 'lg',

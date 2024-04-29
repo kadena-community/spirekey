@@ -34,7 +34,7 @@ export default function Submit({ searchParams }: SearchParams) {
       <ContentHeader
         heading="Submit Transaction"
         description="Your transaction will be submitted to the network."
-        icon="Earth"
+        icon={<SystemIcon.Earth />}
       />
 
       <Stack flexDirection="column">

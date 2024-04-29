@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 
 import { KodeMono } from '@kadena/fonts';
+import classNames from 'classnames';
 import { motion } from 'framer-motion';
 import * as styles from './AccountRevealer.css';
 import { charArray } from './characters';
@@ -108,7 +109,7 @@ export const AccountRevealer = ({
         // If the current index is equal to the current character index, show the scrambler
         else if (currentCharIndex === i) {
           content = (
-            <span className={styles.character} style={{ opacity: 0.3 }}>
+            <span className={classNames(styles.character, styles.scrambler)}>
               <span className={styles.randomCharsWrapper}>
                 <span className={styles.randomChars}>{randomChars}</span>
               </span>

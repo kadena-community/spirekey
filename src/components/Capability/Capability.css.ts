@@ -10,3 +10,5 @@ export const wrapper = style({
   flexDirection: 'column',
   gap: 'lg',
 });
+
+export const capabilityValue = style({ wordBreak: 'break-all' });

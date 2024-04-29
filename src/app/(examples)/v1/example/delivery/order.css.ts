@@ -93,3 +93,9 @@ export const account = style({
     borderBottom: '1.5rem solid transparent',
   },
 });
+
+export const title = style({
+  fontWeight: 'bold',
+  marginBlockStart: '-0.25rem',
+  display: 'block',
+});

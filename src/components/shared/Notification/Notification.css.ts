@@ -44,6 +44,10 @@ export const headingWrapper = style([
   },
 ]);
 
+export const textWhite = style({
+  color: 'white',
+});
+
 // @TODO fix importants
 export const icon = recipe({
   variants: {

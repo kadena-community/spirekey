@@ -2,7 +2,14 @@
 
 import { useAccounts } from '@/context/AccountsContext';
 import { fundAccount } from '@/utils/fund';
-import { Box, Button, Card, ContentHeader, Stack } from '@kadena/react-ui';
+import {
+  Box,
+  Button,
+  Card,
+  ContentHeader,
+  Stack,
+  SystemIcon,
+} from '@kadena/react-ui';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
@@ -48,7 +55,7 @@ export default function FundPage() {
           <ContentHeader
             heading="Fund account"
             description="Add some funds to your account (Only works on Devnet or Testnet)"
-            icon="Account"
+            icon={<SystemIcon.Account />}
           />
           <Button onClick={handleFundAccount}>
             {loading ? 'Loading...' : 'Fund account'}

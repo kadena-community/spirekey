@@ -1,7 +1,7 @@
 import { getCustomTranslation } from '@/utils/translation';
 import { Box, Heading, Stack, Text } from '@kadena/react-ui';
 import { ICap } from '@kadena/types';
-import { capabilityImage } from './Capability.css';
+import * as styles from './Capability.css';
 
 type Props = {
   translations: any;
@@ -36,12 +36,12 @@ const TranslatedCapability = ({
       gap="md"
       justifyContent={isNumber ? 'space-between' : 'flex-start'}
     >
-      <img className={capabilityImage} src={image} alt={title} />
+      <img className={styles.capabilityImage} src={image} alt={title} />
       <Box marginBlockStart="xs">
         <Heading variant="h6" as="h4">
           {title}
         </Heading>
-        {!isNumber && <Text style={{ wordBreak: 'break-all' }}>{value}</Text>}
+        {!isNumber && <Text className={styles.capabilityValue}>{value}</Text>}
       </Box>
       {isNumber && (
         <Box marginBlockStart="xs" flexGrow={1} textAlign="right">

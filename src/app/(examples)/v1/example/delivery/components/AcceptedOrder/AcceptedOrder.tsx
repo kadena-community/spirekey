@@ -68,7 +68,7 @@ export function AcceptedOrder({ signers, orderId, order, account }: Props) {
           alignItems="center"
           marginBlockEnd="md"
         >
-          <Heading variant="h5" color="emphasize">
+          <Heading variant="h5">
             Order with value: ${' '}
             {Number(
               (transferCapability?.args[2] as { decimal: number })?.decimal,

@@ -1,5 +1,5 @@
 import {
-  Product,
+  Product as IProduct,
   useOrder,
 } from '@/app/(examples)/v1/example/delivery/context/OrderContext';
 import { Button } from '@/components/shared/Button/Button';
@@ -8,7 +8,7 @@ import Image from 'next/image';
 import * as styles from './Product.css';
 
 interface Props {
-  product: Product;
+  product: IProduct;
 }
 
 export function Product({ product }: Props) {
@@ -44,28 +44,14 @@ export function Product({ product }: Props) {
         >
           <Button
             onPress={onDecrementOrderItem(product.name)}
-            style={{
-              paddingBlock: '0.25rem',
-              paddingInline: '0.5rem',
-            }}
+            className={styles.quantityButton}
           >
             -
           </Button>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              fontSize: '1.25rem',
-              marginBlockStart: '0.125rem',
-            }}
-          >
-            {orderItemAmount}
-          </Text>
+          <Text className={styles.orderItemAmount}>{orderItemAmount}</Text>
           <Button
             onPress={onIncrementOrderItem(product.name)}
-            style={{
-              paddingBlock: '0.25rem',
-              paddingInline: '0.5rem',
-            }}
+            className={styles.quantityButton}
           >
             +
           </Button>

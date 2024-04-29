@@ -11,7 +11,6 @@ import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { StepProps } from './Registration';
 import { animationVariants } from './animation';
-import * as styles from './styles.css';
 
 export const BiometricsForm: FC<StepProps> = ({
   stepIndex,
@@ -74,7 +73,7 @@ export const BiometricsForm: FC<StepProps> = ({
               width={64}
               height={64}
             />
-            <Text variant="smallest">Tap to continue</Text>
+            <Text variant="ui">Tap to continue</Text>
           </Stack>
           <input type="hidden" required {...register('credentialPubkey')} />
           <input type="hidden" required {...register('credentialId')} />

@@ -27,46 +27,42 @@ export function OrderSummary() {
       </Stack>
       <Stack flexDirection="column" gap="md">
         {orderedProducts.map((product) => (
-          <Stack alignItems="center" gap="sm" key={product.name}>
-            <Image
-              className={styles.productImage}
-              src={product.image}
-              alt={product.name}
-            />
-            <Box marginBlockStart="xs" style={{ flexGrow: 1 }}>
-              <Heading variant="h6" as="h4">
-                {product.name}
-              </Heading>
-              <div>
-                {product.quantity} x $ {product.price.toFixed(2)}
-              </div>
-            </Box>
-            <Heading
-              variant="h6"
-              as="h4"
-              style={{ flexGrow: 1, textAlign: 'end' }}
-            >
+          <Stack
+            alignItems="center"
+            justifyContent="space-between"
+            gap="sm"
+            key={product.name}
+          >
+            <Stack flexDirection="row">
+              <Image
+                className={styles.productImage}
+                src={product.image}
+                alt={product.name}
+              />
+              <Box marginBlockStart="xs">
+                <Heading variant="h6" as="h4">
+                  {product.name}
+                </Heading>
+                <div>
+                  {product.quantity} x $ {product.price.toFixed(2)}
+                </div>
+              </Box>
+            </Stack>
+            <Heading variant="h6">
               $ {(product.quantity * product.price).toFixed(2)}
             </Heading>
           </Stack>
         ))}
-        <Stack alignItems="center" gap="sm">
-          <SystemIcon.MapMarker
-            size="xl"
-            style={{ marginInlineStart: '0.25rem' }}
-          />
-          <Box style={{ marginInlineStart: '0.5rem' }}>
-            <Heading variant="h6" as="h4">
-              Delivery
-            </Heading>
-          </Box>
-          <Heading
-            variant="h6"
-            as="h4"
-            style={{ flexGrow: 1, textAlign: 'end' }}
-          >
-            $ 6.25
-          </Heading>
+        <Stack alignItems="center" justifyContent="space-between" gap="sm">
+          <Stack flexDirection="row" alignItems="center">
+            <SystemIcon.MapMarker size="xl" className={styles.mapMarker} />
+            <Box className={styles.delivery}>
+              <Heading variant="h6" as="h4">
+                Delivery
+              </Heading>
+            </Box>
+          </Stack>
+          <Heading variant="h6">$ 6.25</Heading>
         </Stack>
         <Stack marginBlockStart="xs" justifyContent="space-between">
           <Heading variant="h6" as="h4">

@@ -1,7 +1,7 @@
 import { useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { calculateBalancePercentage } from '@/utils/balance';
-import { Box, Stack } from '@kadena/react-ui';
+import { Box, Link, Stack } from '@kadena/react-ui';
 import DeviceCard from '../Card/DeviceCard';
 
 interface Props {

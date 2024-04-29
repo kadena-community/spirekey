@@ -25,6 +25,8 @@ export const character = style([
   { display: 'inline-block', height: '2rem' },
 ]);
 
+export const scrambler = style({ opacity: 0.3 });
+
 const moveIt = keyframes(
   charArray
     .map((_char, i) => ({

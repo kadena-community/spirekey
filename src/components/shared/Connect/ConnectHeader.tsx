@@ -1,7 +1,7 @@
 import { Surface } from '@/components/Surface/Surface';
 import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { useAccounts } from '@/context/AccountsContext';
-import { Box, ContentHeader, Stack } from '@kadena/react-ui';
+import { Box, ContentHeader, Stack, SystemIcon } from '@kadena/react-ui';
 import './ConnectHeader.css';
 
 type Props = {
@@ -31,7 +31,7 @@ export default function ConnectHeader({ returnUrl, reason, networkId }: Props) {
         <ContentHeader
           description={description}
           heading="Connect"
-          icon="Account"
+          icon={<SystemIcon.Account />}
         />
         {filteredAccounts.length === 0 && typeof window !== 'undefined' && (
           <Stack

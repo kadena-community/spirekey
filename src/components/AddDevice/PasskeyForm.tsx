@@ -51,7 +51,7 @@ export const PasskeyForm: FC<StepProps> = ({
             gap="xs"
           >
             <Image src={fingerprint} alt="fingerprint icon" />
-            <Text variant="smallest">Tap to continue</Text>
+            <Text variant="ui">Tap to continue</Text>
           </Stack>
           <input type="hidden" required {...register('credentialPubkey')} />
           <input type="hidden" required {...register('credentialId')} />
