@@ -4,8 +4,8 @@ import { style } from '@vanilla-extract/css';
 
 export const account = style([
   atoms({
-    fontFamily: 'codeFont',
-    fontWeight: 'bodyFont.bold',
+    fontFamily: 'monospaceFont',
+    fontWeight: 'primaryFont.bold',
   }),
   {
     color: customTokens.color.white,

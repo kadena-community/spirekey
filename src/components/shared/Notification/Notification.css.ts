@@ -1,4 +1,3 @@
-import { customTokens } from '@/styles/shared/tokens.css';
 import { atoms, tokens } from '@kadena/react-ui/styles';
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
@@ -71,7 +70,7 @@ export const icon = recipe({
 export const heading = recipe({
   base: [
     atoms({
-      fontWeight: 'headingFont.bold',
+      fontWeight: 'primaryFont.bold',
       fontSize: 'base',
     }),
   ],

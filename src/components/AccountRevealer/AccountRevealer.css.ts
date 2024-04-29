@@ -4,7 +4,7 @@ import { charArray } from './characters';
 
 export const codeFont = style([
   atoms({
-    fontFamily: 'codeFont',
+    fontFamily: 'monospaceFont',
   }),
   { fontSize: 'clamp(.9rem, 5vw, 1.5rem)', lineHeight: '2rem' },
 ]);

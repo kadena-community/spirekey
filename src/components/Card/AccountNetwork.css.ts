@@ -3,18 +3,18 @@ import { style } from '@vanilla-extract/css';
 
 export const codeFont = style([
   atoms({
-    fontFamily: 'codeFont',
+    fontFamily: 'monospaceFont',
   }),
   { color: 'black', fontSize: 'clamp(.9rem, 5vw, 1.5rem)' },
 ]);
 
 export const account = style([
   codeFont,
-  atoms({ fontWeight: 'monoFont.bold' }),
+  atoms({ fontWeight: 'monospaceFont.bold' }),
 ]);
 
 export const namespace = style([
-  atoms({ fontWeight: 'monoFont.regular' }),
+  atoms({ fontWeight: 'monospaceFont.regular' }),
   {
     fontFamily: 'inherit',
     opacity: 0.6,
@@ -33,7 +33,7 @@ export const copyButton = style([
 
 export const network = style([
   atoms({
-    fontWeight: 'bodyFont.regular',
+    fontWeight: 'primaryFont.regular',
   }),
   {
     fontSize: 'clamp(.75rem, 4vw, 1.125rem) !important', // doesn't work without important  ¯\_(ツ)_/¯

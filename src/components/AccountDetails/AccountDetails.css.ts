@@ -20,13 +20,13 @@ export const transactionAddress = style({
 });
 
 export const transactionAmount = atoms({
-  fontWeight: 'bodyFont.bold',
-  fontFamily: 'codeFont',
+  fontWeight: 'primaryFont.bold',
+  fontFamily: 'monospaceFont',
 });
 
 export const transactionDate = style([
   atoms({
-    fontFamily: 'codeFont',
+    fontFamily: 'monospaceFont',
     fontSize: 'xs',
   }),
   { alignItems: 'center', display: 'flex' },
