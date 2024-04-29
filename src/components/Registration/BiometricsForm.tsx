@@ -68,7 +68,12 @@ export const BiometricsForm: FC<StepProps> = ({
             flexDirection="column"
             gap="xs"
           >
-            <Image src={fingerprint} alt="fingerprint icon" />
+            <Image
+              src={fingerprint}
+              alt="fingerprint icon"
+              width={64}
+              height={64}
+            />
             <Text variant="smallest">Tap to continue</Text>
           </Stack>
           <input type="hidden" required {...register('credentialPubkey')} />
