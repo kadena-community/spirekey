@@ -13,7 +13,7 @@ import {
 } from '@kadena/client/fp';
 import { getDevnetNetworkId } from './shared/getDevnetNetworkId';
 
-export const fundAccount = async (account: Account): Promise<string> =>
+export const fundAccount = async (account: Account): Promise<unknown> =>
   asyncPipe(
     getCommand(account),
     createTransaction,

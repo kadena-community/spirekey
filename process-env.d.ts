@@ -4,8 +4,8 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       [key: string]: string | undefined;
-      AUTO_REGISTER_MAINNET: boolean;
-      INSTA_FUND: boolean;
+      AUTO_REGISTER_MAINNET: string;
+      INSTA_FUND: string;
       DEVNET_NETWORK_ID: string;
       DAPP_NETWORK_ID: string;
       WALLET_NETWORK_ID: string;

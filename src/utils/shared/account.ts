@@ -70,9 +70,9 @@ export const getAccountFrom = async ({
   });
 
   return {
+    accountName,
     networkId,
     chainIds: foundChainIds,
-    accountName,
     balance: totalBalance.toString(),
     devices,
     minApprovals,

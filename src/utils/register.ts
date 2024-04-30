@@ -74,6 +74,7 @@ export const registerAccountOnChain = async ({
   chainId: ChainId;
   accountName: string;
 }): Promise<ITransactionDescriptor> => {
+  console.log('in registerAccountOnChain');
   return asyncPipe(
     registerAccountCommand({
       accountName,

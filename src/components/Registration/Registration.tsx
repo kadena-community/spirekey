@@ -69,6 +69,8 @@ export default function Registration({
   const { registerAccount } = useAccounts();
   const { host } = useReturnUrl();
 
+  // URLSearchParams.getAll('chainId') returns an
+
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [data, setData] = useState<FormData>({
     ...defaultFormData,

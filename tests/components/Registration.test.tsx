@@ -3,15 +3,18 @@ import { startRegistration } from '@simplewebauthn/browser';
 import React from 'react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import MatchMediaMock from 'vitest-matchmedia-mock';
-import { cleanup, render, screen } from './setup';
+import { cleanup, renderWithAllProviders, screen } from './setup';
 
 describe('Registration Form', () => {
   let matchMediaMock = new MatchMediaMock();
+
   beforeAll(() => {
     matchMediaMock.useMediaQuery('(prefers-color-scheme: dark)');
   });
+
   afterEach(() => cleanup());
-  describe('When showing the BiometricsForm', () => {
+
+  describe('BiometricsForm()', () => {
     const formValues = {
       alias: '',
       color: '',
@@ -22,8 +25,9 @@ describe('Registration Form', () => {
       credentialId: '',
       credentialPubkey: '',
     };
+
     const renderEmptyForm = () => {
-      render(
+      renderWithAllProviders(
         <BiometricsForm
           isVisible
           stepIndex={0}
@@ -35,17 +39,22 @@ describe('Registration Form', () => {
           }}
           updateFields={vi.fn()}
           defaultValues={formValues}
+          chainIds={['0']}
         />,
       );
     };
-    it('should should ask a user to create a passkey', () => {
+
+    it('asks a user to create a passkey', () => {
       renderEmptyForm();
+
       expect(
         screen.getByText('Create your account by using Passkey'),
       ).toBeInTheDocument();
     });
-    it('should ask for passkey', () => {
+
+    it('asks for passkey', () => {
       renderEmptyForm();
+
       screen.getByText('Tap to continue').click();
       expect(startRegistration).toHaveBeenCalledOnce();
     });

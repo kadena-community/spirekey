@@ -1,16 +1,4 @@
-import { genesisPrivateKey, genesisPubKey } from '@/utils/constants';
-import { ChainId } from '@kadena/client';
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest';
-import { mockL1Client } from '../../tests/components/test-mocks';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   getAccountName,
   getWebAuthnPubkeyFormat,
@@ -36,7 +24,7 @@ describe('register utils', () => {
         '1',
       );
 
-      expect(mockL1Client.local).toHaveBeenCalledWith(
+      expect(l1Client.local).toHaveBeenCalledWith(
         expect.objectContaining({
           cmd: expect.stringContaining('get-account-name account'),
           hash: 'EYdRyroG1fY4DxxaEMKWZ9cRUFUG6-ffzdjX0osQ2Vk',
@@ -53,14 +41,15 @@ describe('register utils', () => {
         accountName: 'testAccount',
         chainId: '1',
         color: 'blue',
-        deviceType: 'mobile',
+        deviceType: 'phone',
         domain: 'kadena.network',
         credentialId: '1',
-        credentialPubkey: genesisPubKey,
+        credentialPubkey:
+          '368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca',
         networkId: 'testnet',
       });
 
-      expect(mockL1Client.local).toHaveBeenCalledWith(
+      expect(l1Client.local).toHaveBeenCalledWith(
         expect.objectContaining({
           cmd: expect.stringContaining('get-account-name account'),
           hash: 'EYdRyroG1fY4DxxaEMKWZ9cRUFUG6-ffzdjX0osQ2Vk',

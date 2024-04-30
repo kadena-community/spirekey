@@ -124,7 +124,10 @@ const AccountsProvider = ({ children }: Props) => {
       for (const account of accounts) {
         for (const device of account.devices) {
           if (device.pendingRegistrationTxs) {
-            listenForRegistrationTransactions(device.pendingRegistrationTxs);
+            listenForRegistrationTransactions(
+              device.pendingRegistrationTxs,
+              account,
+            );
           }
         }
       }
@@ -190,7 +193,7 @@ const AccountsProvider = ({ children }: Props) => {
   };
 
   const addAccount = (account: Account): void => {
-    setAccounts([account, ...accounts]);
+    setAccounts((oldAccounts) => [account, ...oldAccounts]);
   };
 
   const registerAccount = async ({
@@ -266,23 +269,6 @@ const AccountsProvider = ({ children }: Props) => {
 
     addAccount(account);
 
-    if (process.env.INSTA_FUND === true && networkId === getDevnetNetworkId()) {
-      for (const device of account.devices) {
-        if (device.pendingRegistrationTxs) {
-          await Promise.allSettled(
-            device.pendingRegistrationTxs.map(async (tx) => {
-              await l1Client.listen({
-                requestKey: tx.requestKey,
-                chainId: tx.chainId,
-                networkId,
-              });
-              await fundAccount(account);
-            }),
-          );
-        }
-      }
-    }
-
     return successfulRegisterAccountResults.map(
       (result) => result.value.transactionDescriptor,
     );
@@ -349,9 +335,21 @@ const AccountsProvider = ({ children }: Props) => {
 
   const listenForRegistrationTransactions = async (
     txs: ITransactionDescriptor[],
+    account: Account,
   ) => {
     const results = await Promise.allSettled(
-      txs.map((tx) => l1Client.listen(tx)),
+      txs.map(async (tx) => {
+        const result = await l1Client.listen(tx);
+
+        if (
+          process.env.INSTA_FUND === 'true' &&
+          tx.networkId === getDevnetNetworkId()
+        ) {
+          fundAccount(account); // fire and forget
+        }
+
+        return result;
+      }),
     );
     results.forEach((result, index) => {
       if (
