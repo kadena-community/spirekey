@@ -21,5 +21,5 @@ setup('Deploy WebAuthn contract', async () => {
 
   const config = JSON.parse(await readFile(configFilePath, 'utf-8'));
   const signers = JSON.parse(await readFile(signersFilePath, 'utf-8'));
-  await deploy({ ...config, signers });
+  await deploy({ ...config, signers }, false);
 });
