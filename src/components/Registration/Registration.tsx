@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
+import { useSettings } from '@/context/SettingsContext';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { useRegistrationForm } from '@/hooks/useRegistrationForm';
 import { deviceColors } from '@/styles/shared/tokens.css';
@@ -20,25 +21,16 @@ import { DeviceTypeForm } from './DeviceTypeForm';
 import { NetworkIdForm } from './NetworkIdForm';
 import * as styles from './styles.css';
 
-const skipNetworkId =
-  process.env.WALLET_NETWORK_ID &&
-  typeof window !== 'undefined' &&
-  localStorage.getItem('devMode') !== 'true';
-
-const defaultFormData = {
-  alias: '',
-  usedAlias: '',
-  networkId: skipNetworkId
-    ? process.env.WALLET_NETWORK_ID!
-    : getDevnetNetworkId(),
-  accountName: '',
-  credentialPubkey: '',
-  credentialId: '',
-  deviceType: 'security-key',
-  color: deviceColors.purple,
-};
-
-export type FormData = typeof defaultFormData;
+export interface FormData {
+  alias: string;
+  usedAlias: string;
+  networkId: string;
+  accountName: string;
+  credentialPubkey: string;
+  credentialId: string;
+  deviceType: string;
+  color: string;
+}
 
 export interface StepProps {
   stepIndex: number;
@@ -68,6 +60,23 @@ export default function Registration({
   const router = useRouter();
   const { registerAccount } = useAccounts();
   const { host } = useReturnUrl();
+  const { devMode } = useSettings();
+
+  console.log({ devMode });
+
+  const skipNetworkId = process.env.WALLET_NETWORK_ID && !devMode;
+  const defaultFormData: FormData = {
+    alias: '',
+    usedAlias: '',
+    networkId: skipNetworkId
+      ? process.env.WALLET_NETWORK_ID!
+      : getDevnetNetworkId(),
+    accountName: '',
+    credentialPubkey: '',
+    credentialId: '',
+    deviceType: 'security-key',
+    color: deviceColors.purple,
+  };
 
   // URLSearchParams.getAll('chainId') returns an
 
@@ -119,7 +128,7 @@ export default function Registration({
   const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
   const completeRedirectUrl = decodedRedirectUrl || '/';
 
-  const goBack = () => {
+  const handlePreviousClick = () => {
     if (currentStepIndex === 0) {
       router.push(cancelRedirectUrl);
     }
@@ -181,7 +190,7 @@ export default function Registration({
         <Stack flexDirection="row" gap="xl" marginBlock="lg" paddingInline="lg">
           <Button
             variant="secondary"
-            onPress={goBack}
+            onPress={handlePreviousClick}
             className={atoms({ flex: 1 })}
           >
             {isFirstStep ? 'Cancel' : 'Previous'}

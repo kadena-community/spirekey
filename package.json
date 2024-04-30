@@ -24,6 +24,7 @@
     "update:del": "tsx ./deploy.ts ./pact/deploy/local-delivery.json",
     "update:dev": "tsx ./deploy.ts ./pact/deploy/local-update.json",
     "update:hosted": "tsx ./deploy.ts ./pact/deploy/hosted-update.json",
+    "update:mainnet": "tsx ./deploy.ts ./pact/deploy/mainnet-update.json",
     "update:test": "tsx ./deploy.ts ./pact/deploy/testnet-update.json"
   },
   "lint-staged": {
