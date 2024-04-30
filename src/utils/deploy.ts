@@ -126,14 +126,17 @@ const getClient = (host: string) =>
     return `${host}/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
   });
 
-export const deploy = async (config: ResolvedDeployConfiguration) => {
+export const deploy = async (
+  config: ResolvedDeployConfiguration,
+  showLog = true,
+) => {
   const resolvedConfig = await resolveConfiguration(config);
   for (const step of resolvedConfig.steps) {
     const client = getClient(resolvedConfig.profiles[step.profile].host);
     const executeStep = executeStepWith(client);
-    console.log('Executing step', step.code);
+    if (showLog) console.log('Executing step', step.code);
     const result = await executeStep(step, resolvedConfig);
-    console.log('Executed step', result);
+    if (showLog) console.log('Executed step', result);
   }
 };
 

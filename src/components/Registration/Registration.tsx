@@ -58,7 +58,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
 
   console.log({ devMode });
 
-  const skipNetworkId = process.env.WALLET_NETWORK_ID && devMode;
+  const skipNetworkId = process.env.WALLET_NETWORK_ID && !devMode;
   const defaultFormData: FormData = {
     alias: '',
     usedAlias: '',
