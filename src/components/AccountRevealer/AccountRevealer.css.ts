@@ -4,7 +4,7 @@ import { charArray } from './characters';
 
 export const codeFont = style([
   atoms({
-    fontFamily: 'codeFont',
+    fontFamily: 'monospaceFont',
   }),
   { fontSize: 'clamp(.9rem, 5vw, 1.5rem)', lineHeight: '2rem' },
 ]);
@@ -24,6 +24,8 @@ export const character = style([
   codeFont,
   { display: 'inline-block', height: '2rem' },
 ]);
+
+export const scrambler = style({ opacity: 0.3 });
 
 const moveIt = keyframes(
   charArray

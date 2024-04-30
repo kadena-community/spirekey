@@ -118,14 +118,7 @@ export default function CourierPage() {
       <Stack className={styles.hero} flexDirection="column">
         <Box textAlign="right">
           <PizzaWorld className={styles.logo} />
-          <Text
-            variant="small"
-            style={{
-              fontWeight: 'bold',
-              marginBlockStart: '-0.25rem',
-              display: 'block',
-            }}
-          >
+          <Text variant="body" className={styles.title}>
             Delivery dashboard
           </Text>
         </Box>

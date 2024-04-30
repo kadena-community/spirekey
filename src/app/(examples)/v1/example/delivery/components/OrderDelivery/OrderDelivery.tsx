@@ -40,15 +40,13 @@ export function OrderDelivery({ signers, order, account, message }: Props) {
       <Surface>
         <Stack justifyContent="space-between" alignItems="flex-start">
           <Stack flexDirection="column" marginBlockEnd="md">
-            <Heading variant="h5" color="emphasize">
+            <Heading variant="h5">
               Order with value: ${' '}
               {Number(
                 (transferCapability?.args[2] as { decimal: number })?.decimal,
               ).toFixed(2)}
             </Heading>
-            <Heading variant="h6" color="emphasize">
-              Courier: {maskValue(order.courier)}
-            </Heading>
+            <Heading variant="h6">Courier: {maskValue(order.courier)}</Heading>
           </Stack>
           {order.status === 'IN_TRANSIT' && (
             <SystemIcon.Loading size="lg" className={styles.loader} />

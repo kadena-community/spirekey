@@ -1,4 +1,3 @@
-import { customTokens } from '@/styles/shared/tokens.css';
 import { atoms, tokens } from '@kadena/react-ui/styles';
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
@@ -45,6 +44,10 @@ export const headingWrapper = style([
   },
 ]);
 
+export const textWhite = style({
+  color: 'white',
+});
+
 // @TODO fix importants
 export const icon = recipe({
   variants: {
@@ -71,7 +74,7 @@ export const icon = recipe({
 export const heading = recipe({
   base: [
     atoms({
-      fontWeight: 'headingFont.bold',
+      fontWeight: 'primaryFont.bold',
       fontSize: 'base',
     }),
   ],

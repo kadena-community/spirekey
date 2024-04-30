@@ -56,7 +56,7 @@ export function ReadyForPickUp({ order }: Props) {
             alignItems="center"
             marginBlockEnd="md"
           >
-            <Heading variant="h5" color="emphasize">
+            <Heading variant="h5">
               Delivery price: $ {order.deliveryPrice.toFixed(2)}
             </Heading>
             <Button
@@ -70,13 +70,9 @@ export function ReadyForPickUp({ order }: Props) {
             </Button>
           </Stack>
         </Stack>
-        <Heading variant="h6" color="emphasize">
-          Merchant: {maskValue(order.merchant)}
-        </Heading>
-        <Heading variant="h6" color="emphasize">
-          Customer: {maskValue(order.buyer)}
-        </Heading>
-        <Heading variant="h6" color="emphasize">
+        <Heading variant="h6">Merchant: {maskValue(order.merchant)}</Heading>
+        <Heading variant="h6">Customer: {maskValue(order.buyer)}</Heading>
+        <Heading variant="h6">
           Order value: $ {order.orderPrice.toFixed(2)}
         </Heading>
       </Surface>

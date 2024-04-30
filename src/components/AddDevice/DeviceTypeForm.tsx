@@ -4,7 +4,12 @@ import { motion } from 'framer-motion';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { animationVariants } from './animation';
-import { descriptionEmphasis, item, itemContainer } from './styles.css';
+import {
+  descriptionEmphasis,
+  errorText,
+  item,
+  itemContainer,
+} from './styles.css';
 
 import { DeviceDesktop } from '@/components/icons/DeviceDesktop';
 import { DevicePhone } from '@/components/icons/DevicePhone';
@@ -64,28 +69,26 @@ export const DeviceTypeForm: FC<StepProps> = ({
           <>
             {getDescription(selectedDeviceType)}
             {errors.deviceType && (
-              <Box style={{ color: 'red' }}>{errors.deviceType.message}</Box>
+              <Box className={errorText}>{errors.deviceType.message}</Box>
             )}
           </>
         }
       >
         <div className={itemContainer}>
-          <div>
-            <input
-              type="radio"
-              value="security-key"
-              id="deviceType-security-key"
-              {...register('deviceType', {
-                onChange: (event) => {
-                  updateFields({ deviceType: event.target.value });
-                },
-                required: 'Please select a device type',
-              })}
-            />
-            <label htmlFor="deviceType-security-key" className={item}>
-              <DeviceSecurityKey />
-            </label>
-          </div>
+          <input
+            type="radio"
+            value="security-key"
+            id="deviceType-security-key"
+            {...register('deviceType', {
+              onChange: (event) => {
+                updateFields({ deviceType: event.target.value });
+              },
+              required: 'Please select a device type',
+            })}
+          />
+          <label htmlFor="deviceType-security-key" className={item}>
+            <DeviceSecurityKey />
+          </label>
 
           <input
             type="radio"

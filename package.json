@@ -13,12 +13,12 @@
     "format": "prettier --write .",
     "generate": "npx pactjs contract-generate --file=\"./pact/webauthn.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
     "postinstall": "npx pactjs contract-generate --file=\"./pact/root/fungible-v2.pact\" --file=\"./pact/root/gas-payer-v1.pact\" --file=\"./pact/root/fungible-xchain-v1.pact\" --file=\"./pact/root/coin.pact\" --file=\"./pact/webauthn-guard.pact\" --file=\"./pact/webauthn-wallet.pact\" --file=\"./pact/l2-coin.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
+    "install:chromium": "playwright install chromium",
     "lint": "next lint",
     "prepare": "husky",
-    "install:chromium": "playwright install chromium",
     "start": "next start --port 1337",
-    "test:e2e": "playwright test",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "update": "tsx ./deploy.ts ./pact/deploy/update.json",
     "update:del": "tsx ./deploy.ts ./pact/deploy/local-delivery.json",
     "update:dev": "tsx ./deploy.ts ./pact/deploy/local-update.json",
@@ -33,7 +33,7 @@
     "@kadena/cryptography-utils": "^0.4.2",
     "@kadena/fonts": "^0.0.1",
     "@kadena/pactjs": "^0.4.2",
-    "@kadena/react-ui": "^0.8.1",
+    "@kadena/react-ui": "^0.8.4",
     "@kadena/types": "^0.6.0",
     "@playwright/test": "^1.43.1",
     "@react-aria/utils": "^3.23.2",
@@ -68,6 +68,7 @@
     "usehooks-ts": "^2.15.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@kadena/pactjs-cli": "^1.8.1",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.4.2",
@@ -76,10 +77,11 @@
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.2.60",
     "@types/react-dom": "^18.2.19",
-    "@vitest/coverage-v8": "^1.5.0",
-    "cross-fetch": "~3.1.5",
     "@vanilla-extract/vite-plugin": "^4.0.7",
     "@vitejs/plugin-react": "^4.2.1",
+    "@vitest/coverage-v8": "^1.5.0",
+    "cross-fetch": "~3.1.5",
+    "dotenv": "16.4.5",
     "husky": "^9.0.11",
     "jsdom": "^24.0.0",
     "next-router-mock": "^0.9.13",
@@ -89,8 +91,6 @@
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
     "vitest": "^1.5.0",
-    "@faker-js/faker": "^8.4.1",
-    "vitest-matchmedia-mock": "^1.0.4",
-    "dotenv": "16.4.5"
+    "vitest-matchmedia-mock": "^1.0.4"
   }
 }

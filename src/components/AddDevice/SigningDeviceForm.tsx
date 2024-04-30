@@ -51,7 +51,7 @@ export const SigningDeviceForm: FC<StepProps> = ({
               Select a device that is already associated with this account to
               sign the transaction for adding this new device with.
               {errors.signingDeviceCredentialId && (
-                <Box style={{ color: 'red' }}>
+                <Box className={styles.errorText}>
                   {errors.signingDeviceCredentialId.message}
                 </Box>
               )}
@@ -82,11 +82,14 @@ export const SigningDeviceForm: FC<StepProps> = ({
                     aria-label={credentialId}
                   >
                     <Box
-                      className={classnames(styles.device, {
-                        selected:
-                          selectedSigningDeviceCredentialId === credentialId,
-                      })}
-                      style={{ backgroundColor: device.color }}
+                      className={classnames(
+                        styles.device,
+                        {
+                          selected:
+                            selectedSigningDeviceCredentialId === credentialId,
+                        },
+                        styles.backgroundColors[device.color],
+                      )}
                     >
                       {getDeviceIcon(device.deviceType)}
                       {selectedSigningDeviceCredentialId === credentialId && (

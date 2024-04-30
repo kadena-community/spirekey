@@ -26,6 +26,10 @@ export const descriptionEmphasis = style({
   fontWeight: '700',
 });
 
+export const errorText = style({
+  color: 'red',
+});
+
 export const itemContainer = style({
   display: 'grid',
   gridTemplateColumns: 'repeat(3, 1fr)',

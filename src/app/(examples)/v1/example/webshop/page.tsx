@@ -12,13 +12,14 @@ import {
   GridItem,
   Heading,
   Stack,
+  SystemIcon,
   Text,
 } from '@kadena/react-ui';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-
 import cookieImg from './chocolate-chip-cookie.jpg';
 import { createOrder } from './order';
+import * as styles from './page.css';
 
 type WebshopProps = {
   searchParams: {
@@ -77,7 +78,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
         <ContentHeader
           description="We sell the best cookies in town!"
           heading="Cookie Shop"
-          icon="Cookie"
+          icon={<SystemIcon.Cookie />}
         />
       </Box>
 
@@ -96,11 +97,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
                   width={200}
                   height={200}
                   sizes="100vw"
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    borderRadius: '1rem',
-                  }}
+                  className={styles.cookieImage}
                 />
                 <Box marginBlock="md">
                   <Heading as="h3">{name}</Heading>
@@ -112,7 +109,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
                     alignItems="center"
                     marginBlockStart="md"
                   >
-                    <Text as="code" bold variant="base" color="emphasize">
+                    <Text as="code" bold variant="code" color="emphasize">
                       {price.toFixed(2)} KDA
                     </Text>
                     <Button

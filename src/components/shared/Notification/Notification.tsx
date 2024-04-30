@@ -27,7 +27,7 @@ export const Notification: FC<Props> = ({ variant, title, message }) => {
           {title}
         </Heading>
       </header>
-      {message && <Text style={{ color: 'white' }}>{message}</Text>}
+      {message && <Text className={styles.textWhite}>{message}</Text>}
     </motion.div>
   );
 };

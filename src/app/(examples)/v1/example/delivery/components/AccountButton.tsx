@@ -1,8 +1,10 @@
 import { Button } from '@/components/shared/Button/Button';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { Text } from '@kadena/react-ui';
+import classNames from 'classnames';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
+import * as styles from './AccountButton.css';
 
 interface Credential {
   type: 'WebAuthn' | 'ED25519';
@@ -43,12 +45,8 @@ export const AccountButton = ({
     return (
       <Button
         variant="primary"
-        className={className}
+        className={classNames(className, styles.loginButton)}
         onPress={onConnect}
-        style={{
-          paddingBlock: '0.25rem',
-          paddingInline: '0.5rem',
-        }}
       >
         Log in
       </Button>
@@ -60,10 +58,7 @@ export const AccountButton = ({
       <Button
         variant="secondary"
         onPress={onLogout}
-        style={{
-          paddingBlock: '0.25rem',
-          paddingInline: '0.5rem',
-        }}
+        className={styles.logoutButton}
       >
         Log out
       </Button>

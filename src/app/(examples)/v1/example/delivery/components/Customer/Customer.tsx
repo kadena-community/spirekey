@@ -219,42 +219,38 @@ export default function Customer({ searchParams }: Props) {
           <Surface>
             <Stack flexDirection="column" alignItems="center" width="100%">
               {orderStatus === 'ready' && (
-                <Heading variant="h5" color="emphasize">
+                <Heading variant="h5">
                   Your order is ready for delivery!
                 </Heading>
               )}
               {orderStatus === 'delivered' && (
-                <Heading variant="h5" color="emphasize">
+                <Heading variant="h5">
                   <div>Enjoy your pizza!</div>
                 </Heading>
               )}
               {orderStatus === 'completed' && (
-                <Heading variant="h5" color="emphasize">
+                <Heading variant="h5">
                   <div>Thank you for your order!</div>
                 </Heading>
               )}
               {orderStatus === 'signing' && (
-                <Heading variant="h5" color="emphasize">
+                <Heading variant="h5">
                   <div>Signing for delivery...</div>
                 </Heading>
               )}
               {orderStatus === 'crafting' && (
                 <article>
-                  <Heading variant="h5" color="emphasize">
-                    We are crafting your pizza!
-                  </Heading>
+                  <Heading variant="h5">We are crafting your pizza!</Heading>
                   <PizzaLoader />
                 </article>
               )}
               {orderStatus === 'processing' && (
-                <Heading variant="h5" color="emphasize">
-                  Your order is being processed.
-                </Heading>
+                <Heading variant="h5">Your order is being processed.</Heading>
               )}
 
               {orderStatus === 'delivering' && (
                 <Stack flexDirection="column" gap="xl">
-                  <Heading variant="h5" color="emphasize">
+                  <Heading variant="h5">
                     Sign off to receive your pizza!
                   </Heading>
                   <Button onPress={onAcceptDelivery}>Sign off</Button>
@@ -262,9 +258,7 @@ export default function Customer({ searchParams }: Props) {
               )}
 
               {orderStatus === 'transit' && (
-                <Heading variant="h5" color="emphasize">
-                  Your pizza is on its way!
-                </Heading>
+                <Heading variant="h5">Your pizza is on its way!</Heading>
               )}
             </Stack>
           </Surface>

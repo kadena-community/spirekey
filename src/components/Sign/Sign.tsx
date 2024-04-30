@@ -25,7 +25,7 @@ import {
 } from '@/utils/shared/smartContractMeta';
 import type { ICommandPayload } from '@kadena/types';
 import { Capability } from '../Capability/Capability';
-import { container, step, wrapper } from './Sign.css';
+import { container, goBack, step, wrapper } from './Sign.css';
 
 interface Props {
   transaction: string;
@@ -258,7 +258,7 @@ export default function Sign(props: Props) {
                         checked={autoRedirect}
                         onChange={onAutoRedirectChange}
                       />
-                      <Text style={{ wordBreak: 'break-all' }}>
+                      <Text className={goBack}>
                         Go back to {returnUrl} when ready
                       </Text>
                     </label>
@@ -277,7 +277,7 @@ export default function Sign(props: Props) {
           </motion.div>
         </div>
         <Box width="100%">
-          <Text variant="base">
+          <Text variant="body">
             <details>
               <summary>View raw transaction</summary>
               <pre>{JSON.stringify({ ...tx, cmd: txData }, null, 2)}</pre>

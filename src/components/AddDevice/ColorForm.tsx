@@ -6,7 +6,14 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { StepProps } from './AddDevice';
-import { color, input, selected, wrapper } from './ColorForm.css';
+import {
+  backgroundColors,
+  color,
+  input,
+  selected,
+  textError,
+  wrapper,
+} from './ColorForm.css';
 import { animationVariants } from './animation';
 
 export const ColorForm: FC<StepProps> = ({
@@ -48,7 +55,7 @@ export const ColorForm: FC<StepProps> = ({
               This color helps you to identify this device. The color is only
               stored on your device and cannot been seen by others.
               {errors.color && (
-                <Box style={{ color: 'red' }}>{errors.color.message}</Box>
+                <Box className={textError}>{errors.color.message}</Box>
               )}
             </>
           }
@@ -74,10 +81,14 @@ export const ColorForm: FC<StepProps> = ({
                     aria-label={`Color ${description}`}
                   >
                     <Box
-                      className={classnames(color, {
-                        selected: selectedColor === colorHex,
-                      })}
-                      style={{ backgroundColor: colorHex }}
+                      className={classnames(
+                        color,
+                        {
+                          selected: selectedColor === colorHex,
+                        },
+                        backgroundColors[description],
+                      )}
+                      data-color={colorHex}
                     >
                       {selectedColor === colorHex && (
                         <AnimatePresence>

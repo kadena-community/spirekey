@@ -1,5 +1,6 @@
 import { Box, Heading, Stack, SystemIcon } from '@kadena/react-ui';
 import { ICap } from '@kadena/types';
+import * as styles from './SetReadyForDelivery.css';
 
 interface Props {
   capabilities: ICap[];
@@ -18,11 +19,8 @@ export function SetReadyForDelivery({ capabilities }: Props) {
       <Stack flexDirection="column" gap="md" marginBlockEnd="xl">
         {setReadyForDeliveryCapability && (
           <Stack alignItems="center" gap="sm">
-            <SystemIcon.Check
-              size="xl"
-              style={{ marginInlineStart: '0.25rem' }}
-            />
-            <Box style={{ marginInlineStart: '0.5rem' }}>
+            <SystemIcon.Check size="xl" className={styles.check} />
+            <Box className={styles.delivery}>
               <Heading variant="h6" as="h4">
                 The order is ready for delivery!
               </Heading>

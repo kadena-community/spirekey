@@ -137,8 +137,8 @@ export const balanceLabel = style({
 
 export const balance = style([
   atoms({
-    fontFamily: 'codeFont',
-    fontWeight: 'monoFont.bold',
+    fontFamily: 'monospaceFont',
+    fontWeight: 'monospaceFont.bold',
   }),
   {
     marginInlineStart: 'clamp(0.5rem, 2vw, 1rem)',
@@ -154,8 +154,8 @@ export const transactionsLabel = style({
 
 export const transactions = style([
   atoms({
-    fontFamily: 'codeFont',
-    fontWeight: 'monoFont.bold',
+    fontFamily: 'monospaceFont',
+    fontWeight: 'monospaceFont.bold',
   }),
   {
     marginInlineStart: 'clamp(0.5rem, 2vw, 1rem)',

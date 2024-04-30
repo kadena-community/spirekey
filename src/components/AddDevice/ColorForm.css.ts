@@ -1,4 +1,5 @@
-import { style } from '@vanilla-extract/css';
+import { deviceColors } from '@/styles/shared/tokens.css';
+import { style, styleVariants } from '@vanilla-extract/css';
 
 export const wrapper = style({
   display: 'grid',
@@ -25,3 +26,17 @@ export const selected = style({
   background: 'white',
   borderRadius: 'inherit',
 });
+
+export const textError = style({ color: 'red' });
+
+export const backgroundColors = styleVariants(
+  Object.entries(deviceColors).reduce(
+    (variants, [description, colorHex]) => {
+      return {
+        ...variants,
+        [description]: { backgroundColor: colorHex },
+      };
+    },
+    {} as Record<string, { backgroundColor: string }>,
+  ),
+);

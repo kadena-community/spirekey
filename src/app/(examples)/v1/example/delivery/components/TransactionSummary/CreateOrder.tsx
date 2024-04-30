@@ -37,26 +37,29 @@ export function CreateOrder({ capabilities }: Props) {
     <>
       <Stack flexDirection="column" gap="md" marginBlockEnd="xl">
         {orderLineCapabilities.map((capability, i) => (
-          <Stack alignItems="center" gap="sm" key={i}>
-            <Image
-              className={styles.productImage}
-              src={
-                products.find((product) =>
-                  capability.args[1].toString().includes(product.name),
-                )?.image || ''
-              }
-              alt={capability.args[1].toString()}
-            />
+          <Stack
+            alignItems="center"
+            justifyContent="space-between"
+            gap="sm"
+            key={i}
+          >
             <Box>
-              <Heading variant="h6" as="h4">
-                {capability.args[1].toString()}
-              </Heading>
+              <Image
+                className={styles.productImage}
+                src={
+                  products.find((product) =>
+                    capability.args[1].toString().includes(product.name),
+                  )?.image || ''
+                }
+                alt={capability.args[1].toString()}
+              />
+              <Box>
+                <Heading variant="h6" as="h4">
+                  {capability.args[1].toString()}
+                </Heading>
+              </Box>
             </Box>
-            <Heading
-              variant="h6"
-              as="h4"
-              style={{ flexGrow: 1, textAlign: 'end' }}
-            >
+            <Heading variant="h6">
               ${' '}
               {Number(
                 (capability.args[2] as { decimal: number }).decimal,
@@ -64,21 +67,16 @@ export function CreateOrder({ capabilities }: Props) {
             </Heading>
           </Stack>
         ))}
-        <Stack alignItems="center" gap="sm">
-          <SystemIcon.MapMarker
-            size="xl"
-            style={{ marginInlineStart: '0.25rem' }}
-          />
-          <Box style={{ marginInlineStart: '0.5rem' }}>
-            <Heading variant="h6" as="h4">
-              Delivery
-            </Heading>
-          </Box>
-          <Heading
-            variant="h6"
-            as="h4"
-            style={{ flexGrow: 1, textAlign: 'end' }}
-          >
+        <Stack alignItems="center" justifyContent="space-between" gap="sm">
+          <Stack marginBlockStart="xs" flexDirection="row">
+            <SystemIcon.MapMarker size="xl" className={styles.mapMarker} />
+            <Box className={styles.delivery}>
+              <Heading variant="h6" as="h4">
+                Delivery
+              </Heading>
+            </Box>
+          </Stack>
+          <Heading variant="h6">
             ${' '}
             {Number(
               (deliveryCapability?.args[2] as { decimal: number })?.decimal,

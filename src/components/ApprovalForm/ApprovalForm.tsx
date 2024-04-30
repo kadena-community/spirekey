@@ -10,7 +10,7 @@ import {
 import { l1Client } from '@/utils/shared/client';
 import { submitTransaction } from '@/utils/submitTransaction';
 import { updateAccount } from '@/utils/updateAccount';
-import { ChainId, ICommand, createClient } from '@kadena/client';
+import { ChainId, ICommand } from '@kadena/client';
 import {
   Box,
   Button,
@@ -191,10 +191,13 @@ export default function ApprovalForm() {
                       aria-label={publicKey}
                     >
                       <Box
-                        className={classNames(styles.device, {
-                          selected: selectedPublicKey === publicKey,
-                        })}
-                        style={{ backgroundColor: device.color }}
+                        className={classNames(
+                          styles.device,
+                          {
+                            selected: selectedPublicKey === publicKey,
+                          },
+                          styles.backgroundColors[device.color],
+                        )}
                       >
                         {getDeviceIcon(device.deviceType)}
                         {selectedPublicKey === publicKey && (
