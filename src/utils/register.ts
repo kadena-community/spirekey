@@ -73,9 +73,8 @@ export const registerAccountOnChain = async ({
 }: Omit<AccountRegistration, 'alias' | 'chainIds'> & {
   chainId: ChainId;
   accountName: string;
-}): Promise<ITransactionDescriptor> => {
-  console.log('in registerAccountOnChain');
-  return asyncPipe(
+}): Promise<ITransactionDescriptor> =>
+  asyncPipe(
     registerAccountCommand({
       accountName,
       color,
@@ -90,7 +89,6 @@ export const registerAccountOnChain = async ({
     signWithKeyPair({ publicKey: genesisPubKey, secretKey: genesisPrivateKey }),
     l1Client.submit,
   )({});
-};
 
 export const getWebAuthnPubkeyFormat = (pubkey: string) => {
   if (/^WEBAUTHN-/.test(pubkey)) return pubkey;

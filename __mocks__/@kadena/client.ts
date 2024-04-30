@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-export const mockL1Client = {
+const l1Client = {
   local: vi.fn().mockResolvedValue({
     result: { status: 'success', data: {} },
     reqKey: 'test-request-key',
@@ -22,3 +22,7 @@ export const mockL1Client = {
     result: { status: 'success', data: {} },
   }),
 };
+
+module.exports =
+  await vi.importActual<typeof import('@kadena/client')>('@kadena/client');
+export const createClient = () => l1Client;

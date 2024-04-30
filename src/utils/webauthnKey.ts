@@ -11,7 +11,6 @@ const getPublicKey = async (res: RegistrationResponseJSON) => {
     base64URLStringToBuffer(res.response.attestationObject),
   );
 
-  console.log(authData);
   const dataView = new DataView(new ArrayBuffer(2));
   const idLenBytes = authData.slice(53, 55);
   idLenBytes.forEach((value: number, index: number) =>

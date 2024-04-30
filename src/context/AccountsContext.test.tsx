@@ -349,10 +349,6 @@ describe('AccountsContext', () => {
     });
 
     it('removes the requestkey from pendingRegistrationTxs for a successful transaction', async () => {
-      // mockL1Client.listen = vi.fn().mockResolvedValue({
-      //   result: { status: 'failure', data: {} },
-      // });
-
       const Component = () => {
         const { accounts, registerAccount } = useAccounts();
 
@@ -383,7 +379,7 @@ describe('AccountsContext', () => {
     });
   });
 
-  it.only("doesn't remove the requestkey from pendingRegistrationTxs for a failed transaction", async () => {
+  it("doesn't remove the requestkey from pendingRegistrationTxs for a failed transaction", async () => {
     l1Client.listen = vi.fn().mockResolvedValue({
       result: { status: 'failure', data: {} },
     });

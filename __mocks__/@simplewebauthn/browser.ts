@@ -7,9 +7,7 @@ const startRegistration = vi.fn().mockReturnValue({
   },
 });
 
-const { base64URLStringToBuffer, bufferToBase64URLString } =
-  await vi.importActual<typeof import('@simplewebauthn/browser')>(
-    '@simplewebauthn/browser',
-  );
-
-export { base64URLStringToBuffer, bufferToBase64URLString, startRegistration };
+module.exports = await vi.importActual<
+  typeof import('@simplewebauthn/browser')
+>('@simplewebauthn/browser');
+export { startRegistration };

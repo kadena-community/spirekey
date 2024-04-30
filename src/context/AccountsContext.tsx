@@ -351,6 +351,7 @@ const AccountsProvider = ({ children }: Props) => {
         return result;
       }),
     );
+
     results.forEach((result, index) => {
       if (
         result.status === 'fulfilled' &&
