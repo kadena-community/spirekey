@@ -17,7 +17,8 @@ export default defineConfig({
     headless: process.env.CI !== undefined,
     baseURL: 'http://localhost:1337/',
     channel: 'chromium',
-    trace: 'on',
+    video: 'off',
+    trace: 'on-first-retry',
   },
   projects: [
     {
