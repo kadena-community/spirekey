@@ -13,7 +13,7 @@ import { NetworkIdForm } from './NetworkIdForm';
 import { PasskeyForm } from './PasskeyForm';
 import * as styles from './styles.css';
 
-interface FormData {
+export interface FormData {
   networkId: string;
 }
 

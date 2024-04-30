@@ -34,7 +34,13 @@ export default function Accounts() {
         width="100%"
         style={{ height: '100svh' }}
       >
-        <PageTitle append={<Link href="/settings">Settings</Link>}>
+        <PageTitle
+          append={
+            process.env.DEV_MODE_SETTINGS_PAGE === 'true' && (
+              <Link href="/settings">Settings</Link>
+            )
+          }
+        >
           Accounts
         </PageTitle>
 
