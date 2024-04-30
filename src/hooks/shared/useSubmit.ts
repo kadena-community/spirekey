@@ -44,7 +44,11 @@ export const useSubmit = ({ transaction }: Props) => {
 
     try {
       const txRes = await l1Client.submit(tx);
-      const result = await l1Client.listen(txRes);
+      const response = await l1Client.pollOne(txRes);
+
+      if (response.result.status === 'failure') {
+        throw response.result.error;
+      }
 
       setStatus(SubmitStatus.SUCCESS);
       setResult(result);

@@ -127,7 +127,7 @@ const AccountsProvider = ({ children }: Props) => {
       for (const account of accounts) {
         for (const device of account.devices) {
           if (device.pendingRegistrationTx) {
-            listenForRegistrationTransaction({
+            pollForRegistrationTx({
               requestKey: device.pendingRegistrationTx,
               chainId: process.env.CHAIN_ID as ChainId,
               networkId: account.networkId,
@@ -260,12 +260,19 @@ const AccountsProvider = ({ children }: Props) => {
     };
     addAccount(account);
 
+    // NOTE: Not polling for confirmation depth on devnet
     if (
       process.env.INSTA_FUND === 'true' &&
       networkId === getDevnetNetworkId()
     ) {
-      await l1Client.listen({ requestKey, chainId, networkId });
-      await fundAccount(account);
+      const accountResponse = await l1Client.listen({
+        requestKey,
+        chainId,
+        networkId,
+      });
+      if (accountResponse.result.status === 'success') {
+        await fundAccount(account);
+      }
     }
 
     return {
@@ -329,10 +336,8 @@ const AccountsProvider = ({ children }: Props) => {
     setAccount(account);
   };
 
-  const listenForRegistrationTransaction = async (
-    tx: ITransactionDescriptor,
-  ) => {
-    const result = await l1Client.listen(tx);
+  const pollForRegistrationTx = async (tx: ITransactionDescriptor) => {
+    const result = await l1Client.pollOne(tx);
     if (result.result.status === 'success') {
       removePendingTransaction(tx.requestKey);
     }

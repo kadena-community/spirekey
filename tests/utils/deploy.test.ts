@@ -34,11 +34,11 @@ describe('deploy', () => {
   };
   const mockClient = {
     submit: mock.fn((x) => Promise.resolve(x)),
-    listen: mock.fn((x) => Promise.resolve(x)),
+    pollOne: mock.fn((x) => Promise.resolve(x)),
   };
   beforeEach(() => {
     mockClient.submit.mock.resetCalls();
-    mockClient.listen.mock.resetCalls();
+    mockClient.pollOne.mock.resetCalls();
   });
   it('should resolve configuration', async () => {
     const resolvedConfig = await resolveConfiguration(config);
@@ -64,9 +64,9 @@ describe('deploy', () => {
       'should have submitted for each chain',
     );
     assert.equal(
-      mockClient.listen.mock.callCount(),
+      mockClient.pollOne.mock.callCount(),
       2,
-      'should have listened for each chain',
+      'should have polled for each chain',
     );
   });
 });
