@@ -2,9 +2,10 @@
 
 import { useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
-import { Button, Stack, TextField } from '@kadena/react-ui';
+import { Button, Form, Stack, TextField } from '@kadena/react-ui';
 import { useParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import * as styles from './AliasForm.css';
 
 export default function AliasForm() {
   const { addNotification } = useNotifications();
@@ -41,7 +42,7 @@ export default function AliasForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <Form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       <Stack flexDirection="column" gap="md">
         <TextField
           label="Alias"
@@ -50,6 +51,6 @@ export default function AliasForm() {
         />
         <Button type="submit">Update</Button>
       </Stack>
-    </form>
+    </Form>
   );
 }

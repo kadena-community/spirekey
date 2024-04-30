@@ -23,3 +23,7 @@ export const backgroundColors = styleVariants(
     {} as Record<string, { backgroundColor: string }>,
   ),
 );
+
+export const addDeviceCircle = style({
+  backgroundColor: deviceColors.purple,
+});

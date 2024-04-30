@@ -5,6 +5,8 @@ import { calculateBalancePercentage } from '@/utils/balance';
 import { Box, GridItem, Heading, Link, Stack } from '@kadena/react-ui';
 import { useEffect } from 'react';
 import { AccountDetails } from '../AccountDetails/AccountDetails';
+import AliasForm from '../AliasForm/AliasForm';
+import ApprovalForm from '../ApprovalForm/ApprovalForm';
 import DeviceCard from '../Card/DeviceCard';
 import AddDeviceCircle from '../Device/AddDeviceCircle';
 import DeviceCircle from '../Device/DeviceCircle';
@@ -13,7 +15,7 @@ interface Props {
   accountName: string;
 }
 
-export function AccountDetail({ accountName }: Props) {
+export function AccountSettings({ accountName }: Props) {
   const { accounts } = useAccounts();
   const { addNotification } = useNotifications();
   const { updateContextMenuItems } = useNavigation();
@@ -46,45 +48,15 @@ export function AccountDetail({ accountName }: Props) {
   }
 
   return (
-    <Stack flexDirection="column" gap="md">
-      <Box width="100%" paddingInline="lg" marginBlockEnd="lg">
-        <DeviceCard
-          color={device.color}
-          account={account}
-          device={device}
-          balancePercentage={calculateBalancePercentage(account, accounts)}
-        />
-      </Box>
-      <Stack
-        flexDirection="row"
-        paddingInline="lg"
-        marginBlockEnd="lg"
-        justifyContent="center"
-      >
-        {account.devices.map((device) => {
-          const credentialId = device['credential-id'];
-          return (
-            <GridItem key={credentialId}>
-              <Link
-                href={`/accounts/${encodedAccountName}/devices/${credentialId}`}
-              >
-                <DeviceCircle device={device} />
-              </Link>
-            </GridItem>
-          );
-        })}
-        <GridItem>
-          <Link href={`/accounts/${encodedAccountName}/devices/add`}>
-            <AddDeviceCircle />
-          </Link>
-        </GridItem>
+    <Stack flexDirection="column" gap="md" alignItems="center">
+      <Heading variant="h2">Account alias</Heading>
+      <Stack marginBlockEnd="lg" width="100%" justifyContent="center">
+        <AliasForm />
       </Stack>
-      {account && (
-        <>
-          <Heading variant="h2">Transactions</Heading>
-          <AccountDetails account={account} />
-        </>
-      )}
+      <Heading variant="h2">Approvals</Heading>
+      <Stack marginBlockEnd="lg" width="100%" justifyContent="center">
+        <ApprovalForm />
+      </Stack>
     </Stack>
   );
 }

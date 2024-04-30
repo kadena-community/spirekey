@@ -10,11 +10,11 @@ export const PageTitle: FC<Props> = ({ children, append }) => (
     paddingInline="lg"
     paddingBlock="md"
     alignItems="center"
-    justifyContent="space-between"
+    justifyContent="center"
     width="100%"
     flexDirection="row"
   >
-    <Heading variant="h5">{children}</Heading>
+    <Heading>{children}</Heading>
     {append}
   </Stack>
 );

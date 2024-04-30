@@ -5,24 +5,24 @@ import { PageTitle } from '@/components/Layout/PageTitle';
 import dynamic from 'next/dynamic';
 import { useParams } from 'next/navigation';
 
-const AccountDetail = dynamic(
+const AccountSettings = dynamic(
   () =>
-    import('@/components/AccountDetail/AccountDetail').then(
-      (mod) => mod.AccountDetail,
+    import('@/components/AccountSettings/AccountSettings').then(
+      (mod) => mod.AccountSettings,
     ),
   {
     ssr: false,
   },
 );
 
-export default function AccountDetailPage() {
+export default function AccountSettingsPage() {
   const params = useParams();
   const accountName = decodeURIComponent(String(params.caccount));
 
   return (
     <Container>
-      <PageTitle>Account details</PageTitle>
-      <AccountDetail accountName={accountName} />
+      <PageTitle>Account settings</PageTitle>
+      <AccountSettings accountName={accountName} />
     </Container>
   );
 }

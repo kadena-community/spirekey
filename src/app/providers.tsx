@@ -4,8 +4,10 @@ import { darkThemeClass } from '@kadena/react-ui/styles';
 import { ThemeProvider } from 'next-themes';
 import { ReactNode, useEffect } from 'react';
 
+import Navigation from '@/components/Navigation/Navigation';
 import { NotificationContainer } from '@/components/shared/NotificationsContainer/NotificationsContainer';
 import { AccountsProvider } from '@/context/AccountsContext';
+import { NavigationProvider } from '@/context/NavigationContext';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { NotificationsProvider } from '@/context/shared/NotificationsContext';
 import { SWRConfig } from 'swr';
@@ -45,23 +47,26 @@ export default function Providers({
   return (
     <SettingsProvider displayDevMode={displayDevMode}>
       <SWRConfig value={{ provider: localStorageProvider }}>
-        <NotificationsProvider>
-          <AccountsProvider>
-            <ThemeProvider
-              attribute="class"
-              enableSystem={false}
-              value={{
-                dark: darkThemeClass,
-              }}
-              defaultTheme="dark"
-            >
-              <>
-                {children}
-                <NotificationContainer />
-              </>
-            </ThemeProvider>
-          </AccountsProvider>
-        </NotificationsProvider>
+        <NavigationProvider>
+          <NotificationsProvider>
+            <AccountsProvider>
+              <ThemeProvider
+                attribute="class"
+                enableSystem={false}
+                value={{
+                  dark: darkThemeClass,
+                }}
+                defaultTheme="dark"
+              >
+                <>
+                  <Navigation />
+                  {children}
+                  <NotificationContainer />
+                </>
+              </ThemeProvider>
+            </AccountsProvider>
+          </NotificationsProvider>
+        </NavigationProvider>
       </SWRConfig>
     </SettingsProvider>
   );

@@ -146,7 +146,7 @@ export default function ApprovalForm() {
         </Stack>
       )}
       {!transaction && (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <Stack flexDirection="column" gap="md">
             <TextField
               label="Minimum approvals"

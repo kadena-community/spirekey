@@ -7,7 +7,7 @@ export const wrapper = style([
     position: 'fixed',
     zIndex: 999,
     width: '100%',
-    top: 0,
+    top: '64px',
     display: 'flex',
     flexDirection: 'column',
   },
