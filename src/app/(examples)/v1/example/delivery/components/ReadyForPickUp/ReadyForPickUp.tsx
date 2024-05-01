@@ -33,12 +33,16 @@ export function ReadyForPickUp({ order }: Props) {
         networkId: process.env.DAPP_NETWORK_ID,
         chainIds: [process.env.CHAIN_ID],
       });
+
+      if (!merchantAcc?.devices[0].guard.keys[0]) return;
+
       const tx = await pickupDelivery({
         orderId,
         merchantPublicKey: merchantAcc?.devices[0].guard.keys[0],
         courierAccount: account.accountName,
         courierPublicKey: account.credentials[0].publicKey,
       });
+
       router.push(
         `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
           JSON.stringify(tx),

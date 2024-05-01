@@ -4,6 +4,7 @@ import {
   getWebAuthnPubkeyFormat,
   registerAccountOnChain,
 } from './register';
+
 import { l1Client } from './shared/client';
 
 describe('register utils', () => {

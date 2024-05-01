@@ -23,7 +23,7 @@ export function DeliveryTransit({ order }: Props) {
   const { getReturnUrl } = useReturnUrl();
   const { deliverOrder } = useDelivery({
     chainId: process.env.CHAIN_ID as ChainId,
-    networkId: process.env.DAPP_NETWORK_ID!,
+    networkId: process.env.DAPP_NETWORK_ID,
   });
 
   const onDeliver =
@@ -35,6 +35,9 @@ export function DeliveryTransit({ order }: Props) {
         networkId: process.env.DAPP_NETWORK_ID,
         chainIds: [process.env.CHAIN_ID],
       });
+
+      if (!buyerAccount?.devices[0].guard.keys[0]) return;
+
       const tx = await deliverOrder({
         orderId,
         buyerAccount: buyer,

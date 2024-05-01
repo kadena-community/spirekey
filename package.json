@@ -40,7 +40,7 @@
     "@playwright/test": "^1.43.1",
     "@react-aria/utils": "^3.23.2",
     "@react-three/drei": "^9.99.4",
-    "@react-three/fiber": "^8.15.16",
+    "@react-three/fiber": "^8.16.3",
     "@simplewebauthn/browser": "^9.0.1",
     "@simplewebauthn/types": "^9.0.1",
     "@types/three": "^0.164.0",
@@ -91,7 +91,7 @@
     "prettier": "^3.2.5",
     "prettier-plugin-organize-imports": "^3.2.4",
     "prettier-plugin-packagejson": "^2.5.0",
-    "tsx": "^4.7.3",
+    "tsx": "^4.8.2",
     "typescript": "^5.4.5",
     "vitest": "^1.5.2",
     "vitest-matchmedia-mock": "^1.0.4"

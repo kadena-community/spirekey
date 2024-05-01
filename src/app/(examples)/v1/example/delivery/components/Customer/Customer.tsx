@@ -144,7 +144,14 @@ export default function Customer({ searchParams }: Props) {
           accountName: merchantAccount,
           chainIds: [process.env.CHAIN_ID],
         });
-        setMerchantPublicKey(remoteMerchantAccount.devices[0].guard.keys[0]);
+
+        if (!remoteMerchantAccount) {
+          throw new Error('Merchant account was not found');
+        }
+
+        setMerchantPublicKey(
+          remoteMerchantAccount.devices[0].guard.keys[0] || '',
+        );
       } catch (error: unknown) {
         if (error instanceof Error) {
           addNotification({

@@ -26,13 +26,18 @@ export const transfer = async ({
   networkId: string;
   gasPayer: string;
 }): Promise<ICommand> => {
-  // TODO: make a decicion which command to get (safe/unsafe transfer)
+  // @TODO: make a decicion which command to get (safe/unsafe transfer)
+  // @TODO: add a chainId parameter
   const receiverAcc = await getAccountFrom({
     accountName: receiver,
     networkId,
     chainIds: [process.env.CHAIN_ID],
     namespace,
   });
+
+  if (!receiverAcc) {
+    throw new Error('Receiver account not found');
+  }
 
   return asyncPipe(
     composePactCommand(
@@ -42,7 +47,7 @@ export const transfer = async ({
         )})`,
       ),
       setMeta({
-        chainId: process.env.CHAIN_ID as ChainId,
+        chainId: process.env.CHAIN_ID,
         gasLimit: 2000,
         gasPrice: 0.0000001,
         ttl: 60000,

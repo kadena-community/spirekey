@@ -62,8 +62,6 @@ export default function Registration({
   const { host } = useReturnUrl();
   const { devMode } = useSettings();
 
-  console.log({ devMode });
-
   const skipNetworkId = process.env.WALLET_NETWORK_ID && !devMode;
   const defaultFormData: FormData = {
     alias: '',

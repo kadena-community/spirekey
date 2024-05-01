@@ -7,8 +7,7 @@ export default defineConfig({
   plugins: [vanillaExtractPlugin(), react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@mocks': path.resolve(__dirname, './__mocks__'),
+      '@': '/src', // Needs to be absolute to make mocks work ¯\_(ツ)_/¯
     },
   },
   test: {

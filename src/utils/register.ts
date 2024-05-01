@@ -31,8 +31,8 @@ export const getAccountName = async (
   publicKey: string,
   networkId: string,
   chainId: ChainId,
-): Promise<string> => {
-  return asyncPipe(
+): Promise<string> =>
+  asyncPipe(
     composePactCommand(
       execution(`
       (let* ((guard (read-keyset 'ks))
@@ -59,7 +59,6 @@ export const getAccountName = async (
       l1Client.local(tx, { preflight: false, signatureVerification: false }),
     (tx) => tx.result.data,
   )({});
-};
 
 export const registerAccountOnChain = async ({
   accountName,

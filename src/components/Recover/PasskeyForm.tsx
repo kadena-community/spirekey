@@ -95,6 +95,8 @@ export const PasskeyForm: FC<StepProps> = ({
       return;
     }
 
+    if (!account?.accountName) return;
+
     setAccount({
       ...account,
       alias: alias || '',

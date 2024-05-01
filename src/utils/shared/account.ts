@@ -10,6 +10,21 @@ import {
 import { asyncPipe } from './asyncPipe';
 import { l1Client } from './client';
 
+/**
+ * Fetches account details from chain.
+ *
+ * This function queries multiple chains for an account's details such as balance and devices,
+ * and aggregates the results. It returns the combined balance, the list of devices across all chains,
+ * and the highest values of minApprovals and minRegistrationApprovals found.
+ *
+ * @param {Object} params - The parameters for fetching account details.
+ * @param {string} params.accountName - The name of the account to fetch.
+ * @param {string} params.networkId - The network ID where to get the information from
+ * @param {ChainId[]} params.chainIds - An array of chain IDs to query for the account.
+ * @param {string} [params.namespace=process.env.NAMESPACE] - The namespace of the account, defaults to environment variable NAMESPACE.
+ * @returns {Promise<Omit<Account, 'alias'> | null>} An object containing the account details without the alias, or null if the account is not found on any chain.
+ *
+ */
 export const getAccountFrom = async ({
   accountName,
   networkId,
@@ -20,7 +35,7 @@ export const getAccountFrom = async ({
   networkId: string;
   chainIds: ChainId[];
   namespace?: string;
-}): Promise<Omit<Account, 'alias'>> => {
+}): Promise<Omit<Account, 'alias'> | null> => {
   const results = await Promise.allSettled(
     chainIds.map((chainId) =>
       asyncPipe(
@@ -46,6 +61,8 @@ export const getAccountFrom = async ({
     .filter(assertFulfilled)
     .filter((result) => result.value?.result?.status === 'success');
 
+  if (!successfulResults.length) return null;
+
   let totalBalance = 0;
   const devices: Device[] = [];
   const foundChainIds: ChainId[] = [];
@@ -59,14 +76,11 @@ export const getAccountFrom = async ({
 
     foundChainIds.push(chainIds[index]);
 
-    minApprovals =
-      minApprovals > devicesResult['min-approvals'].int
-        ? devicesResult['min-approvals'].int
-        : minApprovals;
-    minRegistrationApprovals =
-      minRegistrationApprovals > devicesResult['min-registration-approvals'].int
-        ? devicesResult['min-registration-approvals'].int
-        : minRegistrationApprovals;
+    minApprovals = Math.max(minApprovals, devicesResult['min-approvals'].int);
+    minRegistrationApprovals = Math.max(
+      minRegistrationApprovals,
+      devicesResult['min-registration-approvals'].int,
+    );
   });
 
   return {

@@ -170,7 +170,8 @@ const AccountsProvider = ({ children }: Props) => {
           balance: remoteAccount.balance || '0',
           devices: uniqueDevices.map((device: Device) => {
             const deviceOnChain = remoteAccount.devices.find(
-              (d) => device['credential-id'] === device['credential-id'],
+              (remoteDevice) =>
+                device['credential-id'] === remoteDevice['credential-id'],
             );
 
             return { ...deviceOnChain, ...device };
@@ -352,12 +353,12 @@ const AccountsProvider = ({ children }: Props) => {
       }),
     );
 
-    results.forEach((result, index) => {
+    results.forEach((result) => {
       if (
         result.status === 'fulfilled' &&
         result.value.result.status === 'success'
       ) {
-        removePendingTransaction(txs[index].requestKey);
+        removePendingTransaction(result.value.reqKey);
       }
     });
   };

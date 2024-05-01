@@ -79,7 +79,6 @@ export default function CopyPage() {
       });
     } else {
       l1Client.submit(tx).then((result: any) => {
-        console.log('result', result);
         localStorage.setItem('temp', JSON.stringify(result));
       });
     }
