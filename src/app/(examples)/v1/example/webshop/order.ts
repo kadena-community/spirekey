@@ -36,7 +36,6 @@ export const createOrder = async ({
       }),
       setNetworkId(process.env.DAPP_NETWORK_ID!),
       addSigner(
-        // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
         {
           pubKey: signerPubKey,
           scheme: 'WebAuthn',
