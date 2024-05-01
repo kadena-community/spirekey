@@ -50,12 +50,12 @@ export const transfer = async ({
       setNetworkId(networkId),
       // if payer === sender, then we need to add only one signer
       addSigner(
-        // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
         {
           pubKey: publicKey,
           scheme: 'WebAuthn',
         },
         (signFor) =>
+          // @ts-expect-error
           [
             signFor(
               `${namespace}.webauthn-wallet.TRANSFER`,
@@ -75,7 +75,6 @@ export const transfer = async ({
       gasPayer !== sender
         ? // then this line should be skipped
           addSigner(
-            // @ts-expect-error WebAuthn scheme is not yet added to kadena-client
             {
               pubKey: receiverAcc.devices[0].guard.keys[0],
               scheme: 'WebAuthn',

@@ -8,6 +8,8 @@ const defaultAccount: Account = {
   balance: '50.0',
   devices: [],
   networkId: 'development',
+  minApprovals: 1,
+  minRegistrationApprovals: 1,
 };
 
 describe('balance', () => {
