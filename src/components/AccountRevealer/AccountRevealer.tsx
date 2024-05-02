@@ -77,7 +77,7 @@ export const AccountRevealer = ({
   }
 
   return (
-    <span className={styles.wrapper} data-testid="accountName">
+    <span className={styles.wrapper} data-testid="accountNameRevealer">
       {accountName.split('').map((char, i) => {
         let content = null;
 
