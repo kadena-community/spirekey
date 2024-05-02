@@ -60,7 +60,10 @@ export const NetworkIdForm: FC<StepProps> = ({
     >
       <form
         id={`registration-form-${stepIndex}`}
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={() => {
+          console.log('HI');
+          return handleSubmit(onSubmit);
+        }}
       >
         <SurfaceCard
           title="Network"
