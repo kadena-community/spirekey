@@ -1,16 +1,16 @@
 ---
-title: Send unsigned transactions to Kadena SpireKey
+title: Create transactions for Kadena SpireKey
 description:
   If you're an application developer, you can enable users to sign transactions
-  using their Kadena SpireKey accounts by constructing the transaction in the
+  using their Kadena SpireKey account by constructing the transaction in the
   proper format and sending the unsigned transaction to the SpireKey endpoint.
-menu: Authentication and authorization
-label: Send unsigned transactions to Kadena SpireKey
+menu: Authenticate and authorize
+label: Construct transactions
 order: 2
 layout: full
 ---
 
-# Send unsigned transactions to Kadena SpireKey
+# Create transactions for Kadena SpireKey
 
 If you enable your application to connect to a Kadena SpireKey wallet as
 described in [Integrate with Kadena SpireKey](/build/authentication/integrate),
@@ -45,10 +45,11 @@ permissions.
 
 When users register an account using Kadena SpireKey, the cryptographic
 algorithm used to generate the public and secret keys is different from the
-cryptographic algorithm used to generate the public and secret keys for previous
-Kadena accounts. To differentiate Kadena SpireKey account public keys from other
-public keys, transactions must include both the public key and the `scheme`
-attribute set to `WebAuthn` as its value.
+cryptographic algorithm and ED25519 signature scheme used to generate the public
+and secret keys for other Kadena accounts. To differentiate Kadena SpireKey
+account public keys from other public keys, transactions must include both the
+public key and the `scheme` attribute set to `WebAuthn` as its value when
+signing transactions.
 
 ```ts
 { pubKey: webAuthnPublicKey, scheme: 'WebAuthn' }
@@ -160,12 +161,12 @@ navigate to the `sign` endpoint. For example, https://spirekey.kadena.io/sign.
 In the following table, you can see the parameters that are currently accepted
 by Kadena SpireKey.
 
-| Parameter      | Type    | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| -------------- | ------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `transaction`  | string  | Required | A base64 encoded string of the unsigned transaction.                                                                                                                                                                                                                                                                                                                                                                                                 |
-| `returnUrl`    | string  | Required | The url, encoded as a uriComponent, that the wallet should redirect users to after they have signed the transaction.                                                                                                                                                                                                                                                                                                                                 |
-| `translations` | string  | Optional | Custom descriptions that explain what capabilities or operations that the user is user signing for. For more information about using translations to describe transaction details, see [Translate transaction operations](/build/authentication/translate).                                                                                                                                                                                          |
-| `optimistic`   | boolean | Optional | Allows applications to continue the transaction flows without having to wait for the transaction to be confirmed on the blockchain. When this parameter is included, `pendingTxIds` are returned so that the application can keep track of the status of the submitted transactions and update the UI accordingly. For more information about the optimistic transaction flow, see [Optimistic workflow](/build/authentication/optimistic-workflow). |
+| Parameter      | Type    | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| -------------- | ------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `transaction`  | string  | Required | A base64 encoded string of the unsigned transaction.                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `returnUrl`    | string  | Required | The url, encoded as a uriComponent, that the wallet should redirect users to after they have signed the transaction.                                                                                                                                                                                                                                                                                                                                                                                      |
+| `translations` | string  | Optional | Custom descriptions that explain what capabilities or operations that the user is user signing for. For more information about using translations to describe transaction details, see [Translate signing operations](/build/authentication/translate).                                                                                                                                                                                                                                                   |
+| `optimistic`   | boolean | Optional | Allows applications to continue the transaction flows without having to wait for the transaction to be confirmed on the blockchain. When this parameter is included, `pendingTxIds` are returned so that the application can keep track of the status of the submitted transactions and update the UI accordingly. For more information about the optimistic transaction flow, see [Allow optimistic account onboarding](/build/authentication/integrate#allow-optimistic-account-onboardingh-380147766). |
 
 The following is an example of how you would construct the route:
 
@@ -191,10 +192,10 @@ transaction and optional parameters are included as URL parameters. If the
 transaction was not successfully signed, the unsigned transaction is returned in
 the URL parameters.
 
-| Parameter      | Type     | Required | Description                                                                                                                                       |
-| -------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `transaction`  | string   | Required | A base64 encoded string of the signed or unsigned transaction.                                                                                    |
-| `pendingTxIds` | string[] | Optional | Pending transaction identifiers that enable the application to move forward withut waiting for the transaction to be confirmed on the blockchain. |
+| Parameter      | Type     | Required | Description                                                                                                                                        |
+| -------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `transaction`  | string   | Required | A base64 encoded string of the signed or unsigned transaction.                                                                                     |
+| `pendingTxIds` | string[] | Optional | Pending transaction identifiers that enable the application to move forward without waiting for the transaction to be confirmed on the blockchain. |
 
 To verify that a transaction has been successfully signed, you can check the
 `sigs` field in the transaction. If the field has undefined signatures, you
