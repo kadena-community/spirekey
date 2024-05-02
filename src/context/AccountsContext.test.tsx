@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { afterAll, afterEach, describe, expect, it, vi } from 'vitest';
@@ -7,7 +7,7 @@ import { fundAccount } from '@/utils/fund';
 import { registerAccountOnChain } from '@/utils/register';
 import { l1Client } from '@/utils/shared/client';
 import { ChainId } from '@kadena/client';
-import { AccountsProvider, useAccounts } from './AccountsContext';
+import { Account, AccountsProvider, useAccounts } from './AccountsContext';
 
 vi.mock('@/utils/fund');
 vi.mock('@/utils/register');
@@ -39,7 +39,7 @@ describe('AccountsContext', () => {
     vi.restoreAllMocks();
   });
 
-  describe('AccountsProvider', () => {
+  describe('AccountsContext', () => {
     it("renders it's children", () => {
       const result = render(
         <AccountsProvider>
@@ -66,7 +66,14 @@ describe('AccountsContext', () => {
     it('loads accounts from localStorage', () => {
       const Component = () => {
         const { accounts } = useAccounts();
-        return <div data-testid="account-count">{accounts.length}</div>;
+        return (
+          <>
+            <div data-testid="account-count">{accounts.length}</div>
+            <div data-testid="first-account-json">
+              {JSON.stringify(accounts[0])}
+            </div>
+          </>
+        );
       };
 
       render(
@@ -77,33 +84,30 @@ describe('AccountsContext', () => {
 
       expect(screen.getByTestId('account-count').textContent).toBe('0');
 
-      localStorage.setItem(
-        'localAccounts',
-        JSON.stringify([
+      const account: Account = {
+        accountName: 'c:UOOiphxVZngAqZ6XLq4V6mpu1_xz5JjomQ7I2sAJO5w',
+        alias: 'asdf',
+        networkId: 'development',
+        devices: [
           {
-            accountName: 'c:UOOiphxVZngAqZ6XLq4V6mpu1_xz5JjomQ7I2sAJO5w',
-            alias: 'asdf',
-            networkId: 'development',
-            devices: [
-              {
-                domain: 'http://localhost:1337',
-                color: '#893DE7',
-                deviceType: 'security-key',
-                'credential-id': 'OXBlfUvFNb1eu8IGI6D87fNx4eI',
-                guard: {
-                  keys: ['testPubKey'],
-                  pred: 'keys-any',
-                },
-                pendingRegistrationTxs: [],
-              },
-            ],
-            balance: '0',
-            chainIds: ['14'],
-            minApprovals: 1,
-            minRegistrationApprovals: 1,
+            domain: 'http://localhost:1337',
+            color: '#893DE7',
+            deviceType: 'security-key',
+            'credential-id': 'OXBlfUvFNb1eu8IGI6D87fNx4eI',
+            guard: {
+              keys: ['testPubKey'],
+              pred: 'keys-any',
+            },
+            pendingRegistrationTxs: [],
           },
-        ]),
-      );
+        ],
+        balance: '0',
+        chainIds: ['14'],
+        minApprovals: 1,
+        minRegistrationApprovals: 1,
+      };
+
+      localStorage.setItem('localAccounts', JSON.stringify([account]));
 
       cleanup();
 
@@ -114,6 +118,9 @@ describe('AccountsContext', () => {
       );
 
       expect(screen.getByTestId('account-count').textContent).toBe('1');
+      expect(
+        JSON.parse(screen.getByTestId('first-account-json').textContent!),
+      ).toEqual(account);
     });
 
     it('can add an account on a single chain', async () => {

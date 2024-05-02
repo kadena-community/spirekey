@@ -7,6 +7,8 @@ import {
 
 import { l1Client } from './shared/client';
 
+vi.mock('@kadena/client');
+
 describe('register utils', () => {
   beforeAll(() => {
     vi.useFakeTimers();
