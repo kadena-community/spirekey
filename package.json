@@ -30,12 +30,12 @@
     "*.{ts,tsx,md}": "prettier --write"
   },
   "dependencies": {
-    "@kadena/client": "^1.8.1",
+    "@kadena/client": "^1.11.0",
     "@kadena/cryptography-utils": "^0.4.2",
     "@kadena/fonts": "^0.0.1",
     "@kadena/pactjs": "^0.4.2",
     "@kadena/react-ui": "^0.8.4",
-    "@kadena/types": "^0.6.0",
+    "@kadena/types": "^0.6.1",
     "@playwright/test": "^1.43.1",
     "@react-aria/utils": "^3.23.2",
     "@react-three/drei": "^9.99.4",
@@ -70,7 +70,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
-    "@kadena/pactjs-cli": "^1.8.1",
+    "@kadena/pactjs-cli": "^1.11.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^15.0.4",
@@ -80,8 +80,8 @@
     "@types/react-dom": "^18.2.19",
     "@vanilla-extract/vite-plugin": "^4.0.7",
     "@vitejs/plugin-react": "^4.2.1",
-    "@vitest/coverage-v8": "^1.5.0",
-    "cross-fetch": "~3.1.5",
+    "@vitest/coverage-v8": "^1.5.2",
+    "cross-fetch": "~3.1.8",
     "dotenv": "16.4.5",
     "husky": "^9.0.11",
     "jsdom": "^24.0.0",
@@ -91,7 +91,7 @@
     "prettier-plugin-packagejson": "^2.4.12",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
-    "vitest": "^1.5.0",
+    "vitest": "^1.5.2",
     "vitest-matchmedia-mock": "^1.0.4"
   }
 }

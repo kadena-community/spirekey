@@ -38,7 +38,6 @@ export const addDevice = async (
       }),
       setNetworkId(account.networkId),
       addSigner(
-        // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
         {
           pubKey: signingDevice.guard.keys[0],
           scheme: 'WebAuthn',

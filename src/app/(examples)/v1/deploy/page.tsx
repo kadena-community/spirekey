@@ -136,11 +136,11 @@ export default function DeployPage() {
             return cmd;
           }, // add data
           addSigner(
-            // @ts-expect-error WebAuthn is not yet added to the @kadena/client types
             {
               pubKey,
               scheme: !step.cid ? 'ED25519' : 'WebAuthn',
             },
+            // @ts-expect-error
             Array.isArray(step.caps)
               ? (withCap) =>
                   (step.caps as any).map((cap: string[]) => {

@@ -22,7 +22,7 @@ export const fundAccount = async (account: Account): Promise<string> =>
       secretKey: genesisPrivateKey,
     }),
     l1Client.submit,
-    l1Client.listen,
+    l1Client.pollOne,
     (tx) => JSON.stringify(tx),
   )({});
 

@@ -74,8 +74,8 @@ export default function CopyPage() {
         const res = await l1Client.local(continueTx);
         if (res.result.status !== 'success') return console.error('Error', res);
         const submitRes = await l1Client.submit(continueTx);
-        const listenRes = await l1Client.listen(submitRes);
-        console.log('res', listenRes);
+        const response = await l1Client.pollOne(submitRes);
+        console.log('res', response);
       });
     } else {
       l1Client.submit(tx).then((result: any) => {

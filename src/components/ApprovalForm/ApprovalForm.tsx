@@ -87,7 +87,7 @@ export default function ApprovalForm() {
       try {
         const transactionDescriptor =
           await submitTransaction(signedTransaction);
-        const { result } = await l1Client.listen(transactionDescriptor);
+        const { result } = await l1Client.pollOne(transactionDescriptor);
         if (result.status === 'success') {
           addNotification({
             variant: 'success',
