@@ -27,39 +27,21 @@ const deliveryMeta = {
   capabilities: {
     granter: [
       {
-        name: 'CREATE_ORDER_LINE',
-        argumentIndex: 2,
-        hashValues: [0, 2, 3, 4],
-        hashIndex: 1,
+        name: 'PURCHASE_ORDER_ITEM',
+        hashValues: [0, 1, 2],
+        hashIndex: 0,
       },
       {
         name: 'SET_READY_FOR_DELIVERY',
       },
       {
         name: 'PICKUP_DELIVERY',
-        argumentIndex: 0,
       },
       {
         name: 'DELIVER_ORDER',
-        argumentIndex: 0,
       },
     ],
-    acceptor: [
-      {
-        name: 'CREATE_ORDER_LINE',
-        argumentIndex: 3,
-        hashValues: [0, 2, 3, 4],
-        hashIndex: 1,
-      },
-      {
-        name: 'PICKUP_DELIVERY',
-        argumentIndex: 1,
-      },
-      {
-        name: 'DELIVER_ORDER',
-        argumentIndex: 1,
-      },
-    ],
+    acceptor: [],
   },
 };
 
