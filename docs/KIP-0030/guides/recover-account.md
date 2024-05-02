@@ -23,7 +23,7 @@ account, the [Kadena SpireKey wallet](https://spirekey.kadena.io) won't be able
 to identify the account that belongs to you or recognize you as a registered
 user. However, you can recover your account information through the passkey
 stored on any device you added to your account. For example, if you used a smart
-phone to register a Kadena SpireKey accoun, you can use the passkey stored on
+phone to register a Kadena SpireKey account, you can use the passkey stored on
 that phone to recover your account information.
 
 ## Identify the passkey for an account
@@ -32,78 +32,117 @@ When you register an account as described in
 [Register an account](/build/authentication/register), Kadena SpireKey creates a
 passkey for the device you are using with the name you use for the account
 **Alias** and a selected **Network**. For example, if you access Kadena SpireKey
-deployed on the Kadena test network and specify Lola as the alias for tha new
+deployed on the Kadena test network and specify Lola as the alias for the new
 account, the passkey created for the device and account combination would be
-Lola (Testnet). If you used a laptop to register this account, your passkey
-might be based on a fingerprint stored in a secure enclave on the device or
-recorded on a security key you attached to the device.
+Lola (Testnet).
+
+If you used a laptop to register this account, your passkey might be based on a
+fingerprint stored in a secure enclave on the device or recorded on a security
+key you attached to the device. If you used a phone and scanned a QR code to
+register this account, your passkey might be based on facial recognition stored
+in a secure enclave on the phone.
 
 ## Clear local storage
 
-Visit [spirekey.kadena.io](https://spirekey.kadena.io) in the browser on your
-computer. If you created an account on your phone in the previous step, the
-localStorage of your computer's browser will not contain the details of your new
-account. If you have created a new account in the browser on your computer, it
-should be displayed in your wallet and you need to clear your localStorage in
-order to follow along with this guide. In the latter case, open the developer
-console of your browser and execute the following command:
+For demonstration purposes, assume that you registered for a Kadena SpireKey
+account from a browser running on your local computer. If that's the case, you
+can open [spirekey.kadena.io](https://spirekey.kadena.io) in the browser and see
+that your account information is displayed by default from the information in
+local storage.
 
-```
-localStorage.setItem('localAccounts', '[]')
-```
+To clear local storage:
 
-Then, refresh the page. With no accounts in your localStorage, the wallet dApp
-redirects you to the welcome page.
+1. Open [Kadena SpireKey](https://spirekey.kadena.io).
+2. Open the Developer Tools.
+3. Open the Console and type the following command:
 
-## Recover your account
+   ```javascript
+   localStorage.setItem('localAccounts', '[]');
+   ```
 
-Click the "Recover" button on the welcome page or visit
-[spirekey.kadena.io/recover](https://spirekey.kadena.io/recover) directly. In
-developer mode you have the option to select a specific `Network` to recover an
-account from. Otherwise, the wallet dApp will default to the `Network` it is
-configured with. Then, click the fingerprint button or "Next" to select a
-passkey. If you created the account on your phone in the first step of this
-guide, select "On other devices" and scan the QR-code to select a passkey.
-Otherwise, directly select the passkey you created in the first step. Confirm
-with your fingerprint or Face-ID and the wallet will start recovering your
-account. If successful, you will automatically be redirected to the account
-overview where you will see your account and all devices that guard it.
+4. Refresh the browser window to display the welcome page with the Recover and
+   Register options.
 
-## How does it work?
+## Recover your account from a passkey
+
+To recover account information:
+
+1. Click **Recover** or open
+   [spirekey.kadena.io/recover](https://spirekey.kadena.io/recover).
+2. Click in the Passkey fingerprint section.
+3. Select the passkey for the account you want to recover.
+
+   In this example, the passkey was created on the local computer and is named
+   Lola (Testnet). Selecting the Lola (Testnet) passkey then prompts for a
+   fingerprint.
+
+   If you created the account using a passkey on your phone and want to recover
+   the account from the browser running on a local computer, you can select a
+   passkey using **On other devices**. You can then scan the QR code to select
+   the passkey on the phone and authenticate using facial recognition.
+
+4. Verify your account details in the account overview.
+
+## How it works
 
 The `webauthn-guard` module of the Kadena SpireKey smart contract emits a
-`REGISTER_DEVICE` event containing an account name and credential identifier of
-a passkey on every successful transaction containing a call to either the
-`register` or `add-device` function. That is, every time your create an account
-guarded by a passkey or add the passkey of a device to an existing account. This
-allows the wallet dApp to query the Chainweb Data API for `REGISTER_DEVICE`
-events containing the credential identifier of the passkey you select on the
-account recovery page. If an event is found, the account name can be retrieved
-from the event. Next, the wallet dApp executes a local transaction calling the
-`get-webauthn-guard` function of the `webauthn-wallet` module with the retrieved
-account name as the argument to retrieve all the details of the account from the
-blockchain.
+`REGISTER_DEVICE` event containing an account name and the credential identifier
+of a passkey every time that there's a successful transaction that calls either
+the `register` function or the `add-device` function.
 
-## Implement it yourself
+The Kadena SpireKey wallet can query the chainweb-data API for the
+`REGISTER_DEVICE` events that contain the credential identifier matching the
+passkey you select for account recovery. If Kadena SpireKey finds a matching
+event, it retrieves the account name. Kadena SpireKey then calls the
+`get-webauthn-guard` function of the `webauthn-wallet` module using the account
+name as an argument to retrieve the account details from the blockchain.
+
+## Implement account recovery
+
+If you are developing a decentralized application to work with Kadena SpireKey
+or developing your own wallet application for the Kadena network, you can also
+implement account recovery in your application.
 
 ### Before you begin
 
-This part of the guide assumes that you are developing your own wallet dApp
-using TypeScript against Testnet.
+Before you attempt to implement account recovery as described in this guide, you
+should verify the following basic requirements:
+
+- You have an internet connection and a web browser installed on your local
+  computer.
+
+- You have a code editor, access to an interactive terminal shell, and are
+  generally familiar with using command-line programs.
+
+- You are developing an application for WebAuthN authentication using TypeScript
+  to run on the Kadena test network (Testnet).
 
 ### Select a passkey
 
-Prompt users to select a passkey on their device that is associated with your
-wallet domain. Use the `startAuthentication` method from the
-`@simplewebauthn/browser` package and pass the domain as the value of `rpId`. In
-the example below `window.location.hostname` is used, but you can pass the
-domain in any way you want. Either way, the the rpId needs to match with the
-host name, otherwise the domain this app is running on. Furthermore, if the host
-is not localhost, the host needs to be secured with https. Otherwise the request
-will fail. The value of the `challenge` field is required, but the exact value
-does not really matter, because no session will be created and
-`startAuthentication` is only used to retrieve the credential id of a device
-associated with an account to recover.
+As demonstrated in
+[Recover your account from a passkey](#recover-your-account-from-a-passkey),
+account recovery requires users to select a passkey on a device that is
+associated with their account.
+
+To prompt users to select a passkey in your application, you can use the
+`startAuthentication` method from the `@simplewebauthn/browser` package then set
+your wallet domain as the value of the `rpId` variable.
+
+The following example uses `window.location.hostname` to set the wallet domain.
+You can specify the wallet domain in other ways. However, you should note the
+following requirements:
+
+- The `rpId` value must match the host name or the domain the application is
+  running on.
+- If the host is not `localhost`, the host must be secured with the secure HTTP
+  (`https`) protocol.
+
+If you don't satisfy these two requirements, the request will fail.
+
+In addition, you must set a value for the `challenge` field. The field is
+required, but the value doesn't matter because `startAuthentication` is only
+used to retrieve the credential identifier of a device associated with the
+account being recovered.
 
 ```typescript
 import { startAuthentication } from '@simplewebauthn/browser';
@@ -127,22 +166,23 @@ recoverAccount();
 
 ### Find event
 
-Use the credential identifier to find the event that was emitted when the user's
-device was linked to an account. The event can be found by calling the Chainweb
-Data API endpoint `/txs/events` with the following query parameters.
+After you prompt the user to select a passkey from a device, you can use the
+credential identifier retrieved to find the event that was emitted when the
+user's device was added to an account. You can find the event by calling the
+chainweb-data API endpoint `/txs/events` with the following query parameters.
 
-| parameter  | description                                                                                       |
-| :--------- | :------------------------------------------------------------------------------------------------ |
-| param      | The credential identifier of the passkey selected by the user                                     |
-| name       | The name of the event (REGISTER_DEVICE)                                                           |
-| modulename | The name of the module (webauthn-guard) that emitted the event prefixed with the module namespace |
+| Parameter  | Description                                                                                                                                                                                                                                                                                         |
+| :--------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| param      | Specifies the credential identifier for the passkey selected by the user.                                                                                                                                                                                                                           |
+| name       | Specifies the name of the event. In this case, the REGISTER_DEVICE event.                                                                                                                                                                                                                           |
+| modulename | Specifies the name of the module that emitted the event. In this case, the module `webauthn-guard` prefixed with the module namespace. For example, the namespace and module for Kadena SpireKey running on the Kadena test network is `n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-guard`. |
 
-The code sample below extends the previous example with example code for finding
-the `REGISTER_DEVICE` event including the previously obtained credential
-identifier. If you are developing a wallet dApp against a locally running
-Devnet, replace the `chainwebDataUrl` and module `namespace` accordingly. For
-the sake of brevity, the code sample does not handle edge cases like no events
-being found.
+The following code example extends the previous example with the code for
+finding the `REGISTER_DEVICE` event using the previously-obtained credential
+identifier. If you are developing an application that runs locally on a
+development network, replace the `chainwebDataUrl` and module `namespace` to
+suit your local development environment and namespace. For brevity, the code
+sample doesn't handle edge cases like no events being found.
 
 ```typescript
 // Existing implementation omitted for clarity.
