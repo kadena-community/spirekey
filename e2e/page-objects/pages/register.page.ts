@@ -36,6 +36,7 @@ export class RegisterPage {
   async createPassKey(): Promise<void> {
     await this.page.getByRole('heading', { name: 'Passkey' }).waitFor();
     await this.passKeyBtn.click();
+    await this.page.getByTestId('accountNameRevealer').waitFor();
   }
 
   async setDeviceTypeTo(

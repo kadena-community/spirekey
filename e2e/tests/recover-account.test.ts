@@ -25,6 +25,7 @@ test('Recover SpireKey Account', async ({
     await registerPage.proceedToNextStep();
     await registerPage.setColorTo('green');
     await registerPage.completeRegistration();
+    await accountsPage.isMinted();
     await expect(await accountsPage.getAccountCard(alias)).toBeVisible();
   });
 

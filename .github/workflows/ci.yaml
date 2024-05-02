@@ -25,7 +25,6 @@ jobs:
       run: pnpm test
   
   e2e:
-    needs: build
     runs-on: ubuntu-latest
 
     steps:
