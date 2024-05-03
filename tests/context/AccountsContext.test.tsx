@@ -7,7 +7,11 @@ import { fundAccount } from '@/utils/fund';
 import { registerAccountOnChain } from '@/utils/register';
 import { l1Client } from '@/utils/shared/client';
 import { ChainId } from '@kadena/client';
-import { Account, AccountsProvider, useAccounts } from './AccountsContext';
+import {
+  Account,
+  AccountsProvider,
+  useAccounts,
+} from '../../src/context/AccountsContext';
 
 vi.mock('@/utils/fund');
 vi.mock('@/utils/register');

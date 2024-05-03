@@ -3,9 +3,9 @@ import {
   getAccountName,
   getWebAuthnPubkeyFormat,
   registerAccountOnChain,
-} from './register';
+} from '../../src/utils/register';
 
-import { l1Client } from './shared/client';
+import { l1Client } from '../../src/utils/shared/client';
 
 vi.mock('@kadena/client');
 
