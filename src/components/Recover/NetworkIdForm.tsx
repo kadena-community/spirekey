@@ -58,10 +58,7 @@ export const NetworkIdForm: FC<StepProps> = ({
       animate={isVisible ? 'visible' : 'hidden'}
       variants={animationVariants}
     >
-      <form
-        id={`registration-form-${stepIndex}`}
-        onSubmit={handleSubmit(onSubmit)}
-      >
+      <form id={`recover-form-${stepIndex}`} onSubmit={handleSubmit(onSubmit)}>
         <SurfaceCard
           title="Network"
           description={
