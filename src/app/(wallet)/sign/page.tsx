@@ -27,6 +27,7 @@ export default function SignPage(req: SignProps) {
   const [trans, setTrans] = useState(translations);
   const [op, setOp] = useState(optimistic);
   const [useHash, setUseHash] = useState(false);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (!window.location.hash) return;

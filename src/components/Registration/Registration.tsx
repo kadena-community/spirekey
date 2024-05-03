@@ -76,8 +76,6 @@ export default function Registration({
     color: deviceColors.purple,
   };
 
-  // URLSearchParams.getAll('chainId') returns an
-
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [data, setData] = useState<FormData>({
     ...defaultFormData,

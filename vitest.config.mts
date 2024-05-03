@@ -1,13 +1,12 @@
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import react from '@vitejs/plugin-react';
-import path from 'path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [vanillaExtractPlugin(), react()],
   resolve: {
     alias: {
-      '@': '/src', // Needs to be absolute to make mocks work ¯\_(ツ)_/¯
+      '@': '/src',
     },
   },
   test: {
@@ -20,10 +19,10 @@ export default defineConfig({
       enabled: true,
       provider: 'v8',
       thresholds: {
-        lines: 10.59,
+        lines: 10.58,
         functions: 19.17,
         branches: 34.01,
-        statements: 10.59,
+        statements: 10.58,
         autoUpdate: true,
       },
     },

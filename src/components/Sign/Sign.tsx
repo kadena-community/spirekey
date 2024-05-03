@@ -3,7 +3,7 @@
 import { Button } from '@/components/shared/Button/Button';
 import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { Surface } from '@/components/Surface/Surface';
-import { useAccounts } from '@/context/AccountsContext';
+import { Device, useAccounts } from '@/context/AccountsContext';
 import { useSign } from '@/hooks/useSign';
 import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
 import { Box, Heading, ProductIcon, Stack, Text } from '@kadena/react-ui';
@@ -115,6 +115,7 @@ export default function Sign(props: Props) {
   const devices = pubkeysForTx.map((publicKey) =>
     getDeviceByPublicKey(accounts, publicKey),
   );
+
   const pendingRegistrationTxs = devices
     .map((device) => device?.pendingRegistrationTxs)
     .filter(Boolean);
@@ -132,8 +133,16 @@ export default function Sign(props: Props) {
     }
   }, [redirectLocation, isReadyToSubmit, router, returnUrl, autoRedirect]);
 
-  const onSign = async (deviceIndex: number) => {
-    const signedTx = await sign(tx, devices?.[deviceIndex]?.['credential-id']!);
+  const onSign = async (credentialId: Device['credential-id']) => {
+    const foundCredentialId = devices?.find(
+      (device) => device?.['credential-id'] === credentialId,
+    )?.['credential-id'];
+
+    if (!foundCredentialId) {
+      throw new Error(`Device with credential-id ${credentialId} not found`);
+    }
+
+    const signedTx = await sign(tx, foundCredentialId);
 
     setTx(signedTx);
     const newAmountOfSigsToSign = signaturesToSign - 1;
@@ -145,7 +154,7 @@ export default function Sign(props: Props) {
       params.transaction = objectParameterValue(signedTx);
 
       if (optimistic && pendingRegistrationTxs) {
-        params.pendingTxIds = arrayParameterValue(pendingRegistrationTxs);
+        params.pendingTxIds = objectParameterValue(pendingRegistrationTxs);
       }
 
       setTimeout(() => {
@@ -193,6 +202,7 @@ export default function Sign(props: Props) {
               </Stack>
             </Surface>
           )}
+
           {!!signerGranterCapabilities.length && (
             <Surface>
               <Heading variant="h4">Granting capabilities</Heading>
@@ -213,39 +223,46 @@ export default function Sign(props: Props) {
             </Surface>
           )}
         </Stack>
+
         <div className={wrapper}>
           <motion.div
             animate={{ x: `-${(devices.length - signaturesToSign) * 100}%` }}
             transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
             className={container}
           >
-            {devices.map((d, i) => (
-              <Box className={step} key={d?.['credential-id']}>
-                <Surface>
-                  <Stack flexDirection="column" gap="sm">
-                    <Heading variant="h5">Sign</Heading>
-                    <Text>
-                      Sign this transaction with the following credential:{' '}
-                      {d?.['credential-id']}
-                    </Text>
-                    <Text>
-                      (Device {i + 1} of {devices.length})
-                    </Text>
-                    <Surface>
-                      <Stack
-                        flexDirection="column"
-                        justifyContent="center"
-                        alignItems="center"
-                        gap="md"
-                      >
-                        <Image src={fingerprint} alt="fingerprint icon" />
-                        <Button onPress={() => onSign(i)}>Sign</Button>
-                      </Stack>
-                    </Surface>
-                  </Stack>
-                </Surface>
-              </Box>
-            ))}
+            {devices
+              .filter((device) => !!device)
+              .map((device, i) => (
+                <Box className={step} key={device['credential-id']}>
+                  <Surface>
+                    <Stack flexDirection="column" gap="sm">
+                      <Heading variant="h5">Sign</Heading>
+                      <Text>
+                        Sign this transaction with the following credential:{' '}
+                        {device['credential-id']}
+                      </Text>
+                      <Text>
+                        (Device {i + 1} of {devices.length})
+                      </Text>
+                      <Surface>
+                        <Stack
+                          flexDirection="column"
+                          justifyContent="center"
+                          alignItems="center"
+                          gap="md"
+                        >
+                          <Image src={fingerprint} alt="fingerprint icon" />
+                          <Button
+                            onPress={() => onSign(device['credential-id'])}
+                          >
+                            Sign
+                          </Button>
+                        </Stack>
+                      </Surface>
+                    </Stack>
+                  </Surface>
+                </Box>
+              ))}
 
             <Box className={step}>
               <Surface>
