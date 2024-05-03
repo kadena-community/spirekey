@@ -25,6 +25,7 @@ const submitResponse: ITransactionDescriptor = {
 const l1Client = {
   local: vi.fn().mockResolvedValue(successResponse),
   listen: vi.fn().mockResolvedValue(successResponse),
+  pollOne: vi.fn().mockResolvedValue(successResponse),
   submit: vi.fn().mockResolvedValue(submitResponse),
 };
 

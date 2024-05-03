@@ -19,7 +19,7 @@ export const signSubmitListen = (client: IClient) => {
     (tx) => client.local(tx).then((res) => [tx, res]),
     ([tx, res]) => (res.result.status === 'success' ? tx : Promise.reject(res)),
     (tx) => client.submit(tx),
-    (tx) => client.listen(tx),
+    (tx) => client.pollOne(tx),
   );
 };
 
@@ -43,7 +43,7 @@ export const signKeyPairSubmitListen = (
     (tx) => client.local(tx).then((res) => [tx, res]),
     ([tx, res]) => (res.result.status === 'success' ? tx : Promise.reject(res)),
     (tx) => client.submit(tx),
-    (tx) => client.listen(tx),
+    (tx) => client.pollOne(tx),
   );
 };
 

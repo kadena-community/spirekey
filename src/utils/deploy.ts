@@ -69,7 +69,7 @@ export const resolveConfiguration = async (config: DeployConfiguration) => {
 };
 
 export const executeStepWith =
-  (client: Pick<IClient, 'submit' | 'listen'>) =>
+  (client: Pick<IClient, 'submit' | 'pollOne'>) =>
   async (
     step: ResolvedStep,
     { profiles, signers }: Pick<DeployConfiguration, 'profiles' | 'signers'>,
@@ -116,7 +116,7 @@ export const executeStepWith =
           createTransaction,
           signWithKeyPair({ publicKey, secretKey }),
           client.submit,
-          client.listen,
+          client.pollOne,
         )({});
       }),
     );

@@ -1,13 +1,17 @@
-import { Account } from '@/context/AccountsContext';
-import { calculateBalancePercentage } from '@/utils/balance';
 import { describe, expect, it } from 'vitest';
 
+import type { Account } from '@/context/AccountsContext';
+import { calculateBalancePercentage } from '@/utils/balance';
+
 const defaultAccount: Account = {
-  alias: 'A',
-  accountName: 'c:A',
+  alias: 'testAlias',
+  accountName: 'c:AccountName',
   balance: '50.0',
   devices: [],
   networkId: 'development',
+  minApprovals: 1,
+  minRegistrationApprovals: 1,
+  chainIds: ['8'],
 };
 
 describe('balance', () => {

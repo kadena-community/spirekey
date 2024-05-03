@@ -1,45 +1,45 @@
-import { genesisPrivateKey, genesisPubKey } from '@/utils/constants';
+import { afterEach, assert, describe, expect, it, vi } from 'vitest';
+
 import {
   DeployConfiguration,
   executeStepWith,
   resolveConfiguration,
 } from '@/utils/deploy';
-import assert from 'node:assert';
-import { mock } from 'node:test';
-import { beforeEach, describe, it } from 'vitest';
+import { l1Client } from '@/utils/shared/client';
+
+vi.mock('@kadena/client');
+
+const config: DeployConfiguration = {
+  profiles: {
+    dev: {
+      host: 'http://localhost:8080',
+      networkId: 'testnet',
+      chains: ['8', '14'],
+    },
+  },
+  signers: {
+    sender00: {
+      publicKey:
+        '368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca',
+      secretKey:
+        '251a920c403ae8c8f65f59142316af3c82b631fba46ddea92ee8c95035bd2898',
+    },
+  },
+  steps: [
+    {
+      profile: 'dev',
+      data: { name: 'token' },
+      sender: 'sender00',
+      codeFile: './tests/utils/deploy.mock.pact',
+    },
+  ],
+};
 
 describe('deploy', () => {
-  const config: DeployConfiguration = {
-    profiles: {
-      dev: {
-        host: 'http://localhost:8080',
-        networkId: 'testnet',
-        chains: ['8', '14'],
-      },
-    },
-    signers: {
-      sender00: {
-        publicKey: genesisPubKey,
-        secretKey: genesisPrivateKey,
-      },
-    },
-    steps: [
-      {
-        profile: 'dev',
-        data: { name: 'token' },
-        sender: 'sender00',
-        codeFile: './tests/utils/deploy.mock.pact',
-      },
-    ],
-  };
-  const mockClient = {
-    submit: mock.fn((x) => Promise.resolve(x)),
-    listen: mock.fn((x) => Promise.resolve(x)),
-  };
-  beforeEach(() => {
-    mockClient.submit.mock.resetCalls();
-    mockClient.listen.mock.resetCalls();
+  afterEach(() => {
+    vi.resetAllMocks();
   });
+
   it('should resolve configuration', async () => {
     const resolvedConfig = await resolveConfiguration(config);
     assert.equal(
@@ -48,8 +48,9 @@ describe('deploy', () => {
       'code should be resolved',
     );
   });
+
   it('should execute the step on all defined chains', async () => {
-    await executeStepWith(mockClient)(
+    await executeStepWith(l1Client)(
       {
         profile: 'dev',
         data: { name: 'token' },
@@ -58,15 +59,15 @@ describe('deploy', () => {
       },
       config,
     );
-    assert.equal(
-      mockClient.submit.mock.callCount(),
-      2,
-      'should have submitted for each chain',
-    );
-    assert.equal(
-      mockClient.listen.mock.callCount(),
-      2,
-      'should have listened for each chain',
-    );
+
+    expect(
+      l1Client.submit,
+      'l1Client.submit not called for each chain',
+    ).toHaveBeenCalledTimes(2);
+
+    expect(
+      l1Client.pollOne,
+      'l1Client.pollOne not called for each chain',
+    ).toHaveBeenCalledTimes(2);
   });
 });

@@ -124,10 +124,7 @@ const AccountsProvider = ({ children }: Props) => {
       for (const account of accounts) {
         for (const device of account.devices) {
           if (device.pendingRegistrationTxs) {
-            listenForRegistrationTransactions(
-              device.pendingRegistrationTxs,
-              account,
-            );
+            pollForRegistrationTxs(device.pendingRegistrationTxs, account);
           }
         }
       }
@@ -334,7 +331,7 @@ const AccountsProvider = ({ children }: Props) => {
     setAccount(account);
   };
 
-  const listenForRegistrationTransactions = async (
+  const pollForRegistrationTxs = async (
     txs: ITransactionDescriptor[],
     account: Account,
   ) => {
