@@ -29,8 +29,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "vitest.config.mts",
-    "src/utils/__mocks__/register.js"
+    "vitest.config.mts"
   ],
   "exclude": ["node_modules"]
 }

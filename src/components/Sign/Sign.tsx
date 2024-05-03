@@ -230,39 +230,41 @@ export default function Sign(props: Props) {
             transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
             className={container}
           >
-            {devices
-              .filter((device) => !!device)
-              .map((device, i) => (
-                <Box className={step} key={device['credential-id']}>
-                  <Surface>
-                    <Stack flexDirection="column" gap="sm">
-                      <Heading variant="h5">Sign</Heading>
-                      <Text>
-                        Sign this transaction with the following credential:{' '}
-                        {device['credential-id']}
-                      </Text>
-                      <Text>
-                        (Device {i + 1} of {devices.length})
-                      </Text>
-                      <Surface>
-                        <Stack
-                          flexDirection="column"
-                          justifyContent="center"
-                          alignItems="center"
-                          gap="md"
-                        >
-                          <Image src={fingerprint} alt="fingerprint icon" />
-                          <Button
-                            onPress={() => onSign(device['credential-id'])}
+            {devices.map((device, i) => {
+              return (
+                device && (
+                  <Box className={step} key={device['credential-id']}>
+                    <Surface>
+                      <Stack flexDirection="column" gap="sm">
+                        <Heading variant="h5">Sign</Heading>
+                        <Text>
+                          Sign this transaction with the following credential:{' '}
+                          {device['credential-id']}
+                        </Text>
+                        <Text>
+                          (Device {i + 1} of {devices.length})
+                        </Text>
+                        <Surface>
+                          <Stack
+                            flexDirection="column"
+                            justifyContent="center"
+                            alignItems="center"
+                            gap="md"
                           >
-                            Sign
-                          </Button>
-                        </Stack>
-                      </Surface>
-                    </Stack>
-                  </Surface>
-                </Box>
-              ))}
+                            <Image src={fingerprint} alt="fingerprint icon" />
+                            <Button
+                              onPress={() => onSign(device['credential-id'])}
+                            >
+                              Sign
+                            </Button>
+                          </Stack>
+                        </Surface>
+                      </Stack>
+                    </Surface>
+                  </Box>
+                )
+              );
+            })}
 
             <Box className={step}>
               <Surface>
