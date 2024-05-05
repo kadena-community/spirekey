@@ -5,7 +5,6 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
-import { ChainId } from '@kadena/types';
 import { asyncPipe } from './shared/asyncPipe';
 import { l1Client } from './shared/client';
 

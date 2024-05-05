@@ -40,7 +40,7 @@ test('Create new account using SpireKey', async ({
     await registerPage.completeRegistration();
   });
 
-  await test.step('An account with the provided alias has been genrated.', async () => {
+  await test.step('An account with the provided alias has been generated.', async () => {
     await expect(await accountsPage.getAccountCard(alias)).toBeVisible();
   });
 });

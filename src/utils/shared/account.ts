@@ -61,6 +61,8 @@ export const getAccountFrom = async ({
     .filter(assertFulfilled)
     .filter((result) => result.value?.result?.status === 'success');
 
+  console.log(JSON.stringify(successfulResults, null, 2));
+
   if (!successfulResults.length) return null;
 
   let totalBalance = 0;
@@ -70,16 +72,17 @@ export const getAccountFrom = async ({
   let minRegistrationApprovals = 1;
 
   successfulResults.forEach((result, index) => {
-    const [devicesResult, balanceResult] = result.value.data;
-    devices.push(...(devicesResult.devices || []));
+    const [accountResult, balanceResult] = result.value.result.data;
     totalBalance += parseFloat(balanceResult);
+
+    // @TODO add unique devices to devices array
 
     foundChainIds.push(chainIds[index]);
 
-    minApprovals = Math.max(minApprovals, devicesResult['min-approvals'].int);
+    minApprovals = Math.max(minApprovals, accountResult['min-approvals'].int);
     minRegistrationApprovals = Math.max(
       minRegistrationApprovals,
-      devicesResult['min-registration-approvals'].int,
+      accountResult['min-registration-approvals'].int,
     );
   });
 

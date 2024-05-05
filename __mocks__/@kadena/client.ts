@@ -1,7 +1,7 @@
 import type { ICommandResult, ITransactionDescriptor } from '@kadena/client';
 import { vi } from 'vitest';
 
-const successResponse: ICommandResult = {
+export const successResponse: ICommandResult = {
   result: { status: 'success', data: {} },
   reqKey: 'test-request-key',
   gas: 700,

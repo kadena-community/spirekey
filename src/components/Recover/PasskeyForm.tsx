@@ -83,7 +83,28 @@ export const PasskeyForm: FC<StepProps> = ({
       account = await getAccountFrom({
         accountName,
         networkId,
-        chainIds: [process.env.CHAIN_ID], // @ TODO check all chains(?)
+        chainIds: [
+          '0',
+          '1',
+          '2',
+          '3',
+          '4',
+          '5',
+          '6',
+          '7',
+          '8',
+          '9',
+          '10',
+          '11',
+          '12',
+          '13',
+          '14',
+          '15',
+          '16',
+          '17',
+          '18',
+          '19',
+        ],
       });
     } catch (error: unknown) {
       addNotification({
