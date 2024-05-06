@@ -182,10 +182,10 @@ finding the `REGISTER_DEVICE` event using the previously-obtained credential
 identifier. If you are developing an application that runs locally on a
 development network, replace the `chainwebDataUrl` and module `namespace` to
 suit your local development environment and namespace. For brevity, the code
-sample doesn't handle edge cases like no events being found.
+example doesn't handle error or edge cases like no events being found.
 
 ```typescript
-// Existing implementation omitted for clarity.
+// Code for retrieving the credential identifier omitted for clarity.
 
 interface Event {
   params: string[];
@@ -204,7 +204,7 @@ const fetchEvent = async (credentialId: string): Promise<Event> => {
 };
 
 const recoverAccount = async () => {
-  // Existing implementation omitted for clarity.
+  // Code for retrieving the credential identifier omitted for clarity.
 
   const event = await fetchEvent(credentialId);
 };
@@ -214,21 +214,24 @@ recoverAccount();
 
 ### Find account name
 
-The event object contains a field `params`. The first parameter in this array is
-the Webauthn Guard account (w:account). Use the value of this field to retrieve
-the Webauthn Wallet account (c:account) by making a local transaction that calls
-the `get-account-name` function of the `webauthn-wallet` contract. The code
-example below uses the functional pattern for creating and executing
-transactions provided by the `@kadena/client` package. The gist of the Pact
-command to be executed is as follows and it is, of course, up to you what
-programming pattern you want to use to execute it locally.
+The event object you retrieve contains a `params` field. The first value in the
+`params` array is the `webauthn-guard` account. The `webauthn-guard` is an
+account with the `w:` prefix. Use the value of this field to retrieve the
+`webauthn-wallet` account—an account with the `c:` prefix—by making a local
+transaction that calls the `get-account-name` function of the `webauthn-wallet`
+contract.
+
+The gist of the Pact command to be executed is:
 
 ```pact
 `(n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.get-account-name "w:lImvUWTPtU99aeL9IY8eSxqnbD6bIBzczlMqGlh6OLB:keys-any")`
 ```
 
-Add the following code to retrieve the Webauthn Wallet account name from the
-Webauthn Guard account name in the event.
+The following code example uses the functional programming pattern for creating
+and executing transactions provided by the `@kadena/client` package. After
+preparing the transaction and creating a client to connect to the Kadena test
+network, chain 14, the following code retrieves the `webauthn-wallet` account
+name from the `webauthn-guard` account name in the event.
 
 ```typescript
 // Existing implementation omitted for clarity.
@@ -286,16 +289,20 @@ recoverAccount();
 
 ### Get account details and balance
 
-Now that you recovered the name of the account that the credential id of the
-passkey on the user's device belongs to you can proceed to retrieve all details
-of the account. This can be achieved by executing a local transaction against
-Testnet or any other network you may be developing your wallet dApp against. The
-code example below again uses the functional pattern for creating and executing
-transactions provided by the `@kadena/client` package. The transaction includes
-a call to the `get-webauthn-guard` function of the `webauthn-wallet` module for
-retrieving the account details and a call to the `get-balance` function of the
-`coin` module to retrieve the account balance. So, the gist of the Pact command
-to be executed is as follows.
+You now have the account name for the credential identifier associated withy the
+passkey on the user's device. With this information, you can proceed to retrieve
+all of the account details by executing a local transaction. The following code
+example again uses the functional programming pattern for creating and executing
+transactions provided by the `@kadena/client` package.
+
+The transaction includes:
+
+- A call to the `get-webauthn-guard` function of the `webauthn-wallet` module to
+  retrieve the account details.
+- A call to the `get-balance` function of the `coin` module to retrieve the
+  account balance.
+
+The gist of the Pact command to be executed is:
 
 ```pact
 [
@@ -304,9 +311,9 @@ to be executed is as follows.
 ]
 ```
 
-Add the following code to your implementation to get the account details based
-on the retrieved account name. Finally, you can use the account details to
-display the account details in your wallet dApp.
+For example, you can add code similar to the following code to get the account
+details based on the retrieved account name, then use the account details to
+display the account details in your application.
 
 ```typescript
 // Existing implementation omitted for clarity.
