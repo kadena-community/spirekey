@@ -57,6 +57,7 @@ export const getAccountFromChain = async ({
         devices: account.devices || [],
         balance,
         chainIds: [chainId],
+        networkId,
       };
     },
   )({});
@@ -107,7 +108,8 @@ export const getAccountFromChains = async ({
   return accounts.reduce(
     (account, accountOnChain) => {
       account.balance = (
-        parseFloat(account.balance) + parseFloat(accountOnChain.balance)
+        Number(parseFloat(account.balance).toPrecision(8)) +
+        Number(parseFloat(accountOnChain.balance).toPrecision(8))
       ).toString();
       account.chainIds = [...account.chainIds, ...accountOnChain.chainIds];
       const credentialIds = account.devices.map(
