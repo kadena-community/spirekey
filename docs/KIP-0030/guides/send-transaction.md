@@ -43,7 +43,9 @@ place of the original corresponding `coin.GAS` and `coin.TRANSFER` capabilities
 to satisfy the guard necessary for debiting an account.
 
 The following is an example of what an unsigned `coin` transfer transaction from
-a SpireKey wallet could look like:
+a SpireKey wallet could look like. Note that the value of the `cmd` field would
+normally be a stringified JSON object. In the example below it is displayed as
+parsed JSON format for the sake of readability.
 
 ```json
 {
