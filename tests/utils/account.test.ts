@@ -1,4 +1,4 @@
-import { getAccountFrom } from '@/utils/shared/account';
+import { getAccountFromChains } from '@/utils/shared/account';
 import { l1Client } from '@/utils/shared/client';
 import { describe, expect, it, Mock, vi } from 'vitest';
 import { successResponse } from '../../__mocks__/@kadena/client';
@@ -23,7 +23,7 @@ describe('account', () => {
       },
     });
 
-    const result = await getAccountFrom({
+    const result = await getAccountFromChains({
       accountName: 'c:myAccount',
       networkId: 'development',
       chainIds: ['0'],
@@ -88,7 +88,7 @@ describe('account', () => {
       },
     });
 
-    const result = await getAccountFrom({
+    const result = await getAccountFromChains({
       accountName: 'c:myAccount',
       networkId: 'development',
       chainIds: ['0', '1', '2', '3'],
@@ -105,7 +105,11 @@ describe('account', () => {
       accountName: 'c:myAccount',
       balance: '0',
       chainIds: ['0', '1', '2', '3'],
-      devices: [{}],
+      devices: [
+        {
+          'credential-id': 'credentialid1',
+        },
+      ],
       minApprovals: 2,
       minRegistrationApprovals: 2,
       networkId: 'development',

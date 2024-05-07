@@ -6,7 +6,7 @@ import { useLoggedInAccount } from '@/app/(examples)/v1/example/delivery/useLogg
 import { Button } from '@/components/shared/Button/Button';
 import { Surface } from '@/components/Surface/Surface';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
-import { getAccountFrom } from '@/utils/shared/account';
+import { getAccountFromChain } from '@/utils/shared/account';
 import { getTranslations } from '@/utils/shared/getTranslationBundle';
 import { getSmartContractMeta } from '@/utils/shared/smartContractMeta';
 import { Heading, maskValue, Stack } from '@kadena/react-ui';
@@ -30,10 +30,10 @@ export function DeliveryTransit({ order }: Props) {
     ({ buyer, orderId }: { buyer: string; orderId: string }) =>
     async () => {
       if (!account) return;
-      const buyerAccount = await getAccountFrom({
+      const buyerAccount = await getAccountFromChain({
         accountName: buyer,
         networkId: process.env.DAPP_NETWORK_ID,
-        chainIds: [process.env.CHAIN_ID],
+        chainId: process.env.CHAIN_ID,
       });
 
       if (!buyerAccount?.devices[0].guard.keys[0]) return;

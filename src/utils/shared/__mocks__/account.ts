@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-const getAccountFrom = vi.fn().mockResolvedValue({
+const getAccountFromChains = vi.fn().mockResolvedValue({
   accountName: 'testAccount',
   networkId: 'development',
   chainIds: ['1'],
@@ -10,4 +10,4 @@ const getAccountFrom = vi.fn().mockResolvedValue({
   minRegistrationApprovals: 1,
 });
 
-export { getAccountFrom };
+export { getAccountFromChains };

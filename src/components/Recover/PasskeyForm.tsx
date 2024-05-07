@@ -5,7 +5,7 @@ import { useNotifications } from '@/context/shared/NotificationsContext';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { getAccountNameFromRegisterDeviceEvent } from '@/utils/getAccountNameFromRegisterDeviceEvent';
 import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
-import { getAccountFrom } from '@/utils/shared/account';
+import { getAccountFromChains } from '@/utils/shared/account';
 import { Stack, Text } from '@kadena/react-ui';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { motion } from 'framer-motion';
@@ -80,7 +80,7 @@ export const PasskeyForm: FC<StepProps> = ({
     let account;
 
     try {
-      account = await getAccountFrom({
+      account = await getAccountFromChains({
         accountName,
         networkId,
         chainIds: [

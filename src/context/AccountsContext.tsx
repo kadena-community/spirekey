@@ -7,7 +7,7 @@ import {
   getWebAuthnPubkeyFormat,
   registerAccountOnChain,
 } from '@/utils/register';
-import { getAccountFrom } from '@/utils/shared/account';
+import { getAccountFromChains } from '@/utils/shared/account';
 import { l1Client } from '@/utils/shared/client';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { ChainId, ITransactionDescriptor } from '@kadena/client';
@@ -136,7 +136,7 @@ const AccountsProvider = ({ children }: Props) => {
         const { accountName, networkId, alias, devices, chainIds } =
           localAccount;
 
-        const remoteAccount = await getAccountFrom({
+        const remoteAccount = await getAccountFromChains({
           networkId,
           accountName,
           chainIds,

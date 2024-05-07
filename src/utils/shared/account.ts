@@ -13,6 +13,57 @@ import { l1Client } from './client';
 /**
  * Fetches account details from chain.
  *
+ * This function queries a signle chain for an account's details such as balance and devices
+ * It returns the balance, the list of devices, and minApprovals and minRegistrationApprovals.
+ *
+ * @param {Object} params - The parameters for fetching account details.
+ * @param {string} params.accountName - The name of the account to fetch.
+ * @param {string} params.networkId - The network ID where to get the information from
+ * @param {ChainId} params.chainId - The chain ID to fetch the account from.
+ * @param {string} [params.namespace=process.env.NAMESPACE] - The namespace of the account, defaults to environment variable NAMESPACE.
+ * @returns {Promise<Omit<Account, 'alias'> | null>} An object containing the account details without the alias, or null if the account is not found on any chain.
+ */
+export const getAccountFromChain = async ({
+  accountName,
+  networkId,
+  namespace = process.env.NAMESPACE,
+  chainId = process.env.CHAIN_ID as ChainId,
+}: {
+  accountName: string;
+  networkId: string;
+  namespace?: string;
+  chainId?: ChainId;
+}): Promise<Account> =>
+  asyncPipe(
+    composePactCommand(
+      execution(
+        `[
+          (${namespace}.webauthn-wallet.get-webauthn-guard "${accountName}")
+          (coin.get-balance "${accountName}")
+        ]`,
+      ),
+      setMeta({ chainId }),
+      setNetworkId(networkId),
+    ),
+    createTransaction,
+    (tx) => l1Client.local(tx, { preflight: false }),
+    (tx) => {
+      if (tx?.result?.status !== 'success') return null;
+      const [account, balance] = tx.result.data;
+      return {
+        accountName,
+        minApprovals: account['min-approvals'].int,
+        minRegistrationApprovals: account['min-registration-approvals'].int,
+        devices: account.devices || [],
+        balance,
+        chainIds: [chainId],
+      };
+    },
+  )({});
+
+/**
+ * Fetches account details from all chains.
+ *
  * This function queries multiple chains for an account's details such as balance and devices,
  * and aggregates the results. It returns the combined balance, the list of devices across all chains,
  * and the highest values of minApprovals and minRegistrationApprovals found.
@@ -23,9 +74,8 @@ import { l1Client } from './client';
  * @param {ChainId[]} params.chainIds - An array of chain IDs to query for the account.
  * @param {string} [params.namespace=process.env.NAMESPACE] - The namespace of the account, defaults to environment variable NAMESPACE.
  * @returns {Promise<Omit<Account, 'alias'> | null>} An object containing the account details without the alias, or null if the account is not found on any chain.
- *
  */
-export const getAccountFrom = async ({
+export const getAccountFromChains = async ({
   accountName,
   networkId,
   chainIds,
@@ -38,61 +88,55 @@ export const getAccountFrom = async ({
 }): Promise<Omit<Account, 'alias'> | null> => {
   const results = await Promise.allSettled(
     chainIds.map((chainId) =>
-      asyncPipe(
-        composePactCommand(
-          execution(
-            `[
-              (${namespace}.webauthn-wallet.get-webauthn-guard "${accountName}")
-              (coin.get-balance "${accountName}")
-            ]`,
-          ),
-          setMeta({
-            chainId,
-          }),
-          setNetworkId(networkId),
-        ),
-        createTransaction,
-        (tx) => l1Client.local(tx, { preflight: false }),
-      )({}),
+      getAccountFromChain({
+        accountName,
+        networkId,
+        namespace,
+        chainId,
+      }),
     ),
   );
 
-  const successfulResults = results
+  const accounts = results
     .filter(assertFulfilled)
-    .filter((result) => result.value?.result?.status === 'success');
+    .filter((result) => assertFulfilled(result) && result.value !== null)
+    .map((result) => result.value);
 
-  console.log(JSON.stringify(successfulResults, null, 2));
+  if (!accounts) return null;
 
-  if (!successfulResults.length) return null;
-
-  let totalBalance = 0;
-  const devices: Device[] = [];
-  const foundChainIds: ChainId[] = [];
-  let minApprovals = 1;
-  let minRegistrationApprovals = 1;
-
-  successfulResults.forEach((result, index) => {
-    const [accountResult, balanceResult] = result.value.result.data;
-    totalBalance += parseFloat(balanceResult);
-
-    // @TODO add unique devices to devices array
-
-    foundChainIds.push(chainIds[index]);
-
-    minApprovals = Math.max(minApprovals, accountResult['min-approvals'].int);
-    minRegistrationApprovals = Math.max(
-      minRegistrationApprovals,
-      accountResult['min-registration-approvals'].int,
-    );
-  });
-
-  return {
-    accountName,
-    networkId,
-    chainIds: foundChainIds,
-    balance: totalBalance.toString(),
-    devices,
-    minApprovals,
-    minRegistrationApprovals,
-  };
+  return accounts.reduce(
+    (account, accountOnChain) => {
+      account.balance = (
+        parseFloat(account.balance) + parseFloat(accountOnChain.balance)
+      ).toString();
+      account.chainIds = [...account.chainIds, ...accountOnChain.chainIds];
+      const credentialIds = account.devices.map(
+        (device) => device['credential-id'],
+      );
+      account.devices = [
+        ...account.devices,
+        ...accountOnChain.devices.filter(
+          (device) => !credentialIds.includes(device['credential-id']),
+        ),
+      ];
+      account.minApprovals = Math.max(
+        account.minApprovals,
+        accountOnChain.minApprovals,
+      );
+      account.minRegistrationApprovals = Math.max(
+        account.minRegistrationApprovals,
+        accountOnChain.minRegistrationApprovals,
+      );
+      return account;
+    },
+    {
+      accountName,
+      networkId,
+      chainIds: [],
+      balance: '0.0',
+      devices: [],
+      minApprovals: 1,
+      minRegistrationApprovals: 1,
+    } as Omit<Account, 'alias'>,
+  );
 };
