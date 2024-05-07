@@ -50,16 +50,13 @@ export type AccountRegistration = {
 
 export type AccountRecovery = Omit<AccountRegistration, 'accountName'>;
 
-const migrateAccountNetworkToNetworkId = (
-  account: Account & { network?: string },
-): Account => {
-  const migratedAccount = {
-    ...account,
-    networkId: account.network || account.networkId,
-  };
-  delete migratedAccount.network;
-  return migratedAccount;
-};
+const migrateAccountNetworkToNetworkId = ({
+  network,
+  ...account
+}: Account & { network?: string }): Account => ({
+  ...account,
+  networkId: network || account.networkId,
+});
 
 const getAccountsFromLocalStorage = (): Account[] => {
   if (typeof window === 'undefined') {
