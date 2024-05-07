@@ -223,7 +223,7 @@ export function Account({
                     Cancel
                   </ButtonLink>
                   {(optimistic ||
-                    device.pendingRegistrationTxs?.length === 0) && (
+                    (device.pendingRegistrationTxs || []).length === 0) && (
                     <Button
                       onPress={onConnect(url as URL, account, chainId)}
                       variant="primary"
