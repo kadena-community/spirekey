@@ -164,7 +164,7 @@ const recoverAccount = async () => {
 recoverAccount();
 ```
 
-### Find event
+### Find the registration event
 
 After you prompt the user to select a passkey from a device, you can use the
 credential identifier retrieved to find the event that was emitted when the
@@ -212,7 +212,7 @@ const recoverAccount = async () => {
 recoverAccount();
 ```
 
-### Find account name
+### Find the account name
 
 The event object you retrieve contains a `params` field. The first value in the
 `params` array is the `webauthn-guard` account. The `webauthn-guard` is an
@@ -289,7 +289,7 @@ recoverAccount();
 
 ### Get account details and balance
 
-You now have the account name for the credential identifier associated withy the
+You now have the account name for the credential identifier associated with the
 passkey on the user's device. With this information, you can proceed to retrieve
 all of the account details by executing a local transaction. The following code
 example again uses the functional programming pattern for creating and executing
