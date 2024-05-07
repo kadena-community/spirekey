@@ -45,7 +45,7 @@ export default function Connect({
         returnUrl={decodeURIComponent(returnUrl)}
         reason={decodeURIComponent(reason)}
         networkId={networkId}
-        chainIds={chainIds}
+        chainIds={chainIds.length ? chainIds : [chainId]}
       />
       <CardCollection
         returnUrl={decodeURIComponent(returnUrl)}
