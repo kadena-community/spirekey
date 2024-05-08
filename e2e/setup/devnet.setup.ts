@@ -6,7 +6,12 @@ import dotenv from 'dotenv';
 import { readFile } from 'fs/promises';
 import path from 'node:path';
 
-dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') });
+dotenv.config({
+  path: [
+    path.resolve(__dirname, '..', '..', '.env.test'),
+    path.resolve(__dirname, '..', '..', '.env'),
+  ],
+});
 
 setup('Deploy WebAuthn contract', async () => {
   const isDeployed = await isContractDeployed(
