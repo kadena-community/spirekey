@@ -138,6 +138,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
             networkId: data.networkId,
             minApprovals: 1,
             minRegistrationApprovals: 1,
+            chainIds: [process.env.CHAIN_ID],
             devices: [
               {
                 'credential-id': data.credentialId,

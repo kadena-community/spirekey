@@ -19,7 +19,7 @@ import { detailLink } from './Account.css';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { registerAccountOnChain } from '@/utils/register';
-import { getAccountFrom } from '@/utils/shared/account';
+import { getAccountFromChain } from '@/utils/shared/account';
 import type { ChainId } from '@kadena/client';
 import { Button } from '../shared/Button/Button';
 import * as styles from './Account.css';
@@ -57,7 +57,7 @@ export function Account({
 
   const onConnect =
     (url: URL, account: Account, chainId: ChainId) => async () => {
-      const remoteAccount = await getAccountFrom({
+      const remoteAccount = await getAccountFromChain({
         accountName: account.accountName,
         networkId: account.networkId,
         chainId,

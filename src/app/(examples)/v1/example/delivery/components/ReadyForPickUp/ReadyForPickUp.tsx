@@ -6,7 +6,7 @@ import { useLoggedInAccount } from '@/app/(examples)/v1/example/delivery/useLogg
 import { Button } from '@/components/shared/Button/Button';
 import { Surface } from '@/components/Surface/Surface';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
-import { getAccountFrom } from '@/utils/shared/account';
+import { getAccountFromChain } from '@/utils/shared/account';
 import { Heading, maskValue, Stack } from '@kadena/react-ui';
 import { ChainId } from '@kadena/types';
 import { useRouter } from 'next/navigation';
@@ -28,10 +28,11 @@ export function ReadyForPickUp({ order }: Props) {
     ({ merchant, orderId }: Pick<Order, 'merchant' | 'orderId'>) =>
     async () => {
       if (!account) return;
-      const merchantAcc = await getAccountFrom({
+      const merchantAcc = await getAccountFromChain({
         accountName: merchant,
         networkId: process.env.DAPP_NETWORK_ID!,
       });
+      if (!merchantAcc) throw new Error('Merchant account not found');
       const tx = await pickupDelivery({
         orderId,
         merchantPublicKey: merchantAcc?.devices[0].guard.keys[0],

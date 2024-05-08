@@ -19,7 +19,7 @@ import { Button } from '@/components/shared/Button/Button';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/shared/useSubmit';
-import { getAccountFrom } from '@/utils/shared/account';
+import { getAccountFromChain } from '@/utils/shared/account';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { getSmartContractMeta } from '@/utils/shared/smartContractMeta';
 import { Heading, Stack } from '@kadena/react-ui';
@@ -139,10 +139,12 @@ export default function Customer({ searchParams }: Props) {
     if (!merchantAccount) return;
     const fetchMerchantAccount = async () => {
       try {
-        const remoteMerchantAccount = await getAccountFrom({
+        const remoteMerchantAccount = await getAccountFromChain({
           networkId: process.env.NETWORK_ID || getDevnetNetworkId(),
           accountName: merchantAccount,
         });
+        if (!remoteMerchantAccount)
+          throw new Error('Merchant account not found');
         setMerchantPublicKey(remoteMerchantAccount.devices[0].guard.keys[0]);
       } catch (error: unknown) {
         if (error instanceof Error) {
