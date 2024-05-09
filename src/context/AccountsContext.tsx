@@ -8,7 +8,7 @@ import {
   registerAccountOnChain,
 } from '@/utils/register';
 import { retryPromises } from '@/utils/retryPromises';
-import { getAccountFrom } from '@/utils/shared/account';
+import { getAccountFromChain } from '@/utils/shared/account';
 import { l1Client } from '@/utils/shared/client';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { ChainId, ITransactionDescriptor } from '@kadena/client';
@@ -22,6 +22,7 @@ export type Account = {
   balance: string;
   devices: Device[];
   networkId: string;
+  chainIds: ChainId[];
 };
 
 export type Device = {
@@ -51,16 +52,13 @@ export type AccountRegistration = {
 
 export type AccountRecovery = Omit<AccountRegistration, 'accountName'>;
 
-const migrateAccountNetworkToNetworkId = (
+const migrateAccountStructure = (
   account: Account & { network?: string },
-): Account => {
-  const migratedAccount = {
-    ...account,
-    networkId: account.network || account.networkId,
-  };
-  delete migratedAccount.network;
-  return migratedAccount;
-};
+): Account => ({
+  ...account,
+  networkId: account.network || account.networkId,
+  chainIds: account.chainIds || [],
+});
 
 const getAccountsFromLocalStorage = (): Account[] => {
   if (typeof window === 'undefined') {
@@ -76,7 +74,7 @@ const getAccountsFromLocalStorage = (): Account[] => {
     const accounts = Array.isArray(parsedAccounts)
       ? parsedAccounts
       : Object.values(parsedAccounts);
-    const migratedAccounts = accounts.map(migrateAccountNetworkToNetworkId);
+    const migratedAccounts = accounts.map(migrateAccountStructure);
     localStorage.setItem('localAccounts', JSON.stringify(migratedAccounts));
 
     return migratedAccounts;
@@ -129,7 +127,7 @@ const AccountsProvider = ({ children }: Props) => {
           if (device.pendingRegistrationTx) {
             pollForRegistrationTx({
               requestKey: device.pendingRegistrationTx,
-              chainId: process.env.CHAIN_ID as ChainId,
+              chainId: process.env.CHAIN_ID,
               networkId: account.networkId,
             });
           }
@@ -143,9 +141,10 @@ const AccountsProvider = ({ children }: Props) => {
   const fetchAccountsFromChain = async (localAccounts: Account[]) => {
     return Promise.all(
       localAccounts.map(async (localAccount) => {
-        const { accountName, networkId, alias, devices } = localAccount;
+        const { accountName, networkId, alias, devices, chainIds } =
+          localAccount;
         try {
-          const remoteAccount = await getAccountFrom({
+          const remoteAccount = await getAccountFromChain({
             networkId,
             accountName,
           });
@@ -164,6 +163,10 @@ const AccountsProvider = ({ children }: Props) => {
               .values(),
           );
 
+          const uniqueChainIds = Array.from(
+            new Set<ChainId>([...remoteAccount.chainIds, ...chainIds]),
+          );
+
           return {
             accountName,
             networkId,
@@ -178,6 +181,7 @@ const AccountsProvider = ({ children }: Props) => {
 
               return { ...deviceOnChain, ...device };
             }),
+            chainIds: uniqueChainIds,
           };
         } catch (e: unknown) {
           try {
@@ -257,6 +261,7 @@ const AccountsProvider = ({ children }: Props) => {
       balance: '0',
       minApprovals: 1,
       minRegistrationApprovals: 1,
+      chainIds: [chainId],
     };
     addAccount(account);
 

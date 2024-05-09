@@ -98,7 +98,9 @@ export default function CardCollection({
                   bottom:
                     hasActiveCard && activeCard !== i ? `-${cardHeight}px` : 0,
                 }}
-                ref={(ref) => (cardRefs.current[i] = ref)}
+                ref={(ref) => {
+                  cardRefs.current[i] = ref;
+                }}
               >
                 <Account
                   key={account.accountName + account.networkId}

@@ -7,7 +7,7 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
-import { getAccountFrom } from './account';
+import { getAccountFromChain } from './account';
 
 export const transfer = async ({
   amount,
@@ -27,11 +27,12 @@ export const transfer = async ({
   gasPayer: string;
 }): Promise<ICommand> => {
   // TODO: make a decicion which command to get (safe/unsafe transfer)
-  const receiverAcc = await getAccountFrom({
+  const receiverAcc = await getAccountFromChain({
     accountName: receiver,
     namespace,
     networkId,
   });
+  if (!receiverAcc) throw new Error('Receiver account not found');
 
   return asyncPipe(
     composePactCommand(

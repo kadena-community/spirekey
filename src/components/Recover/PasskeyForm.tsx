@@ -5,7 +5,7 @@ import { useNotifications } from '@/context/shared/NotificationsContext';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { getAccountNameFromRegisterDeviceEvent } from '@/utils/getAccountNameFromRegisterDeviceEvent';
 import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
-import { getAccountFrom } from '@/utils/shared/account';
+import { getAccountFromChain } from '@/utils/shared/account';
 import { Stack, Text } from '@kadena/react-ui';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { motion } from 'framer-motion';
@@ -80,7 +80,23 @@ export const PasskeyForm: FC<StepProps> = ({
     let account;
 
     try {
-      account = await getAccountFrom({ accountName, networkId });
+      account = await getAccountFromChain({ accountName, networkId });
+
+      if (!account) throw new Error('Account data could not be retrieved');
+      setAccount({
+        ...account,
+        alias: alias || '',
+        devices: account.devices.map((device) => {
+          const deviceName = device.name?.includes('_') ? device.name : '_';
+          return {
+            ...device,
+            deviceType: deviceName.split('_')[0] || 'phone',
+            color: deviceName.split('_')[1] || deviceColors.purple,
+          };
+        }),
+      });
+
+      navigation.next();
     } catch (error: unknown) {
       addNotification({
         variant: 'error',
@@ -90,21 +106,6 @@ export const PasskeyForm: FC<StepProps> = ({
       });
       return;
     }
-
-    setAccount({
-      ...account,
-      alias: alias || '',
-      devices: account.devices.map((device) => {
-        const deviceName = device.name?.includes('_') ? device.name : '_';
-        return {
-          ...device,
-          deviceType: deviceName.split('_')[0] || 'phone',
-          color: deviceName.split('_')[1] || deviceColors.purple,
-        };
-      }),
-    });
-
-    navigation.next();
   };
 
   return (
