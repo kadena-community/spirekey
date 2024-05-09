@@ -8,7 +8,7 @@ import {
   registerAccountOnChain,
 } from '@/utils/register';
 import { retryPromises } from '@/utils/retryPromises';
-import { getAccountFromChain } from '@/utils/shared/account';
+import { getAccountFromChains } from '@/utils/shared/account';
 import { l1Client } from '@/utils/shared/client';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { ChainId, ITransactionDescriptor } from '@kadena/client';
@@ -57,7 +57,9 @@ const migrateAccountStructure = (
 ): Account => ({
   ...account,
   networkId: account.network || account.networkId,
-  chainIds: account.chainIds || [],
+  chainIds: account.chainIds?.length
+    ? account.chainIds
+    : [process.env.CHAIN_ID],
 });
 
 const getAccountsFromLocalStorage = (): Account[] => {
@@ -144,28 +146,15 @@ const AccountsProvider = ({ children }: Props) => {
         const { accountName, networkId, alias, devices, chainIds } =
           localAccount;
         try {
-          const remoteAccount = await getAccountFromChain({
+          const remoteAccount = await getAccountFromChains({
             networkId,
             accountName,
+            chainIds,
           });
 
           if (remoteAccount === null) {
             throw new Error('Account not found on chain');
           }
-
-          const uniqueDevices = Array.from(
-            [...remoteAccount.devices, ...devices]
-              .reduce(
-                (allUniqueDevices, d) =>
-                  allUniqueDevices.set(d['credential-id'], d),
-                new Map(),
-              )
-              .values(),
-          );
-
-          const uniqueChainIds = Array.from(
-            new Set<ChainId>([...remoteAccount.chainIds, ...chainIds]),
-          );
 
           return {
             accountName,
@@ -174,17 +163,12 @@ const AccountsProvider = ({ children }: Props) => {
             minApprovals: remoteAccount.minApprovals,
             minRegistrationApprovals: remoteAccount.minRegistrationApprovals,
             balance: remoteAccount.balance || '0',
-            devices: uniqueDevices.map((device: Device) => {
-              const deviceOnChain = remoteAccount.devices.find(
-                (d) => d['credential-id'] === device['credential-id'],
-              );
-
-              return { ...deviceOnChain, ...device };
-            }),
-            chainIds: uniqueChainIds,
+            devices: remoteAccount.devices,
+            chainIds: remoteAccount.chainIds,
           };
         } catch (e: unknown) {
           try {
+            // @TODO: We should move the recovery to the retieval, so accounts can be recovered per chain
             await retryPromises<ITransactionDescriptor>(() =>
               recoverAccount({
                 alias,
