@@ -115,7 +115,10 @@ export const getAccountFromChains = async ({
           Number(parseFloat(account.balance).toPrecision(8)) +
           Number(parseFloat(accountOnChain.balance).toPrecision(8))
         ).toString(),
-        chainIds: [...account.chainIds, ...accountOnChain.chainIds],
+        chainIds: Array.from(
+          new Set([...account.chainIds, ...accountOnChain.chainIds]),
+        ),
+        // @TODO:we should think about how to handle desynced accounts cross chains
         devices: [
           ...account.devices,
           ...accountOnChain.devices.filter(
