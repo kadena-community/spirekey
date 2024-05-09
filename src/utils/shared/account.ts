@@ -104,31 +104,33 @@ export const getAccountFromChains = async ({
     .map((result) => result.value)
     .filter(Boolean) as Account[];
 
-  return accounts.reduce(
+  return accounts.reduce<Omit<Account, 'alias'>>(
     (account, accountOnChain) => {
-      account.balance = (
-        Number(parseFloat(account.balance).toPrecision(8)) +
-        Number(parseFloat(accountOnChain.balance).toPrecision(8))
-      ).toString();
-      account.chainIds = [...account.chainIds, ...accountOnChain.chainIds];
       const credentialIds = account.devices.map(
         (device) => device['credential-id'],
       );
-      account.devices = [
-        ...account.devices,
-        ...accountOnChain.devices.filter(
-          (device) => !credentialIds.includes(device['credential-id']),
+      return {
+        ...account,
+        balance: (
+          Number(parseFloat(account.balance).toPrecision(8)) +
+          Number(parseFloat(accountOnChain.balance).toPrecision(8))
+        ).toString(),
+        chainIds: [...account.chainIds, ...accountOnChain.chainIds],
+        devices: [
+          ...account.devices,
+          ...accountOnChain.devices.filter(
+            (device) => !credentialIds.includes(device['credential-id']),
+          ),
+        ],
+        minApprovals: Math.max(
+          account.minApprovals,
+          accountOnChain.minApprovals,
         ),
-      ];
-      account.minApprovals = Math.max(
-        account.minApprovals,
-        accountOnChain.minApprovals,
-      );
-      account.minRegistrationApprovals = Math.max(
-        account.minRegistrationApprovals,
-        accountOnChain.minRegistrationApprovals,
-      );
-      return account;
+        minRegistrationApprovals: Math.max(
+          account.minRegistrationApprovals,
+          accountOnChain.minRegistrationApprovals,
+        ),
+      };
     },
     {
       accountName,
@@ -138,6 +140,6 @@ export const getAccountFromChains = async ({
       devices: [],
       minApprovals: 1,
       minRegistrationApprovals: 1,
-    } as Omit<Account, 'alias'>,
+    },
   );
 };
