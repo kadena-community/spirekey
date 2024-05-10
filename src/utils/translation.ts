@@ -90,7 +90,7 @@ export const getCustomTranslation = ({
   // TODO: Add back hash after capabilities have been simplified
   // if (capability.args[capabilityMeta.hashIndex] !== customTranslation.hash)
   //   throw new Error(
-  //     'The translations have been tempered with, please be careful!',
+  //     'The translations have been tampered with, please be careful!',
   //   );
   const mergedBundle = {
     ...bundle,

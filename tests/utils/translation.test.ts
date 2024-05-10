@@ -37,7 +37,7 @@ const translationMock = {
 // TODO: Remove all 'granter' and 'acceptor' references
 describe('translation', () => {
   describe('when the translation has no args', () => {
-    it('shoudl show `You are about to pay for gas`', () => {
+    it('should show `You are about to pay for gas`', () => {
       const capability = {
         name: 'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.SET_READY_FOR_DELIVERY',
         args: ['order-id'],

@@ -143,7 +143,7 @@ export const getOrderDetails = ({
   const orderLines = orderItems.map((product) => {
     const price = product.quantity * product.price;
     const translation = {
-      title: `${product.name} (${product.quantity}x${product.price})`,
+      title: `${product.name} (${product.quantity} x ${product.price})`,
       value: price.toFixed(12),
       image: product.image.src,
     };

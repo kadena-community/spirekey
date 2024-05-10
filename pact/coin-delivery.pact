@@ -163,10 +163,10 @@
   )
 
   (defcap PICKUP_DELIVERY (order-id:string)
-  @doc "Capability validates that the courier has signed for the pickup"
-  @event
-  (compose-capability (UPDATE_ORDER_STATUS))
-  (compose-capability (RESERVE_FUNDS))
+    @doc "Capability validates that the courier has signed for the pickup"
+    @event
+    (compose-capability (UPDATE_ORDER_STATUS))
+    (compose-capability (RESERVE_FUNDS))
 )
 
   (defcap DELIVER_ORDER (order-id:string)
