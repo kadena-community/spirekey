@@ -97,14 +97,12 @@ export default function Customer({ searchParams }: Props) {
 
     const details = getOrderDetails({
       orderId,
-      buyerAccount: account.accountName,
-      merchantAccount,
       orderItems: [...orderItems, deliveryFee],
     });
     const customTranslations = details.reduce((bundle, detail) => {
       return {
         ...bundle,
-        [detail.translationKey]: detail.translation,
+        ...detail.translations,
       };
     }, {});
     saveDelivery(orderId, customTranslations);

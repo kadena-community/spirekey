@@ -62,6 +62,7 @@ export const getCustomTranslation = ({
   metas: Meta[];
   type: 'granter' | 'acceptor';
 }) => {
+  // @ts-ignore
   const [capabilityMeta]: CapabilityMeta[] = metas
     .map((meta) => {
       if (type === 'acceptor')

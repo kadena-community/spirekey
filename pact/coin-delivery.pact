@@ -185,13 +185,6 @@
     (compose-capability (ESCROW))
   )
 
-  (defcap HANDOFF_DELIVERY (order-id:string)
-    @doc "Capability validates that the merchant has signed for the pickup"
-    @event
-    (compose-capability (UPDATE_ORDER_STATUS))
-    (compose-capability (MERCHANT order-id))
-  )
-
   (defcap UPDATE_ORDER_STATUS()
     @doc "Capability validates that the order status can be updated"
     true

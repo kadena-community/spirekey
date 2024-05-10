@@ -34,7 +34,7 @@ export function Order({ signers, account, order }: Props) {
     .filter((signer) => !!signer.account && !!signer.signer)
     .map(({ signer, account }) => {
       const capabilities = signer.clist?.filter((capability: ICap) =>
-        capability.name.includes('CREATE_ORDER_LINE'),
+        capability.name.includes('SELL_ORDER_ITEM'),
       );
       return {
         signer,
