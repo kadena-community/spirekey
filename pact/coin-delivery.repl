@@ -199,7 +199,7 @@
 (env-sigs
   [{ 'key  : "WEBAUTHN-merchant-key"
    , 'caps : [
-      (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.delivery.PICKUP_DELIVERY
+      (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.delivery.HANDOFF_DELIVERY
         "order-id"
       )
   ]}

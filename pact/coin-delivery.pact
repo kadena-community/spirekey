@@ -167,7 +167,12 @@
     @event
     (compose-capability (UPDATE_ORDER_STATUS))
     (compose-capability (RESERVE_FUNDS))
-)
+  )
+
+  (defcap ORDER_PICKUP (order-id:string)
+    (compose-capability(HANDOFF_DELIVERY order-id))
+    (compose-capability(PICKUP_DELIVERY order-id))
+  )
 
   (defcap DELIVER_ORDER (order-id:string)
     @doc "Capability validates that the courier should sign for the delivery"
@@ -183,6 +188,11 @@
     (compose-capability (UPDATE_ORDER_STATUS))
     (compose-capability (BUYER order-id))
     (compose-capability (ESCROW))
+  )
+
+  (defcap ORDER_DELIVERY(order-id:string)
+    (compose-capability(DELIVER_ORDER order-id))
+    (compose-capability(RECEIVE_ORDER order-id))
   )
 
   (defcap UPDATE_ORDER_STATUS()
@@ -396,20 +406,18 @@
       (property (= READY_FOR_DELIVERY (current-order-status order-id)))
       (property (= IN_TRANSIT (current-order-status-after order-id)))
     ]
-    (with-capability (HANDOFF_DELIVERY order-id)
-      (with-capability (PICKUP_DELIVERY order-id)
-        (with-read order-table order-id
-          { 'order-status := order-status
-          , 'order-price  := order-price }
-          (enforce (= order-status READY_FOR_DELIVERY) "Order status is not READY_FOR_DELIVERY")
-          (reserve-funds order-id courier (get-courier-deposit-amount order-price))
-          (update-order-status order-id IN_TRANSIT)
-          (enforce-capability-guard courier courier-guard)
-          (insert delivery-table order-id
-            { 'courier        : courier
-            , 'courier-guard  : courier-guard
-            }
-          )
+    (with-capability (ORDER_PICKUP order-id)
+      (with-read order-table order-id
+        { 'order-status := order-status
+        , 'order-price  := order-price }
+        (enforce (= order-status READY_FOR_DELIVERY) "Order status is not READY_FOR_DELIVERY")
+        (reserve-funds order-id courier (get-courier-deposit-amount order-price))
+        (update-order-status order-id IN_TRANSIT)
+        (enforce-capability-guard courier courier-guard)
+        (insert delivery-table order-id
+          { 'courier        : courier
+          , 'courier-guard  : courier-guard
+          }
         )
       )
     )
@@ -421,27 +429,25 @@
       (property (= DELIVERED (current-order-status-after order-id)))
     ]
 
-    (with-capability (DELIVER_ORDER order-id) 
-      (with-capability (RECEIVE_ORDER order-id) ; Would it be better to just require this capability?
-        (with-read order-table order-id
-          { 'merchant       := merchant
-          , 'order-price    := order-price
-          , 'delivery-price := delivery-price
-          }
-          (with-read delivery-table order-id
-            { 'courier := courier }
-            (let* (
-              (courier-deposit (get-courier-deposit-amount order-price))
-              (merchant-deposit (get-merchant-deposit-amount order-price))
-              (courier-payout (+ courier-deposit delivery-price))
-              (merchant-payout (+ merchant-deposit order-price))
-            )
-              (install-capability (coin.TRANSFER ESCROW_ID courier courier-payout))
-              (coin.transfer ESCROW_ID courier courier-payout)
-              (install-capability (coin.TRANSFER ESCROW_ID merchant merchant-payout))
-              (coin.transfer ESCROW_ID merchant merchant-payout)
-              (update-order-status order-id DELIVERED)
-            )
+    (with-capability (ORDER_DELIVERY order-id) 
+      (with-read order-table order-id
+        { 'merchant       := merchant
+        , 'order-price    := order-price
+        , 'delivery-price := delivery-price
+        }
+        (with-read delivery-table order-id
+          { 'courier := courier }
+          (let* (
+            (courier-deposit (get-courier-deposit-amount order-price))
+            (merchant-deposit (get-merchant-deposit-amount order-price))
+            (courier-payout (+ courier-deposit delivery-price))
+            (merchant-payout (+ merchant-deposit order-price))
+          )
+            (install-capability (coin.TRANSFER ESCROW_ID courier courier-payout))
+            (coin.transfer ESCROW_ID courier courier-payout)
+            (install-capability (coin.TRANSFER ESCROW_ID merchant merchant-payout))
+            (coin.transfer ESCROW_ID merchant merchant-payout)
+            (update-order-status order-id DELIVERED)
           )
         )
       )
