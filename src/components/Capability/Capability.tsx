@@ -105,7 +105,8 @@ export const Capability = ({
   type,
   metaData,
 }: Props) => {
-  if (!translations) return <DefaultCapability capability={capability} />;
+  if (!translations || process.env.CAPABILITY_TRANSLATIONS !== 'true')
+    return <DefaultCapability capability={capability} />;
 
   if (type === 'acceptor')
     return (
