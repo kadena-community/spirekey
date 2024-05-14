@@ -32,6 +32,18 @@ interface AccountProps {
   chainId?: ChainId;
 }
 
+type Credential = {
+  type: string;
+  publicKey: string;
+  id: string;
+};
+type User = {
+  alias: string;
+  accountName: string;
+  pendingTxIds: string[];
+  credentials: Credential[];
+};
+
 export function Account({
   account,
   isActive = false,
@@ -56,14 +68,36 @@ export function Account({
   }, [isActive]);
 
   const onConnect =
-    (url: URL, account: Account, chainId: ChainId) => async () => {
+    ({
+      url,
+      networkId,
+      chainId,
+      user,
+    }: {
+      url: URL | string;
+      networkId: string;
+      chainId: ChainId;
+      user: Omit<User, 'pendingTxIds'>;
+    }) =>
+    async () => {
       const remoteAccount = await getAccountFromChain({
-        accountName: account.accountName,
-        networkId: account.networkId,
+        accountName: user.accountName,
+        networkId: networkId,
         chainId,
       });
+      if (typeof url === 'string') {
+        addNotification({
+          variant: 'error',
+          title: `No return URL provided by the dApp.`,
+        });
+        return;
+      }
 
       if (remoteAccount) {
+        url.searchParams.set(
+          'user',
+          Buffer.from(JSON.stringify(user)).toString('base64'),
+        );
         window.location.href = url.toString();
         return;
       }
@@ -75,11 +109,12 @@ export function Account({
       if (account.devices.length !== 1) {
         addNotification({
           variant: 'error',
-          title: `This account does not exist on ${getNetworkDisplayName(account.networkId)} on chain ${chainId} and cannot be created on the fly.`,
+          title: `This account does not exist on ${getNetworkDisplayName(networkId)} on chain ${chainId} and cannot be created on the fly.`,
         });
         return;
       }
 
+      // TODO: handle the cases where multiple devices are present on an account
       const device = account.devices[0];
 
       /**
@@ -99,12 +134,14 @@ export function Account({
       /**
        * Add the pending transaction id to the user object that is shared with the client dApp
        */
-      const userParam = url.searchParams.get('user') || '';
-      const user = JSON.parse(Buffer.from(userParam, 'base64').toString());
-      user.pendingTxIds = [pendingTransaction.requestKey];
       url.searchParams.set(
         'user',
-        Buffer.from(JSON.stringify(user)).toString('base64'),
+        Buffer.from(
+          JSON.stringify({
+            ...user,
+            pendingTxIds: [pendingTransaction.requestKey],
+          }),
+        ).toString('base64'),
       );
 
       window.location.href = url.toString();
@@ -121,21 +158,18 @@ export function Account({
         const caccount = encodeURIComponent(account.accountName);
         const cid = encodeURIComponent(d['credential-id']);
         const url = returnUrl ? new URL(returnUrl) : '';
-        const user = Buffer.from(
-          JSON.stringify({
-            alias: account.alias,
-            accountName: account.accountName,
-            pendingTxIds: [d.pendingRegistrationTx].filter(Boolean),
-            credentials: [
-              {
-                type: 'WebAuthn',
-                publicKey: d.guard.keys[0],
-                id: d['credential-id'],
-              },
-            ],
-          }),
-        ).toString('base64');
-        if (url) url.searchParams.set('user', user);
+        const user = {
+          alias: account.alias,
+          accountName: account.accountName,
+          pendingTxIds: [d.pendingRegistrationTx].filter(Boolean) as string[],
+          credentials: [
+            {
+              type: 'WebAuthn',
+              publicKey: d.guard.keys[0],
+              id: d['credential-id'],
+            },
+          ],
+        };
         return (
           <Fragment key={d['credential-id']}>
             <DeviceCard
@@ -226,7 +260,12 @@ export function Account({
                   </ButtonLink>
                   {(optimistic || !d.pendingRegistrationTx) && (
                     <Button
-                      onPress={onConnect(url as URL, account, chainId)}
+                      onPress={onConnect({
+                        url,
+                        networkId: account.networkId,
+                        chainId,
+                        user,
+                      })}
                       variant="primary"
                     >
                       Connect
