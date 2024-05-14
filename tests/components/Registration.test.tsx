@@ -1,4 +1,4 @@
-import { BiometricsForm } from '@/components/Registration/BiometricsForm';
+import Registration from '@/components/Registration/Registration';
 import { startRegistration } from '@simplewebauthn/browser';
 import React from 'react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
@@ -11,41 +11,18 @@ describe('Registration Form', () => {
     matchMediaMock.useMediaQuery('(prefers-color-scheme: dark)');
   });
   afterEach(() => cleanup());
-  describe('When showing the BiometricsForm', () => {
-    const formValues = {
-      alias: '',
-      color: '',
-      networkId: 'development',
-      usedAlias: '',
-      deviceType: '',
-      accountName: '',
-      credentialId: '',
-      credentialPubkey: '',
-    };
-    const renderEmptyForm = () => {
-      render(
-        <BiometricsForm
-          isVisible
-          stepIndex={0}
-          formValues={formValues}
-          navigation={{
-            goTo: vi.fn(),
-            next: vi.fn(),
-            previous: vi.fn(),
-          }}
-          updateFields={vi.fn()}
-          defaultValues={formValues}
-        />,
-      );
+  describe('When showing the Registration form', () => {
+    const renderRegistration = () => {
+      render(<Registration />);
     };
     it('should should ask a user to create a passkey', () => {
-      renderEmptyForm();
+      renderRegistration();
       expect(
-        screen.getByText('Create your account by using Passkey'),
+        screen.getByText('Create your account with a Passkey'),
       ).toBeInTheDocument();
     });
     it('should ask for passkey', () => {
-      renderEmptyForm();
+      renderRegistration();
       screen.getByText('Tap to continue').click();
       expect(startRegistration).toHaveBeenCalledOnce();
     });

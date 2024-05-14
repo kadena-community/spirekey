@@ -42,7 +42,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
   const defaultFormData = {
     networkId: skipNetworkId
       ? process.env.WALLET_NETWORK_ID!
-      : getDevnetNetworkId(),
+      : networkId || getDevnetNetworkId(),
     accountName: '',
     credentialPubkey: '',
     credentialId: '',
