@@ -151,34 +151,36 @@ export function Account({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Grid
-                    justifyContent="center"
-                    gap="md"
-                    marginBlockStart="md"
-                    className={styles.accountButtonWrapper}
-                  >
-                    <AccountButton
-                      href={`/accounts/${caccount}/devices/${cid}/transactions`}
-                      icon={<Transactions />}
-                      title="Overview"
-                      description="Transfers"
-                    />
-                    <AccountButton
-                      href={`/accounts/${caccount}/devices/${cid}/send`}
-                      icon={<Send />}
-                      title="Send"
-                      description="Transfers"
-                    />
-                    <AccountButton
-                      href={`/accounts/${caccount}/devices/${cid}/receive`}
-                      icon={<Request />}
-                      title="Request"
-                      description="Transfers"
-                    />
-                    {[getDevnetNetworkId()].includes(account.networkId) && (
-                      <FundButton account={account} />
-                    )}
-                  </Grid>
+                  {process.env.ACCOUNT_OPERATIONS === 'true' && (
+                    <Grid
+                      justifyContent="center"
+                      gap="md"
+                      marginBlockStart="md"
+                      className={styles.accountButtonWrapper}
+                    >
+                      <AccountButton
+                        href={`/accounts/${caccount}/devices/${cid}/transactions`}
+                        icon={<Transactions />}
+                        title="Overview"
+                        description="Transfers"
+                      />
+                      <AccountButton
+                        href={`/accounts/${caccount}/devices/${cid}/send`}
+                        icon={<Send />}
+                        title="Send"
+                        description="Transfers"
+                      />
+                      <AccountButton
+                        href={`/accounts/${caccount}/devices/${cid}/receive`}
+                        icon={<Request />}
+                        title="Request"
+                        description="Transfers"
+                      />
+                      {[getDevnetNetworkId()].includes(account.networkId) && (
+                        <FundButton account={account} />
+                      )}
+                    </Grid>
+                  )}
                   <Stack
                     marginBlock="lg"
                     flexDirection="row"
