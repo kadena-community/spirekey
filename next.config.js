@@ -20,6 +20,7 @@ const nextConfig = {
     WALLET_NETWORK_ID: process.env.WALLET_NETWORK_ID,
     MERCHANT_ACCOUNT: process.env.MERCHANT_ACCOUNT,
     DEV_MODE_SETTINGS_PAGE: process.env.DEV_MODE_SETTINGS_PAGE,
+    ACCOUNT_OPERATIONS: process.env.ACCOUNT_OPERATIONS,
   },
 };
 

@@ -16,6 +16,7 @@ declare global {
       DEVNET_HOST: string;
       CHAINWEB_URL: string;
       MERCHANT_ACCOUNT: string;
+      ACCOUNT_OPERATIONS: string;
     }
   }
 }
