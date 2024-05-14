@@ -128,60 +128,41 @@ type OrderDetails = {
 
 type OrderLineDetails = {
   orderLineId: string;
-  translationKey: string;
   price: number;
-  translation: {
-    acceptor: {
-      title: string;
-      value: string;
-      image: string;
-    };
-    granter: {
-      title: string;
-      value: string;
-      image: string;
-    };
+  translations: {
+    [key: string]: { title: string; value: string; image: string }; // TODO: Add type for translation
   };
 };
 export const getOrderDetails = ({
   orderId,
-  buyerAccount,
-  merchantAccount,
   orderItems,
 }: {
   orderId: string;
-  buyerAccount: string;
-  merchantAccount: string;
   orderItems: OrderItems;
 }): OrderLineDetails[] => {
   const orderLines = orderItems.map((product) => {
     const price = product.quantity * product.price;
     const translation = {
-      acceptor: {
-        title: `${product.name} (${product.quantity}x${product.price})`,
-        value: price.toFixed(12),
-        image: product.image.src,
-      },
-      granter: {
-        title: `${product.name} (${product.quantity}x${product.price})`,
-        value: price.toFixed(12),
-        image: product.image.src,
-      },
+      title: `${product.name} (${product.quantity} x ${product.price})`,
+      value: price.toFixed(12),
+      image: product.image.src,
     };
-    const args = [
-      orderId,
-      merchantAccount,
-      buyerAccount,
-      { decimal: price.toFixed(12) },
-    ];
+    // TODO: Separate hash id from capability props
+    const args = [orderId, { decimal: price.toFixed(12) }];
+    const orderLineId = generateCapabilityHash({
+      capabilityArgs: args,
+      customTranslation: translation,
+    });
+    args.splice(1, 0, orderLineId);
+    const purchaseTranslationKey = `n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.PURCHASE_ORDER_ITEM(${args.map((x) => JSON.stringify(x)).join(',')})`;
+    const sellTranslationKey = `n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.SELL_ORDER_ITEM(${args.map((x) => JSON.stringify(x)).join(',')})`;
     return {
-      orderLineId: generateCapabilityHash({
-        capabilityArgs: args,
-        customTranslation: translation,
-      }),
-      translationKey: `n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE(${args.map((x) => JSON.stringify(x)).join(',')})`,
-      translation,
+      orderLineId,
       price,
+      translations: {
+        [purchaseTranslationKey]: translation,
+        [sellTranslationKey]: translation,
+      },
     };
   });
   return orderLines;
@@ -208,8 +189,6 @@ const createOrder = async ({
 
   const orderLines = getOrderDetails({
     orderId: orderHash,
-    buyerAccount: customerAccount,
-    merchantAccount,
     orderItems,
   });
 
@@ -248,11 +227,9 @@ const createOrder = async ({
         (withCap) => [
           ...orderLines.map((orderLine) => {
             return withCap(
-              `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
+              `${process.env.NAMESPACE}.delivery.PURCHASE_ORDER_ITEM`,
               orderHash,
               orderLine.orderLineId,
-              merchantAccount,
-              customerAccount,
               { decimal: orderLine.price.toFixed(12) },
             );
           }),
@@ -275,11 +252,9 @@ const createOrder = async ({
         (withCap) => [
           ...orderLines.map((orderLine) => {
             return withCap(
-              `${process.env.NAMESPACE}.delivery.CREATE_ORDER_LINE`,
+              `${process.env.NAMESPACE}.delivery.SELL_ORDER_ITEM`,
               orderHash,
               orderLine.orderLineId,
-              merchantAccount,
-              customerAccount,
               { decimal: orderLine.price.toFixed(12) },
             );
           }),
@@ -392,7 +367,10 @@ const pickupDelivery = async ({
       addSigner(
         { pubKey: merchantPublicKey, scheme: 'WebAuthn' },
         (withCap) => [
-          withCap(`${process.env.NAMESPACE}.delivery.PICKUP_DELIVERY`, orderId),
+          withCap(
+            `${process.env.NAMESPACE}.delivery.HANDOFF_DELIVERY`,
+            orderId,
+          ),
         ],
       ),
     ),
@@ -426,7 +404,7 @@ const completeDelivery = async ({
       }),
       setNetworkId(networkId),
       addSigner({ pubKey: buyerPublicKey, scheme: 'WebAuthn' }, (withCap) => [
-        withCap(`${process.env.NAMESPACE}.delivery.DELIVER_ORDER`, orderId),
+        withCap(`${process.env.NAMESPACE}.delivery.RECEIVE_ORDER`, orderId),
         withCap(
           `${process.env.NAMESPACE}.webauthn-wallet.GAS_PAYER`,
           buyerAccount,

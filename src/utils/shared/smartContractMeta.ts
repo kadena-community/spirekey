@@ -1,7 +1,25 @@
 import { Account } from '@/context/AccountsContext';
 import { ICap } from '@kadena/types';
 
-const coinMeta = {
+export type CapabilityMeta = {
+  name: string;
+  argumentIndex?: number;
+  hashValues?: number[];
+  hashIndex?: number;
+};
+export interface Meta {
+  name: string;
+  module: string;
+  description: string;
+  hash: string;
+  blessed: string[];
+  capabilities: {
+    granter: CapabilityMeta[];
+    acceptor: CapabilityMeta[];
+  };
+}
+
+const coinMeta: Meta = {
   name: 'Coin',
   module: 'coin',
   description: 'Coin smart contract that governs KDA token.',
@@ -17,7 +35,7 @@ const coinMeta = {
   },
 };
 
-const deliveryMeta = {
+const deliveryMeta: Meta = {
   name: 'Delivery',
   module: `${process.env.NAMESPACE}.delivery`,
   description:
@@ -27,9 +45,13 @@ const deliveryMeta = {
   capabilities: {
     granter: [
       {
-        name: 'CREATE_ORDER_LINE',
-        argumentIndex: 2,
-        hashValues: [0, 2, 3, 4],
+        name: 'PURCHASE_ORDER_ITEM',
+        hashValues: [0, 1, 2],
+        hashIndex: 1,
+      },
+      {
+        name: 'SELL_ORDER_ITEM',
+        hashValues: [0, 1, 2],
         hashIndex: 1,
       },
       {
@@ -37,33 +59,22 @@ const deliveryMeta = {
       },
       {
         name: 'PICKUP_DELIVERY',
-        argumentIndex: 0,
+      },
+      {
+        name: 'HANDOFF_DELIVERY',
       },
       {
         name: 'DELIVER_ORDER',
-        argumentIndex: 0,
+      },
+      {
+        name: 'RECEIVE_ORDER',
       },
     ],
-    acceptor: [
-      {
-        name: 'CREATE_ORDER_LINE',
-        argumentIndex: 3,
-        hashValues: [0, 2, 3, 4],
-        hashIndex: 1,
-      },
-      {
-        name: 'PICKUP_DELIVERY',
-        argumentIndex: 1,
-      },
-      {
-        name: 'DELIVER_ORDER',
-        argumentIndex: 1,
-      },
-    ],
+    acceptor: [],
   },
 };
 
-const webauthnWalletMeta = {
+const webauthnWalletMeta: Meta = {
   name: 'WebAuthn Wallet',
   module: `${process.env.NAMESPACE}.webauthn-wallet`,
   description: 'WebAuthnWallet smart contract that governs WebAuthnWallet.',
@@ -81,16 +92,6 @@ const webauthnWalletMeta = {
     acceptor: [],
   },
 };
-type CoinMeta = typeof coinMeta;
-type DeliveryMeta = typeof deliveryMeta;
-type WebAuthnWalletMeta = typeof webauthnWalletMeta;
-export type Meta = CoinMeta | DeliveryMeta | WebAuthnWalletMeta;
-export type CapabilityMeta = {
-  name: string;
-  argumentIndex?: number;
-  hashValues?: number[];
-  hashIndex?: number;
-};
 
 export const getSmartContractMeta = () => {
   // TODO: Find proper ways to retrieve the meta data
@@ -101,13 +102,13 @@ export const getSmartContractMeta = () => {
 export const getGranterCapabilityMeta = (meta: Meta, capability: string) => {
   return meta.capabilities.granter.find(({ name }) =>
     new RegExp(`^${meta.module}\.${name}`).test(capability),
-  ) as CapabilityMeta;
+  );
 };
 
 export const getAcceptorCapabilityMeta = (meta: Meta, capability: string) => {
   return meta.capabilities.acceptor.find(({ name }) =>
     new RegExp(`^${meta.module}\.${name}`).test(capability),
-  ) as CapabilityMeta;
+  );
 };
 
 export const filterGranterCapabilities =
@@ -128,6 +129,7 @@ export const filterGranterCapabilities =
       capability.name,
     );
     if (!capabilityMeta) return false;
+
     if (capabilityMeta.argumentIndex === undefined) return true;
     const granter = capability.args[capabilityMeta.argumentIndex];
     return granter === account.accountName;

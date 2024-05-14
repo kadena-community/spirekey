@@ -1,8 +1,14 @@
 {
   "compilerOptions": {
-    "types": [".kadena/pactjs-generated"],
+    "types": [
+      ".kadena/pactjs-generated"
+    ],
     "target": "esnext",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -20,10 +26,21 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@e2e/*": ["./e2e/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@e2e/*": [
+        "./e2e/*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

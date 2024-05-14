@@ -45,7 +45,7 @@
     (defproperty get-merchant(order-id:string)
       (at 'merchant (read order-table order-id 'before))
     )
-  ]
+  ] 
 
   (use coin)
   (use webauthn-wallet)
@@ -130,14 +130,21 @@
     (compose-capability (RESERVE_FUNDS))
   )
 
-  (defcap CREATE_ORDER_LINE (
-    order-id : string
-    line-id  : string
-    merchant : string
-    buyer    : string
-    price    : decimal
+  (defcap PURCHASE_ORDER_ITEM (
+    order-id: string
+    line-id:string
+    price: decimal
   )
-    @doc "Capability validates that the order line can be created"
+    @doc "Capability validates that the buyer wants to purchase this item as part of the order"
+    true
+  )
+
+  (defcap SELL_ORDER_ITEM (
+    order-id: string
+    line-id:string
+    price: decimal
+  )
+    @doc "Capability validates that the seller wants to sell this item as part of the order"
     true
   )
 
@@ -148,13 +155,11 @@
     (compose-capability (MERCHANT order-id))
   )
 
-  (defcap DELIVER_ORDER (order-id:string)
-    @doc "Capability validates that both courier and buyer should sign the delivery"
+  (defcap HANDOFF_DELIVERY (order-id:string)
+    @doc "Capability validates that the merchant has signed for the pickup"
     @event
     (compose-capability (UPDATE_ORDER_STATUS))
-    (compose-capability (BUYER order-id))
-    (compose-capability (COURIER order-id))
-    (compose-capability (ESCROW))
+    (compose-capability (MERCHANT order-id))
   )
 
   (defcap PICKUP_DELIVERY (order-id:string)
@@ -162,7 +167,32 @@
     @event
     (compose-capability (UPDATE_ORDER_STATUS))
     (compose-capability (RESERVE_FUNDS))
-    (compose-capability (MERCHANT order-id))
+  )
+
+  (defcap ORDER_PICKUP (order-id:string)
+    (compose-capability(HANDOFF_DELIVERY order-id))
+    (compose-capability(PICKUP_DELIVERY order-id))
+  )
+
+  (defcap DELIVER_ORDER (order-id:string)
+    @doc "Capability validates that the courier should sign for the delivery"
+    @event
+    (compose-capability (UPDATE_ORDER_STATUS))
+    (compose-capability (COURIER order-id))
+    (compose-capability (ESCROW))
+  )
+
+  (defcap RECEIVE_ORDER (order-id:string)
+    @doc "Capability validates that the buyer should sign for the delivery"
+    @event
+    (compose-capability (UPDATE_ORDER_STATUS))
+    (compose-capability (BUYER order-id))
+    (compose-capability (ESCROW))
+  )
+
+  (defcap ORDER_DELIVERY(order-id:string)
+    (compose-capability(DELIVER_ORDER order-id))
+    (compose-capability(RECEIVE_ORDER order-id))
   )
 
   (defcap UPDATE_ORDER_STATUS()
@@ -192,6 +222,7 @@
     line-id  : string
     price    : decimal
   )
+
   (defun enforce-and-get-price:decimal (
     order-id                   : string
     buyer                      : string
@@ -204,13 +235,19 @@
       { 'line-id := line-id
       , 'price   := price
       }
-      (with-capability (CREATE_ORDER_LINE order-id line-id merchant buyer price)
+
+      (with-capability (PURCHASE_ORDER_ITEM order-id line-id price)
         (enforce-capability-guard buyer buyer-guard)
-        (enforce-capability-guard merchant merchant-guard)
-        price
       )
+
+      (with-capability (SELL_ORDER_ITEM order-id line-id price)
+        (enforce-capability-guard merchant merchant-guard)
+      )
+
+      price
     )
   )
+  
   (defun enforce-order-lines (
     order-id       : string
     order-lines    : [object{order-line-schema}]
@@ -240,7 +277,7 @@
       )
     )
       (enforce
-        (= total-price (+ order-price delivery-price))
+        (= total-price (+ order-price delivery-price)) 
         (format "Order lines total price does not match the order price with delivery price {} {}" [order-price total-price])
       )
       (enforce (= (floor order-price MINIMUM_PRECISION) order-price) "Order price exeeds minimum allowed precision decimals")
@@ -369,7 +406,7 @@
       (property (= READY_FOR_DELIVERY (current-order-status order-id)))
       (property (= IN_TRANSIT (current-order-status-after order-id)))
     ]
-    (with-capability (PICKUP_DELIVERY order-id)
+    (with-capability (ORDER_PICKUP order-id)
       (with-read order-table order-id
         { 'order-status := order-status
         , 'order-price  := order-price }
@@ -391,7 +428,8 @@
       (property (= IN_TRANSIT (current-order-status order-id)))
       (property (= DELIVERED (current-order-status-after order-id)))
     ]
-    (with-capability (DELIVER_ORDER order-id)
+
+    (with-capability (ORDER_DELIVERY order-id) 
       (with-read order-table order-id
         { 'merchant       := merchant
         , 'order-price    := order-price

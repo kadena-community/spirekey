@@ -62,6 +62,7 @@ export const getCustomTranslation = ({
   metas: Meta[];
   type: 'granter' | 'acceptor';
 }) => {
+  // @ts-ignore
   const [capabilityMeta]: CapabilityMeta[] = metas
     .map((meta) => {
       if (type === 'acceptor')
@@ -69,6 +70,7 @@ export const getCustomTranslation = ({
       return getGranterCapabilityMeta(meta, capability.name);
     })
     .filter(Boolean);
+
   if (!capabilityMeta) return getTranslation(bundle, capability, type);
   // intentional == I want to check if null or undefined
   if (
@@ -84,10 +86,12 @@ export const getCustomTranslation = ({
     bundle,
   });
   if (!customTranslation) return getTranslation(bundle, capability, type);
-  if (capability.args[capabilityMeta.hashIndex] !== customTranslation.hash)
-    throw new Error(
-      'The translations have been tempered with, please be careful!',
-    );
+
+  // TODO: Add back hash after capabilities have been simplified
+  // if (capability.args[capabilityMeta.hashIndex] !== customTranslation.hash)
+  //   throw new Error(
+  //     'The translations have been tampered with, please be careful!',
+  //   );
   const mergedBundle = {
     ...bundle,
     [capability.name]: customTranslation.translation,

@@ -71,39 +71,6 @@ describe('smartContractMeta', () => {
             'Only Granter Capabilities should be found',
           );
         });
-        it('should return the capabilities that are accepting', () => {
-          assert.deepStrictEqual(
-            capabilities.filter(
-              filterAcceptorCapabilities({
-                account: { accountName: 'customer' },
-                meta: getSmartContractMeta(),
-              }),
-            ),
-            [
-              {
-                name: 'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE',
-                args: [
-                  'order-id',
-                  'hash-of-data',
-                  'merchant',
-                  'customer',
-                  { decimal: '2.2' },
-                ],
-              },
-              {
-                name: 'n_eef68e581f767dd66c4d4c39ed922be944ede505.delivery.CREATE_ORDER_LINE',
-                args: [
-                  'order-id',
-                  'hash-of-data-2',
-                  'merchant',
-                  'customer',
-                  { decimal: '2.2' },
-                ],
-              },
-            ],
-            'Only Acceptor capabilities should be found',
-          );
-        });
       });
     });
   });
