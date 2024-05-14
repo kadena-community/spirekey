@@ -1,48 +1,28 @@
 'use client';
 
+import fingerprint from '@/assets/images/fingerprint.svg';
 import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
 import { useSettings } from '@/context/SettingsContext';
+import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
-import { useRegistrationForm } from '@/hooks/useRegistrationForm';
 import { deviceColors } from '@/styles/shared/tokens.css';
+import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
+import { getAccountName } from '@/utils/register';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
-import { Box, Stack } from '@kadena/react-ui';
+import { getNewWebauthnKey } from '@/utils/webauthnKey';
+import { Box, Stack, Text } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
-import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import DeviceCard from '../Card/DeviceCard';
-import { AliasForm } from './AliasForm';
-import { BiometricsForm } from './BiometricsForm';
-import { ColorForm } from './ColorForm';
-import { DeviceTypeForm } from './DeviceTypeForm';
-import { NetworkIdForm } from './NetworkIdForm';
+import { SurfaceCard } from '../SurfaceCard/SurfaceCard';
+import { NetworkDevnet } from '../icons/NetworkDevnet';
+import { NetworkMainnet } from '../icons/NetworkMainnet';
+import { NetworkTestnet } from '../icons/NetworkTestnet';
 import * as styles from './styles.css';
-
-export interface FormData {
-  alias: string;
-  usedAlias: string;
-  networkId: string;
-  accountName: string;
-  credentialPubkey: string;
-  credentialId: string;
-  deviceType: string;
-  color: string;
-}
-
-export interface StepProps {
-  stepIndex: number;
-  isVisible: boolean;
-  defaultValues: FormData;
-  updateFields: (fields: Partial<FormData>) => void;
-  formValues: FormData;
-  navigation: {
-    next: () => void;
-    previous: () => void;
-    goTo: (index: number) => void;
-  };
-}
 
 interface Props {
   redirectUrl?: string;
@@ -51,67 +31,84 @@ interface Props {
 
 export default function Registration({ redirectUrl, networkId }: Props) {
   const router = useRouter();
-  const { registerAccount } = useAccounts();
+  const { registerAccount, accounts } = useAccounts();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { host } = useReturnUrl();
   const { devMode } = useSettings();
-
-  console.log({ devMode });
+  const { addNotification } = useNotifications();
+  const accountPrefix = 'SpireKey Account';
 
   const skipNetworkId = process.env.WALLET_NETWORK_ID && !devMode;
-  const defaultFormData: FormData = {
-    alias: '',
-    usedAlias: '',
+  const defaultFormData = {
     networkId: skipNetworkId
       ? process.env.WALLET_NETWORK_ID!
       : getDevnetNetworkId(),
     accountName: '',
     credentialPubkey: '',
     credentialId: '',
-    deviceType: 'security-key',
-    color: deviceColors.purple,
   };
 
-  const [data, setData] = useState<FormData>({
-    ...defaultFormData,
-    networkId: networkId || defaultFormData.networkId,
+  const {
+    handleSubmit,
+    register,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    defaultValues: defaultFormData,
   });
 
-  const updateFields = (fields: Partial<FormData>) =>
-    setData((current) => ({ ...current, ...fields }));
+  const currentNetwork = watch('networkId');
+  const currentAccountName = watch('accountName');
+  const currentCredentialPubkey = watch('credentialPubkey');
+  const currentCredentialId = watch('credentialId');
 
-  const onSubmit = async () => {
-    // the form was submitted on the last step, so create an account locally and on chain
+  const numberOfSpireKeyAccounts = accounts.filter(
+    (account) =>
+      account.alias.startsWith(accountPrefix) &&
+      account.accountName !== currentAccountName,
+  ).length;
+
+  const alias = `${accountPrefix} ${numberOfSpireKeyAccounts + 1}`;
+  const deviceType = 'security-key';
+  const color = deviceColors.purple;
+
+  const onSubmit: SubmitHandler<typeof defaultFormData> = async (data) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
+    let accountName = '';
+    const { credentialId, publicKey } = await getNewWebauthnKey(
+      `${alias} (${getNetworkDisplayName(currentNetwork)})`,
+    );
+    try {
+      accountName = await getAccountName(publicKey, currentNetwork);
+      setValue('accountName', accountName);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        addNotification({
+          variant: 'error',
+          title: 'Error getting accountname',
+          message: error.message,
+          timeout: 5000,
+        });
+      }
+      setIsSubmitting(false);
+    }
+
     await registerAccount({
-      accountName: data.accountName,
-      alias: data.alias,
-      color: data.color,
-      deviceType: data.deviceType,
-      credentialPubkey: data.credentialPubkey,
-      credentialId: data.credentialId,
+      accountName,
+      alias,
+      color,
+      deviceType,
+      credentialPubkey: publicKey,
+      credentialId,
       domain: host,
-      networkId: data.networkId,
+      networkId: currentNetwork,
     });
 
     router.push(completeRedirectUrl);
   };
-
-  const formStepComponents = skipNetworkId
-    ? [AliasForm, BiometricsForm, DeviceTypeForm, ColorForm]
-    : [AliasForm, NetworkIdForm, BiometricsForm, DeviceTypeForm, ColorForm];
-
-  const {
-    steps,
-    currentStepIndex,
-    isFirstStep,
-    isLastStep,
-    next,
-    previous,
-    goTo,
-  } = useRegistrationForm(formStepComponents, data, onSubmit);
 
   const decodedRedirectUrl = redirectUrl
     ? Buffer.from(redirectUrl, 'base64').toString()
@@ -119,34 +116,49 @@ export default function Registration({ redirectUrl, networkId }: Props) {
   const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
   const completeRedirectUrl = decodedRedirectUrl || '/';
 
-  const handlePreviousClick = () => {
-    if (currentStepIndex === 0) {
-      router.push(cancelRedirectUrl);
-    }
-    previous();
+  const handleCancelClick = () => {
+    router.push(cancelRedirectUrl);
+  };
+
+  const getDescription = () => {
+    const dev = ' For development purposes only';
+
+    return (
+      <Text>
+        <Text className={styles.descriptionEmphasis}>
+          {getNetworkDisplayName(currentNetwork)}
+        </Text>{' '}
+        selected.
+        {['testnet04', 'fast-development', 'development'].includes(
+          currentNetwork,
+        )
+          ? dev
+          : ''}
+      </Text>
+    );
   };
 
   return (
     <Stack flexDirection="column" gap="md">
       <Box width="100%" padding="lg">
         <DeviceCard
-          color={data.color}
+          color={color}
           account={{
-            alias: data.alias,
-            accountName: data.accountName,
+            alias,
+            accountName: currentAccountName,
             balance: '0',
-            networkId: data.networkId,
+            networkId: currentNetwork,
             minApprovals: 1,
             minRegistrationApprovals: 1,
             chainIds: [process.env.CHAIN_ID],
             devices: [
               {
-                'credential-id': data.credentialId,
+                'credential-id': currentCredentialId,
                 domain: host,
-                color: data.color,
-                deviceType: data.deviceType,
+                color,
+                deviceType,
                 guard: {
-                  keys: [data.credentialPubkey],
+                  keys: [currentCredentialPubkey],
                   pred: 'keys-any',
                 },
               },
@@ -155,46 +167,111 @@ export default function Registration({ redirectUrl, networkId }: Props) {
           isLoading
         />
       </Box>
-      <div className={styles.wrapper}>
-        <motion.div
-          animate={{ x: `-${currentStepIndex * 100}%` }}
-          transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
-          className={styles.container}
-        >
-          {steps.map((FormStep, stepIndex) => (
-            <Box className={styles.step}>
-              <FormStep
-                key={stepIndex}
-                stepIndex={stepIndex}
-                isVisible={currentStepIndex === stepIndex}
-                defaultValues={defaultFormData}
-                formValues={data}
-                updateFields={updateFields}
-                navigation={{ next, previous, goTo }}
+
+      <form id="registration-form">
+        <Stack flexDirection="column" gap="md" paddingInline="lg">
+          {!skipNetworkId && (
+            <SurfaceCard
+              title="Network"
+              description={
+                <>
+                  {getDescription()}
+                  {errors.networkId && (
+                    <Box style={{ color: 'red' }}>
+                      {errors.networkId.message}
+                    </Box>
+                  )}
+                </>
+              }
+            >
+              <div className={styles.itemContainer}>
+                <div>
+                  <input
+                    {...register('networkId', {
+                      required: 'Please select a network',
+                    })}
+                    aria-label="Mainnet"
+                    type="radio"
+                    value="mainnet01"
+                    id="network-mainnet"
+                  />
+                  <label htmlFor="network-mainnet" className={styles.item}>
+                    <NetworkMainnet />
+                    <span>Mainnet</span>
+                  </label>
+                </div>
+                <div>
+                  <input
+                    {...register('networkId', {
+                      required: 'Please select a network',
+                    })}
+                    aria-label="Testnet"
+                    type="radio"
+                    value="testnet04"
+                    id="network-testnet"
+                  />
+                  <label htmlFor="network-testnet" className={styles.item}>
+                    <NetworkTestnet />
+                    <span>Testnet</span>
+                  </label>
+                </div>
+                <div>
+                  <input
+                    {...register('networkId', {
+                      required: 'Please select a network',
+                    })}
+                    aria-label="Devnet"
+                    type="radio"
+                    value={getDevnetNetworkId()}
+                    id="network-devnet"
+                  />
+                  <label htmlFor="network-devnet" className={styles.item}>
+                    <NetworkDevnet />
+                    <span>Devnet</span>
+                  </label>
+                </div>
+              </div>
+            </SurfaceCard>
+          )}
+          <SurfaceCard
+            title="Passkey"
+            description={
+              isSubmitting
+                ? 'Your account is being created'
+                : 'Create your account with a Passkey'
+            }
+            onClick={handleSubmit(onSubmit)}
+          >
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              flexDirection="column"
+              gap="xs"
+            >
+              <Image
+                src={fingerprint}
+                alt="fingerprint icon"
+                width={64}
+                height={64}
               />
-            </Box>
-          ))}
-        </motion.div>
-      </div>
+              <Text variant="ui">Tap to continue</Text>
+            </Stack>
+            <input type="hidden" required {...register('credentialPubkey')} />
+            <input type="hidden" required {...register('credentialId')} />
+            <input type="hidden" required {...register('accountName')} />
+          </SurfaceCard>
+        </Stack>
+      </form>
 
       {!isSubmitting && (
         <Stack flexDirection="row" gap="xl" marginBlock="lg" paddingInline="lg">
           <Button
             variant="secondary"
-            onPress={handlePreviousClick}
+            onPress={handleCancelClick}
             className={atoms({ flex: 1 })}
+            isDisabled={isSubmitting}
           >
-            {isFirstStep ? 'Cancel' : 'Previous'}
-          </Button>
-
-          <Button
-            form={`registration-form-${currentStepIndex}`}
-            variant="progress"
-            progress={((currentStepIndex + 1) / steps.length) * 100}
-            className={atoms({ flex: 1 })}
-            type="submit"
-          >
-            {isLastStep ? 'Complete' : 'Next'}
+            Cancel
           </Button>
         </Stack>
       )}

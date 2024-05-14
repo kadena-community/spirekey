@@ -12,46 +12,27 @@ test('Create new account using SpireKey', async ({
   registerPage,
   accountsPage,
 }) => {
-  const alias = await generateAlias();
-
   await test.step('Start Registration', async () => {
     await welcomePage.startRegistration();
   });
 
-  await test.step('Set Alias.', async () => {
-    await registerPage.setAliasTo(alias);
-    await registerPage.proceedToNextStep();
-  });
+  const alias = await registerPage.getAlias();
 
   await test.step('Set Passkey.', async () => {
     await registerPage.createPassKey();
   });
 
-  await test.step('Set Device Type.', async () => {
-    await registerPage.setDeviceTypeTo('phone');
-    await registerPage.proceedToNextStep();
-  });
-
-  await test.step('Set Color.', async () => {
-    await registerPage.setColorTo('green');
-  });
-
-  await test.step('Complete Registration.', async () => {
-    await registerPage.completeRegistration();
-  });
-
-  await test.step('An account with the provided alias has been genrated.', async () => {
+  await test.step('An account with the default alias has been generated.', async () => {
     await expect(await accountsPage.getAccountCard(alias)).toBeVisible();
   });
 });
+
 test('Create new account using SpireKey with dev mode enabled', async ({
   welcomePage,
   registerPage,
   accountsPage,
   localStorageHelper,
 }) => {
-  const alias = await generateAlias();
-
   await test.step('Enable devMode.', async () => {
     await localStorageHelper.enableDevMode();
   });
@@ -60,34 +41,17 @@ test('Create new account using SpireKey with dev mode enabled', async ({
     await welcomePage.startRegistration();
   });
 
-  await test.step('Set Alias.', async () => {
-    await registerPage.setAliasTo(alias);
-    await registerPage.proceedToNextStep();
-  });
+  const alias = await registerPage.getAlias();
 
   await test.step('Set Network.', async () => {
     await registerPage.setNetworkTo('devnet');
-    await registerPage.proceedToNextStep();
   });
 
   await test.step('Set Passkey.', async () => {
     await registerPage.createPassKey();
   });
 
-  await test.step('Set Device Type.', async () => {
-    await registerPage.setDeviceTypeTo('phone');
-    await registerPage.proceedToNextStep();
-  });
-
-  await test.step('Set Color.', async () => {
-    await registerPage.setColorTo('green');
-  });
-
-  await test.step('Complete Registration.', async () => {
-    await registerPage.completeRegistration();
-  });
-
-  await test.step('An account with the provided alias has been genrated.', async () => {
+  await test.step('An account with the default alias has been generated.', async () => {
     await expect(await accountsPage.getAccountCard(alias)).toBeVisible();
   });
 });

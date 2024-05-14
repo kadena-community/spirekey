@@ -1,5 +1,4 @@
 import { test } from '@e2e/fixtures/test.fixture';
-import { generateAlias } from '@e2e/helpers/generator.helper';
 import { expect } from '@playwright/test';
 
 test.beforeEach(async ({ spireKeyApp, webAuthnHelper }) => {
@@ -14,17 +13,12 @@ test('Recover SpireKey Account', async ({
   recoverPage,
   localStorageHelper,
 }) => {
-  const alias = await generateAlias();
+  let alias = '';
 
   await test.step('Create account', async () => {
     await welcomePage.startRegistration();
-    await registerPage.setAliasTo(alias);
-    await registerPage.proceedToNextStep();
+    alias = await registerPage.getAlias();
     await registerPage.createPassKey();
-    await registerPage.setDeviceTypeTo('phone');
-    await registerPage.proceedToNextStep();
-    await registerPage.setColorTo('green');
-    await registerPage.completeRegistration();
     await accountsPage.isMinted();
     await expect(await accountsPage.getAccountCard(alias)).toBeVisible();
   });
@@ -38,6 +32,7 @@ test('Recover SpireKey Account', async ({
     await welcomePage.startRecovery();
     await recoverPage.selectPassKey();
     await recoverPage.completeRegistration();
+    expect(alias).toBeTruthy();
     await expect(await accountsPage.getAccountCard(alias)).toBeVisible();
   });
 });
