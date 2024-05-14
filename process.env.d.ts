@@ -17,6 +17,7 @@ declare global {
       CHAINWEB_URL: string;
       MERCHANT_ACCOUNT: string;
       ACCOUNT_OPERATIONS: string;
+      CAPABILITY_TRANSLATIONS: string;
     }
   }
 }
