@@ -14,13 +14,13 @@ describe('Registration Form', () => {
     const renderRegistration = () => {
       render(<Registration />);
     };
-    it.skip('should should ask a user to create a passkey', () => {
+    it.skip('asks a user to create a passkey', () => {
       renderRegistration();
       expect(
         screen.getByText('Create your account with a Passkey'),
       ).toBeInTheDocument();
     });
-    it.skip('should ask for passkey', () => {
+    it.skip('asks for a passkey', () => {
       renderRegistration();
       expect(screen.getByText('Tap to continue')).toBeInTheDocument();
     });
