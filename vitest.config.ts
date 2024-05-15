@@ -27,6 +27,6 @@ export default defineConfig({
         autoUpdate: true,
       },
     },
-    setupFiles: ['./tests/components/test-mocks.ts'],
+    setupFiles: [path.resolve(__dirname, './tests/components/test-mocks.ts')],
   },
 });
