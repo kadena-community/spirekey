@@ -46,7 +46,6 @@ export default function Registration({ redirectUrl, networkId }: Props) {
     handleSubmit,
     register,
     watch,
-    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: defaultFormData,
@@ -152,7 +151,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
             />
           )}
           <Passkey
-            isSubmitting={isSubmitting}
+            isInProgress={isSubmitting}
             onClick={handleSubmit(onSubmit)}
           />
         </Stack>

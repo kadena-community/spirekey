@@ -4,16 +4,16 @@ import { Stack, Text } from '@kadena/react-ui';
 import Image from 'next/image';
 
 interface Props {
-  isSubmitting: boolean;
+  isInProgress: boolean;
   onClick: () => void;
 }
 
-export default function Passkey({ isSubmitting, onClick }: Props) {
+export default function Passkey({ isInProgress, onClick }: Props) {
   return (
     <SurfaceCard
       title="Passkey"
       description={
-        isSubmitting
+        isInProgress
           ? 'Your account is being created'
           : 'Create your account with a Passkey'
       }
