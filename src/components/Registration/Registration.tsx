@@ -6,6 +6,7 @@ import { useSettings } from '@/context/SettingsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { deviceColors } from '@/styles/shared/tokens.css';
+import { countWithPrefixOnDomain } from '@/utils/countAccounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { getAccountName } from '@/utils/register';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
@@ -53,11 +54,12 @@ export default function Registration({ redirectUrl, networkId }: Props) {
 
   const currentNetwork = watch('networkId');
 
-  const numberOfSpireKeyAccounts = accounts.filter(
-    (account) =>
-      account.alias.startsWith(accountPrefix) &&
-      account.accountName !== currentAccountName,
-  ).length;
+  const numberOfSpireKeyAccounts = countWithPrefixOnDomain(
+    accounts,
+    accountPrefix,
+    host,
+    currentAccountName,
+  );
 
   const alias = `${accountPrefix} ${numberOfSpireKeyAccounts + 1}`;
   const deviceType = 'security-key';
