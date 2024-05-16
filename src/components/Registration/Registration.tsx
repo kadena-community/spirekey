@@ -19,6 +19,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import DeviceCard from '../Card/DeviceCard';
 import NetworkId from '../Form/NetworkId/NetworkId';
 import Passkey from '../Form/Passkey/Passkey';
+import { Surface } from '../Surface/Surface';
 
 interface Props {
   redirectUrl?: string;
@@ -29,6 +30,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
   const router = useRouter();
   const { registerAccount, accounts } = useAccounts();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
   const [currentAccountName, setCurrentAccountName] = useState<string>('');
   const { host } = useReturnUrl();
   const { devMode } = useSettings();
@@ -99,7 +101,19 @@ export default function Registration({ redirectUrl, networkId }: Props) {
       networkId: currentNetwork,
     });
 
-    router.push(completeRedirectUrl);
+    completeRedirect();
+  };
+
+  const completeRedirect = () => {
+    if (!decodedRedirectUrl) {
+      router.push(completeRedirectUrl);
+      return;
+    }
+
+    setIsRedirecting(true);
+    setTimeout(() => {
+      router.push(completeRedirectUrl);
+    }, 2000);
   };
 
   const decodedRedirectUrl = redirectUrl
@@ -142,34 +156,50 @@ export default function Registration({ redirectUrl, networkId }: Props) {
         />
       </Box>
 
-      <form id="registration-form">
-        <Stack flexDirection="column" gap="md" paddingInline="lg">
-          {!skipNetworkId && (
-            <NetworkId
-              networkId={currentNetwork}
-              name="networkId"
-              register={register}
-              error={errors.networkId}
-            />
-          )}
-          <Passkey
-            isInProgress={isSubmitting}
-            onClick={handleSubmit(onSubmit)}
-          />
-        </Stack>
-      </form>
+      {isRedirecting && (
+        <Box width="100%" padding="lg">
+          <Surface>
+            <Stack flexDirection="column" gap="md" margin="xl">
+              <Text>Redirecting you back to {completeRedirectUrl}</Text>
+            </Stack>
+          </Surface>
+        </Box>
+      )}
 
-      {!isSubmitting && (
-        <Stack flexDirection="row" gap="xl" marginBlock="lg" paddingInline="lg">
-          <Button
-            variant="secondary"
-            onPress={handleCancelClick}
-            className={atoms({ flex: 1 })}
-            isDisabled={isSubmitting}
+      {!isRedirecting && (
+        <>
+          <form id="registration-form">
+            <Stack flexDirection="column" gap="md" paddingInline="lg">
+              {!skipNetworkId && (
+                <NetworkId
+                  networkId={currentNetwork}
+                  name="networkId"
+                  register={register}
+                  error={errors.networkId}
+                />
+              )}
+              <Passkey
+                isInProgress={isSubmitting}
+                onClick={handleSubmit(onSubmit)}
+              />
+            </Stack>
+          </form>
+
+          <Stack
+            flexDirection="row"
+            gap="xl"
+            marginBlock="lg"
+            paddingInline="lg"
           >
-            Cancel
-          </Button>
-        </Stack>
+            <Button
+              variant="secondary"
+              onPress={handleCancelClick}
+              className={atoms({ flex: 1 })}
+            >
+              Cancel
+            </Button>
+          </Stack>
+        </>
       )}
     </Stack>
   );
