@@ -66,3 +66,19 @@ relevant `capabilities`.
 | type      | string | Can be `WebAuthn` or `ED25519`            |
 | publicKey | string | The public key related to this account    |
 | id        | string | The credential id related to this account |
+
+## Signing
+
+Prepare your transaction for the user to sign. The credentials included in the
+[connect response](#connect-to-a-spirekey-account) are the public keys you
+should use to construct your transaction. When your transaction is ready to be
+signed, you need to `base64` encode the stringified JSON of the transaction. To
+ensure your transaction can be send over to the SpireKey endpoint, you need to
+add your `searchParameters` not behind the traditional `?`, but as part of the
+`#`. So an example request could look like:
+`https://spirekey.kadena.io/sign#transaction=encodedTx&returnUrl=www.mydapp.com`
+
+| parameter   | type   | description                                              |
+| :---------- | :----- | :------------------------------------------------------- |
+| transaction | string | `base64` encoded JSON stringified transaction object     |
+| returnUrl   | string | The url the user needs to be redirected to after signing |
