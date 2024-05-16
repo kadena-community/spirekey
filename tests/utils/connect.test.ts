@@ -1,6 +1,6 @@
 import type { Account } from '@/context/AccountsContext';
 import { deviceColors } from '@/styles/shared/tokens.css';
-import { onConnect } from '@/utils/connect';
+import { onConnectWith } from '@/utils/connect';
 import { l1Client } from '@/utils/shared/client';
 import { Mock, describe, expect, it, vi } from 'vitest';
 
@@ -35,7 +35,7 @@ describe('connect', () => {
         const redirectMock = vi.fn();
         (l1Client.local as Mock).mockRejectedValue({});
         await expect(() =>
-          onConnect({
+          onConnectWith({
             addNotification: addNotificationMock,
             redirect: redirectMock,
           })({
@@ -43,7 +43,7 @@ describe('connect', () => {
             url: new URL('http://dapp.com/returnUrl'),
             networkId: 'development',
             chainId: '8',
-          }),
+          })(),
         ).rejects.toThrowError('Network error');
         expect(addNotificationMock).toHaveBeenCalled();
         expect(redirectMock).not.toHaveBeenCalled();
@@ -82,7 +82,7 @@ describe('connect', () => {
         });
         const addNotificationMock = vi.fn();
         const redirectMock = vi.fn();
-        await onConnect({
+        await onConnectWith({
           addNotification: addNotificationMock,
           redirect: redirectMock,
         })({
@@ -90,7 +90,7 @@ describe('connect', () => {
           url: new URL('http://dapp.com/returnUrl'),
           networkId: 'development',
           chainId: '8',
-        });
+        })();
         expect(addNotificationMock).not.toHaveBeenCalled();
         expect(redirectMock).toHaveBeenCalledWith(
           'http://dapp.com/returnUrl?user=eyJhbGlhcyI6IkFsaWNlIiwiYWNjb3VudE5hbWUiOiJjOmFjY291bnQiLCJwZW5kaW5nVHhJZHMiOltdLCJjcmVkZW50aWFscyI6W3sidHlwZSI6IldlYkF1dGhuIiwicHVibGljS2V5IjoiV0VCQVVUSE4tcHVia2V5IiwiaWQiOiJmYWtlaWQifV19',

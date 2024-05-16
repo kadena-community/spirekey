@@ -59,7 +59,7 @@ const getAccountWithNetworkError = async ({
   }
 };
 
-export const onConnect =
+export const onConnectWith =
   ({
     addNotification,
     redirect,
@@ -67,7 +67,7 @@ export const onConnect =
     addNotification: (config: AddNotification) => void;
     redirect: (url: string) => void;
   }) =>
-  async ({
+  ({
     url,
     networkId,
     chainId,
@@ -77,7 +77,8 @@ export const onConnect =
     networkId: string;
     chainId: ChainId;
     account: Account;
-  }) => {
+  }) =>
+  async () => {
     const user = getUser(account);
     const remoteAccount = await getAccountWithNetworkError({
       addNotification,

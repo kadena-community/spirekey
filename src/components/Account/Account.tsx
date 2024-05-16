@@ -17,10 +17,9 @@ import { ButtonLink } from '../shared/ButtonLink/ButtonLink';
 import { detailLink } from './Account.css';
 
 import { useNotifications } from '@/context/shared/NotificationsContext';
-import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
-import { registerAccountOnChain } from '@/utils/register';
-import { getAccountFromChain } from '@/utils/shared/account';
+import { onConnectWith } from '@/utils/connect';
 import type { ChainId } from '@kadena/client';
+import { useRouter } from 'next/navigation';
 import { Button } from '../shared/Button/Button';
 import * as styles from './Account.css';
 
@@ -31,18 +30,6 @@ interface AccountProps {
   optimistic?: boolean;
   chainId?: ChainId;
 }
-
-type Credential = {
-  type: string;
-  publicKey: string;
-  id: string;
-};
-type User = {
-  alias: string;
-  accountName: string;
-  pendingTxIds: string[];
-  credentials: Credential[];
-};
 
 export function Account({
   account,
@@ -66,86 +53,12 @@ export function Account({
     }
     () => setDelayedIsActive(false);
   }, [isActive]);
+  const { push } = useRouter();
 
-  const onConnect =
-    ({
-      url,
-      networkId,
-      chainId,
-      user,
-    }: {
-      url: URL | string;
-      networkId: string;
-      chainId: ChainId;
-      user: Omit<User, 'pendingTxIds'>;
-    }) =>
-    async () => {
-      const remoteAccount = await getAccountFromChain({
-        accountName: user.accountName,
-        networkId: networkId,
-        chainId,
-      });
-      if (typeof url === 'string') {
-        addNotification({
-          variant: 'error',
-          title: `No return URL provided by the dApp.`,
-        });
-        return;
-      }
-
-      if (remoteAccount) {
-        url.searchParams.set(
-          'user',
-          Buffer.from(JSON.stringify(user)).toString('base64'),
-        );
-        window.location.href = url.toString();
-        return;
-      }
-
-      /**
-       * The account does not exist on the given chain on the network.
-       * Create the account on the fly if it has only one device.
-       */
-      if (account.devices.length !== 1) {
-        addNotification({
-          variant: 'error',
-          title: `This account does not exist on ${getNetworkDisplayName(networkId)} on chain ${chainId} and cannot be created on the fly.`,
-        });
-        return;
-      }
-
-      // TODO: handle the cases where multiple devices are present on an account
-      const device = account.devices[0];
-
-      /**
-       * Register the account on the chain where it did not exist
-       */
-      const pendingTransaction = await registerAccountOnChain({
-        accountName: account.accountName,
-        color: device.color,
-        deviceType: device.deviceType,
-        domain: device.domain,
-        credentialId: device['credential-id'],
-        credentialPubkey: device.guard.keys[0],
-        networkId: account.networkId,
-        chainId: chainId,
-      });
-
-      /**
-       * Add the pending transaction id to the user object that is shared with the client dApp
-       */
-      url.searchParams.set(
-        'user',
-        Buffer.from(
-          JSON.stringify({
-            ...user,
-            pendingTxIds: [pendingTransaction.requestKey],
-          }),
-        ).toString('base64'),
-      );
-
-      window.location.href = url.toString();
-    };
+  const onConnect = onConnectWith({
+    addNotification,
+    redirect: push,
+  });
 
   return (
     <Carousel
@@ -158,18 +71,6 @@ export function Account({
         const caccount = encodeURIComponent(account.accountName);
         const cid = encodeURIComponent(d['credential-id']);
         const url = returnUrl ? new URL(returnUrl) : '';
-        const user = {
-          alias: account.alias,
-          accountName: account.accountName,
-          pendingTxIds: [d.pendingRegistrationTx].filter(Boolean) as string[],
-          credentials: [
-            {
-              type: 'WebAuthn',
-              publicKey: d.guard.keys[0],
-              id: d['credential-id'],
-            },
-          ],
-        };
         return (
           <Fragment key={d['credential-id']}>
             <DeviceCard
@@ -264,7 +165,7 @@ export function Account({
                         url,
                         networkId: account.networkId,
                         chainId,
-                        user,
+                        account,
                       })}
                       variant="primary"
                     >
