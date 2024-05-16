@@ -32,8 +32,41 @@ export const getUser = (account: Account): User => {
   };
 };
 
+const getAccountWithNetworkError = async ({
+  addNotification,
+  accountName,
+  networkId,
+  chainId,
+}: {
+  addNotification: (config: AddNotification) => void;
+  accountName: string;
+  networkId: string;
+  chainId: ChainId;
+}) => {
+  try {
+    return await getAccountFromChain({
+      accountName,
+      networkId,
+      chainId,
+    });
+  } catch (error) {
+    addNotification({
+      title: 'Network error',
+      variant: 'error',
+      message: "Couldn't find account information due to network problems",
+    });
+    throw new Error('Network error');
+  }
+};
+
 export const onConnect =
-  (addNotification: (config: AddNotification) => void) =>
+  ({
+    addNotification,
+    redirect,
+  }: {
+    addNotification: (config: AddNotification) => void;
+    redirect: (url: string) => void;
+  }) =>
   async ({
     url,
     networkId,
@@ -46,7 +79,8 @@ export const onConnect =
     account: Account;
   }) => {
     const user = getUser(account);
-    const remoteAccount = await getAccountFromChain({
+    const remoteAccount = await getAccountWithNetworkError({
+      addNotification,
       accountName: user.accountName,
       networkId: networkId,
       chainId,
@@ -64,7 +98,7 @@ export const onConnect =
         'user',
         Buffer.from(JSON.stringify(user)).toString('base64'),
       );
-      window.location.href = url.toString();
+      redirect(url.toString());
       return;
     }
 
@@ -110,5 +144,5 @@ export const onConnect =
       ).toString('base64'),
     );
 
-    window.location.href = url.toString();
+    redirect(url.toString());
   };
