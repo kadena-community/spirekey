@@ -20,10 +20,8 @@ setup('Deploy WebAuthn contract', async () => {
     0,
     process.env.DEVNET_NETWORK_ID as string,
   );
-
   const configFilePath = getConfigFilePath(isDeployed);
   const signersFilePath = path.join(__dirname, './e2e-signers.json');
-
   const config = JSON.parse(await readFile(configFilePath, 'utf-8'));
   const signers = JSON.parse(await readFile(signersFilePath, 'utf-8'));
   await deploy({ ...config, signers }, false);
