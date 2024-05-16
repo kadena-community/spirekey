@@ -34,4 +34,35 @@ transaction. SpireKey will therefore by default operate in optimistic mode.
 SpireKey will redirect users back to the dApp as soon as the transaction to
 create an account has been submitted. In case your dApp relies on an account
 being created prior to interacting with your dApp, you can either make use of
-the `pendingTxs` returned or disable optimistic mode.
+the `pendingTxIds` returned in the `user` object or disable optimistic mode.
+
+### Return value
+
+After a user has connected their account in SpireKey to use in the dApp, user
+will be redirected to the provided `returnUrl`. As part of the redirection
+SpireKey will append a `user` in the `searchParameters`. This object describes
+information you can use to address the user or to prepare a transaction.
+
+#### User
+
+| parameter    | type         | description                                                              |
+| :----------- | :----------- | :----------------------------------------------------------------------- |
+| alias        | string       | The alias for the account only relevant for the user as display name     |
+| accountName  | string       | The `c:account` a user has connected to the dApp                         |
+| pendingTxIds | string[]     | An array of pending transactions related to account creation/maintenance |
+| credentials  | Credential[] | See [Credential](#credential)                                            |
+
+#### Credential
+
+Every account will have 1 or more credentials returned when connected. The
+amount of credentials do not have to match the amount of credentials known on
+the blockchain. The credentials returned are the credentials the user wishes to
+use to perform the transaction with. When multiple credentials are returned, you
+should prepare the transaction with all credentials signing for the same
+relevant `capabilities`.
+
+| parameter | type   | description                               |
+| :-------- | :----- | :---------------------------------------- |
+| type      | string | Can be `WebAuthn` or `ED25519`            |
+| publicKey | string | The public key related to this account    |
+| id        | string | The credential id related to this account |
