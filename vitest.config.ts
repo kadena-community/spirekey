@@ -20,13 +20,13 @@ export default defineConfig({
       enabled: true,
       provider: 'v8',
       thresholds: {
-        lines: 9.7,
-        functions: 17.31,
-        branches: 28.09,
-        statements: 9.7,
+        lines: 10.37,
+        functions: 18.24,
+        branches: 29.7,
+        statements: 10.37,
         autoUpdate: true,
       },
     },
-    setupFiles: ['./tests/components/test-mocks.ts'],
+    setupFiles: [path.resolve(__dirname, './tests/components/test-mocks.ts')],
   },
 });

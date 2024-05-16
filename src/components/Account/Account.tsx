@@ -17,10 +17,9 @@ import { ButtonLink } from '../shared/ButtonLink/ButtonLink';
 import { detailLink } from './Account.css';
 
 import { useNotifications } from '@/context/shared/NotificationsContext';
-import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
-import { registerAccountOnChain } from '@/utils/register';
-import { getAccountFromChain } from '@/utils/shared/account';
+import { onConnectWith } from '@/utils/connect';
 import type { ChainId } from '@kadena/client';
+import { useRouter } from 'next/navigation';
 import { Button } from '../shared/Button/Button';
 import * as styles from './Account.css';
 
@@ -54,61 +53,12 @@ export function Account({
     }
     () => setDelayedIsActive(false);
   }, [isActive]);
+  const { push } = useRouter();
 
-  const onConnect =
-    (url: URL, account: Account, chainId: ChainId) => async () => {
-      const remoteAccount = await getAccountFromChain({
-        accountName: account.accountName,
-        networkId: account.networkId,
-        chainId,
-      });
-
-      if (remoteAccount) {
-        window.location.href = url.toString();
-        return;
-      }
-
-      /**
-       * The account does not exist on the given chain on the network.
-       * Create the account on the fly if it has only one device.
-       */
-      if (account.devices.length !== 1) {
-        addNotification({
-          variant: 'error',
-          title: `This account does not exist on ${getNetworkDisplayName(account.networkId)} on chain ${chainId} and cannot be created on the fly.`,
-        });
-        return;
-      }
-
-      const device = account.devices[0];
-
-      /**
-       * Register the account on the chain where it did not exist
-       */
-      const pendingTransaction = await registerAccountOnChain({
-        accountName: account.accountName,
-        color: device.color,
-        deviceType: device.deviceType,
-        domain: device.domain,
-        credentialId: device['credential-id'],
-        credentialPubkey: device.guard.keys[0],
-        networkId: account.networkId,
-        chainId: chainId,
-      });
-
-      /**
-       * Add the pending transaction id to the user object that is shared with the client dApp
-       */
-      const userParam = url.searchParams.get('user') || '';
-      const user = JSON.parse(Buffer.from(userParam, 'base64').toString());
-      user.pendingTxIds = [pendingTransaction.requestKey];
-      url.searchParams.set(
-        'user',
-        Buffer.from(JSON.stringify(user)).toString('base64'),
-      );
-
-      window.location.href = url.toString();
-    };
+  const onConnect = onConnectWith({
+    addNotification,
+    redirect: push,
+  });
 
   return (
     <Carousel
@@ -121,21 +71,6 @@ export function Account({
         const caccount = encodeURIComponent(account.accountName);
         const cid = encodeURIComponent(d['credential-id']);
         const url = returnUrl ? new URL(returnUrl) : '';
-        const user = Buffer.from(
-          JSON.stringify({
-            alias: account.alias,
-            accountName: account.accountName,
-            pendingTxIds: [d.pendingRegistrationTx].filter(Boolean),
-            credentials: [
-              {
-                type: 'WebAuthn',
-                publicKey: d.guard.keys[0],
-                id: d['credential-id'],
-              },
-            ],
-          }),
-        ).toString('base64');
-        if (url) url.searchParams.set('user', user);
         return (
           <Fragment key={d['credential-id']}>
             <DeviceCard
@@ -226,7 +161,12 @@ export function Account({
                   </ButtonLink>
                   {(optimistic || !d.pendingRegistrationTx) && (
                     <Button
-                      onPress={onConnect(url as URL, account, chainId)}
+                      onPress={onConnect({
+                        url,
+                        networkId: account.networkId,
+                        chainId,
+                        account,
+                      })}
                       variant="primary"
                     >
                       Connect
