@@ -29,4 +29,9 @@ export class RegisterPage {
     await this.passKeyBtn.click();
     await this.page.getByTestId('accountNameRevealer').waitFor();
   }
+
+  async getRedirectMessage(message: string): Promise<Locator> {
+    await this.page.getByText(`Redirecting you back to ${message}`).waitFor();
+    return this.page.getByText(message);
+  }
 }
