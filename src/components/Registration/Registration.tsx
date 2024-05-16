@@ -57,7 +57,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
   const numberOfSpireKeyAccounts = countWithPrefixOnDomain(
     accounts,
     accountPrefix,
-    window.location.hostname,
+    host,
     currentAccountName,
   );
 
