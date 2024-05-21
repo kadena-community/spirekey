@@ -82,3 +82,16 @@ add your `searchParameters` not behind the traditional `?`, but as part of the
 | :---------- | :----- | :------------------------------------------------------- |
 | transaction | string | `base64` encoded JSON stringified transaction object     |
 | returnUrl   | string | The url the user needs to be redirected to after signing |
+
+The user will be presented with explanation over the transaction they are
+requested to sign. After the user understands and consents by signing the
+transaction, the user will be redirected back towards the dApp. The user will be
+redirected with the signed transaction with the value provided following a `#`
+symbol. You can now proceed to collect more signatures if required or combine
+other collected signatures, allowing you to orchastrate the flow of signature
+collection. The transaction will be provided to your dApp like:
+`https://your.dapp.com/#transaction=encodedSignedOrPartiallySignedTx`
+
+| parameter   | type   | description                                          |
+| :---------- | :----- | :--------------------------------------------------- |
+| transaction | string | `base64` encoded JSON stringified transaction object |
