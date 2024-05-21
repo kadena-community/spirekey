@@ -72,10 +72,14 @@ relevant `capabilities`.
 Prepare your transaction for the user to sign. The credentials included in the
 [connect response](#connect-to-a-spirekey-account) are the public keys you
 should use to construct your transaction. When your transaction is ready to be
-signed, you need to `base64` encode the stringified JSON of the transaction. To
-ensure your transaction can be send over to the SpireKey endpoint, you need to
-add your `searchParameters` not behind the traditional `?`, but as part of the
-`#`. So an example request could look like:
+signed, you need to `base64` encode the stringified JSON of the transaction.
+
+Transactions can grow in size well beyond what is accepted in
+`searchParameters`. In order to facilitate a way to sign for such transactions,
+the `searchParameters` are send over as part of the `anchor`. To send your
+user's to the SpireKey endpoint, you need to add your `searchParameters` not
+behind the traditional `?`, but as part of the `#`. So an example request could
+look like:
 `https://spirekey.kadena.io/sign#transaction=encodedTx&returnUrl=www.mydapp.com`
 
 | parameter   | type   | description                                              |
