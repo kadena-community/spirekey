@@ -14,7 +14,7 @@ layout: full
 # Recover a Kadena Spirekey account
 
 After you register a device for a Kadena SpireKey account, the account details
-are stored on the Kadena blockchain and in the `Local storage` property for the
+are stored on the Kadena blockchain and in the `Local storage` of the
 browser you used to register the account. You can view this information using
 the Developer Tools for the browser by selecting **Application**, then expanding
 **Storage**. If you clear local storage—for example, by selecting **Clear
@@ -22,7 +22,7 @@ browsing data**—or try to use a different browser to access your Kadena SpireK
 account, the [Kadena SpireKey wallet](https://spirekey.kadena.io) won't be able
 to identify the account that belongs to you or recognize you as a registered
 user. However, you can recover your account information through the passkey
-stored on any device you added to your account. For example, if you used a smart
+stored on any device you created your account with or added to your account. For example, if you used a smart
 phone to register a Kadena SpireKey account, you can use the passkey stored on
 that phone to recover your account information.
 
