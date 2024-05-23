@@ -76,7 +76,7 @@ signed, you need to `base64` encode the stringified JSON of the transaction.
 
 Transactions can grow in size well beyond what is accepted in
 `searchParameters`. In order to facilitate a way to sign for such transactions,
-the `searchParameters` are send over as part of the `anchor`. To send your
+the `searchParameters` are sent over as part of the `anchor`. To send your
 user's to the SpireKey endpoint, you need to add your `searchParameters` not
 behind the traditional `?`, but as part of the `#`. So an example request could
 look like:
