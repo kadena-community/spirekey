@@ -3,6 +3,42 @@
 To get a grasp of the reason to build a WebAuthn Wallet, please read the
 [KIP](./docs/KIP-0023/KIP-0023.md)
 
+# Kadena SpireKey
+
+Kadena introduces SpireKey, a more secure and user-friendly way to interact with
+the blockchain.
+
+SpireKey harnesses the power of WebAuthn, allowing users to securely generate
+and store key pairs directly on their hardware devices. These key pairs can be
+accessed through Touch ID or Face ID, enabling password-free logins and
+transaction signings. By ensuring the private key is securely stored on the
+user's hardware device and eliminating the need for password storage, SpireKey
+significantly enhances security. This method provides a seamless and convenient
+user experience similar to Apple Pay or Google Pay.
+
+In addition to simplifying key pair generation and authentication, SpireKey
+offers advanced account management features. Users can retroactively add
+additional keysets and adjust authentication requirements, enhancing account
+security. The flexible account architecture allows users to choose or switch
+wallets easily, as account information is not tied to any specific wallet.
+
+By decoupling account management and transaction handling from services,
+SpireKey aims to provide a unified account solution for all blockchain
+interactions. This approach reduces operational requirements for companies while
+offering users greater privacy. Our initial goal is to make blockchain
+interaction so intuitive and straightforward that anyone can do it, laying the
+foundation for more ambitious developments in the future.
+
+## Community feedback
+
+SpireKey is currently in active development, and we're continuously learning
+from the experiences of both developers and end users. Your feedback is
+invaluable to us as we strive to make ongoing improvements. The current version
+of SpireKey is available for testing on `testnet`, and while interfaces may
+evolve, we encourage you to integrate SpireKey into your `testnet` dApps. Join
+us in making blockchain accessible to everyone—your insights will help shape the
+future of SpireKey!
+
 ## Prerequisite
 
 To get started you need to have the following installed:
