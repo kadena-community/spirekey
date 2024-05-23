@@ -55,7 +55,7 @@ information you can use to address the user or to prepare a transaction.
 #### Credential
 
 Every account will have 1 or more credentials returned when connected. The
-amount of credentials do not have to match the amount of credentials known on
+amount of credentials does not have to match the amount of credentials known on
 the blockchain. The credentials returned are the credentials the user wishes to
 use to perform the transaction with. When multiple credentials are returned, you
 should prepare the transaction with all credentials signing for the same
@@ -90,11 +90,12 @@ look like:
 The user will be presented with an explanation of the transaction they are
 requested to sign. After the user understands and consents by signing the
 transaction, the user will be redirected back to the dApp. The user will be
-redirected with the signed transaction with the value provided following a `#`
-symbol. You can now proceed to collect more signatures if required or combine
-other collected signatures, allowing you to orchastrate the flow of signature
-collection. The transaction will be provided to your dApp like this:
-`https://your.dapp.com/#transaction=encodedSignedOrPartiallySignedTx`
+redirected with the signed transaction. The signed transaction will be passed as
+a parameter in the url. Instead of the usual `?` sign however, it will be
+provided after a `#` sign. You can now proceed to collect more signatures if
+required or combine other collected signatures, allowing you to orchastrate the
+flow of signature collection. The transaction will be provided to your dApp like
+this: `https://your.dapp.com/#transaction=encodedSignedOrPartiallySignedTx`
 
 | parameter   | type   | description                                          |
 | :---------- | :----- | :--------------------------------------------------- |
