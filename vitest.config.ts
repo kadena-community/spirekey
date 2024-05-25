@@ -18,12 +18,18 @@ export default defineConfig({
     },
     coverage: {
       enabled: true,
+      include: ['**/src/**'],
+      exclude: [
+        '**/app/(examples)/**',
+        '**/app/(embedded)/**',
+        '**/app/(wallet)/**',
+      ],
       provider: 'v8',
       thresholds: {
-        lines: 11.02,
-        functions: 18.81,
-        branches: 30.11,
-        statements: 11.02,
+        lines: 17.88,
+        functions: 27.17,
+        branches: 40.8,
+        statements: 17.88,
         autoUpdate: true,
       },
     },
