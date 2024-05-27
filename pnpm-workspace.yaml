@@ -1,3 +1,5 @@
 packages:
+  - 'spirekey'
+  - 'sdk'
   - 'packages/*'
-  - 'apps/*'
+  - 'examples/*'
