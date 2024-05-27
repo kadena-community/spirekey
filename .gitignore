@@ -6,7 +6,7 @@ node_modules
 .pnp.js
 
 # testing
-/coverage
+coverage
 
 # next.js
 .next/
@@ -37,3 +37,6 @@ signers.json
 # Playwight
 playwright-report
 test-results
+
+# Turbo
+.turbo

@@ -1,5 +1,5 @@
 {
-  "name": "webauthn-wallet",
+  "name": "spirekey",
   "version": "0.1.0",
   "private": true,
   "scripts": {
