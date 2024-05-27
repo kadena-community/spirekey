@@ -1,9 +1,0 @@
-{
-  "version": "v1",
-  "packages": {
-    "@kadena/react-ui": {
-      "signature": "85bc4deac0098320df3b01fa92696845",
-      "file": true
-    }
-  }
-}

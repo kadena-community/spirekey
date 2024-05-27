@@ -4,9 +4,7 @@ import fetch from 'cross-fetch';
 export async function isModuleDeployed(
   apiHost: string,
   body: string,
-): Promise<
-  boolean
-> {
+): Promise<boolean> {
   const response = await fetch(`${apiHost}/api/v1/local`, {
     headers: {
       accept: 'application/json;charset=utf-8, application/json',
