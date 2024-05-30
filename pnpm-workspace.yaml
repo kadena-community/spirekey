@@ -1,5 +1,5 @@
 packages:
-  - 'wallet'
+  - 'spirekey'
   - 'sdk'
   - 'packages/*'
   - 'examples/*'

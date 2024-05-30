@@ -1,5 +1,5 @@
 {
-  "name": "@kadena-spirekey/wallet",
+  "name": "@kadena-spirekey/spirekey",
   "version": "0.1.0",
   "private": true,
   "scripts": {
