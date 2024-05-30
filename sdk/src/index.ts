@@ -1,50 +1,61 @@
-import type { SpireKeyEvent } from './types';
+import type { SpireKeyEvent, SpireKeyWindow } from './types';
 
-const iframe = document.createElement('iframe');
-const backdrop = document.createElement('div');
+declare global {
+  interface Window {
+    spireKey: SpireKeyWindow;
+  }
+}
 
-const showBackdrop = () => {
-  document.body.appendChild(backdrop);
-  requestAnimationFrame(() => {
-    backdrop.classList.add('spirekey-backdrop-visible');
-  });
-};
+const initSpireKey = (
+  options: { hostUrl?: string; enableBackdrop?: boolean } = {
+    hostUrl: 'https://spirekey.kadena.io',
+    enableBackdrop: false,
+  },
+) => {
+  const iframe = document.createElement('iframe');
+  iframe.className = 'spirekey-sidebar';
 
-const closeSidebar = () => {
-  iframe.classList.remove('spirekey-sidebar-opened');
-  backdrop.classList.remove('spirekey-backdrop-visible');
-  backdrop.addEventListener('transitionend', () => {
-    backdrop.remove();
-  });
-};
+  let backdrop = document.createElement('div');
 
-const connectWithSpireKey = () => {
-  showBackdrop();
-  iframe.classList.add('spirekey-sidebar-opened');
-};
+  const showBackdrop = () => {
+    backdrop.className = 'spirekey-backdrop';
+    backdrop.addEventListener('click', closeSidebar);
+    document.body.appendChild(backdrop);
+    requestAnimationFrame(() => {
+      backdrop.classList.add('spirekey-backdrop-visible');
+    });
+  };
 
-const signWithSpireKey = (transaction: string) => {
-  showBackdrop();
-  iframe.classList.add('spirekey-sidebar-opened');
-  iframe.src = `http://localhost:1337/embedded/sidebar/#transaction=${transaction}`;
-};
+  const closeSidebar = () => {
+    iframe.classList.remove('spirekey-sidebar-opened');
 
-const onSpireKeyEvent = (callback: (data: SpireKeyEvent) => void): void => {
-  window.addEventListener('message', (event: MessageEvent) => {
-    if (event.data?.source === 'kadena-spirekey') {
-      callback(event.data);
+    if (options.enableBackdrop) {
+      backdrop.classList.remove('spirekey-backdrop-visible');
+      backdrop.addEventListener('transitionend', () => {
+        backdrop.remove();
+        backdrop = document.createElement('div');
+      });
     }
-  });
-};
+  };
 
-const initSpireKey = () => {
-  window.addEventListener('message', (event) => {
-    if (event.data.source && event.data.source === 'kadena-spirekey') {
-      console.log(
-        `Message received from embedded (${event.data.name}): ${JSON.stringify(event.data.payload, null, 2)}`,
-      );
-    }
-  });
+  const connect = (): void => {
+    options.enableBackdrop && showBackdrop();
+    iframe.classList.add('spirekey-sidebar-opened');
+  };
+
+  const sign = (transaction: string): void => {
+    options.enableBackdrop && showBackdrop();
+    iframe.classList.add('spirekey-sidebar-opened');
+    iframe.src = `${options.hostUrl}/embedded/sidebar/#transaction=${transaction}`;
+  };
+
+  const onEvent = (callback: (data: SpireKeyEvent) => void): void => {
+    window.addEventListener('message', (event: MessageEvent) => {
+      if (event.data?.source === 'kadena-spirekey') {
+        callback(event.data);
+      }
+    });
+  };
 
   const style = document.createElement('style');
   style.textContent = `
@@ -82,13 +93,23 @@ const initSpireKey = () => {
   `;
   document.head.appendChild(style);
 
-  iframe.className = 'spirekey-sidebar';
-  iframe.src = 'http://localhost:1337/embedded/sidebar';
+  iframe.src = `${options.hostUrl}/embedded/sidebar`;
   document.body.appendChild(iframe);
 
-  backdrop.className = 'spirekey-backdrop';
-  backdrop.addEventListener('click', closeSidebar);
+  window.addEventListener('message', (event) => {
+    if (
+      event.data?.source === 'kadena-spirekey' &&
+      event.data?.name === 'close-sidebar'
+    ) {
+      closeSidebar();
+    }
+  });
+
+  const functions = { connect, sign, onEvent };
+  window.spireKey = functions;
+
+  return functions;
 };
 
-export { connectWithSpireKey, initSpireKey, onSpireKeyEvent, signWithSpireKey };
-export type { SpireKeyEvent };
+export { initSpireKey };
+export type { SpireKeyEvent, SpireKeyWindow };
