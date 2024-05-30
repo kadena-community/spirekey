@@ -238,7 +238,12 @@ export default function Sign(props: Props) {
                         alignItems="center"
                         gap="md"
                       >
-                        <Image src={fingerprint} alt="fingerprint icon" />
+                        <Image
+                          src={fingerprint}
+                          alt="fingerprint icon"
+                          width={40}
+                          height={40}
+                        />
                         <Button onPress={() => onSign(i)}>Sign</Button>
                       </Stack>
                     </Surface>
