@@ -7,8 +7,11 @@
   "author": "",
   "main": "./src/index.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsup src/index.ts --format esm,cjs",
     "start": "ts-node --transpile-only src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.2"
   }
 }

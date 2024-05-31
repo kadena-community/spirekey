@@ -1,6 +1,7 @@
 'use client';
 
 import { initSpireKey, type SpireKeyEvent } from '@kadena-spirekey/sdk';
+
 import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
