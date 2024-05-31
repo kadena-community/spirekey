@@ -267,6 +267,7 @@
           , 'devices                    : devices
           }
         )
+        (emit-event (REGISTER_DEVICE account (at 'credential-id (at 0 devices))))
       )
     )
   )
