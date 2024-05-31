@@ -116,27 +116,34 @@ export function Account({
                       )}
                     </Grid>
                   )}
-                  <Stack
-                    marginBlock="lg"
-                    flexDirection="row"
-                    justifyContent="center"
-                  >
-                    <Link href={`/accounts/${caccount}`} className={detailLink}>
-                      Account details
-                    </Link>
-                  </Stack>
-                  <Stack
-                    marginBlock="lg"
-                    flexDirection="row"
-                    justifyContent="center"
-                  >
-                    <Link
-                      href={`/accounts/${caccount}/devices/add`}
-                      className={detailLink}
-                    >
-                      Add device
-                    </Link>
-                  </Stack>
+                  {process.env.ACCOUNT_OPERATIONS === 'true' && (
+                    <>
+                      <Stack
+                        marginBlock="lg"
+                        flexDirection="row"
+                        justifyContent="center"
+                      >
+                        <Link
+                          href={`/accounts/${caccount}`}
+                          className={detailLink}
+                        >
+                          Account details
+                        </Link>
+                      </Stack>
+                      <Stack
+                        marginBlock="lg"
+                        flexDirection="row"
+                        justifyContent="center"
+                      >
+                        <Link
+                          href={`/accounts/${caccount}/devices/add`}
+                          className={detailLink}
+                        >
+                          Add device
+                        </Link>
+                      </Stack>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
