@@ -265,11 +265,14 @@
   ;;;;;;;;;;;;;;;
   (implements gas-payer-v1)
 
-  (defcap GAS_PAYER:bool(user:string limit:integer price:decimal)
+  (defcap GAS:bool(user:string)
     (with-read guard-lookup-table user
       { 'webauthn-guard-name := guard-name }
       (compose-capability (DEBIT guard-name))
     )
+  )
+  (defcap GAS_PAYER:bool(user:string limit:integer price:decimal)
+    (compose-capability (GAS user))
   )
 
   (defun create-gas-payer-guard:guard()
