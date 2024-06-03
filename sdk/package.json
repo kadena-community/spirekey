@@ -7,11 +7,13 @@
   "author": "",
   "main": "./src/index.ts",
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs",
+    "build": "tsup src/index.ts --format esm,cjs,iife",
+    "serve": "http-server",
     "start": "ts-node --transpile-only src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "http-server": "^14.1.1",
     "tsup": "^8.0.2"
   }
 }
