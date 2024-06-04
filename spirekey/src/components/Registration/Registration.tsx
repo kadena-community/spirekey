@@ -105,7 +105,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
   };
 
   const completeRedirect = () => {
-    if (!decodedRedirectUrl) {
+    if (!redirectUrl) {
       router.push(completeRedirectUrl);
       return;
     }
@@ -116,11 +116,8 @@ export default function Registration({ redirectUrl, networkId }: Props) {
     }, 2000);
   };
 
-  const decodedRedirectUrl = redirectUrl
-    ? Buffer.from(redirectUrl, 'base64').toString()
-    : '';
-  const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
-  const completeRedirectUrl = decodedRedirectUrl || '/';
+  const cancelRedirectUrl = redirectUrl || '/welcome';
+  const completeRedirectUrl = redirectUrl || '/';
 
   const handleCancelClick = () => {
     router.push(cancelRedirectUrl);
