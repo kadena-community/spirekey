@@ -16,8 +16,10 @@
     )
   ]
 
-  ; webauthn-guard used by Proof of Us
   (bless "q8PWYhfYqfp9ypi-cysNkK-EXDiLX0Xg9c4yz5E1SmE")
+
+  ; Bless version on testnet at 2024-06-04
+  (bless "QjS0UZ4LGPDudubzNK3WpGq2gEluwmE69OGJFrqokvw")
 
   (defconst GOVERNANCE_KEYSET (read-string 'webauthn-keyset-name))
 
