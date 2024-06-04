@@ -4,7 +4,7 @@ import { Notification, NotificationHeading } from '@kadena/react-ui';
 
 import * as styles from './BetaNotification.css';
 
-export const BetaNotification = () => {
+export default function BetaNotification() {
   if (
     typeof window === 'undefined' ||
     sessionStorage.getItem('spirekey-beta-banner-dismissed') === 'true'
@@ -39,4 +39,4 @@ export const BetaNotification = () => {
       </Notification>
     </div>
   );
-};
+}

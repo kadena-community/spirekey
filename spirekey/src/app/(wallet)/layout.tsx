@@ -2,8 +2,15 @@ import type { Metadata } from 'next';
 
 import Providers from '@/app/providers';
 import favicon from '@/assets/images/favicon.png';
-import { BetaNotification } from '@/components/BetaNotification/BetaNotification';
 
+const BetaNotification = dynamic(
+  () => import('@/components/BetaNotification/BetaNotification'),
+  {
+    ssr: false,
+  },
+);
+
+import dynamic from 'next/dynamic';
 import '../global.css';
 
 export const metadata: Metadata = {
