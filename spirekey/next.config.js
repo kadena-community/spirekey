@@ -22,6 +22,7 @@ const nextConfig = {
     DEV_MODE_SETTINGS_PAGE: process.env.DEV_MODE_SETTINGS_PAGE,
     ACCOUNT_OPERATIONS: process.env.ACCOUNT_OPERATIONS,
     CAPABILITY_TRANSLATIONS: process.env.CAPABILITY_TRANSLATIONS,
+    E2E_TEST: process.env.E2E_TEST,
   },
 };
 
