@@ -28,6 +28,7 @@ export default defineConfig({
     },
     {
       name: 'SpireKey',
+      dependencies: ['setup'],
       testDir: './e2e/tests',
       use: {
         ...devices['iPhone 14 Pro Max'],
