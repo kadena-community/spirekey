@@ -1,6 +1,8 @@
-import favicon from '@/assets/images/favicon.png';
 import type { Metadata } from 'next';
-import Providers from '../providers';
+
+import Providers from '@/app/providers';
+import favicon from '@/assets/images/favicon.png';
+import { BetaNotification } from '@/components/BetaNotification/BetaNotification';
 
 import '../global.css';
 
@@ -20,6 +22,7 @@ export default function RootLayout({
         <link rel="icon" href={favicon.src} sizes="any" />
       </head>
       <body>
+        <BetaNotification />
         <Providers>{children}</Providers>
       </body>
     </html>
