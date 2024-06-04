@@ -42,6 +42,12 @@ implemented its own function `webauthn-wallet.transfer` and custom capabilities
 place of the original corresponding `coin.GAS` and `coin.TRANSFER` capabilities
 to satisfy the guard necessary for debiting an account.
 
+> Note: Due to the way chainweb processes the `GAS_PAYER` capability,
+> `webauthn-wallet` accounts will need to sign for an additional
+> `webauthn-wallet.GAS` capability when paying for gas. We are working on a
+> solution to simplify the interface further, which will become available in the
+> next chainweb release.
+
 The following is an example of what an unsigned `coin` transfer transaction from
 a SpireKey wallet could look like. Note that the value of the `cmd` field would
 normally be a stringified JSON object. In the example below it is displayed as
@@ -71,6 +77,10 @@ parsed JSON format for the sake of readability.
               },
               1
             ]
+          },
+          {
+            "name": "n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.GAS",
+            "args": ["c:bF51UeSqhrSjEET1yUWBYabDTfujlAZke4R70I4rrHc"]
           },
           {
             "name": "n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-wallet.TRANSFER",
@@ -127,6 +137,11 @@ SpireKey.
 | translations | string  | Optional | This allows dApp developers to pass custom translations. You can read more about this in the Translations guide                                                                                                                                                                                                                                                                           |
 | optimistic   | boolean | Optional | This allows dApps to optimistically move forward in their transaction flows without having to wait for the transaction to be confirmed on the blockchain. When this is enabled, `pendingTxIds` will be returned so that the dApp can keep track of the status of the submitted transactions and update the UI accordingly. Please see the docs for more information about how this works. |
 
+Transactions can grow in size well beyond what is accepted in
+`searchParameters`. To enable users to sign these transactions, you should send
+the transaction parameters to the SpireKey endpoint using the anchor hashtag (#)
+instead of the searchParameter question mark (?).
+
 The following is an example of how you would construct the route:
 
 ```ts
@@ -137,7 +152,7 @@ const encodedTx = btoa(JSON.stringify(tx));
 const encodedReturnUrl = encodeURIComponent(RETURN_URL);
 
 // The url you need to navigate to sign and return the transaction
-const sendTransactionUrl = `https://spirekey.kadena.io/sign?transaction=${encodedTx}&returnUrl=${encodedReturnUrl}`;
+const sendTransactionUrl = `https://spirekey.kadena.io/sign#transaction=${encodedTx}&returnUrl=${encodedReturnUrl}`;
 ```
 
 Once you construct the route to the wallet with the required parameters, you can
