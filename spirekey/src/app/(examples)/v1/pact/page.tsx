@@ -1,13 +1,9 @@
 'use client';
 
-import {
-  Box,
-  ContentHeader,
-  Heading,
-  Stack,
-  SystemIcon,
-} from '@kadena/react-ui';
+import { MonoKey } from '@kadena/react-icons';
+import { Box, ContentHeader, Heading, Stack } from '@kadena/react-ui';
 import { useState } from 'react';
+
 import { PreviewForm, PreviewFormValues } from './PreviewForm';
 import { SubmitForm } from './SubmitForm';
 
@@ -35,7 +31,7 @@ export default function Pact({ searchParams }: PactProps) {
           <Box margin="md">
             <ContentHeader
               heading="Execute pact"
-              icon={<SystemIcon.KeyIconFilled />}
+              icon={<MonoKey />}
               description="Upload a pact module or run pact code on the chain."
             />
           </Box>

@@ -1,6 +1,7 @@
 'use client';
 
-import { Card, ContentHeader, Stack, SystemIcon } from '@kadena/react-ui';
+import { MonoSupervisorAccount } from '@kadena/react-icons';
+import { Card, ContentHeader, Stack } from '@kadena/react-ui';
 import Link from 'next/link';
 
 export const AddWallet = () => {
@@ -10,7 +11,7 @@ export const AddWallet = () => {
         <ContentHeader
           heading="WebAuthn Wallet"
           description="Add this wallet to an existing account"
-          icon={<SystemIcon.Account />}
+          icon={<MonoSupervisorAccount />}
         />
         <Link href="/add-wallet">Add</Link>
       </Stack>

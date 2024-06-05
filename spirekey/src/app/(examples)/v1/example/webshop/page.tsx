@@ -3,6 +3,7 @@
 import { AccountButton } from '@/app/(examples)/v1/example/delivery/components/AccountButton';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { decodeAccount } from '@/utils/shared/decodeAccount';
+import { MonoCookie } from '@kadena/react-icons';
 import {
   Box,
   Button,
@@ -12,7 +13,6 @@ import {
   GridItem,
   Heading,
   Stack,
-  SystemIcon,
   Text,
 } from '@kadena/react-ui';
 import Image from 'next/image';
@@ -78,7 +78,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
         <ContentHeader
           description="We sell the best cookies in town!"
           heading="Cookie Shop"
-          icon={<SystemIcon.Cookie />}
+          icon={<MonoCookie />}
         />
       </Box>
 
@@ -113,7 +113,7 @@ export default function Webshop({ searchParams }: WebshopProps) {
                       {price.toFixed(2)} KDA
                     </Text>
                     <Button
-                      color="primary"
+                      variant="primary"
                       title="Shop now"
                       onPress={onOrder({ price })}
                     >

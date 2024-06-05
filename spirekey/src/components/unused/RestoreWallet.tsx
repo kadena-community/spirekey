@@ -1,6 +1,7 @@
 'use client';
 
-import { Card, ContentHeader, Stack, SystemIcon } from '@kadena/react-ui';
+import { MonoSupervisorAccount } from '@kadena/react-icons';
+import { Card, ContentHeader, Stack } from '@kadena/react-ui';
 import Link from 'next/link';
 
 export const Restore = () => {
@@ -10,7 +11,7 @@ export const Restore = () => {
         <ContentHeader
           heading="WebAuthn Wallet"
           description="Restore an account using WebAuthn"
-          icon={<SystemIcon.Account />}
+          icon={<MonoSupervisorAccount />}
         />
         <Link href="/restore">Restore</Link>
       </Stack>
