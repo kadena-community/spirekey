@@ -1,14 +1,19 @@
 'use client';
 
-import { initSpireKey, type SpireKeyEvent } from '@kadena-spirekey/sdk';
-
+import {
+  Device,
+  initSpireKey,
+  type Account,
+  type SpireKeyEvent,
+} from '@kadena-spirekey/sdk';
+import { transfer, transferCommand } from '@kadena/client-utils/coin';
 import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
 
 export default function Home() {
   const [events, setEvents] = useState<SpireKeyEvent[]>([]);
-  const [account, setAccount] = useState();
+  const [account, setAccount] = useState<Account>();
 
   useEffect(() => {
     const { onEvent } = initSpireKey({ hostUrl: 'http://localhost:1337' });
@@ -17,14 +22,41 @@ export default function Home() {
       setEvents((events) => [...events, event]);
 
       if (event.name === 'account') {
-        setAccount(event.payload as any);
+        setAccount(event.payload);
       }
     });
   }, []);
 
-  const signTransaction = () => {
-    const transaction = '@TODO';
-    window.spireKey.sign(transaction);
+  const signTransaction = async () => {
+    // @TODO why is `account` typed as `any`?
+    if (!account) {
+      throw new Error('No account connected');
+    }
+
+    const transaction = transfer(
+      {
+        sender: {
+          account: account.account,
+          publicKeys: account.devices.map(
+            (device: Device) => device.guard.keys,
+          ),
+        },
+        receiver: 'k:abcd',
+        amount: '1',
+        chainId: '1',
+      },
+      {
+        host: 'https://api.testnet.chainweb.com',
+        defaults: {
+          networkId: 'testnet04',
+        },
+        sign: window.spireKey.sign,
+      },
+    );
+
+    console.log(transaction);
+
+    await transaction.execute();
   };
 
   return (

@@ -8,11 +8,16 @@
   "main": "./src/index.ts",
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs,iife",
-    "serve": "http-server",
-    "start": "ts-node --transpile-only src/index.ts"
+    "start": "ts-node --transpile-only src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest --no-coverage"
+  },
+  "dependencies": {
+    "@kadena-spirekey/spirekey": "workspace:^"
   },
   "devDependencies": {
-    "http-server": "^14.1.1",
-    "tsup": "^8.0.2"
+    "@vitest/coverage-v8": "^1.5.2",
+    "tsup": "^8.0.2",
+    "vitest": "^1.5.2"
   }
 }
