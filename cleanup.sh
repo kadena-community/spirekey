@@ -1,13 +1,18 @@
 #!/bin/bash
 
+############################################################################################################
+# This script is used to clean up old reports from the numbered folders in the base directory.             #
+# The script iterates over each numbered folder and checks the subfolders for old reports.                 #
+# If a report is older than 30 days, it is removed.                                                        #
+# NOTE: Script only works on Linux and is meant to be triggered through a Github Actions workflow          #
+############################################################################################################
+
 # Define the base directory where the numbered folders are located
 base_dir="."
-
 
 #Generate current date
 current_date=$(date -u +%Y%m%d)
 echo "Current Date: $current_date"
-
 
 # Iterate over each numbered folder in the base directory
 for folder in "$base_dir"/*; do
