@@ -1,6 +1,6 @@
-import { connectFactory } from './functions/connectFactory';
-import { hideSideBarFactory } from './functions/hideSidebarFactory';
-import { signFactory } from './functions/signFactory';
+import { createConnect } from './functions/createConnect';
+import { createHideSidebar } from './functions/createHideSidebar';
+import { createSign } from './functions/createSign';
 import type { SpireKeyEvent, SpireKeyWindow } from './types';
 
 import './styles.css';
@@ -30,7 +30,7 @@ const initSpireKey = (
   iframe.src = `${options.hostUrl}/embedded/sidebar`;
   document.body.appendChild(iframe);
 
-  const hideSidebar = hideSideBarFactory({ iframe });
+  const hideSidebar = createHideSidebar({ iframe });
 
   window.addEventListener('message', (event) => {
     if (
@@ -42,8 +42,8 @@ const initSpireKey = (
   });
 
   const functions = {
-    connect: connectFactory({ iframe }),
-    sign: signFactory({ hostUrl: options.hostUrl, iframe }),
+    connect: createConnect({ iframe }),
+    sign: createSign({ hostUrl: options.hostUrl, iframe }),
     onEvent,
   };
 
@@ -52,5 +52,5 @@ const initSpireKey = (
   return functions;
 };
 
+export * from './types';
 export { initSpireKey, onEvent };
-export type { SpireKeyEvent, SpireKeyWindow };

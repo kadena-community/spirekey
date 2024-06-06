@@ -2,7 +2,7 @@ export interface ConnectParams {
   iframe: HTMLIFrameElement;
 }
 
-export const connectFactory =
+export const createConnect =
   ({ iframe }: ConnectParams) =>
   (): void => {
     iframe.classList.add('spirekey-sidebar-opened');
