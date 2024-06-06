@@ -9,7 +9,7 @@ import Image from 'next/image';
 export default function Home() {
   return (
     <>
-      <Background />
+      {process.env.E2E_TEST !== 'true' && <Background />}
       <Stack
         gap="md"
         flexDirection="column"
