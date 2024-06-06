@@ -49,6 +49,7 @@
     "base64url-universal": "^2.0.0",
     "cbor": "^9.0.2",
     "classnames": "^2.5.1",
+    "detect-gpu": "^5.0.38",
     "encoding": "^0.1.13",
     "framer-motion": "^11.0.6",
     "next": "14.1.0",
