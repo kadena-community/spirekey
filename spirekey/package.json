@@ -2,6 +2,7 @@
   "name": "@kadena-spirekey/spirekey",
   "version": "0.1.0",
   "private": true,
+  "main": "./src/lib.ts",
   "scripts": {
     "build": "next build",
     "deploy": "tsx ./deploy.ts ./pact/deploy/deploy.json",
@@ -19,6 +20,7 @@
     "start": "next start --port 1337",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:watch": "vitest --no-coverage",
     "update": "tsx ./deploy.ts ./pact/deploy/update.json",
     "update:del": "tsx ./deploy.ts ./pact/deploy/local-delivery.json",
     "update:dev": "tsx ./deploy.ts ./pact/deploy/local-update.json",
