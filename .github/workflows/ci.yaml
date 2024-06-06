@@ -49,9 +49,6 @@ jobs:
       - name: Build
         run: pnpm build:e2e
 
-      - name: Build output
-        run: ls -la spirekey/.next
-
       - name: Install browser
         run: pnpm --filter spirekey run install:chromium
 
