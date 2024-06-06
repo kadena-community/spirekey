@@ -14,7 +14,6 @@ const shouldRenderAnimatedBackground = async () => {
   return tier > 2;
 };
 export function Background() {
-  const [dimensions] = useState({ width: 40, height: 40 });
   const [isAnimated, setIsAnimated] = useState(false);
   useEffect(() => {
     shouldRenderAnimatedBackground().then(setIsAnimated);
@@ -31,7 +30,7 @@ export function Background() {
     >
       <BackgroundContext.Provider value={{ isAnimated }}>
         <Canvas shadows>
-          <Scene width={dimensions.width} height={dimensions.height} />
+          <Scene width={40} height={40} />
         </Canvas>
       </BackgroundContext.Provider>
     </motion.div>
