@@ -3,7 +3,7 @@ name: Prune old E2E Reports
 on:
  workflow_dispatch:
  schedule:
-    - cron: "0 0 * * *"   # Everyday around midnight
+    - cron: "0 0 * * 6"   # Every Saturday around midnight
   
 
 jobs:
