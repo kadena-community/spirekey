@@ -1,9 +1,8 @@
 'use client';
 
 import { useAccounts } from '@/context/AccountsContext';
-import { getSignature } from '@/utils/getSignature';
-import { addSignatures } from '@kadena/client';
-import { startAuthentication } from '@simplewebauthn/browser';
+import { useSign } from '@/hooks/useSign';
+
 import { Button } from '../shared/Button/Button';
 
 interface Props {
@@ -13,6 +12,7 @@ interface Props {
 export default function Sign(props: Props) {
   const { transaction } = props;
   const { accounts } = useAccounts();
+  const { sign } = useSign();
 
   if (!transaction) return;
 
@@ -21,25 +21,16 @@ export default function Sign(props: Props) {
     : null;
   const tx = JSON.parse(data ?? '{}');
 
-  const credentialId = accounts[0]?.devices[0]['credential-id'] || '';
   const onSign = async () => {
-    console.log(tx);
-    const res = await startAuthentication({
-      challenge: tx.hash,
-      rpId: window.location.hostname,
-      allowCredentials: [{ id: credentialId, type: 'public-key' }],
-    });
-
-    const signedTx = addSignatures(tx, {
-      ...getSignature(res.response),
-      pubKey: accounts[0]?.devices[0]?.guard.keys[0] || '',
-    });
+    const signedTx = await sign(tx, accounts[0]?.devices[0]['credential-id']);
 
     window.parent.postMessage(
       {
         source: 'kadena-spirekey',
-        name: 'signed-transaction',
-        payload: { transaction: signedTx },
+        name: 'all-transactions-signed',
+        payload: {
+          transactions: [signedTx],
+        },
       },
       '*',
     );

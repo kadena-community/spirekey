@@ -26,8 +26,8 @@ const initSpireKey = (
 ) => {
   const iframe = document.createElement('iframe');
   iframe.className = 'spirekey-sidebar';
-
   iframe.src = `${options.hostUrl}/embedded/sidebar`;
+  iframe.allow = 'publickey-credentials-get *';
   document.body.appendChild(iframe);
 
   const hideSidebar = createHideSidebar({ iframe });
@@ -42,8 +42,8 @@ const initSpireKey = (
   });
 
   const functions = {
-    connect: createConnect({ iframe }),
-    sign: createSign({ hostUrl: options.hostUrl, iframe }),
+    connect: createConnect({ iframe, hideSidebar }),
+    sign: createSign({ iframe }),
     onEvent,
   };
 

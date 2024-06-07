@@ -1,12 +1,11 @@
 'use client';
 
 import {
-  Device,
   initSpireKey,
   type Account,
   type SpireKeyEvent,
 } from '@kadena-spirekey/sdk';
-import { transfer, transferCommand } from '@kadena/client-utils/coin';
+import { transfer } from '@kadena/client-utils/coin';
 import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -21,7 +20,7 @@ export default function Home() {
     onEvent((event) => {
       setEvents((events) => [...events, event]);
 
-      if (event.name === 'account') {
+      if (event.name === 'account-connected') {
         setAccount(event.payload);
       }
     });
@@ -36,10 +35,8 @@ export default function Home() {
     const transaction = transfer(
       {
         sender: {
-          account: account.account,
-          publicKeys: account.devices.map(
-            (device: Device) => device.guard.keys,
-          ),
+          account: account.accountName,
+          publicKeys: [account.devices[0].guard.keys[0]],
         },
         receiver: 'k:abcd',
         amount: '1',
@@ -53,8 +50,6 @@ export default function Home() {
         sign: window.spireKey.sign,
       },
     );
-
-    console.log(transaction);
 
     await transaction.execute();
   };

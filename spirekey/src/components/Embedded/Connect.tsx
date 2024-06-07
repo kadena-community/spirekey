@@ -20,10 +20,8 @@ export default function Connect() {
     window.parent.postMessage(
       {
         source: 'kadena-spirekey',
-        name: 'account',
-        payload: {
-          account,
-        },
+        name: 'account-connected',
+        payload: account,
       },
       '*',
     );
