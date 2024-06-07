@@ -1,1 +1,1 @@
-export type { Account, Device } from '@/context/AccountsContext';
+export type { Account, Device } from './context/AccountsContext';

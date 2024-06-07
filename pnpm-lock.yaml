@@ -57,6 +57,9 @@ importers:
       '@kadena-spirekey/spirekey':
         specifier: workspace:^
         version: link:../spirekey
+      '@kadena/client':
+        specifier: ^1.11.0
+        version: 1.11.1(encoding@0.1.13)
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.5.2

@@ -13,7 +13,8 @@
     "test:watch": "vitest --no-coverage"
   },
   "dependencies": {
-    "@kadena-spirekey/spirekey": "workspace:^"
+    "@kadena-spirekey/spirekey": "workspace:^",
+    "@kadena/client": "^1.11.0"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^1.5.2",

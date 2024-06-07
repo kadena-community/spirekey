@@ -7,15 +7,21 @@ import {
 
 export interface SignParams {
   iframe: HTMLIFrameElement;
+  timeout?: number;
 }
 
-export const createSign =
-  ({ iframe }: SignParams): ISignFunction =>
-  // @ts-expect-error: @TODO fix type
-  async (transactionList) => {
+type ReturnValue =
+  | (IUnsignedCommand | ICommand)[]
+  | IUnsignedCommand
+  | ICommand;
+
+export const createSign = ({
+  iframe,
+  timeout = 5 * 60 * 1000,
+}: SignParams): ISignFunction =>
+  (async (transactionList) => {
     const isList = Array.isArray(transactionList);
     const transactions = isList ? transactionList : [transactionList];
-
     const transactionsParams = transactions
       .map(
         (tx) =>
@@ -30,30 +36,32 @@ export const createSign =
     newSrc.hash = `#${transactionsParams}`;
     iframe.src = newSrc.toString();
 
-    const timeout = new Promise<(IUnsignedCommand | ICommand)[]>((_, reject) =>
+    const timeoutPromise = new Promise<ReturnValue>((_, reject) =>
       setTimeout(
         () => reject([new Error('Timeout: Signing took too long')]),
-        5 * 60 * 1000,
+        timeout,
       ),
     );
 
     let handleMessage: (event: MessageEvent) => void;
 
-    const messageListener = new Promise<(IUnsignedCommand | ICommand)[]>(
-      (resolve) => {
-        handleMessage = (event: MessageEvent) => {
-          if (event.data.name === 'all-transactions-signed') {
-            const signedTransactions = event.data.payload.transactions;
+    const eventListenerPromise = new Promise<ReturnValue>((resolve) => {
+      handleMessage = (event: MessageEvent) => {
+        if (event.data.name === 'all-transaction-signatures') {
+          const signedTransactions = transactions.map((tx) =>
+            addSignatures(tx, {
+              ...event.data.payload.signatures[tx.hash],
+            }),
+          );
 
-            resolve(signedTransactions);
-          }
-        };
+          resolve(isList ? signedTransactions : signedTransactions[0]);
+        }
+      };
 
-        window.addEventListener('message', handleMessage);
-      },
-    );
+      window.addEventListener('message', handleMessage);
+    });
 
-    return Promise.race([messageListener, timeout]).finally(() => {
+    return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
       window.removeEventListener('message', handleMessage);
     });
-  };
+  }) as ISignFunction;

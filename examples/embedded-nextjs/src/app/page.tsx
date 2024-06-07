@@ -43,9 +43,9 @@ export default function Home() {
         chainId: '1',
       },
       {
-        host: 'https://api.testnet.chainweb.com',
+        host: 'http://localhost:8080',
         defaults: {
-          networkId: 'testnet04',
+          networkId: 'development',
         },
         sign: window.spireKey.sign,
       },
