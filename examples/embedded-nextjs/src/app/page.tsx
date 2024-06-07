@@ -21,13 +21,12 @@ export default function Home() {
       setEvents((events) => [...events, event]);
 
       if (event.name === 'account-connected') {
-        setAccount(event.payload);
+        setAccount(event.payload as Account);
       }
     });
   }, []);
 
   const signTransaction = async () => {
-    // @TODO why is `account` typed as `any`?
     if (!account) {
       throw new Error('No account connected');
     }
@@ -59,7 +58,12 @@ export default function Home() {
       {!account && (
         <button onClick={() => window.spireKey.connect()}>Connect</button>
       )}
-      {account && <button onClick={signTransaction}>Sign</button>}
+      {account && (
+        <>
+          <div>{account.alias}</div>
+          <button onClick={signTransaction}>Sign</button>
+        </>
+      )}
 
       <details>
         <summary>View events</summary>

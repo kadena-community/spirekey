@@ -2,7 +2,7 @@
 
 import { darkThemeClass } from '@kadena/react-ui/styles';
 import { ThemeProvider } from 'next-themes';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode } from 'react';
 
 import { NotificationContainer } from '@/components/shared/NotificationsContainer/NotificationsContainer';
 import { AccountsProvider } from '@/context/AccountsContext';
