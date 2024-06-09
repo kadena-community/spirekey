@@ -6,6 +6,6 @@ export interface SpireKeyEvent {
 
 export interface SpireKeyWindow {
   connect: () => void;
+  disconnect: () => void;
   sign: (transaction: string) => void;
-  onEvent: (callback: (data: SpireKeyEvent) => void) => void;
 }

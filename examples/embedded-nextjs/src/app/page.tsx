@@ -11,14 +11,18 @@ export default function Home() {
   const [account, setAccount] = useState();
 
   useEffect(() => {
-    const { onEvent } = initSpireKey({ hostUrl: 'http://localhost:1337' });
+    const { eventBus } = initSpireKey({ hostUrl: 'http://localhost:1337' });
 
-    onEvent((event) => {
+    eventBus.subscribeToAll((event) => {
       setEvents((events) => [...events, event]);
 
-      if (event.name === 'account') {
+      if (event.name === 'account-connected') {
         setAccount(event.payload as any);
       }
+    });
+
+    eventBus.subscribe('account-disconnected', () => {
+      setAccount(undefined);
     });
   }, []);
 
@@ -33,6 +37,9 @@ export default function Home() {
         <button onClick={() => window.spireKey.connect()}>Connect</button>
       )}
       {account && <button onClick={signTransaction}>Sign</button>}
+      {account && (
+        <button onClick={() => window.spireKey.disconnect()}>Disconnect</button>
+      )}
 
       <details>
         <summary>View events</summary>

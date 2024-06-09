@@ -1,4 +1,11 @@
-export const SpireKeySpinner = () => {
+import classNames from 'classnames';
+import * as styles from './SpireKeySpinner.css';
+
+interface Props {
+  size: 'xs';
+}
+
+export const SpireKeySpinner = ({ size }: Props) => {
   const colors = [
     '#356f5a',
     '#4a9079',
@@ -17,6 +24,7 @@ export const SpireKeySpinner = () => {
       height="64"
       viewBox="0 0 64 64"
       role="status"
+      className={classNames(styles.spinner[size])}
     >
       <path d="M16.3,49.4l7-3.4-1.5,7.4-5.5-4Z">
         <animate

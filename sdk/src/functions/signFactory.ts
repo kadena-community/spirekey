@@ -1,11 +1,14 @@
+import { SidebarManager } from '../sidebar-manager';
+
 export interface SignParams {
-  hostUrl: string;
-  iframe: HTMLIFrameElement;
+  sidebarManager: SidebarManager;
 }
 
 export const signFactory =
-  ({ hostUrl, iframe }: SignParams) =>
+  ({ sidebarManager }: SignParams) =>
   (transaction: string): void => {
-    iframe.classList.add('spirekey-sidebar-opened');
-    iframe.src = `${hostUrl}/embedded/sidebar/#transaction=${transaction}`;
+    sidebarManager.open();
+    sidebarManager.setIFramePath(
+      `/embedded/sidebar/#transaction=${transaction}`,
+    );
   };

@@ -1,9 +1,11 @@
+import { SidebarManager } from '../sidebar-manager';
+
 export interface ConnectParams {
-  iframe: HTMLIFrameElement;
+  sidebarManager: SidebarManager;
 }
 
 export const connectFactory =
-  ({ iframe }: ConnectParams) =>
+  ({ sidebarManager }: ConnectParams) =>
   (): void => {
-    iframe.classList.add('spirekey-sidebar-opened');
+    sidebarManager.open();
   };
