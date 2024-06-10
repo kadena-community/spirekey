@@ -18,6 +18,11 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     },
+    "./styles.css": {
+      "types": "./dist/styles.d.mts",
+      "import": "./dist/styles.mjs",
+      "require": "./dist/styles.cjs"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",
