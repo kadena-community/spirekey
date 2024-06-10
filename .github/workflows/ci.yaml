@@ -55,9 +55,8 @@ jobs:
       - name: End-to-end test
         run: pnpm test:e2e
 
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
+      - name: Publish Report
+        uses: ./.github/actions/publish-report
         with:
-          name: playwright-report
-          path: spirekey/playwright-report/
-          retention-days: 30
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPORT_DIR: 'spirekey/playwright-report/'
