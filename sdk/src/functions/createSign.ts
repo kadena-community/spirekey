@@ -5,6 +5,8 @@ import {
   type IUnsignedCommand,
 } from '@kadena/client';
 
+import * as styles from '../styles.css';
+
 export interface SignParams {
   iframe: HTMLIFrameElement;
   timeout?: number;
@@ -29,7 +31,7 @@ export const createSign = ({
       )
       .join('&');
 
-    iframe.classList.add('spirekey-sidebar-opened');
+    iframe.classList.add(styles.spirekeySidebarOpened);
 
     const newSrc = new URL(iframe.src);
     newSrc.pathname = '/embedded/sidebar';

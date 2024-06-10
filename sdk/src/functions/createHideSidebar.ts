@@ -1,3 +1,5 @@
+import * as styles from '../styles.css';
+
 export interface HideSidebarParams {
   iframe: HTMLIFrameElement;
 }
@@ -5,5 +7,5 @@ export interface HideSidebarParams {
 export const createHideSidebar =
   ({ iframe }: HideSidebarParams) =>
   () => {
-    iframe.classList.remove('spirekey-sidebar-opened');
+    iframe.classList.remove(styles.spirekeySidebarOpened);
   };

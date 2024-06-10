@@ -5,20 +5,42 @@
   "keywords": [],
   "license": "ISC",
   "author": "",
-  "main": "./src/index.ts",
+  "sideEffects": [
+    "*.css.*",
+    "dist/side-effects/**"
+  ],
+  "exports": {
+    ".": {
+      "types": {
+        "import": "./dist/index.d.mts",
+        "require": "./dist/index.d.ts"
+      },
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs,iife",
-    "start": "ts-node --transpile-only src/index.ts",
+    "build": "crackle package",
+    "dev": "crackle dev",
     "test": "vitest run",
     "test:watch": "vitest --no-coverage"
   },
   "dependencies": {
-    "@kadena-spirekey/spirekey": "workspace:^",
-    "@kadena/client": "^1.11.0"
+    "@kadena-spirekey/spirekey": "workspace:*",
+    "@kadena/client": "^1.11.2",
+    "@kadena/react-ui": "^0.10.0"
   },
   "devDependencies": {
+    "@vanilla-extract/esbuild-plugin": "^2.3.6",
     "@vitest/coverage-v8": "^1.5.2",
-    "tsup": "^8.0.2",
+    "crackle": "^0.1.0",
     "vitest": "^1.5.2"
   }
 }

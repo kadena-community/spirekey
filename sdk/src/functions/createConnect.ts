@@ -1,5 +1,7 @@
 import type { Account } from '@kadena-spirekey/spirekey';
 
+import * as styles from '../styles.css';
+
 export interface ConnectParams {
   iframe: HTMLIFrameElement;
   hideSidebar: () => void;
@@ -9,7 +11,7 @@ export interface ConnectParams {
 export const createConnect =
   ({ iframe, hideSidebar, timeout = 5 * 60 * 1000 }: ConnectParams) =>
   (): Promise<Account> => {
-    iframe.classList.add('spirekey-sidebar-opened');
+    iframe.classList.add(styles.spirekeySidebarOpened);
 
     const timeoutPromise = new Promise<Account>((_, reject) =>
       setTimeout(

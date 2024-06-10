@@ -3,7 +3,7 @@ import { createHideSidebar } from './functions/createHideSidebar';
 import { createSign } from './functions/createSign';
 import type { SpireKeyEvent, SpireKeyWindow } from './types';
 
-import './styles.css';
+import * as styles from './styles.css';
 
 declare global {
   interface Window {
@@ -25,7 +25,7 @@ const initSpireKey = (
   },
 ) => {
   const iframe = document.createElement('iframe');
-  iframe.className = 'spirekey-sidebar';
+  iframe.className = styles.spirekeySidebar;
   iframe.src = `${options.hostUrl}/embedded/sidebar`;
   iframe.allow = 'publickey-credentials-get *';
   document.body.appendChild(iframe);
