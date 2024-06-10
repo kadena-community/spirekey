@@ -1,8 +1,10 @@
-import { IUnsignedCommand } from '@kadena/client';
+import type { IUnsignedCommand } from '@kadena/client';
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 
 import * as styles from '../../styles.css';
 import { signFactory } from '../signFactory';
+
+vitest.mock('@kadena/client');
 
 describe('signFactory', () => {
   let sign: ReturnType<typeof signFactory>;
@@ -20,7 +22,7 @@ describe('signFactory', () => {
   it('signs a transaction', async () => {
     const transaction: IUnsignedCommand = {
       hash: '123',
-      cmd: 'test',
+      cmd: '{"code": "test"}',
       sigs: [],
     };
     const promise = sign(transaction);
@@ -32,23 +34,26 @@ describe('signFactory', () => {
       new MessageEvent('message', {
         data: {
           source: 'kadena-spirekey',
-          name: 'all-transactions-signed',
+          name: 'all-transaction-signatures',
           payload: {
-            transactions: [{ ...transaction, sigs: [{ sig: 'signature' }] }],
+            signatures: {
+              123: { sig: 'signature' },
+            },
           },
         },
       }),
     );
 
-    await expect(promise).resolves.toEqual([
-      { ...transaction, sigs: [{ sig: 'signature' }] },
-    ]);
+    await expect(promise).resolves.toEqual({
+      ...transaction,
+      sigs: [{ sig: 'signature' }],
+    });
   });
 
   it('signs multiple transactions', async () => {
     const transactions: IUnsignedCommand[] = [
-      { hash: '123', cmd: 'test1', sigs: [] },
-      { hash: '456', cmd: 'test2', sigs: [] },
+      { hash: '123', cmd: '{"code": "test1"}', sigs: [] },
+      { hash: '456', cmd: '{"code": "test2"}', sigs: [] },
     ];
     const promise = sign(transactions);
 
@@ -57,12 +62,12 @@ describe('signFactory', () => {
     window.dispatchEvent(
       new MessageEvent('message', {
         data: {
-          name: 'all-transactions-signed',
+          name: 'all-transaction-signatures',
           payload: {
-            transactions: [
-              { ...transactions[0], sigs: [{ sig: 'signature1' }] },
-              { ...transactions[1], sigs: [{ sig: 'signature2' }] },
-            ],
+            signatures: {
+              123: { sig: 'signature1' },
+              456: { sig: 'signature2' },
+            },
           },
         },
       }),
