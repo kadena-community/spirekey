@@ -1,9 +1,10 @@
 'use client';
 
-import { Account, Device, useAccounts } from '@/context/AccountsContext';
-import { useSign } from '@/hooks/useSign';
+import { startAuthentication } from '@simplewebauthn/browser';
 
-import { Button } from '../shared/Button/Button';
+import { Button } from '@/components/shared/Button/Button';
+import { Account, Device, useAccounts } from '@/context/AccountsContext';
+import { getSignature } from '@/utils/getSignature';
 
 interface Props {
   transaction?: string;
@@ -52,7 +53,7 @@ export default function Sign(props: Props) {
         payload: {
           signatures: {
             [tx.hash]: {
-              ...getSig(res.response),
+              ...getSignature(res.response),
               pubKey: getPubkey(accounts, credentialId),
             },
           },
