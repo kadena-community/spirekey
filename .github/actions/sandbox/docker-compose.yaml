@@ -1,7 +1,7 @@
 version: '3'
 services:
   devnet:
-    image: kadena/devnet@sha256:4e2eb4d9955eeb751afd7a4fe4e525ec38e33a0dd8b40e26f0417efd7929446c
+    image: kadena/devnet@sha256:348cc81804a75b17ed77db50d51e39db0746af32a0ef794af4f24adf346aa572
     ports:
       - 8080:8080 # HTTP
       - 5432:5432 # Postgres

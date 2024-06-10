@@ -3,8 +3,10 @@
 (module webauthn-wallet GOVERNANCE
   (defconst GOVERNANCE_KEYSET (read-string 'webauthn-keyset-name))
 
-  ; webauthn-wallet used by Proof of Us
   (bless "c5KSG0HHgGQdlr-SYja_FX8t8YZPXAd8GorSh98-7jU")
+
+  ; Bless version on testnet at 2024-06-04
+  (bless "btpOI4UJRqjxaROUYCHVaL0M4qK9DzYzlQqpwmSkciY")
 
   (use coin)
   (use webauthn-guard)
@@ -265,11 +267,14 @@
   ;;;;;;;;;;;;;;;
   (implements gas-payer-v1)
 
-  (defcap GAS_PAYER:bool(user:string limit:integer price:decimal)
+  (defcap GAS:bool(user:string)
     (with-read guard-lookup-table user
       { 'webauthn-guard-name := guard-name }
       (compose-capability (DEBIT guard-name))
     )
+  )
+  (defcap GAS_PAYER:bool(user:string limit:integer price:decimal)
+    (compose-capability (GAS user))
   )
 
   (defun create-gas-payer-guard:guard()

@@ -18,6 +18,7 @@ declare global {
       MERCHANT_ACCOUNT: string;
       ACCOUNT_OPERATIONS: string;
       CAPABILITY_TRANSLATIONS: string;
+      E2E_TEST: string;
     }
   }
 }

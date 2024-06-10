@@ -1,7 +1,16 @@
-import favicon from '@/assets/images/favicon.png';
 import type { Metadata } from 'next';
-import Providers from '../providers';
 
+import Providers from '@/app/providers';
+import favicon from '@/assets/images/favicon.png';
+
+const BetaNotification = dynamic(
+  () => import('@/components/BetaNotification/BetaNotification'),
+  {
+    ssr: false,
+  },
+);
+
+import dynamic from 'next/dynamic';
 import '../global.css';
 
 export const metadata: Metadata = {
@@ -20,6 +29,7 @@ export default function RootLayout({
         <link rel="icon" href={favicon.src} sizes="any" />
       </head>
       <body>
+        <BetaNotification />
         <Providers>{children}</Providers>
       </body>
     </html>

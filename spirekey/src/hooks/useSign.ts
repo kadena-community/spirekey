@@ -1,5 +1,5 @@
 import { Account, Device, useAccounts } from '@/context/AccountsContext';
-import { getSig } from '@/utils/getSig';
+import { getSignature } from '@/utils/getSignature';
 import { ICommand, addSignatures } from '@kadena/client';
 import { startAuthentication } from '@simplewebauthn/browser';
 
@@ -35,7 +35,7 @@ export const useSign = () => {
     });
 
     const signedTx = addSignatures(tx, {
-      ...getSig(res.response),
+      ...getSignature(res.response),
       pubKey: getPubkey(accounts, credentialId),
     });
 

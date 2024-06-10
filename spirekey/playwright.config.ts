@@ -9,10 +9,7 @@ export default defineConfig({
   forbidOnly: process.env.CI !== undefined,
   retries: process.env.CI !== undefined ? 1 : 0,
   workers: 1,
-  reporter:
-    process.env.CI !== undefined
-      ? [['github'], ['list'], ['html', { open: 'never' }]]
-      : [['list'], ['html', { open: 'never' }]],
+  reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     headless: process.env.CI !== undefined,
     baseURL: 'http://localhost:1337/',
@@ -28,6 +25,7 @@ export default defineConfig({
     },
     {
       name: 'SpireKey',
+      dependencies: ['setup'],
       testDir: './e2e/tests',
       use: {
         ...devices['iPhone 14 Pro Max'],

@@ -5,14 +5,8 @@ import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/shared/useSubmit';
 import { continueCopy, copyAccount } from '@/utils/copyAccount';
 import { l1Client } from '@/utils/shared/client';
-import {
-  Box,
-  Button,
-  Card,
-  ContentHeader,
-  Stack,
-  SystemIcon,
-} from '@kadena/react-ui';
+import { MonoSupervisorAccount } from '@kadena/react-icons';
+import { Box, Button, Card, ContentHeader, Stack } from '@kadena/react-ui';
 import type { ChainId } from '@kadena/types';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -96,7 +90,7 @@ export default function CopyPage() {
           <ContentHeader
             heading="Copy account"
             description="Copy account to a different chain."
-            icon={<SystemIcon.Account />}
+            icon={<MonoSupervisorAccount />}
           />
           <Button onClick={handleCopyAccount}>
             {loading ? 'Loading...' : 'Copy account'}

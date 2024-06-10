@@ -26,7 +26,6 @@ export default function Accounts() {
 
   return (
     <>
-      <Background />
       <Stack
         gap="md"
         flexDirection="column"

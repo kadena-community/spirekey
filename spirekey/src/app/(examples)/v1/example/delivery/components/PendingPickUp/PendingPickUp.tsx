@@ -1,6 +1,8 @@
+import { MonoLoading } from '@kadena/react-icons';
+import { Heading, Stack, maskValue } from '@kadena/react-ui';
+
 import { Order } from '@/app/(examples)/v1/example/delivery/useDelivery';
 import { Surface } from '@/components/Surface/Surface';
-import { Heading, Stack, SystemIcon, maskValue } from '@kadena/react-ui';
 
 interface Props {
   order: Order;
@@ -19,7 +21,7 @@ export function ReadyForPickUp({ order }: Props) {
             <Heading variant="h5">
               Delivery price: $ {order.deliveryPrice.toFixed(2)}
             </Heading>
-            <SystemIcon.Loading size="lg" />
+            <MonoLoading />
           </Stack>
         </Stack>
         <Heading variant="h6">Merchant: {maskValue(order.merchant)}</Heading>
