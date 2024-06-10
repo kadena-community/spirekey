@@ -46,9 +46,6 @@ jobs:
       - name: Setup Kadena sandbox
         uses: ./.github/actions/sandbox
 
-      - name: Build
-        run: pnpm build:e2e
-
       - name: Install browser
         run: pnpm --filter spirekey run install:chromium
 
