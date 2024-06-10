@@ -1,5 +1,6 @@
 import { useOrder } from '@/app/(examples)/v1/example/delivery/context/OrderContext';
-import { Box, Heading, Stack, SystemIcon } from '@kadena/react-ui';
+import { MonoLocationOn } from '@kadena/react-icons';
+import { Box, Heading, Stack } from '@kadena/react-ui';
 import Image from 'next/image';
 import * as styles from './OrderSummary.css';
 
@@ -55,7 +56,7 @@ export function OrderSummary() {
         ))}
         <Stack alignItems="center" justifyContent="space-between" gap="sm">
           <Stack flexDirection="row" alignItems="center">
-            <SystemIcon.MapMarker size="xl" className={styles.mapMarker} />
+            <MonoLocationOn className={styles.mapMarker} />
             <Box className={styles.delivery}>
               <Heading variant="h6" as="h4">
                 Delivery

@@ -4,7 +4,7 @@ import { useDelivery } from '@/app/(examples)/v1/example/delivery/useDelivery';
 import { Surface } from '@/components/Surface/Surface';
 import { Button } from '@/components/shared/Button/Button';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
-import { Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
+import { Heading, Stack } from '@kadena/react-ui';
 import { ChainId, ICap, ISigner } from '@kadena/types';
 import { useRouter } from 'next/navigation';
 

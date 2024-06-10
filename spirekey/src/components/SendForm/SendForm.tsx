@@ -109,7 +109,6 @@ export default function SendForm() {
           description={
             <Stack gap="xs" alignItems="center">
               <Button
-                variant="contained"
                 className={style.button}
                 onClick={() =>
                   setValue('amount', parseFloat(account.balance) / 2)
@@ -118,7 +117,6 @@ export default function SendForm() {
                 <span className={style.buttonText}>Half</span>
               </Button>
               <Button
-                variant="contained"
                 className={style.button}
                 onClick={() => setValue('amount', parseFloat(account.balance))}
               >

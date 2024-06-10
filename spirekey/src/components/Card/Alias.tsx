@@ -1,4 +1,5 @@
-import { Box, Heading, SystemIcon } from '@kadena/react-ui';
+import { MonoSupervisorAccount } from '@kadena/react-icons';
+import { Box, Heading } from '@kadena/react-ui';
 import { accountAlias, accountIcon, accountIconInner } from './Card.css';
 
 type CardProps = {
@@ -13,7 +14,7 @@ export default function Alias({ title = '' }: CardProps) {
         {title}
       </Heading>
       <Box className={accountIcon}>
-        <SystemIcon.Account className={accountIconInner} />
+        <MonoSupervisorAccount className={accountIconInner} />
       </Box>
     </>
   );

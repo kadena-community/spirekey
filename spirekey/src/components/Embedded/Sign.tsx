@@ -1,7 +1,7 @@
 'use client';
 
 import { useAccounts } from '@/context/AccountsContext';
-import { getSig } from '@/utils/getSig';
+import { getSignature } from '@/utils/getSignature';
 import { addSignatures } from '@kadena/client';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { Button } from '../shared/Button/Button';
@@ -31,7 +31,7 @@ export default function Sign(props: Props) {
     });
 
     const signedTx = addSignatures(tx, {
-      ...getSig(res.response),
+      ...getSignature(res.response),
       pubKey: accounts[0]?.devices[0]?.guard.keys[0] || '',
     });
 

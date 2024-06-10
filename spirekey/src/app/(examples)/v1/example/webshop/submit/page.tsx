@@ -2,13 +2,13 @@
 
 import { SubmitResult } from '@/components/shared/SubmitResult';
 import { useSubmit } from '@/hooks/shared/useSubmit';
+import { MonoCheckCircle, MonoClose, MonoFlight } from '@kadena/react-icons';
 import {
   Box,
   Button,
   ContentHeader,
   Heading,
   Stack,
-  SystemIcon,
   Text,
 } from '@kadena/react-ui';
 
@@ -33,7 +33,7 @@ export default function Submit({ searchParams }: SearchParams) {
       <ContentHeader
         heading="Submit Transaction"
         description="Your transaction will be submitted to the network."
-        icon={<SystemIcon.Earth />}
+        icon={<MonoFlight />}
       />
 
       <Stack flexDirection="column">
@@ -52,7 +52,7 @@ export default function Submit({ searchParams }: SearchParams) {
               gap="sm"
               marginBlockEnd="md"
             >
-              <SystemIcon.CheckDecagramOutline color="#4bb543" />
+              <MonoCheckCircle color="#4bb543" />
               <Text>Transaction can be submitted</Text>
             </Stack>
 
@@ -69,7 +69,7 @@ export default function Submit({ searchParams }: SearchParams) {
         {status === SubmitStatus.ERROR && (
           <>
             <Stack flexDirection="row" alignItems="center" gap="sm">
-              <SystemIcon.Close color="#ff0000" />
+              <MonoClose color="#ff0000" />
               <Text>Transaction can not be submitted</Text>
             </Stack>
             <Box marginBlockStart="md">

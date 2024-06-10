@@ -1,9 +1,11 @@
-import { Account } from '@/context/AccountsContext';
-import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
-import { Stack, SystemIcon, Text } from '@kadena/react-ui';
+import { MonoCheck, MonoContentCopy } from '@kadena/react-icons';
+import { Stack, Text } from '@kadena/react-ui';
 import { useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'usehooks-ts';
-import { AccountRevealer } from '../AccountRevealer/AccountRevealer';
+
+import { AccountRevealer } from '@/components/AccountRevealer/AccountRevealer';
+import { Account } from '@/context/AccountsContext';
+import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 
 import * as styles from './AccountNetwork.css';
 
@@ -52,9 +54,9 @@ export default function AccountNetwork({
             }}
           >
             {hasCopied ? (
-              <SystemIcon.Check size="md" color="green" />
+              <MonoCheck color="green" />
             ) : (
-              <SystemIcon.ContentCopy size="md" color="black" />
+              <MonoContentCopy color="black" />
             )}
           </button>
         )}
