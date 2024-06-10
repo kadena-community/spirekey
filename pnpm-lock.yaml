@@ -27,8 +27,8 @@ importers:
         specifier: workspace:*
         version: link:../../sdk
       '@kadena/client-utils':
-        specifier: ^0.5.4
-        version: 0.5.4
+        specifier: ^0.6.0
+        version: 0.6.0
       next:
         specifier: 14.2.3
         version: 14.2.3(@babel/core@7.24.6)(@playwright/test@1.44.1)(react-dom@18.3.1)(react@18.3.1)
@@ -40,7 +40,7 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@types/node':
-        specifier: ^20
+        specifier: ^20.14.2
         version: 20.14.2
       '@types/react':
         specifier: ^18
@@ -1501,16 +1501,6 @@ packages:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  /@kadena/chainweb-node-client@0.6.1:
-    resolution: {integrity: sha512-mGvpN4U+XdVuUNCSYBUifHehmKcPzUgiFerk/Yw+YvkYQhTPGy3bCEOqtFt31fjLNnyh9DRLP8O3eRJgBkrqEg==}
-    dependencies:
-      '@kadena/cryptography-utils': 0.4.3
-      '@kadena/pactjs': 0.4.3
-      cross-fetch: 3.1.8(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
   /@kadena/chainweb-node-client@0.6.2(encoding@0.1.13):
     resolution: {integrity: sha512-4Syh0BzWBX9gezbQNckjrv8IbqVLv21vaUV5Lx2ObCuSp6NvLCIs1nhwfXHjsKIg7eLuq4S6VG6FYQTyeB+yrw==}
     dependencies:
@@ -1520,48 +1510,18 @@ packages:
     transitivePeerDependencies:
       - encoding
 
-  /@kadena/client-utils@0.5.4:
-    resolution: {integrity: sha512-sc/r/aH7BhpX0rAOqq8bkqWnQkVXEKq0R0jKhP5Rty9Hzxxoha0P+EgKsI61quN+p/7MstoJypbPMoqBwxTODg==}
+  /@kadena/client-utils@0.6.0:
+    resolution: {integrity: sha512-xabDmP1sBLW4A/su9K0pf5PkjVAb7lVEm7IgWXvXA5YlfpZ0thznL7Pmp4DpCns3KQSA1u+HqEZKtCtqzlA2Gw==}
     dependencies:
-      '@kadena/chainweb-node-client': 0.6.1
-      '@kadena/client': 1.11.1
-      '@kadena/cryptography-utils': 0.4.3
+      '@kadena/chainweb-node-client': 0.6.2(encoding@0.1.13)
+      '@kadena/client': 1.11.2(encoding@0.1.13)
+      '@kadena/cryptography-utils': 0.4.4
       '@kadena/pactjs': 0.4.3
-      '@kadena/pactjs-cli': 1.11.1
+      '@kadena/pactjs-cli': 1.11.2(encoding@0.1.13)
       '@kadena/types': 0.6.2
       debug: 4.3.4
       js-yaml: 4.1.0
       ramda: 0.29.1
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@react-native-async-storage/async-storage'
-      - '@upstash/redis'
-      - '@vercel/kv'
-      - bufferutil
-      - encoding
-      - ioredis
-      - supports-color
-      - uWebSockets.js
-      - utf-8-validate
-    dev: false
-
-  /@kadena/client@1.11.1:
-    resolution: {integrity: sha512-tyL4jkGUNBVu1EmHztaVAdpJawN2ASaLQN8SBgrVUbg5Z4NhAVGhZemgT4rULSjrBN5ZWa6ah1IhcfWW+IU3CA==}
-    dependencies:
-      '@kadena/chainweb-node-client': 0.6.1
-      '@kadena/cryptography-utils': 0.4.3
-      '@kadena/pactjs': 0.4.3
-      '@walletconnect/sign-client': 2.8.6
-      cross-fetch: 3.1.8(encoding@0.1.13)
-      debug: 4.3.4
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -1612,14 +1572,6 @@ packages:
       - uWebSockets.js
       - utf-8-validate
 
-  /@kadena/cryptography-utils@0.4.3:
-    resolution: {integrity: sha512-14urMAymcfoDirt5YMFJqF4oaOoBqsD4UbA22UMvgpL0unmoro/9bUB+joqlJNMEd2ul60KZqgGxPEZX9/bVNA==}
-    dependencies:
-      blakejs: 1.2.1
-      buffer: 6.0.3
-      tweetnacl: 1.0.3
-    dev: false
-
   /@kadena/cryptography-utils@0.4.4:
     resolution: {integrity: sha512-8xUcGlmBuuR9PSW88eqJuW49EmcQeiplDlsvN1N++1Bw6KV4lXlBKlJn5TM8lxctGNpewtzlIUimQFIlMqm9aw==}
     dependencies:
@@ -1631,40 +1583,6 @@ packages:
     resolution: {integrity: sha512-epUOJbW96Yd827XQD2/6Ibow9qcevgPhVKsUhfzG9L26U4PLMMWZ0KXxIoFQ6DKpQa9xE4GK8DkPzn30pJb+3Q==}
     dependencies:
       lodash.kebabcase: 4.1.1
-    dev: false
-
-  /@kadena/pactjs-cli@1.11.1:
-    resolution: {integrity: sha512-QWEWoJreP/zVSKxBgOE4ltgklTuaILXBFoKVSMoMVMFtYLPV52iS/fHn0j08qvELY20dDw1vihvgl6vfknEF2g==}
-    hasBin: true
-    dependencies:
-      '@kadena/client': 1.11.1
-      '@kadena/pactjs-generator': 1.11.1
-      commander: 11.1.0
-      cross-fetch: 3.1.8(encoding@0.1.13)
-      debug: 4.3.4
-      mkdirp: 1.0.4
-      prettier: 3.2.5
-      rimraf: 5.0.7
-      zod: 3.23.8
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@react-native-async-storage/async-storage'
-      - '@upstash/redis'
-      - '@vercel/kv'
-      - bufferutil
-      - encoding
-      - ioredis
-      - supports-color
-      - uWebSockets.js
-      - utf-8-validate
     dev: false
 
   /@kadena/pactjs-cli@1.11.2(encoding@0.1.13):
@@ -1699,15 +1617,6 @@ packages:
       - supports-color
       - uWebSockets.js
       - utf-8-validate
-    dev: true
-
-  /@kadena/pactjs-generator@1.11.1:
-    resolution: {integrity: sha512-YC2AFmK2O20Yn4e9fU/nSanlXgyikdhayeJGb1ZXAVtejamd91kyNibwj/mfh5J5zf93VzbH9pYs+BnNrqITAg==}
-    dependencies:
-      memfs: 3.5.3
-      moo: 0.5.2
-      nearley: 2.20.1
-    dev: false
 
   /@kadena/pactjs-generator@1.11.2:
     resolution: {integrity: sha512-OuEqOK2fOEXwn6gt2KpHcG+PNbRc0VeOmF2a4Cn2bO5qqXGRGHJ4BApFnwojIu0ub+WKYd5/2utayfRQCXOTVA==}
@@ -1715,7 +1624,6 @@ packages:
       memfs: 3.5.3
       moo: 0.5.2
       nearley: 2.20.1
-    dev: true
 
   /@kadena/pactjs@0.4.3:
     resolution: {integrity: sha512-EYqIrhw5YbGz7+10rq4QnqC9I22OfApCRfNIvrcq6Lwg0I04grFXCspgEFrgZO1ThTvG4nN0gs8DZl72HBleGw==}
