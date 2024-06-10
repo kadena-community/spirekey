@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'usehooks-ts';
 
 import { AccountRevealer } from '@/components/AccountRevealer/AccountRevealer';
-import { Account } from '@/context/AccountsContext';
+import type { Account } from '@/context/types';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 
 import * as styles from './AccountNetwork.css';

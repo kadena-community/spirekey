@@ -1,9 +1,11 @@
-import { Account } from '@/context/AccountsContext';
-import { useNotifications } from '@/context/shared/NotificationsContext';
-import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
-import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { Stack } from '@kadena/react-ui';
 import useSWR from 'swr';
+
+import { useNotifications } from '@/context/shared/NotificationsContext';
+import type { Account } from '@/context/types';
+import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
+import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
+
 import * as styles from './Card.css';
 
 interface CardBottomProps {

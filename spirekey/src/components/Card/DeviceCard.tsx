@@ -1,4 +1,5 @@
-import { Account, Device } from '@/context/AccountsContext';
+import type { Account, Device } from '@/context/types';
+
 import AccountNetwork from './AccountNetwork';
 import Alias from './Alias';
 import Card from './Card';

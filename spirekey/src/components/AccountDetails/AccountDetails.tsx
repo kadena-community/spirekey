@@ -1,19 +1,15 @@
-import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
-import { Account } from '@/context/AccountsContext';
-import { useNotifications } from '@/context/shared/NotificationsContext';
-import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
-import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { Grid, GridItem } from '@kadena/react-ui';
 import classNames from 'classnames';
 import { Fragment } from 'react';
 import useSWR from 'swr';
-import {
-  details,
-  transactionAddress,
-  transactionAmount,
-  transactionAmountVariants,
-  transactionDate,
-} from './AccountDetails.css';
+
+import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
+import { useNotifications } from '@/context/shared/NotificationsContext';
+import type { Account } from '@/context/types';
+import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
+import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
+
+import * as styles from './AccountDetails.css';
 
 interface AccountDetailsProps {
   account: Account;
@@ -39,7 +35,7 @@ export function AccountDetails({ account }: AccountDetailsProps) {
 
   return (
     <Grid
-      className={details}
+      className={styles.details}
       gap="xs"
       columns={{
         lg: 5,
@@ -54,7 +50,7 @@ export function AccountDetails({ account }: AccountDetailsProps) {
         <Fragment key={index}>
           <GridItem columnSpan={2}>
             <MaskedValue
-              className={transactionAddress}
+              className={styles.transactionAddress}
               value={
                 tx.fromAccount === account.accountName
                   ? tx.toAccount
@@ -62,13 +58,13 @@ export function AccountDetails({ account }: AccountDetailsProps) {
               }
             />
           </GridItem>
-          <GridItem columnSpan={2} className={transactionDate}>
+          <GridItem columnSpan={2} className={styles.transactionDate}>
             {new Date(tx.blockTime).toLocaleString()}
           </GridItem>
           <GridItem
             className={classNames([
-              transactionAmount,
-              transactionAmountVariants({
+              styles.transactionAmount,
+              styles.transactionAmountVariants({
                 variant:
                   tx.fromAccount === account.accountName ? 'debet' : 'credit',
               }),

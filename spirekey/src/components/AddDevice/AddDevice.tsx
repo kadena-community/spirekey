@@ -1,8 +1,17 @@
 'use client';
 
+import type { ICommand } from '@kadena/client';
+import { Box, ProgressCircle, Stack } from '@kadena/react-ui';
+import { atoms } from '@kadena/react-ui/styles';
+import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
 import { Button } from '@/components/shared/Button/Button';
-import { Account, useAccounts, type Device } from '@/context/AccountsContext';
+import { useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
+import type { Account, Device } from '@/context/types';
 import { useAddDeviceForm } from '@/hooks/useAddDeviceForm';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { addDevice } from '@/utils/device';
@@ -13,17 +22,12 @@ import {
   searchParamsToString,
 } from '@/utils/searchParameters';
 import { submitTransaction } from '@/utils/submitTransaction';
-import { Box, ProgressCircle, Stack, Text } from '@kadena/react-ui';
-import { atoms } from '@kadena/react-ui/styles';
-import { ICommand } from '@kadena/types';
-import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { SurfaceCard } from '../SurfaceCard/SurfaceCard';
+
 import { ColorForm } from './ColorForm';
 import { DeviceTypeForm } from './DeviceTypeForm';
 import { PasskeyForm } from './PasskeyForm';
 import { SigningDeviceForm } from './SigningDeviceForm';
+
 import * as styles from './styles.css';
 
 const defaultFormData = {

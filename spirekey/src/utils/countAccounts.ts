@@ -1,4 +1,4 @@
-import { Account } from '@/context/AccountsContext';
+import type { Account } from '@/context/types';
 
 export const countWithPrefixOnDomain = (
   accounts: Account[],

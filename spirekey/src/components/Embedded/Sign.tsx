@@ -3,8 +3,10 @@
 import { startAuthentication } from '@simplewebauthn/browser';
 
 import { Button } from '@/components/shared/Button/Button';
-import { Account, Device, useAccounts } from '@/context/AccountsContext';
+import { useAccounts } from '@/context/AccountsContext';
 import { getSignature } from '@/utils/getSignature';
+
+import type { Account, Device } from '@/context/types';
 
 interface Props {
   transaction?: string;

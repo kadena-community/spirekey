@@ -1,7 +1,9 @@
-import { Device } from '@/context/AccountsContext';
-import { getDeviceIcon } from '@/utils/getDeviceIcon';
 import { Box } from '@kadena/react-ui';
 import classNames from 'classnames';
+
+import type { Device } from '@/context/types';
+import { getDeviceIcon } from '@/utils/getDeviceIcon';
+
 import * as styles from './DeviceCircle.css';
 
 interface Props {

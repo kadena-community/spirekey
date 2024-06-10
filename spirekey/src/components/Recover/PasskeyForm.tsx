@@ -1,3 +1,10 @@
+import { Stack, Text } from '@kadena/react-ui';
+import { startAuthentication } from '@simplewebauthn/browser';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+import { FC } from 'react';
+import { useForm } from 'react-hook-form';
+
 import fingerprint from '@/assets/images/fingerprint.svg';
 import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
 import { useAccounts } from '@/context/AccountsContext';
@@ -6,12 +13,7 @@ import { deviceColors } from '@/styles/shared/tokens.css';
 import { getAccountNameFromRegisterDeviceEvent } from '@/utils/getAccountNameFromRegisterDeviceEvent';
 import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
 import { getAccountFromChain } from '@/utils/shared/account';
-import { Stack, Text } from '@kadena/react-ui';
-import { startAuthentication } from '@simplewebauthn/browser';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import { FC } from 'react';
-import { useForm } from 'react-hook-form';
+
 import { StepProps } from './Recover';
 import { animationVariants } from './animation';
 
@@ -83,6 +85,7 @@ export const PasskeyForm: FC<StepProps> = ({
       account = await getAccountFromChain({ accountName, networkId });
 
       if (!account) throw new Error('Account data could not be retrieved');
+
       setAccount({
         ...account,
         alias: alias || '',

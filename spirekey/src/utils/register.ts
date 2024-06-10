@@ -1,12 +1,3 @@
-import { AccountRegistration } from '@/context/AccountsContext';
-import {
-  gasStation,
-  genesisPrivateKey,
-  genesisPubKey,
-} from '@/utils/constants';
-import { asyncPipe } from '@/utils/shared/asyncPipe';
-import { l1Client } from '@/utils/shared/client';
-import { signWithKeyPair } from '@/utils/signSubmitListen';
 import {
   ChainId,
   ITransactionDescriptor,
@@ -20,6 +11,16 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
+
+import type { AccountRegistration } from '@/context/types';
+import {
+  gasStation,
+  genesisPrivateKey,
+  genesisPubKey,
+} from '@/utils/constants';
+import { asyncPipe } from '@/utils/shared/asyncPipe';
+import { l1Client } from '@/utils/shared/client';
+import { signWithKeyPair } from '@/utils/signSubmitListen';
 
 export const getAccountName = async (
   publicKey: string,
@@ -35,7 +36,7 @@ export const getAccountName = async (
 )
 `),
       setMeta({
-        chainId: process.env.CHAIN_ID as ChainId,
+        chainId: process.env.CHAIN_ID,
         gasLimit: 1000,
         gasPrice: 0.0000001,
         ttl: 60000,
@@ -61,7 +62,7 @@ export const registerAccountOnChain = async ({
   credentialId,
   credentialPubkey,
   networkId,
-  chainId = process.env.CHAIN_ID as ChainId,
+  chainId = process.env.CHAIN_ID,
 }: Omit<AccountRegistration, 'alias'>): Promise<ITransactionDescriptor> => {
   return asyncPipe(
     registerAccountCommand({
@@ -93,7 +94,7 @@ const registerAccountCommand = ({
   credentialPubkey,
   domain,
   networkId,
-  chainId = process.env.CHAIN_ID as ChainId,
+  chainId = process.env.CHAIN_ID,
 }: {
   accountName: string;
   color: string;

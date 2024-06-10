@@ -1,8 +1,10 @@
 'use client';
 
-import { Account, useAccounts } from '@/context/AccountsContext';
 import { useEffect } from 'react';
-import { Button } from '../shared/Button/Button';
+
+import { Button } from '@/components/shared/Button/Button';
+import { useAccounts } from '@/context/AccountsContext';
+import type { Account } from '@/context/types';
 
 export default function Connect() {
   const { accounts } = useAccounts();
