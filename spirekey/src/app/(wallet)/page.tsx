@@ -26,7 +26,6 @@ export default function Accounts() {
 
   return (
     <>
-      {process.env.E2E_TEST !== 'true' && <Background />}
       <Stack
         gap="md"
         flexDirection="column"
