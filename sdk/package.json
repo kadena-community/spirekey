@@ -38,9 +38,10 @@
     "@kadena/react-ui": "^0.10.0"
   },
   "devDependencies": {
+    "@crackle/cli": "^0.15.4",
     "@vanilla-extract/esbuild-plugin": "^2.3.6",
+    "@vanilla-extract/vite-plugin": "^4.0.7",
     "@vitest/coverage-v8": "^1.5.2",
-    "crackle": "^0.1.0",
-    "vitest": "^1.5.2"
+    "vitest": "^1.6.0"
   }
 }

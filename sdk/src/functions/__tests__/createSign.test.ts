@@ -1,5 +1,7 @@
 import { IUnsignedCommand } from '@kadena/client';
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
+
+import * as styles from '../../styles.css';
 import { createSign } from '../createSign';
 
 describe('createSign', () => {
@@ -23,7 +25,7 @@ describe('createSign', () => {
     };
     const promise = sign(transaction);
 
-    expect(iframe.classList.contains('spirekey-sidebar-opened')).toBe(true);
+    expect(iframe.classList.contains(styles.spirekeySidebarOpened)).toBe(true);
     expect(iframe.src).toContain(`/embedded/sidebar#transaction=`);
 
     window.dispatchEvent(

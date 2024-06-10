@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
+
+import * as styles from '../../styles.css';
 import { createConnect } from '../createConnect';
 
 describe('createConnect', () => {
@@ -19,7 +21,7 @@ describe('createConnect', () => {
   it('connects an account', async () => {
     const promise = connect();
 
-    expect(iframe.classList.contains('spirekey-sidebar-opened')).toBe(true);
+    expect(iframe.classList.contains(styles.spirekeySidebarOpened)).toBe(true);
     expect(iframe.src).toContain(`/embedded/sidebar`);
     expect(iframe.src).not.toContain(`transaction=`);
 

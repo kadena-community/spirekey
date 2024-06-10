@@ -1,7 +1,9 @@
+import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import path from 'path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  plugins: [vanillaExtractPlugin({ emitCssInSsr: true })],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
