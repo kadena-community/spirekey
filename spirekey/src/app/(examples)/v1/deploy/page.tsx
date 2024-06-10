@@ -1,6 +1,6 @@
 'use client';
 
-import { getSig } from '@/utils/getSig';
+import { getSignature } from '@/utils/getSignature';
 import { asyncPipe } from '@/utils/shared/asyncPipe';
 import { l1Client } from '@/utils/shared/client';
 import { signWithKeyPair } from '@/utils/signSubmitListen';
@@ -171,7 +171,7 @@ export default function DeployPage() {
                   ? [{ id: step.cid, type: 'public-key' }]
                   : undefined,
               });
-              tx.sigs = [tx.sigs[0], getSig(res.response)];
+              tx.sigs = [tx.sigs[0], getSignature(res.response)];
               return tx;
             },
         (tx) => {
@@ -217,7 +217,7 @@ export default function DeployPage() {
         contracts={contracts}
         results={results}
       />
-      <Button variant="alternative" onClick={onSave}>
+      <Button variant="outlined" onClick={onSave}>
         Save
       </Button>
       <Button onClick={onDeploy}>Deploy</Button>

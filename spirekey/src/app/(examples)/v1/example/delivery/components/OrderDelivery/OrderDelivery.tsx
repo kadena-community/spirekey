@@ -2,7 +2,8 @@ import { ConnectAccount } from '@/app/(examples)/v1/example/delivery/components/
 import { Order as OrderComponent } from '@/app/(examples)/v1/example/delivery/components/Order/Order';
 import { Order } from '@/app/(examples)/v1/example/delivery/useDelivery';
 import { Surface } from '@/components/Surface/Surface';
-import { Heading, Stack, SystemIcon, maskValue } from '@kadena/react-ui';
+import { MonoCheck, MonoLoading } from '@kadena/react-icons';
+import { Heading, Stack, maskValue } from '@kadena/react-ui';
 import { ICap, ISigner } from '@kadena/types';
 import * as styles from './OrderDelivery.css';
 
@@ -49,9 +50,9 @@ export function OrderDelivery({ signers, order, account, message }: Props) {
             <Heading variant="h6">Courier: {maskValue(order.courier)}</Heading>
           </Stack>
           {order.status === 'IN_TRANSIT' && (
-            <SystemIcon.Loading size="lg" className={styles.loader} />
+            <MonoLoading className={styles.loader} />
           )}
-          {order.status === 'DELIVERED' && <SystemIcon.Check size="lg" />}
+          {order.status === 'DELIVERED' && <MonoCheck />}
         </Stack>
         <OrderComponent order={message} account={account} signers={signers} />
       </Surface>

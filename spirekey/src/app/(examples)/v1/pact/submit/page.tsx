@@ -1,17 +1,18 @@
 'use client';
 
-import { SubmitResult } from '@/components/shared/SubmitResult';
-import { usePreview } from '@/hooks/shared/usePreview';
-import { useSubmit } from '@/hooks/shared/useSubmit';
+import { MonoCheckCircle, MonoClose, MonoFlight } from '@kadena/react-icons';
 import {
   Box,
   Button,
   ContentHeader,
   Heading,
   Stack,
-  SystemIcon,
   Text,
 } from '@kadena/react-ui';
+
+import { SubmitResult } from '@/components/shared/SubmitResult';
+import { usePreview } from '@/hooks/shared/usePreview';
+import { useSubmit } from '@/hooks/shared/useSubmit';
 
 type SearchParams = {
   searchParams: {
@@ -19,6 +20,7 @@ type SearchParams = {
     response: string;
   };
 };
+
 export default function Submit({ searchParams }: SearchParams) {
   const { doSubmit, result, status, SubmitStatus } = useSubmit(searchParams);
   const {
@@ -34,7 +36,7 @@ export default function Submit({ searchParams }: SearchParams) {
       <ContentHeader
         heading="Submit Transaction"
         description="Your transaction will be submitted to the network."
-        icon={<SystemIcon.Earth />}
+        icon={<MonoFlight />}
       />
 
       <Stack flexDirection="column">
@@ -55,7 +57,7 @@ export default function Submit({ searchParams }: SearchParams) {
               gap="sm"
               marginBlockEnd="md"
             >
-              <SystemIcon.CheckDecagramOutline color="#4bb543" />
+              <MonoCheckCircle color="#4bb543" />
               <Text>Transaction can be submitted</Text>
             </Stack>
 
@@ -73,7 +75,7 @@ export default function Submit({ searchParams }: SearchParams) {
         {isPreviewSuccesfull === false && (
           <>
             <Stack flexDirection="row" alignItems="center" gap="sm">
-              <SystemIcon.Close color="#ff0000" />
+              <MonoClose color="#ff0000" />
               <Text>Transaction can not be submitted</Text>
             </Stack>
             <Box marginBlockStart="md">

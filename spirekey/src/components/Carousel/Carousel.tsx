@@ -1,6 +1,6 @@
 import { Account } from '@/context/AccountsContext';
 import classNames from 'classnames';
-import { Children, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Children, useLayoutEffect, useRef, useState } from 'react';
 import { InView } from 'react-intersection-observer';
 import {
   carouselItem,

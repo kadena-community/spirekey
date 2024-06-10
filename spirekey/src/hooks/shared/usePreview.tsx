@@ -1,4 +1,4 @@
-import { getSig } from '@/utils/getSig';
+import { getSignature } from '@/utils/getSignature';
 import { l1Client } from '@/utils/shared/client';
 import { PactNumber } from '@kadena/pactjs';
 import { useEffect, useState } from 'react';
@@ -19,7 +19,7 @@ export const usePreview = ({ transaction, response }: Props) => {
   const tx = {
     ...p,
     // @TODO: this needs to map the signature to the correct index within the signatures array
-    sigs: [getSig(r.response), ...p.sigs].filter(Boolean),
+    sigs: [getSignature(r.response), ...p.sigs].filter(Boolean),
   };
   const parsedCmd = JSON.parse(tx.cmd);
   const gasPayer = parsedCmd.meta.sender;

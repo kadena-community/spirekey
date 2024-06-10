@@ -1,3 +1,7 @@
+import { MonoLoading } from '@kadena/react-icons';
+import { Heading, Stack } from '@kadena/react-ui';
+import { ICap, ISigner } from '@kadena/types';
+
 import { ConnectAccount } from '@/app/(examples)/v1/example/delivery/components/AccountButton';
 import { Order as OrderComponent } from '@/app/(examples)/v1/example/delivery/components/Order/Order';
 import { Order } from '@/app/(examples)/v1/example/delivery/useDelivery';
@@ -6,8 +10,7 @@ import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { getTranslations } from '@/utils/shared/getTranslationBundle';
 import { getSmartContractMeta } from '@/utils/shared/smartContractMeta';
-import { Heading, Stack, SystemIcon, Text } from '@kadena/react-ui';
-import { ICap, ISigner } from '@kadena/types';
+
 import * as styles from './ReadyForDelivery.css';
 
 interface Props {
@@ -60,9 +63,7 @@ export function ReadyForDelivery({
             </Heading>
             <Heading variant="h6">Courier: {order.courier}</Heading>
           </Stack>
-          {!transaction && (
-            <SystemIcon.Loading size="lg" className={styles.loader} />
-          )}
+          {!transaction && <MonoLoading className={styles.loader} />}
           {transaction && (
             <ButtonLink
               href={`${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
