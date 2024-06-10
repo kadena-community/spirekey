@@ -1,6 +1,6 @@
-import { createConnect } from './functions/createConnect';
-import { createHideSidebar } from './functions/createHideSidebar';
-import { createSign } from './functions/createSign';
+import { connectFactory } from './functions/connectFactory';
+import { hideSidebarFactory } from './functions/hideSidebarFactory';
+import { signFactory } from './functions/signFactory';
 import type { SpireKeyEvent, SpireKeyWindow } from './types';
 
 import * as styles from './styles.css';
@@ -30,7 +30,7 @@ const initSpireKey = (
   iframe.allow = 'publickey-credentials-get *';
   document.body.appendChild(iframe);
 
-  const hideSidebar = createHideSidebar({ iframe });
+  const hideSidebar = hideSidebarFactory({ iframe });
 
   window.addEventListener('message', (event) => {
     if (
@@ -42,8 +42,8 @@ const initSpireKey = (
   });
 
   const functions = {
-    connect: createConnect({ iframe, hideSidebar }),
-    sign: createSign({ iframe }),
+    connect: connectFactory({ iframe, hideSidebar }),
+    sign: signFactory({ iframe }),
     onEvent,
   };
 

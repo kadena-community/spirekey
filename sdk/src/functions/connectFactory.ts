@@ -8,7 +8,7 @@ export interface ConnectParams {
   timeout?: number;
 }
 
-export const createConnect =
+export const connectFactory =
   ({ iframe, hideSidebar, timeout = 5 * 60 * 1000 }: ConnectParams) =>
   (): Promise<Account> => {
     iframe.classList.add(styles.spirekeySidebarOpened);

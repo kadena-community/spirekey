@@ -17,7 +17,7 @@ type ReturnValue =
   | IUnsignedCommand
   | ICommand;
 
-export const createSign = ({
+export const signFactory = ({
   iframe,
   timeout = 5 * 60 * 1000,
 }: SignParams): ISignFunction =>

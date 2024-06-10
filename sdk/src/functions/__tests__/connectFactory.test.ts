@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 
 import * as styles from '../../styles.css';
-import { createConnect } from '../createConnect';
+import { connectFactory } from '../connectFactory';
 
-describe('createConnect', () => {
-  let connect: ReturnType<typeof createConnect>;
+describe('connectFactory', () => {
+  let connect: ReturnType<typeof connectFactory>;
   let iframe = document.createElement('iframe');
   iframe.src = 'http://localhost:1337/embedded/sidebar';
 
@@ -12,7 +12,7 @@ describe('createConnect', () => {
     iframe = document.createElement('iframe');
     iframe.src = 'http://localhost:1337/embedded/sidebar';
 
-    connect = createConnect({
+    connect = connectFactory({
       iframe,
       hideSidebar: () => {},
     });

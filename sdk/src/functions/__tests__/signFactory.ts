@@ -2,17 +2,17 @@ import { IUnsignedCommand } from '@kadena/client';
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 
 import * as styles from '../../styles.css';
-import { createSign } from '../createSign';
+import { signFactory } from '../signFactory';
 
-describe('createSign', () => {
-  let sign: ReturnType<typeof createSign>;
+describe('signFactory', () => {
+  let sign: ReturnType<typeof signFactory>;
   let iframe = document.createElement('iframe');
   iframe.src = 'http://localhost:1337';
 
   beforeEach(() => {
     iframe = document.createElement('iframe');
     iframe.src = 'http://localhost:1337';
-    sign = createSign({
+    sign = signFactory({
       iframe,
     });
   });

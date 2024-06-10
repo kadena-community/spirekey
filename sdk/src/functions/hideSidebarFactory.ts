@@ -4,7 +4,7 @@ export interface HideSidebarParams {
   iframe: HTMLIFrameElement;
 }
 
-export const createHideSidebar =
+export const hideSidebarFactory =
   ({ iframe }: HideSidebarParams) =>
   () => {
     iframe.classList.remove(styles.spirekeySidebarOpened);
