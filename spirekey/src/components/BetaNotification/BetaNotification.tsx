@@ -20,7 +20,7 @@ export default function BetaNotification() {
         role="alert"
         type="inlineStacked"
         onDismiss={() => {
-          sessionStorage.setItem('spirekey-beta-dismissed', 'true');
+          sessionStorage.setItem('spirekey-beta-banner-dismissed', 'true');
         }}
       >
         <NotificationHeading>Notice</NotificationHeading>
