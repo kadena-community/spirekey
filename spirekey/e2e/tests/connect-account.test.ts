@@ -28,7 +28,7 @@ test('Connect SpireKey Account: Onboarding', async ({
   await test.step('Redirect back to Connect page', async () => {
     await expect(
       await registerPage.getRedirectMessage(
-        `http://localhost:1337/connect?returnUrl=${returnUrl}&networkId=${networkId}`,
+        `http://localhost:1337/connect?returnUrl=${returnUrl}`,
       ),
     ).toBeVisible();
   });
