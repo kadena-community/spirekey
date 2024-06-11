@@ -1,10 +1,9 @@
-import { connectFactory } from '@/functions/connectFactory';
-import { signFactory } from '@/functions/signFactory';
-import type { SpireKeyEvent, SpireKeyWindow } from '@/types';
-
-import { EventBus } from '@/event-bus';
-import { disconnectFactory } from '@/functions/disconnectFactory';
-import { SidebarManager } from '@/sidebar-manager';
+import { EventBus } from './event-bus';
+import { connectFactory } from './functions/connectFactory';
+import { disconnectFactory } from './functions/disconnectFactory';
+import { signFactory } from './functions/signFactory';
+import { SidebarManager } from './sidebar-manager';
+import type { SpireKeyWindow } from './types';
 
 declare global {
   interface Window {

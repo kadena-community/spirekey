@@ -5,7 +5,7 @@ import {
   type IUnsignedCommand,
 } from '@kadena/client';
 
-import { SidebarManager } from '@/sidebar-manager';
+import { SidebarManager } from '../sidebar-manager';
 
 export interface SignParams {
   sidebarManager: SidebarManager;

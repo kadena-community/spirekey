@@ -1,29 +1,27 @@
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 
-import { connectFactory } from '@/functions/connectFactory';
-import * as styles from '@/styles.css';
+import { SidebarManager } from '../../sidebar-manager';
+import * as styles from '../../styles.css';
+import { connectFactory } from '../connectFactory';
 
 describe('connectFactory', () => {
   let connect: ReturnType<typeof connectFactory>;
-  let iframe = document.createElement('iframe');
-  iframe.src = 'http://localhost:1337/embedded/sidebar';
+  let sidebarManager = new SidebarManager('http://localhost:1337');
 
   beforeEach(() => {
-    iframe = document.createElement('iframe');
-    iframe.src = 'http://localhost:1337/embedded/sidebar';
-
     connect = connectFactory({
-      iframe,
-      hideSidebar: () => {},
+      sidebarManager,
     });
   });
 
   it('connects an account', async () => {
     const promise = connect();
 
-    expect(iframe.classList.contains(styles.spirekeySidebarOpened)).toBe(true);
-    expect(iframe.src).toContain(`/embedded/sidebar`);
-    expect(iframe.src).not.toContain(`transaction=`);
+    expect(
+      sidebarManager.iframe.classList.contains(styles.spirekeySidebarOpen),
+    ).toBe(true);
+    expect(sidebarManager.iframe.src).toContain(`/embedded/sidebar`);
+    expect(sidebarManager.iframe.src).not.toContain(`transaction=`);
 
     window.dispatchEvent(
       new MessageEvent('message', {

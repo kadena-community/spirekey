@@ -1,5 +1,7 @@
 import { spinner as spinnerHtml } from './spinner';
 
+import * as styles from './styles.css';
+
 export class SidebarManager {
   public iframeUrl: string;
   public sidebar: HTMLDivElement;
@@ -13,7 +15,7 @@ export class SidebarManager {
   static makeSidebar = (): HTMLDivElement => {
     document.querySelector('.spirekey-sidebar')?.remove();
     const sidebar = document.createElement('div');
-    sidebar.className = 'spirekey-sidebar';
+    sidebar.classList.add(styles.spirekeySidebar);
 
     document.body.appendChild(sidebar);
 
@@ -22,7 +24,7 @@ export class SidebarManager {
 
   static makeHeader = (sidebar: HTMLDivElement): HTMLDivElement => {
     const header = document.createElement('div');
-    header.className = 'spirekey-sidebar__header';
+    header.classList.add(styles.spirekeySidebarHeader);
 
     sidebar.appendChild(header);
 
@@ -31,7 +33,7 @@ export class SidebarManager {
 
   static makeBody = (sidebar: HTMLDivElement): HTMLDivElement => {
     const header = document.createElement('div');
-    header.className = 'spirekey-sidebar__body';
+    header.classList.add(styles.spirekeySidebarBody);
 
     sidebar.appendChild(header);
 
@@ -40,7 +42,7 @@ export class SidebarManager {
 
   static makeSpinner = (body: HTMLDivElement): HTMLDivElement => {
     const spinner = document.createElement('div');
-    spinner.className = 'spirekey-sidebar__spinner';
+    spinner.classList.add(styles.spirekeySidebarSpinner);
     spinner.innerHTML = spinnerHtml;
 
     body.appendChild(spinner);
@@ -51,7 +53,6 @@ export class SidebarManager {
   static makeCloseButton = (header: HTMLDivElement): HTMLButtonElement => {
     const closeButton = document.createElement('button');
     closeButton.innerText = 'Close';
-    closeButton.className = 'spirekey-sidebar__close-button';
 
     header.appendChild(closeButton);
 
@@ -60,8 +61,10 @@ export class SidebarManager {
 
   static makeIFrame = (url: string, body: HTMLDivElement) => {
     const iframe = document.createElement('iframe');
-    iframe.className =
-      'spirekey-sidebar__iframe spirekey-sidebar__iframe--hidden';
+    iframe.classList.add(
+      styles.spirekeySidebarIFrame,
+      styles.spirekeySidebarIFrameHidden,
+    );
     iframe.src = `${url}/embedded/sidebar`;
 
     body.appendChild(iframe);
@@ -82,11 +85,11 @@ export class SidebarManager {
   }
 
   public open() {
-    this.sidebar.classList.add('spirekey-sidebar--open');
+    this.sidebar.classList.add(styles.spirekeySidebarOpen);
   }
 
   public close() {
-    this.sidebar.classList.remove('spirekey-sidebar--open');
+    this.sidebar.classList.remove(styles.spirekeySidebarOpen);
   }
 
   public setIFramePath(path: string) {
@@ -101,11 +104,11 @@ export class SidebarManager {
 
   private toggleSpinner() {
     this.spinner.classList.toggle(
-      'spirekey-sidebar__spinner--hidden',
+      styles.spirekeySidebarSpinnerHidden,
       !this.isLoading,
     );
     this.iframe.classList.toggle(
-      'spirekey-sidebar__iframe--hidden',
+      styles.spirekeySidebarIFrameHidden,
       this.isLoading,
     );
   }

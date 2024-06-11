@@ -1,4 +1,5 @@
 import type { Account } from '@kadena-spirekey/spirekey';
+
 import { SidebarManager } from '../sidebar-manager';
 
 export interface ConnectParams {
