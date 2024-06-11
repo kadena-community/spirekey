@@ -2,7 +2,7 @@
 
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
-import { Device } from '@/context/AccountsContext';
+import { Device } from '@/context/types';
 import { Stack } from '@kadena/react-ui';
 import { ICommand } from '@kadena/types';
 import dynamic from 'next/dynamic';

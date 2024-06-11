@@ -2,7 +2,7 @@ import favicon from '@/assets/images/favicon.png';
 import type { Metadata } from 'next';
 import Providers from '../providers';
 
-import '../global.css';
+import './global.embedded.css';
 
 export const metadata: Metadata = {
   title: 'Kadena SpireKey',
@@ -20,7 +20,9 @@ export default function RootLayout({
         <link rel="icon" href={favicon.src} sizes="any" />
       </head>
       <body>
-        <Providers displayDevMode={false}>{children}</Providers>
+        <Providers displayDevMode={false} enableColorScheme={false}>
+          {children}
+        </Providers>
       </body>
     </html>
   );

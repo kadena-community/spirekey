@@ -1,6 +1,8 @@
-import type { Account } from '@/context/AccountsContext';
+import type { Account } from '@/context/types';
+import type { ChainId } from '@kadena/client';
+
 import type { AddNotification } from '@/context/shared/NotificationsContext';
-import type { ChainId } from '@kadena/types';
+
 import { getNetworkDisplayName } from './getNetworkDisplayName';
 import { registerAccountOnChain } from './register';
 import { getAccountFromChain } from './shared/account';
@@ -10,12 +12,14 @@ type Credential = {
   publicKey: string;
   id: string;
 };
+
 type User = {
   alias: string;
   accountName: string;
   pendingTxIds: string[];
   credentials: Credential[];
 };
+
 export const getUser = (account: Account): User => {
   const [device] = account.devices;
   return {

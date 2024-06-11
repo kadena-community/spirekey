@@ -1,4 +1,4 @@
-import { Account } from '@/context/AccountsContext';
+import type { Account } from '@/context/types';
 
 // Minimum is set to ten to always show some indication of balance
 const minimumPercentage = 10;

@@ -2,7 +2,7 @@
 
 import { darkThemeClass } from '@kadena/react-ui/styles';
 import { ThemeProvider } from 'next-themes';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode } from 'react';
 
 import { NotificationContainer } from '@/components/shared/NotificationsContainer/NotificationsContainer';
 import { AccountsProvider } from '@/context/AccountsContext';
@@ -38,9 +38,11 @@ function localStorageProvider() {
 export default function Providers({
   children,
   displayDevMode = true,
+  enableColorScheme = true,
 }: {
   children: ReactNode;
   displayDevMode?: boolean;
+  enableColorScheme?: boolean;
 }) {
   return (
     <SettingsProvider displayDevMode={displayDevMode}>
@@ -54,6 +56,7 @@ export default function Providers({
                 dark: darkThemeClass,
               }}
               defaultTheme="dark"
+              enableColorScheme={enableColorScheme}
             >
               <>
                 {children}

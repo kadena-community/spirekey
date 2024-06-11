@@ -1,4 +1,4 @@
-import type { Account } from '@/context/AccountsContext';
+import type { Account } from '@/context/types';
 import { assertFulfilled } from '@/utils/assertFulfilled';
 import { ChainId, createTransaction } from '@kadena/client';
 import {

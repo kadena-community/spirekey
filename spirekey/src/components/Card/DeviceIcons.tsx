@@ -1,6 +1,8 @@
-import { Account, Device } from '@/context/AccountsContext';
-import { getDeviceIcon } from '@/utils/getDeviceIcon';
 import { Box } from '@kadena/react-ui';
+
+import type { Account, Device } from '@/context/types';
+import { getDeviceIcon } from '@/utils/getDeviceIcon';
+
 import * as styles from './Card.css';
 
 type DeviceIconsProps = {

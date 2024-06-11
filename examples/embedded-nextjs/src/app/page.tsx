@@ -1,14 +1,18 @@
 'use client';
 
-import { initSpireKey, type SpireKeyEvent } from '@kadena-spirekey/sdk';
-
+import {
+  initSpireKey,
+  type Account,
+  type SpireKeyEvent,
+} from '@kadena-spirekey/sdk';
+import { transfer } from '@kadena/client-utils/coin';
 import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
 
 export default function Home() {
   const [events, setEvents] = useState<SpireKeyEvent[]>([]);
-  const [account, setAccount] = useState();
+  const [account, setAccount] = useState<Account>();
 
   useEffect(() => {
     const { onEvent } = initSpireKey({ hostUrl: 'http://localhost:1337' });
@@ -16,15 +20,37 @@ export default function Home() {
     onEvent((event) => {
       setEvents((events) => [...events, event]);
 
-      if (event.name === 'account') {
-        setAccount(event.payload as any);
+      if (event.name === 'account-connected') {
+        setAccount(event.payload as Account);
       }
     });
   }, []);
 
-  const signTransaction = () => {
-    const transaction = '@TODO';
-    window.spireKey.sign(transaction);
+  const signTransaction = async () => {
+    if (!account) {
+      throw new Error('No account connected');
+    }
+
+    const transaction = transfer(
+      {
+        sender: {
+          account: account.accountName,
+          publicKeys: [account.devices[0].guard.keys[0]],
+        },
+        receiver: 'k:abcd',
+        amount: '1',
+        chainId: '1',
+      },
+      {
+        host: 'http://localhost:8080',
+        defaults: {
+          networkId: 'development',
+        },
+        sign: window.spireKey.sign,
+      },
+    );
+
+    await transaction.execute();
   };
 
   return (
@@ -32,7 +58,12 @@ export default function Home() {
       {!account && (
         <button onClick={() => window.spireKey.connect()}>Connect</button>
       )}
-      {account && <button onClick={signTransaction}>Sign</button>}
+      {account && (
+        <>
+          <div>{account.alias}</div>
+          <button onClick={signTransaction}>Sign</button>
+        </>
+      )}
 
       <details>
         <summary>View events</summary>

@@ -1,5 +1,6 @@
-import { Account } from '@/context/AccountsContext';
-import { ICap } from '@kadena/types';
+import { ICap } from '@kadena/client';
+
+import type { Account } from '@/context/types';
 
 export type CapabilityMeta = {
   name: string;

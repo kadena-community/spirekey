@@ -11,46 +11,9 @@ import { retryPromises } from '@/utils/retryPromises';
 import { getAccountFromChains } from '@/utils/shared/account';
 import { l1Client } from '@/utils/shared/client';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
-import { ChainId, ITransactionDescriptor } from '@kadena/client';
+import { ITransactionDescriptor } from '@kadena/client';
 import { createContext, useContext, useEffect, useState } from 'react';
-
-export type Account = {
-  alias: string;
-  accountName: string;
-  minApprovals: number;
-  minRegistrationApprovals: number;
-  balance: string;
-  devices: Device[];
-  networkId: string;
-  chainIds: ChainId[];
-};
-
-export type Device = {
-  domain: string;
-  color: string;
-  deviceType: string;
-  ['credential-id']: string;
-  guard: {
-    keys: string[];
-    pred: 'keys-any';
-  };
-  pendingRegistrationTx?: string;
-  name?: string;
-};
-
-export type AccountRegistration = {
-  accountName: string;
-  alias: string;
-  color: string;
-  deviceType: string;
-  domain: string;
-  credentialId: string;
-  credentialPubkey: string;
-  networkId: string;
-  chainId?: ChainId;
-};
-
-export type AccountRecovery = Omit<AccountRegistration, 'accountName'>;
+import { Account, AccountRecovery, AccountRegistration, Device } from './types';
 
 const migrateAccountStructure = (
   account: Account & { network?: string },

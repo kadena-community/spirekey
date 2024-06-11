@@ -1,11 +1,11 @@
-import { Device } from '@/context/AccountsContext';
+import type { Device } from '@/context/types';
 import { getDeviceIconSrc } from './getDeviceIconSrc';
 
 export const returnUrlWithDevice = (
   url: string,
   device: Device,
   useHash: boolean,
-) =>
+): string =>
   urlWithSearchParams(
     url,
     {
@@ -17,7 +17,7 @@ export const returnUrlWithDevice = (
 /**
  * @todo: remove and add translations to smart contract
  */
-export const addDeviceTranslations = (device: Device) =>
+export const addDeviceTranslations = (device: Device): string =>
   objectParameterValue({
     [`${process.env.NAMESPACE}.webauthn-wallet.ADD_DEVICE`]: {
       title: 'Add device',
