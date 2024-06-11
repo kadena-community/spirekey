@@ -19,3 +19,7 @@ export const discordChannel = style({
 globalStyle(`${container} button`, {
   flexShrink: 0,
 });
+
+globalStyle(`${container} [role="alert"]`, {
+  background: 'rgb(105 81 0 / 80%)'
+});
