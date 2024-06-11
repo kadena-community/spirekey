@@ -1,9 +1,9 @@
 import { connectFactory } from './functions/connectFactory';
-import { hideSideBarFactory } from './functions/hideSidebarFactory';
+import { hideSidebarFactory } from './functions/hideSidebarFactory';
 import { signFactory } from './functions/signFactory';
 import type { SpireKeyEvent, SpireKeyWindow } from './types';
 
-import './styles.css';
+import * as styles from './styles.css';
 
 declare global {
   interface Window {
@@ -25,12 +25,12 @@ const initSpireKey = (
   },
 ) => {
   const iframe = document.createElement('iframe');
-  iframe.className = 'spirekey-sidebar';
-
+  iframe.className = styles.spirekeySidebar;
   iframe.src = `${options.hostUrl}/embedded/sidebar`;
+  iframe.allow = 'publickey-credentials-get *';
   document.body.appendChild(iframe);
 
-  const hideSidebar = hideSideBarFactory({ iframe });
+  const hideSidebar = hideSidebarFactory({ iframe });
 
   window.addEventListener('message', (event) => {
     if (
@@ -42,8 +42,8 @@ const initSpireKey = (
   });
 
   const functions = {
-    connect: connectFactory({ iframe }),
-    sign: signFactory({ hostUrl: options.hostUrl, iframe }),
+    connect: connectFactory({ iframe, hideSidebar }),
+    sign: signFactory({ iframe }),
     onEvent,
   };
 
@@ -52,5 +52,5 @@ const initSpireKey = (
   return functions;
 };
 
+export * from './types';
 export { initSpireKey, onEvent };
-export type { SpireKeyEvent, SpireKeyWindow };

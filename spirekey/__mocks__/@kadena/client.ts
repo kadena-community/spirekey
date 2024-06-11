@@ -40,4 +40,5 @@ const l1Client = {
 
 module.exports =
   await vi.importActual<typeof import('@kadena/client')>('@kadena/client');
+
 export const createClient = () => l1Client;

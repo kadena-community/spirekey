@@ -1,6 +1,7 @@
-import type { Account, Device } from '@/context/AccountsContext';
-import { asyncPipe } from '@/utils/shared/asyncPipe';
 import { ChainId, createTransaction } from '@kadena/client';
+
+import type { Account, Device } from '@/context/types';
+import { asyncPipe } from '@/utils/shared/asyncPipe';
 import {
   addData,
   addSigner,

@@ -53,7 +53,7 @@ export default function SidebarSign() {
         width: '100%',
         height: '100%',
         padding: '25px',
-        background: '#081320',
+        background: 'rgba(19, 30, 43, 0.8)',
       }}
     >
       <div style={{ paddingBlock: '10px' }}>
