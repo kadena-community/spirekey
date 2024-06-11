@@ -5,7 +5,6 @@ export const container = style([
   atoms({
     padding: 'md',
     position: 'fixed',
-    height: '100%',
   }),
   {
     zIndex: 9999,
@@ -21,5 +20,5 @@ globalStyle(`${container} button`, {
 });
 
 globalStyle(`${container} [role="alert"]`, {
-  background: 'rgb(105 81 0 / 80%)'
+  background: 'rgb(105 81 0 / 80%)',
 });
