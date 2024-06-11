@@ -1,19 +1,35 @@
 'use client';
 
-import { useAccounts } from '@/context/AccountsContext';
-import { getSig } from '@/utils/getSig';
-import { addSignatures } from '@kadena/client';
 import { startAuthentication } from '@simplewebauthn/browser';
-import { Button } from '../shared/Button/Button';
+
+import { Button } from '@/components/shared/Button/Button';
+import { useAccounts } from '@/context/AccountsContext';
+import { getSignature } from '@/utils/getSignature';
+
+import type { Account, Device } from '@/context/types';
 
 interface Props {
   transaction?: string;
 }
 
+// @TODO get from other package?
+const getPubkey = (
+  accounts: Account[],
+  credentialId: Device['credential-id'],
+) => {
+  for (const account of accounts) {
+    for (const device of account.devices) {
+      if (credentialId === device['credential-id']) {
+        return device.guard.keys[0];
+      }
+    }
+  }
+  throw new Error('No public key found');
+};
+
 export default function Sign(props: Props) {
   const { transaction } = props;
   const { accounts } = useAccounts();
-
   if (!transaction) return;
 
   const data = transaction
@@ -21,25 +37,29 @@ export default function Sign(props: Props) {
     : null;
   const tx = JSON.parse(data ?? '{}');
 
-  const credentialId = accounts[0]?.devices[0]['credential-id'] || '';
   const onSign = async () => {
-    console.log(tx);
+    const credentialId = accounts[0]?.devices[0]['credential-id'];
+
     const res = await startAuthentication({
       challenge: tx.hash,
       rpId: window.location.hostname,
-      allowCredentials: [{ id: credentialId, type: 'public-key' }],
-    });
-
-    const signedTx = addSignatures(tx, {
-      ...getSig(res.response),
-      pubKey: accounts[0]?.devices[0]?.guard.keys[0] || '',
+      allowCredentials: credentialId
+        ? [{ id: credentialId, type: 'public-key' }]
+        : undefined,
     });
 
     window.parent.postMessage(
       {
         source: 'kadena-spirekey',
-        name: 'signed-transaction',
-        payload: { transaction: signedTx },
+        name: 'all-transaction-signatures',
+        payload: {
+          signatures: {
+            [tx.hash]: {
+              ...getSignature(res.response),
+              pubKey: getPubkey(accounts, credentialId),
+            },
+          },
+        },
       },
       '*',
     );

@@ -1,23 +1,27 @@
 'use client';
 
-import { initSpireKey, type SpireKeyEvent } from '@kadena-spirekey/sdk';
-
+import {
+  initSpireKey,
+  type Account,
+  type SpireKeyEvent,
+} from '@kadena-spirekey/sdk';
+import { transfer } from '@kadena/client-utils/coin';
 import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
 
 export default function Home() {
   const [events, setEvents] = useState<SpireKeyEvent[]>([]);
-  const [account, setAccount] = useState();
+  const [account, setAccount] = useState<Account>();
 
   useEffect(() => {
     const { eventBus } = initSpireKey({ hostUrl: 'http://localhost:1337' });
 
-    eventBus.subscribeToAll((event) => {
+    eventBus.subscribeToAll((event: SpireKeyEvent) => {
       setEvents((events) => [...events, event]);
 
       if (event.name === 'account-connected') {
-        setAccount(event.payload as any);
+        setAccount(event.payload as Account);
       }
     });
 
@@ -26,9 +30,31 @@ export default function Home() {
     });
   }, []);
 
-  const signTransaction = () => {
-    const transaction = '@TODO';
-    window.spireKey.sign(transaction);
+  const signTransaction = async () => {
+    if (!account) {
+      throw new Error('No account connected');
+    }
+
+    const transaction = transfer(
+      {
+        sender: {
+          account: account.accountName,
+          publicKeys: [account.devices[0].guard.keys[0]],
+        },
+        receiver: 'k:abcd',
+        amount: '1',
+        chainId: '1',
+      },
+      {
+        host: 'http://localhost:8080',
+        defaults: {
+          networkId: 'development',
+        },
+        sign: window.spireKey.sign,
+      },
+    );
+
+    await transaction.execute();
   };
 
   return (
@@ -36,9 +62,15 @@ export default function Home() {
       {!account && (
         <button onClick={() => window.spireKey.connect()}>Connect</button>
       )}
-      {account && <button onClick={signTransaction}>Sign</button>}
       {account && (
-        <button onClick={() => window.spireKey.disconnect()}>Disconnect</button>
+        <>
+          Connected as {account.alias} ({account.accountName}){' '}
+          <button onClick={() => window.spireKey.disconnect()}>
+            Disconnect
+          </button>
+          <br />
+          <button onClick={signTransaction}>Sign</button>
+        </>
       )}
 
       <details>

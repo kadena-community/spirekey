@@ -1,3 +1,6 @@
+import type { Account } from '@kadena-spirekey/spirekey';
+import { ISignFunction } from '@kadena/client';
+
 export interface SpireKeyEvent {
   source: 'kadena-spirekey';
   name: string;
@@ -5,7 +8,9 @@ export interface SpireKeyEvent {
 }
 
 export interface SpireKeyWindow {
-  connect: () => void;
+  connect: () => Promise<Account>;
   disconnect: () => void;
-  sign: (transaction: string) => void;
+  sign: ISignFunction;
 }
+
+export type { Account, Device } from '@kadena-spirekey/spirekey';

@@ -4,7 +4,30 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**"],
+      "inputs": [
+        "src/**",
+        "public/**",
+        "tsconfig.json",
+        "package.json",
+        "next.config.js",
+        ".env.production",
+        ".env.local",
+        ".env"
+      ]
+    },
+    "build:e2e": {
+      "dependsOn": ["^build:e2e"],
+      "outputs": [".next/**", "!.next/cache/**"],
+      "inputs": [
+        "src/**",
+        "public/**",
+        "tsconfig.json",
+        "package.json",
+        "next.config.js",
+        ".env.test",
+        ".env"
+      ]
     },
     "lint": {
       "dependsOn": ["^lint"]
@@ -13,7 +36,13 @@
       "dependsOn": ["^test"]
     },
     "test:e2e": {
-      "dependsOn": ["^test:e2e"]
+      "dependsOn": ["build:e2e"],
+      "inputs": [
+        "pact/**",
+        "e2e/**",
+        "deploy.ts",
+        "playwright.config.ts"
+      ]
     },
     "dev": {
       "cache": false,

@@ -28,9 +28,7 @@ export default function Transfer() {
     });
 
     router.push(
-      '/sign?transaction=' +
-        Buffer.from(JSON.stringify(tx)).toString('base64') +
-        '&returnUrl=/transfer',
+      `/sign?transaction=${Buffer.from(JSON.stringify(tx)).toString('base64')}&returnUrl=/transfer`,
     );
   };
   return (

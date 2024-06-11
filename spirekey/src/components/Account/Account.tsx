@@ -1,26 +1,26 @@
-import type { Account } from '@/context/AccountsContext';
-import { useAccounts } from '@/context/AccountsContext';
-import { calculateBalancePercentage } from '@/utils/balance';
-import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
+import type { ChainId } from '@kadena/client';
 import { Grid, Stack } from '@kadena/react-ui';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
-import { Fragment, useEffect, useState } from 'react';
-import { AccountButton } from '../AccountButton/AccountButton';
-import { FundButton } from '../AccountButton/FundButton';
-import DeviceCard from '../Card/DeviceCard';
-import { Carousel } from '../Carousel/Carousel';
-import { Request } from '../icons/Request';
-import { Send } from '../icons/Send';
-import { Transactions } from '../icons/Transactions';
-import { ButtonLink } from '../shared/ButtonLink/ButtonLink';
-import { detailLink } from './Account.css';
-
-import { useNotifications } from '@/context/shared/NotificationsContext';
-import { onConnectWith } from '@/utils/connect';
-import type { ChainId } from '@kadena/client';
 import { useRouter } from 'next/navigation';
-import { Button } from '../shared/Button/Button';
+import { Fragment, useEffect, useState } from 'react';
+
+import { AccountButton } from '@/components/AccountButton/AccountButton';
+import { FundButton } from '@/components/AccountButton/FundButton';
+import DeviceCard from '@/components/Card/DeviceCard';
+import { Carousel } from '@/components/Carousel/Carousel';
+import { Request } from '@/components/icons/Request';
+import { Send } from '@/components/icons/Send';
+import { Transactions } from '@/components/icons/Transactions';
+import { Button } from '@/components/shared/Button/Button';
+import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
+import { useAccounts } from '@/context/AccountsContext';
+import { useNotifications } from '@/context/shared/NotificationsContext';
+import type { Account } from '@/context/types';
+import { calculateBalancePercentage } from '@/utils/balance';
+import { onConnectWith } from '@/utils/connect';
+import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
+
 import * as styles from './Account.css';
 
 interface AccountProps {
@@ -125,7 +125,7 @@ export function Account({
                       >
                         <Link
                           href={`/accounts/${caccount}`}
-                          className={detailLink}
+                          className={styles.detailLink}
                         >
                           Account details
                         </Link>
@@ -137,7 +137,7 @@ export function Account({
                       >
                         <Link
                           href={`/accounts/${caccount}/devices/add`}
-                          className={detailLink}
+                          className={styles.detailLink}
                         >
                           Add device
                         </Link>

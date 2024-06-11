@@ -1,12 +1,9 @@
-import { Account, Device, useAccounts } from '@/context/AccountsContext';
-import { getSig } from '@/utils/getSig';
 import { ICommand, addSignatures } from '@kadena/client';
 import { startAuthentication } from '@simplewebauthn/browser';
 
-const getSignParams = (tx: unknown, device: Device) => ({
-  payload: Buffer.from(JSON.stringify(tx)).toString('base64'),
-  cid: device['credential-id'],
-});
+import { useAccounts } from '@/context/AccountsContext';
+import type { Account, Device } from '@/context/types';
+import { getSignature } from '@/utils/getSignature';
 
 const getPubkey = (
   accounts: Account[],
@@ -35,7 +32,7 @@ export const useSign = () => {
     });
 
     const signedTx = addSignatures(tx, {
-      ...getSig(res.response),
+      ...getSignature(res.response),
       pubKey: getPubkey(accounts, credentialId),
     });
 

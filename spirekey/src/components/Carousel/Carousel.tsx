@@ -1,13 +1,10 @@
-import { Account } from '@/context/AccountsContext';
 import classNames from 'classnames';
-import { Children, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Children, useLayoutEffect, useRef, useState } from 'react';
 import { InView } from 'react-intersection-observer';
-import {
-  carouselItem,
-  carouselItems,
-  carouselNav,
-  carouselNavItem,
-} from './Carousel.css';
+
+import type { Account } from '@/context/types';
+
+import * as styles from './Carousel.css';
 
 type CarouselProps = {
   account: Account;
@@ -59,8 +56,8 @@ export const Carousel = ({
       <div
         ref={containerRef}
         className={classNames({
-          [carouselItems.default]: true,
-          [carouselItems.nonScrollable]: !isActive,
+          [styles.carouselItems.default]: true,
+          [styles.carouselItems.nonScrollable]: !isActive,
         })}
       >
         {Children.map(children, (child, index) => (
@@ -69,7 +66,7 @@ export const Carousel = ({
             onChange={(inView) => onChangeCard(inView, index)}
             threshold={1}
             key={index}
-            className={carouselItem({
+            className={styles.carouselItem({
               variant: !showCarouselItems(isActive, index)
                 ? 'hidden'
                 : undefined,
@@ -80,13 +77,13 @@ export const Carousel = ({
         ))}
       </div>
       {delayedIsActive && (
-        <ol className={carouselNav}>
+        <ol className={styles.carouselNav}>
           {Children.count(children) > 1 &&
             !hideAddDeviceCard &&
-            Children.map(children, (child, index) => (
+            Children.map(children, (_child, index) => (
               <li
                 onClick={scrollToCard(index)}
-                className={carouselNavItem({
+                className={styles.carouselNavItem({
                   variant: index === activeIndex ? 'active' : 'default',
                 })}
               />

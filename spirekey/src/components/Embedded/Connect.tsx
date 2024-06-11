@@ -1,34 +1,27 @@
 'use client';
 
-import logo from '@/assets/images/SpireKey-logo.svg';
-import { Account, useAccounts } from '@/context/AccountsContext';
 import {
   Notification,
   NotificationHeading,
   Stack,
-  SystemIcon,
   Text,
 } from '@kadena/react-ui';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { MaskedValue } from '../MaskedValue/MaskedValue';
-import { SpireKeySpinner } from '../Spinners/SpireKeySpinner';
-import { Button } from '../shared/Button/Button';
+
+import logo from '@/assets/images/SpireKey-logo.svg';
+import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
+import { SpireKeySpinner } from '@/components/Spinners/SpireKeySpinner';
+import { Button } from '@/components/shared/Button/Button';
+import { useAccounts } from '@/context/AccountsContext';
+import type { Account } from '@/context/types';
+import { MonoManageAccounts } from '@kadena/react-icons';
 
 export default function Connect() {
   const { accounts } = useAccounts();
   const [connectingAccount, setConnectingAccount] = useState<Account | null>(
     null,
   );
-
-  useEffect(() => {
-    window.addEventListener('message', (event) => {
-      console.log(
-        'Message received from the parent: ' +
-          JSON.stringify(event.data, null, 2),
-      );
-    });
-  }, []);
 
   const connect = (account: Account) => {
     setConnectingAccount(account);
@@ -58,7 +51,7 @@ export default function Connect() {
           gap="xl"
           marginBlockEnd="xl"
         >
-          <Notification role="none" icon={<SystemIcon.Account />}>
+          <Notification role="none" icon={<MonoManageAccounts />}>
             <NotificationHeading>{account.alias}</NotificationHeading>
             <Stack flexDirection="column" gap="sm">
               <Text>

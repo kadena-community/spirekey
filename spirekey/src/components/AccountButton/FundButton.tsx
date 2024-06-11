@@ -1,10 +1,13 @@
-import { Account } from '@/context/AccountsContext';
-import { useNotifications } from '@/context/shared/NotificationsContext';
-import { fundAccount } from '@/utils/fund';
-import { Box, Stack, SystemIcon, Text } from '@kadena/react-ui';
+import { MonoCheck, MonoClose, MonoLoading } from '@kadena/react-icons';
+import { Box, Stack, Text } from '@kadena/react-ui';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FC, useEffect, useState } from 'react';
-import { Fund } from '../icons/Fund';
+
+import { Fund } from '@/components/icons/Fund';
+import { useNotifications } from '@/context/shared/NotificationsContext';
+import type { Account } from '@/context/types';
+import { fundAccount } from '@/utils/fund';
+
 import * as styles from './AccountButton.css';
 
 interface Props {
@@ -68,7 +71,7 @@ export const FundButton: FC<Props> = ({ account }) => {
                 transition={{ duration: 0.2 }}
                 className={styles.icon}
               >
-                <SystemIcon.Loading className={styles.loader} />
+                <MonoLoading className={styles.loader} />
               </motion.span>
             )}
             {!error && !success && !isLoading && (
@@ -92,7 +95,7 @@ export const FundButton: FC<Props> = ({ account }) => {
                 transition={{ duration: 0.2 }}
                 className={styles.icon}
               >
-                <SystemIcon.Close className={styles.error} />
+                <MonoClose className={styles.error} />
               </motion.span>
             )}
             {success && !isLoading && (
@@ -104,7 +107,7 @@ export const FundButton: FC<Props> = ({ account }) => {
                 transition={{ duration: 0.2 }}
                 className={styles.icon}
               >
-                <SystemIcon.Check className={styles.success} />
+                <MonoCheck className={styles.success} />
               </motion.span>
             )}
           </AnimatePresence>

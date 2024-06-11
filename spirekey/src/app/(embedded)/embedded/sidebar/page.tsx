@@ -53,7 +53,7 @@ export default function SidebarSign() {
         width: '100%',
         height: '100%',
         padding: '25px',
-        background: 'rgba(19, 30, 43, 1)',
+        background: 'rgba(19, 30, 43, 0.8)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',

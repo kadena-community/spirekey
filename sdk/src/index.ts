@@ -1,11 +1,10 @@
-import { connectFactory } from './functions/connectFactory';
-import { signFactory } from './functions/signFactory';
-import type { SpireKeyEvent, SpireKeyWindow } from './types';
+import { connectFactory } from '@/functions/connectFactory';
+import { signFactory } from '@/functions/signFactory';
+import type { SpireKeyEvent, SpireKeyWindow } from '@/types';
 
-import { EventBus } from './event-bus';
-import { disconnectFactory } from './functions/disconnectFactory';
-import { SidebarManager } from './sidebar-manager';
-import './styles.css';
+import { EventBus } from '@/event-bus';
+import { disconnectFactory } from '@/functions/disconnectFactory';
+import { SidebarManager } from '@/sidebar-manager';
 
 declare global {
   interface Window {
@@ -36,5 +35,5 @@ const initSpireKey = (
   return { functions, eventBus };
 };
 
+export * from './types';
 export { initSpireKey };
-export type { SpireKeyEvent, SpireKeyWindow };
