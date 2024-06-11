@@ -7,6 +7,9 @@ export const container = style([
     position: 'fixed',
     height: '100%',
   }),
+  {
+    zIndex: 9999,
+  },
 ]);
 
 export const discordChannel = style({
