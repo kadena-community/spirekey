@@ -36,9 +36,7 @@ export const signFactory = ({
     newSrc.hash = `#${transactionsParams}`;
 
     sidebarManager.open();
-    sidebarManager.setIFramePath(
-      `/embedded/sidebar/#transaction=${newSrc.toString()}`,
-    );
+    sidebarManager.setIFramePath(newSrc.toString());
 
     const timeoutPromise = new Promise<ReturnValue>((_, reject) =>
       setTimeout(
@@ -67,5 +65,6 @@ export const signFactory = ({
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
       window.removeEventListener('message', handleMessage);
+      sidebarManager.close();
     });
   }) as ISignFunction;

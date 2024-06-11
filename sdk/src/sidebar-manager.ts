@@ -13,7 +13,8 @@ export class SidebarManager {
   private isLoading: boolean = true;
 
   static makeSidebar = (): HTMLDivElement => {
-    document.querySelector('.spirekey-sidebar')?.remove();
+    document.querySelector(styles.spirekeySidebar)?.remove();
+
     const sidebar = document.createElement('div');
     sidebar.classList.add(styles.spirekeySidebar);
 
