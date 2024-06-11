@@ -5,8 +5,10 @@ export const container = style([
   atoms({
     padding: 'md',
     position: 'fixed',
-    height: '100%',
   }),
+  {
+    zIndex: 9999,
+  },
 ]);
 
 export const discordChannel = style({
@@ -15,4 +17,8 @@ export const discordChannel = style({
 
 globalStyle(`${container} button`, {
   flexShrink: 0,
+});
+
+globalStyle(`${container} [role="alert"]`, {
+  background: 'rgb(105 81 0 / 80%)',
 });

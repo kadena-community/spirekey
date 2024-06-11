@@ -5,6 +5,7 @@
   "main": "./src/lib.ts",
   "scripts": {
     "build": "next build",
+    "build:e2e": "NODE_ENV=test next build",
     "deploy": "tsx ./deploy.ts ./pact/deploy/deploy.json",
     "deploy:dev": "tsx ./deploy.ts ./pact/deploy/local-init.json",
     "deploy:hosted": "tsx ./deploy.ts ./pact/deploy/hosted-init.json",
