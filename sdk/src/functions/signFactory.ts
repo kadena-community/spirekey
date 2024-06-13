@@ -28,7 +28,7 @@ export const signFactory = ({
 
     if (transactions.length > 1) {
       throw new Error(
-        'Currently we only support signing one transaction at a time',
+        'Currently Kadena Spirekey only supports signing one transaction at a time',
       );
     }
 

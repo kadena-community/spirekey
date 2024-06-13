@@ -4,25 +4,16 @@ import {
   initSpireKey,
   onAccountConnected,
   onAccountDisconnected,
-  onSpireKeyEvent,
   type Account,
-  type SpireKeyEvent,
 } from '@kadena-spirekey/sdk';
 import { transfer } from '@kadena/client-utils/coin';
 import { useEffect, useState } from 'react';
 
-import styles from './styles.module.css';
-
 export default function Home() {
-  const [events, setEvents] = useState<SpireKeyEvent[]>([]);
   const [account, setAccount] = useState<Account>();
 
   useEffect(() => {
     initSpireKey({ hostUrl: 'http://localhost:1337' });
-
-    onSpireKeyEvent((event) => {
-      setEvents((prev) => [...prev, event]);
-    });
 
     onAccountConnected((account) => {
       setAccount(account);
@@ -75,27 +66,6 @@ export default function Home() {
           <button onClick={signTransaction}>Sign</button>
         </>
       )}
-
-      <details>
-        <summary>View events</summary>
-        <div>
-          {events.map((event, i) => (
-            <div key={i} className={styles.event}>
-              <div>
-                <strong>Name</strong>
-                <br /> {event.name}
-              </div>
-
-              {event.payload && (
-                <div>
-                  <strong>Payload</strong>
-                  <pre>{JSON.stringify(event.payload, null, 2)}</pre>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </details>
     </main>
   );
 }

@@ -31,22 +31,6 @@ export const publishEvent = <T extends SpireKeyEventName>(
   window.postMessage({ source: 'kadena-spirekey', name, payload }, '*');
 };
 
-export const onSpireKeyEvent = (
-  callback: (event: SpireKeyEvent) => void,
-): (() => void) => {
-  const listener = (event: MessageEvent) => {
-    if (event.data.source === 'kadena-spirekey') {
-      callback(event.data);
-    }
-  };
-
-  window.addEventListener('message', listener);
-
-  return () => {
-    window.removeEventListener('message', listener);
-  };
-};
-
 export const onAccountConnected = (
   callback: (account: Account) => void,
 ): (() => void) => {
