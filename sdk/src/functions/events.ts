@@ -52,7 +52,7 @@ export const onAccountConnected = (
 ): (() => void) => {
   const listener = (event: MessageEvent) => {
     if (event.data.name === 'connected') {
-      callback(event.data.payload as Account);
+      callback(event.data.payload as SpireKeyEventPayloads['connected']);
     }
   };
 
@@ -82,7 +82,7 @@ export const onAllTransactionsSigned = (
 ): (() => void) => {
   const listener = (event: MessageEvent) => {
     if (event.data.name === 'signed') {
-      callback(event.data);
+      callback(event.data.payload as SpireKeyEventPayloads['signed']);
     }
   };
 

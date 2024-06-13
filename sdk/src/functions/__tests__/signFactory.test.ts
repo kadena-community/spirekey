@@ -45,7 +45,7 @@ describe('signFactory', () => {
     });
   });
 
-  it('signs multiple transactions', async () => {
+  it.skip('signs multiple transactions', async () => {
     const transactions: IUnsignedCommand[] = [
       { hash: '123', cmd: '{"code": "test1"}', sigs: [] },
       { hash: '456', cmd: '{"code": "test2"}', sigs: [] },
@@ -65,6 +65,18 @@ describe('signFactory', () => {
       { ...transactions[0], sigs: [{ sig: 'signature1' }] },
       { ...transactions[1], sigs: [{ sig: 'signature2' }] },
     ]);
+  });
+
+  it('throws when signing multiple transactions', async () => {
+    const transactions: IUnsignedCommand[] = [
+      { hash: '123', cmd: '{"code": "test1"}', sigs: [] },
+      { hash: '456', cmd: '{"code": "test2"}', sigs: [] },
+    ];
+    const promise = sign(transactions);
+
+    await expect(promise).rejects.toThrow(
+      'Currently we only support signing one transaction at a time',
+    );
   });
 
   it('handles a timeout correctly', async () => {
