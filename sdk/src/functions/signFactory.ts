@@ -6,7 +6,7 @@ import {
 } from '@kadena/client';
 
 import { SidebarManager } from '../sidebar-manager';
-import { onAllTransactionsSigned } from './events';
+import { onTransactionsSigned } from './events';
 
 export interface SignParams {
   sidebarManager: SidebarManager;
@@ -56,7 +56,7 @@ export const signFactory = ({
     let removeListener: () => void;
 
     const eventListenerPromise = new Promise<ReturnValue>((resolve) => {
-      removeListener = onAllTransactionsSigned((signatures) => {
+      removeListener = onTransactionsSigned((signatures) => {
         const signedTransactions = transactions.map((tx) =>
           addSignatures(tx, signatures[tx.hash]),
         );

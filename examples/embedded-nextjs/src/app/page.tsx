@@ -3,7 +3,6 @@
 import {
   initSpireKey,
   onAccountConnected,
-  onAccountDisconnected,
   type Account,
 } from '@kadena-spirekey/sdk';
 import { transfer } from '@kadena/client-utils/coin';
@@ -17,10 +16,6 @@ export default function Home() {
 
     onAccountConnected((account) => {
       setAccount(account);
-    });
-
-    onAccountDisconnected(() => {
-      setAccount(undefined);
     });
   }, []);
 
@@ -59,10 +54,6 @@ export default function Home() {
       {account && (
         <>
           Connected as {account.alias} ({account.accountName}){' '}
-          <button onClick={() => window.spireKey.disconnect()}>
-            Disconnect
-          </button>
-          <br />
           <button onClick={signTransaction}>Sign</button>
         </>
       )}

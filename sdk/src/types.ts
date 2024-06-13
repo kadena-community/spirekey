@@ -3,7 +3,6 @@ import { ISignFunction } from '@kadena/client';
 
 export interface SpireKeyWindow {
   connect: () => Promise<Account>;
-  disconnect: () => void;
   sign: ISignFunction;
 }
 

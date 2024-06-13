@@ -1,5 +1,4 @@
 import { connectFactory } from './functions/connectFactory';
-import { disconnectFactory } from './functions/disconnectFactory';
 import { onAccountConnected } from './functions/events';
 import { signFactory } from './functions/signFactory';
 import { SidebarManager } from './sidebar-manager';
@@ -24,7 +23,6 @@ const initSpireKey = (
 
   const functions = {
     connect: connectFactory({ sidebarManager }),
-    disconnect: disconnectFactory({ sidebarManager }),
     sign: signFactory({ sidebarManager }),
   };
 
