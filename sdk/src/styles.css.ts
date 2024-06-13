@@ -1,9 +1,10 @@
-import { globalStyle, style } from '@vanilla-extract/css';
+import { style } from '@vanilla-extract/css';
 
 export const spirekeySidebar = style({
   width: '100%',
   height: '100%',
   position: 'fixed',
+  border: 0,
   right: 0,
   top: 0,
   zIndex: 999999,
@@ -20,49 +21,4 @@ export const spirekeySidebar = style({
 
 export const spirekeySidebarOpen = style({
   transform: 'translateX(0%)',
-});
-
-export const spirekeySidebarHeader = style({
-  border: 0,
-  width: '100%',
-  height: '48px',
-  display: 'flex',
-  flexDirection: 'row-reverse',
-});
-
-export const spirekeySidebarBody = style({
-  border: 0,
-  width: '100%',
-  height: 'calc(100% - 48px)',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-});
-
-export const spirekeySidebarIFrame = style({
-  border: 0,
-  width: '100%',
-  height: '100%',
-});
-
-export const spirekeySidebarIFrameHidden = style({
-  display: 'none',
-});
-
-export const spirekeySidebarSpinner = style({
-  width: '50%',
-  height: '100px',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  marginBottom: 48,
-});
-
-globalStyle(`${spirekeySidebarSpinner} svg`, {
-  width: '100%',
-  height: '100%',
-});
-
-export const spirekeySidebarSpinnerHidden = style({
-  display: 'none',
 });

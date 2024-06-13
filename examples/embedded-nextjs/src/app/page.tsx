@@ -2,6 +2,9 @@
 
 import {
   initSpireKey,
+  onAccountConnected,
+  onAccountDisconnected,
+  onSpireKeyEvent,
   type Account,
   type SpireKeyEvent,
 } from '@kadena-spirekey/sdk';
@@ -15,17 +18,17 @@ export default function Home() {
   const [account, setAccount] = useState<Account>();
 
   useEffect(() => {
-    const { eventBus } = initSpireKey({ hostUrl: 'http://localhost:1337' });
+    initSpireKey({ hostUrl: 'http://localhost:1337' });
 
-    eventBus.subscribeToAll((event: SpireKeyEvent) => {
-      setEvents((events) => [...events, event]);
-
-      if (event.name === 'account-connected') {
-        setAccount(event.payload as Account);
-      }
+    onSpireKeyEvent((event) => {
+      setEvents((prev) => [...prev, event]);
     });
 
-    eventBus.subscribe('account-disconnected', () => {
+    onAccountConnected((account) => {
+      setAccount(account);
+    });
+
+    onAccountDisconnected(() => {
       setAccount(undefined);
     });
   }, []);

@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import { SidebarManager } from '../../sidebar-manager';
 import * as styles from '../../styles.css';
 import { connectFactory } from '../connectFactory';
+import { publishEvent } from '../events';
 
 describe('connectFactory', () => {
   let connect: ReturnType<typeof connectFactory>;
@@ -18,33 +19,32 @@ describe('connectFactory', () => {
   it('connects an account', async () => {
     const promise = connect();
 
-    // @TODO this fails
-    // expect(
-    //   sidebarManager.iframe.classList.contains(styles.spirekeySidebarOpen),
-    // ).toBe(true);
+    expect(
+      sidebarManager.iframe.classList.contains(styles.spirekeySidebarOpen),
+    ).toBe(true);
     expect(sidebarManager.iframe.src).toContain(`/embedded/sidebar`);
     expect(sidebarManager.iframe.src).not.toContain(`transaction=`);
 
-    window.dispatchEvent(
-      new MessageEvent('message', {
-        data: {
-          source: 'kadena-spirekey',
-          name: 'account-connected',
-          payload: {
-            account: {
-              address: 'test',
-              publicKey: 'test',
-            },
-          },
-        },
-      }),
-    );
+    publishEvent('connected', {
+      accountName: 'test',
+      alias: 'test',
+      minApprovals: 0,
+      minRegistrationApprovals: 0,
+      balance: '4',
+      devices: [],
+      networkId: 'mainnet01',
+      chainIds: ['0', '18'],
+    });
 
     await expect(promise).resolves.toEqual({
-      account: {
-        address: 'test',
-        publicKey: 'test',
-      },
+      accountName: 'test',
+      alias: 'test',
+      minApprovals: 0,
+      minRegistrationApprovals: 0,
+      balance: '4',
+      devices: [],
+      networkId: 'mainnet01',
+      chainIds: ['0', '18'],
     });
   });
 

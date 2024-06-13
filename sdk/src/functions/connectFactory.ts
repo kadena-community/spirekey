@@ -1,6 +1,7 @@
 import type { Account } from '@kadena-spirekey/spirekey';
 
 import { SidebarManager } from '../sidebar-manager';
+import { onAccountConnected } from './events';
 
 export interface ConnectParams {
   sidebarManager: SidebarManager;
@@ -19,20 +20,16 @@ export const connectFactory =
       ),
     );
 
-    let handleMessage: (event: MessageEvent) => void;
+    let removeListener: () => void;
 
     const eventListenerPromise = new Promise<Account>((resolve) => {
-      handleMessage = (event: MessageEvent) => {
-        if (event.data.name === 'account-connected') {
-          resolve(event.data.payload);
-        }
-      };
-
-      window.addEventListener('message', handleMessage);
+      removeListener = onAccountConnected((account: Account) => {
+        resolve(account);
+      });
     });
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
       sidebarManager.close();
-      window.removeEventListener('message', handleMessage);
+      removeListener();
     });
   };

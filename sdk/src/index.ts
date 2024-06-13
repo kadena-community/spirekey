@@ -1,6 +1,6 @@
-import { EventBus } from './event-bus';
 import { connectFactory } from './functions/connectFactory';
 import { disconnectFactory } from './functions/disconnectFactory';
+import { onAccountConnected } from './functions/events';
 import { signFactory } from './functions/signFactory';
 import { SidebarManager } from './sidebar-manager';
 import type { SpireKeyWindow } from './types';
@@ -17,22 +17,22 @@ const initSpireKey = (
   },
 ) => {
   const sidebarManager = new SidebarManager(options.hostUrl);
-  const eventBus = new EventBus();
 
-  eventBus.subscribe('account-connected', () => {
+  onAccountConnected(() => {
     sidebarManager.close();
   });
 
   const functions = {
     connect: connectFactory({ sidebarManager }),
-    disconnect: disconnectFactory({ sidebarManager, eventBus }),
+    disconnect: disconnectFactory({ sidebarManager }),
     sign: signFactory({ sidebarManager }),
   };
 
   window.spireKey = functions;
 
-  return { functions, eventBus };
+  return { functions };
 };
 
+export * from './functions/events';
 export * from './types';
 export { initSpireKey };

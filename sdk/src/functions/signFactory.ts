@@ -6,6 +6,7 @@ import {
 } from '@kadena/client';
 
 import { SidebarManager } from '../sidebar-manager';
+import { onAllTransactionsSigned } from './events';
 
 export interface SignParams {
   sidebarManager: SidebarManager;
@@ -24,6 +25,13 @@ export const signFactory = ({
   (async (transactionList) => {
     const isList = Array.isArray(transactionList);
     const transactions = isList ? transactionList : [transactionList];
+
+    if (transactions.length > 1) {
+      throw new Error(
+        'Currently we only support signing one transaction at a time',
+      );
+    }
+
     const transactionsParams = transactions
       .map(
         (tx) =>
@@ -36,7 +44,7 @@ export const signFactory = ({
     newSrc.hash = `#${transactionsParams}`;
 
     sidebarManager.open();
-    sidebarManager.setIFramePath(newSrc.toString());
+    sidebarManager.setIFramePath(`/embedded/sidebar#${transactionsParams}`);
 
     const timeoutPromise = new Promise<ReturnValue>((_, reject) =>
       setTimeout(
@@ -45,26 +53,20 @@ export const signFactory = ({
       ),
     );
 
-    let handleMessage: (event: MessageEvent) => void;
+    let removeListener: () => void;
 
     const eventListenerPromise = new Promise<ReturnValue>((resolve) => {
-      handleMessage = (event: MessageEvent) => {
-        if (event.data.name === 'all-transaction-signatures') {
-          const signedTransactions = transactions.map((tx) =>
-            addSignatures(tx, {
-              ...event.data.payload.signatures[tx.hash],
-            }),
-          );
+      removeListener = onAllTransactionsSigned((signatures) => {
+        const signedTransactions = transactions.map((tx) =>
+          addSignatures(tx, signatures[tx.hash]),
+        );
 
-          resolve(isList ? signedTransactions : signedTransactions[0]);
-        }
-      };
-
-      window.addEventListener('message', handleMessage);
+        resolve(isList ? signedTransactions : signedTransactions[0]);
+      });
     });
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
-      window.removeEventListener('message', handleMessage);
       sidebarManager.close();
+      removeListener();
     });
   }) as ISignFunction;

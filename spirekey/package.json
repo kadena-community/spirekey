@@ -33,6 +33,7 @@
     "*.{ts,tsx,md}": "prettier --write"
   },
   "dependencies": {
+    "@kadena-spirekey/sdk": "workspace:^",
     "@kadena/client": "^1.11.2",
     "@kadena/cryptography-utils": "^0.4.4",
     "@kadena/fonts": "^0.0.1",

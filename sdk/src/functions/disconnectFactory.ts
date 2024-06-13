@@ -1,17 +1,13 @@
-import { EventBus } from '../event-bus';
 import { SidebarManager } from '../sidebar-manager';
+import { publishEvent } from './events';
 
 export interface ConnectParams {
   sidebarManager: SidebarManager;
-  eventBus: EventBus;
 }
 
 export const disconnectFactory =
-  ({ sidebarManager, eventBus }: ConnectParams) =>
+  ({ sidebarManager }: ConnectParams) =>
   (): void => {
     sidebarManager.setIFramePath('/embedded/sidebar/');
-    eventBus.publish({
-      source: 'kadena-spirekey',
-      name: 'account-disconnected',
-    });
+    publishEvent('disconnected', undefined);
   };

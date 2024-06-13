@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vitest } from 'vitest';
 
 import { SidebarManager } from '../../sidebar-manager';
 import * as styles from '../../styles.css';
+import { publishEvent } from '../events';
 import { signFactory } from '../signFactory';
 
 vitest.mock('@kadena/client');
@@ -13,6 +14,7 @@ describe('signFactory', () => {
 
   beforeEach(() => {
     sidebarManager = new SidebarManager('http://localhost:1337');
+
     sign = signFactory({
       sidebarManager,
     });
@@ -26,27 +28,16 @@ describe('signFactory', () => {
     };
     const promise = sign(transaction);
 
-    // @TODO this fails
-    // expect(
-    //   sidebarManager.iframe.classList.contains(styles.spirekeySidebarOpen),
-    // ).toBe(true);
+    expect(
+      sidebarManager.iframe.classList.contains(styles.spirekeySidebarOpen),
+    ).toBe(true);
     expect(sidebarManager.iframe.src).toContain(
       `/embedded/sidebar#transaction=`,
     );
 
-    window.dispatchEvent(
-      new MessageEvent('message', {
-        data: {
-          source: 'kadena-spirekey',
-          name: 'all-transaction-signatures',
-          payload: {
-            signatures: {
-              123: { sig: 'signature' },
-            },
-          },
-        },
-      }),
-    );
+    publishEvent('signed', {
+      '123': { sig: 'signature' },
+    });
 
     await expect(promise).resolves.toEqual({
       ...transaction,
@@ -65,19 +56,10 @@ describe('signFactory', () => {
       `/embedded/sidebar#transaction=`,
     );
 
-    window.dispatchEvent(
-      new MessageEvent('message', {
-        data: {
-          name: 'all-transaction-signatures',
-          payload: {
-            signatures: {
-              123: { sig: 'signature1' },
-              456: { sig: 'signature2' },
-            },
-          },
-        },
-      }),
-    );
+    publishEvent('signed', {
+      '123': { sig: 'signature1' },
+      '456': { sig: 'signature2', pubKey: 'pubKey2' },
+    });
 
     await expect(promise).resolves.toEqual([
       { ...transactions[0], sigs: [{ sig: 'signature1' }] },

@@ -1,5 +1,6 @@
 'use client';
 
+import { MonoManageAccounts } from '@kadena/react-icons';
 import {
   Notification,
   NotificationHeading,
@@ -7,7 +8,7 @@ import {
   Text,
 } from '@kadena/react-ui';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import logo from '@/assets/images/SpireKey-logo.svg';
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
@@ -15,28 +16,17 @@ import { SpireKeySpinner } from '@/components/Spinners/SpireKeySpinner';
 import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
 import type { Account } from '@/context/types';
-import { MonoManageAccounts } from '@kadena/react-icons';
+import { publishEvent } from '@/utils/publishEvent';
 
 export default function Connect() {
   const { accounts } = useAccounts();
-  const [connectingAccount, setConnectingAccount] = useState<Account | null>(
-    null,
-  );
+  const [connectingAccount, setConnectingAccount] = useState<
+    Account | undefined
+  >(undefined);
 
   const connect = (account: Account) => {
     setConnectingAccount(account);
-    setTimeout(() => {
-      window.parent.postMessage(
-        {
-          source: 'kadena-spirekey',
-          name: 'account-connected',
-          payload: {
-            account,
-          },
-        },
-        '*',
-      );
-    }, 3000);
+    publishEvent('connected', account);
   };
 
   return (
