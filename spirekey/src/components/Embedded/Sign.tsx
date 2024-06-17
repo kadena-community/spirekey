@@ -1,12 +1,12 @@
 'use client';
 
+import type { Account, Device } from '@kadena-spirekey/types';
 import { startAuthentication } from '@simplewebauthn/browser';
 
 import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
 import { getSignature } from '@/utils/getSignature';
 
-import type { Account, Device } from '@/context/types';
 import { publishEvent } from '@/utils/publishEvent';
 
 interface Props {

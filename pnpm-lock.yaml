@@ -52,14 +52,17 @@ importers:
         specifier: ^5
         version: 5.4.5
 
-  sdk:
+  packages/types:
     dependencies:
-      '@kadena-spirekey/spirekey':
-        specifier: workspace:*
-        version: link:../spirekey
       '@kadena/client':
         specifier: ^1.11.2
-        version: 1.11.2(encoding@0.1.13)
+        version: 1.11.2
+
+  sdk:
+    dependencies:
+      '@kadena/client':
+        specifier: ^1.11.2
+        version: 1.11.2
       '@kadena/react-ui':
         specifier: ^0.10.0
         version: 0.10.0
@@ -70,12 +73,15 @@ importers:
       '@crackle/cli':
         specifier: ^0.15.4
         version: 0.15.4(typescript@5.4.5)(webpack@5.92.0)
+      '@kadena-spirekey/types':
+        specifier: workspace:^
+        version: link:../packages/types
       '@vanilla-extract/esbuild-plugin':
         specifier: ^2.3.6
         version: 2.3.6
       '@vanilla-extract/vite-plugin':
         specifier: ^4.0.7
-        version: 4.0.10(@types/node@20.14.2)(vite@5.2.13)
+        version: 4.0.10(vite@5.2.13)
       '@vitest/coverage-v8':
         specifier: ^1.5.2
         version: 1.6.0(vitest@1.6.0)
@@ -85,9 +91,6 @@ importers:
 
   spirekey:
     dependencies:
-      '@kadena-spirekey/sdk':
-        specifier: workspace:^
-        version: link:../sdk
       '@kadena/client':
         specifier: ^1.11.2
         version: 1.11.2(encoding@0.1.13)
@@ -209,6 +212,9 @@ importers:
       '@faker-js/faker':
         specifier: ^8.4.1
         version: 8.4.1
+      '@kadena-spirekey/types':
+        specifier: workspace:^
+        version: link:../packages/types
       '@kadena/pactjs-cli':
         specifier: ^1.11.2
         version: 1.11.2(encoding@0.1.13)
@@ -732,8 +738,8 @@ packages:
       '@crackle/router': 0.4.1(react-dom@18.3.1)(react@18.3.1)
       '@ungap/structured-clone': 1.2.0
       '@vanilla-extract/css': 1.15.2
-      '@vanilla-extract/integration': 7.1.5(@types/node@20.14.2)
-      '@vanilla-extract/vite-plugin': 4.0.10(@types/node@20.14.2)(vite@5.2.13)
+      '@vanilla-extract/integration': 7.1.5
+      '@vanilla-extract/vite-plugin': 4.0.10(vite@5.2.13)
       '@vitejs/plugin-react-swc': 3.7.0(vite@5.2.13)
       '@vocab/webpack': 1.2.9(webpack@5.92.0)
       builtin-modules: 3.3.0
@@ -765,7 +771,7 @@ packages:
       type-fest: 3.13.1
       typescript: 5.4.5
       used-styles: 2.6.5
-      vite: 5.2.13(@types/node@20.14.2)
+      vite: 5.2.13
     transitivePeerDependencies:
       - '@swc/helpers'
       - '@types/node'
@@ -1678,6 +1684,16 @@ packages:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
+  /@kadena/chainweb-node-client@0.6.2:
+    resolution: {integrity: sha512-4Syh0BzWBX9gezbQNckjrv8IbqVLv21vaUV5Lx2ObCuSp6NvLCIs1nhwfXHjsKIg7eLuq4S6VG6FYQTyeB+yrw==}
+    dependencies:
+      '@kadena/cryptography-utils': 0.4.4
+      '@kadena/pactjs': 0.4.3
+      cross-fetch: 3.1.8
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@kadena/chainweb-node-client@0.6.2(encoding@0.1.13):
     resolution: {integrity: sha512-4Syh0BzWBX9gezbQNckjrv8IbqVLv21vaUV5Lx2ObCuSp6NvLCIs1nhwfXHjsKIg7eLuq4S6VG6FYQTyeB+yrw==}
     dependencies:
@@ -1699,6 +1715,36 @@ packages:
       debug: 4.3.4
       js-yaml: 4.1.0
       ramda: 0.29.1
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - bufferutil
+      - encoding
+      - ioredis
+      - supports-color
+      - uWebSockets.js
+      - utf-8-validate
+    dev: false
+
+  /@kadena/client@1.11.2:
+    resolution: {integrity: sha512-I5/9tbOZfY+JhNyCTSOU8b2KaXJsRPMRLdxX3ppS6JqDyzbfUysOpWd4D5K4JkWBIPpCiggpk9z1nDK0ZPLNFw==}
+    dependencies:
+      '@kadena/chainweb-node-client': 0.6.2
+      '@kadena/cryptography-utils': 0.4.4
+      '@kadena/pactjs': 0.4.3
+      '@walletconnect/sign-client': 2.8.6
+      cross-fetch: 3.1.8
+      debug: 4.3.4
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -4322,7 +4368,34 @@ packages:
       esbuild:
         optional: true
     dependencies:
-      '@vanilla-extract/integration': 7.1.5(@types/node@20.14.2)
+      '@vanilla-extract/integration': 7.1.5
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+    dev: true
+
+  /@vanilla-extract/integration@7.1.5:
+    resolution: {integrity: sha512-UwwafgdaqDhF2n6ZvX6akNvSot1iiiCss/c+r6ofjnaJSzrI/3WUYhy7qX7NZsWdmG2omcajuPlqFZdo0pwzLA==}
+    dependencies:
+      '@babel/core': 7.24.7
+      '@babel/plugin-syntax-typescript': 7.24.7(@babel/core@7.24.7)
+      '@vanilla-extract/babel-plugin-debug-ids': 1.0.6
+      '@vanilla-extract/css': 1.15.2
+      dedent: 1.5.3
+      esbuild: 0.19.12
+      eval: 0.1.8
+      find-up: 5.0.0
+      javascript-stringify: 2.1.0
+      mlly: 1.7.1
+      vite: 5.2.13
+      vite-node: 1.6.0
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -4427,6 +4500,25 @@ packages:
       - terser
     dev: true
 
+  /@vanilla-extract/vite-plugin@4.0.10(vite@5.2.13):
+    resolution: {integrity: sha512-bjX5ioQeBTKuV/MOweeSCrGU5m7z4a76yf8J/r4gC5MGJrEvYu0YHaQIiiL7o2wlFSc929JUEUO1ahnVXUET6A==}
+    peerDependencies:
+      vite: ^4.0.3 || ^5.0.0
+    dependencies:
+      '@vanilla-extract/integration': 7.1.5
+      vite: 5.2.13
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+    dev: true
+
   /@vanilla-extract/webpack-plugin@2.3.9(@types/node@20.14.2)(webpack@5.92.0):
     resolution: {integrity: sha512-8tMS8Dfq3+bVhM604mTsB4IjP3nWbI43eW0nMRgTqlwltZfT6qvRlWfhK8Z/ukskWwhTTm3Ttf88PjcGZzcDRg==}
     peerDependencies:
@@ -4455,7 +4547,7 @@ packages:
       vite: ^4 || ^5
     dependencies:
       '@swc/core': 1.5.27
-      vite: 5.2.13(@types/node@20.14.2)
+      vite: 5.2.13
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: true
@@ -5424,6 +5516,14 @@ packages:
     hasBin: true
     dependencies:
       cross-spawn: 7.0.3
+    dev: false
+
+  /cross-fetch@3.1.8:
+    resolution: {integrity: sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==}
+    dependencies:
+      node-fetch: 2.7.0
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /cross-fetch@3.1.8(encoding@0.1.13):
@@ -7136,6 +7236,18 @@ packages:
 
   /node-fetch-native@1.6.4:
     resolution: {integrity: sha512-IhOigYzAKHd244OC0JIMIUrjzctirCmPkaIfhDeGcEETWof5zKYUW7e7MYvChGWh/4CJeXEgsRyGzuF334rOOQ==}
+
+  /node-fetch@2.7.0:
+    resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
+    engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+    dependencies:
+      whatwg-url: 5.0.0
+    dev: false
 
   /node-fetch@2.7.0(encoding@0.1.13):
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
@@ -8928,6 +9040,27 @@ packages:
       loader-utils: 2.0.4
     dev: true
 
+  /vite-node@1.6.0:
+    resolution: {integrity: sha512-de6HJgzC+TFzOu0NTC4RAIsyf/DY/ibWDYQUcuEA84EMHhcefTUGkjFHKKEJhQN4A+6I0u++kr3l36ZF2d7XRw==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    dependencies:
+      cac: 6.7.14
+      debug: 4.3.4
+      pathe: 1.1.2
+      picocolors: 1.0.1
+      vite: 5.2.13
+    transitivePeerDependencies:
+      - '@types/node'
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+    dev: true
+
   /vite-node@1.6.0(@types/node@20.14.2):
     resolution: {integrity: sha512-de6HJgzC+TFzOu0NTC4RAIsyf/DY/ibWDYQUcuEA84EMHhcefTUGkjFHKKEJhQN4A+6I0u++kr3l36ZF2d7XRw==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -8947,6 +9080,41 @@ packages:
       - sugarss
       - supports-color
       - terser
+
+  /vite@5.2.13:
+    resolution: {integrity: sha512-SSq1noJfY9pR3I1TUENL3rQYDQCFqgD+lM6fTRAM8Nv6Lsg5hDLaXkjETVeBt+7vZBCMoibD+6IWnT2mJ+Zb/A==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || >=20.0.0
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      esbuild: 0.20.2
+      postcss: 8.4.38
+      rollup: 4.18.0
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
 
   /vite@5.2.13(@types/node@20.14.2):
     resolution: {integrity: sha512-SSq1noJfY9pR3I1TUENL3rQYDQCFqgD+lM6fTRAM8Nv6Lsg5hDLaXkjETVeBt+7vZBCMoibD+6IWnT2mJ+Zb/A==}
@@ -9045,8 +9213,8 @@ packages:
       strip-literal: 2.1.0
       tinybench: 2.8.0
       tinypool: 0.8.4
-      vite: 5.2.13(@types/node@20.14.2)
-      vite-node: 1.6.0(@types/node@20.14.2)
+      vite: 5.2.13
+      vite-node: 1.6.0
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less

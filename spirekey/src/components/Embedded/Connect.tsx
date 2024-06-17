@@ -1,5 +1,6 @@
 'use client';
 
+import type { Account } from '@kadena-spirekey/types';
 import { MonoManageAccounts } from '@kadena/react-icons';
 import {
   Notification,
@@ -15,7 +16,6 @@ import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { SpireKeySpinner } from '@/components/Spinners/SpireKeySpinner';
 import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
-import type { Account } from '@/context/types';
 import { publishEvent } from '@/utils/publishEvent';
 
 export default function Connect() {

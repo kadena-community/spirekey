@@ -1,4 +1,4 @@
-import type { Account } from '@kadena-spirekey/spirekey';
+import type { Account } from '@kadena-spirekey/types';
 
 import { SidebarManager } from '../sidebar-manager';
 import { onAccountConnected } from './events';

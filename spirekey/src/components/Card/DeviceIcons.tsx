@@ -1,6 +1,6 @@
+import type { Account, Device } from '@kadena-spirekey/types';
 import { Box } from '@kadena/react-ui';
 
-import type { Account, Device } from '@/context/types';
 import { getDeviceIcon } from '@/utils/getDeviceIcon';
 
 import * as styles from './Card.css';

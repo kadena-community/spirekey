@@ -1,0 +1,14 @@
+{
+  "name": "@kadena-spirekey/types",
+  "version": "0.0.1",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "@kadena/client": "^1.11.2"
+  }
+}

@@ -1,4 +1,4 @@
-import type { Account, Device } from '@/context/types';
+import type { Account, Device } from '@kadena-spirekey/types';
 
 export const getDeviceByPublicKey = (
   accounts: Account[],

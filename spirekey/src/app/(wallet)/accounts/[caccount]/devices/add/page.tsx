@@ -1,11 +1,13 @@
 'use client';
 
+import type { Device } from '@kadena-spirekey/types';
+import type { ICommand } from '@kadena/client';
+import { Stack } from '@kadena/react-ui';
+import dynamic from 'next/dynamic';
+
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
-import { Device } from '@/context/types';
-import { Stack } from '@kadena/react-ui';
-import { ICommand } from '@kadena/types';
-import dynamic from 'next/dynamic';
+
 import * as styles from './page.css';
 
 const AddDevice = dynamic(() => import('@/components/AddDevice/AddDevice'), {

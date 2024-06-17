@@ -1,8 +1,7 @@
+import type { Account } from '@kadena-spirekey/types';
 import classNames from 'classnames';
 import { Children, useLayoutEffect, useRef, useState } from 'react';
 import { InView } from 'react-intersection-observer';
-
-import type { Account } from '@/context/types';
 
 import * as styles from './Carousel.css';
 

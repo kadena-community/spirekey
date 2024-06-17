@@ -23,17 +23,3 @@ export type Device = {
   pendingRegistrationTx?: string;
   name?: string;
 };
-
-export type AccountRegistration = {
-  accountName: string;
-  alias: string;
-  color: string;
-  deviceType: string;
-  domain: string;
-  credentialId: string;
-  credentialPubkey: string;
-  networkId: string;
-  chainId?: ChainId;
-};
-
-export type AccountRecovery = Omit<AccountRegistration, 'accountName'>;

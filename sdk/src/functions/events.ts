@@ -1,26 +1,8 @@
-import { Account } from '@kadena-spirekey/spirekey';
-
-const supportedEvents = [
-  'connected',
-  'connected:minted',
-  'signed',
-  'signed:submittable',
-] as const;
-
-export type SpireKeyEventName = (typeof supportedEvents)[number];
-
-export type SpireKeyEventPayloads = {
-  connected: Account;
-  'connected:minted': Account;
-  signed: Record<string, { sig: string; pubKey?: string }>;
-  'signed:submittable': Record<string, { sig: string; pubKey?: string }>;
-};
-
-export type SpireKeyEvent = {
-  source: 'kadena-spirekey';
-  name: SpireKeyEventName;
-  payload: SpireKeyEventPayloads[SpireKeyEventName];
-};
+import type {
+  Account,
+  SpireKeyEventName,
+  SpireKeyEventPayloads,
+} from '@kadena-spirekey/types';
 
 export const publishEvent = <T extends SpireKeyEventName>(
   name: T,
@@ -49,7 +31,10 @@ export const onTransactionsSigned = (
   callback: (data: Record<string, { sig: string; pubKey?: string }>) => void,
 ): (() => void) => {
   const listener = (event: MessageEvent) => {
-    if (event.data.name === 'signed') {
+    if (
+      event.data.source === 'kadena-spirekey' &&
+      event.data.name === 'signed'
+    ) {
       callback(event.data.payload as SpireKeyEventPayloads['signed']);
     }
   };

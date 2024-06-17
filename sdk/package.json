@@ -38,13 +38,13 @@
     "test:watch": "vitest --no-coverage"
   },
   "dependencies": {
-    "@kadena-spirekey/spirekey": "workspace:*",
     "@kadena/client": "^1.11.2",
     "@kadena/react-ui": "^0.10.0",
     "@vanilla-extract/css": "^1.14.1"
   },
   "devDependencies": {
     "@crackle/cli": "^0.15.4",
+    "@kadena-spirekey/types": "workspace:^",
     "@vanilla-extract/esbuild-plugin": "^2.3.6",
     "@vanilla-extract/vite-plugin": "^4.0.7",
     "@vitest/coverage-v8": "^1.5.2",

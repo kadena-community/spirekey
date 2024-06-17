@@ -1,10 +1,11 @@
+import type { ChainId } from '@kadena/client';
 import { Box, Stack } from '@kadena/react-ui';
 import { motion } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useResizeObserver } from 'usehooks-ts';
 
 import { useAccounts } from '@/context/AccountsContext';
-import type { ChainId } from '@kadena/client';
+
 import { Account } from '../Account/Account';
 import { card, inner, wrapper } from './CardCollection.css';
 

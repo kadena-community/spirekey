@@ -1,5 +1,4 @@
-import type { Account } from '@/context/types';
-import { assertFulfilled } from '@/utils/assertFulfilled';
+import type { Account } from '@kadena-spirekey/types';
 import { ChainId, createTransaction } from '@kadena/client';
 import {
   composePactCommand,
@@ -7,6 +6,9 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
+
+import { assertFulfilled } from '@/utils/assertFulfilled';
+
 import { asyncPipe } from './asyncPipe';
 import { l1Client } from './client';
 

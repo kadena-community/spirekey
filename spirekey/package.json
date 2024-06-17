@@ -33,7 +33,6 @@
     "*.{ts,tsx,md}": "prettier --write"
   },
   "dependencies": {
-    "@kadena-spirekey/sdk": "workspace:^",
     "@kadena/client": "^1.11.2",
     "@kadena/cryptography-utils": "^0.4.4",
     "@kadena/fonts": "^0.0.1",
@@ -76,6 +75,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
+    "@kadena-spirekey/types": "workspace:^",
     "@kadena/pactjs-cli": "^1.11.2",
     "@testing-library/dom": "^10.1.0",
     "@testing-library/jest-dom": "^6.4.5",

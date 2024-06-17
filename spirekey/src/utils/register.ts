@@ -1,7 +1,7 @@
 import {
-  ChainId,
-  ITransactionDescriptor,
   createTransaction,
+  type ChainId,
+  type ITransactionDescriptor,
 } from '@kadena/client';
 import {
   addData,
@@ -12,7 +12,7 @@ import {
   setNetworkId,
 } from '@kadena/client/fp';
 
-import type { AccountRegistration } from '@/context/types';
+import type { AccountRegistration } from '@/context/AccountsContext';
 import {
   gasStation,
   genesisPrivateKey,

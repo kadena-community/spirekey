@@ -1,7 +1,7 @@
 import type {
   SpireKeyEventName,
   SpireKeyEventPayloads,
-} from '@kadena-spirekey/sdk';
+} from '@kadena-spirekey/types';
 
 export const publishEvent = <T extends SpireKeyEventName>(
   name: T,

@@ -1,8 +1,8 @@
+import type { Account } from '@kadena-spirekey/types';
 import { Heading, Stack } from '@kadena/react-ui';
 import Link from 'next/link';
 
 import { PlusCircle } from '@/components/icons/PlusCircle';
-import type { Account } from '@/context/types';
 
 import Card from './Card';
 import * as styles from './Card.css';

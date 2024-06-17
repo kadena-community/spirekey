@@ -1,5 +1,6 @@
 'use client';
 
+import type { Account, Device } from '@kadena-spirekey/types';
 import type { ICommand } from '@kadena/client';
 import { Box, ProgressCircle, Stack } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
@@ -11,7 +12,6 @@ import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
 import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
-import type { Account, Device } from '@/context/types';
 import { useAddDeviceForm } from '@/hooks/useAddDeviceForm';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { addDevice } from '@/utils/device';

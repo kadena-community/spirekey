@@ -1,7 +1,5 @@
+import type { Account, Device } from '@kadena-spirekey/types';
 import { ChainId, createTransaction } from '@kadena/client';
-
-import type { Account, Device } from '@/context/types';
-import { asyncPipe } from '@/utils/shared/asyncPipe';
 import {
   addData,
   addSigner,
@@ -10,6 +8,8 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
+
+import { asyncPipe } from '@/utils/shared/asyncPipe';
 
 export const transactionDeviceFromDevice = (device: Device) => ({
   name: `${device.deviceType}_${device.color}`,
