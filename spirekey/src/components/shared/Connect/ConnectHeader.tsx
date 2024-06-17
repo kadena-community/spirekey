@@ -4,14 +4,16 @@ import { useAccounts } from '@/context/AccountsContext';
 import { MonoSupervisorAccount } from '@kadena/react-icons';
 import { Box, ContentHeader, Stack } from '@kadena/react-ui';
 import './ConnectHeader.css';
+import { ChainId } from '@kadena/types';
 
 type Props = {
   returnUrl: string;
   reason: string;
   networkId?: string;
+  chainId?: ChainId;
 };
 
-export default function ConnectHeader({ returnUrl, reason, networkId }: Props) {
+export default function ConnectHeader({ returnUrl, reason, networkId, chainId }: Props) {
   const { accounts } = useAccounts();
 
   const filteredAccounts = accounts.filter(
@@ -48,7 +50,7 @@ export default function ConnectHeader({ returnUrl, reason, networkId }: Props) {
             </ButtonLink>
             <ButtonLink
               variant="primary"
-              href={`/register?redirectUrl=${Buffer.from(window.location.href).toString('base64')}&networkId=${networkId}`}
+              href={`/register?redirectUrl=${Buffer.from(window.location.href).toString('base64')}&networkId=${networkId}&chainId=${chainId}`}
             >
               Create
             </ButtonLink>

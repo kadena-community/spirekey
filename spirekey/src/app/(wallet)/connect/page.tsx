@@ -41,6 +41,7 @@ export default function Connect({ searchParams }: ConnectProps) {
         returnUrl={decodeURIComponent(returnUrl)}
         reason={decodeURIComponent(reason)}
         networkId={networkId}
+        chainId={chainId}
       />
       <CardCollection
         returnUrl={decodeURIComponent(returnUrl)}
