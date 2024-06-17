@@ -174,11 +174,6 @@
     min-approvals:integer
     min-registration-approvals:integer
   )
-    @model [
-      (property (> min-approvals 0))
-      (property (> min-registration-approvals 0))
-      (property (is-principal account))
-    ]
     (enforce (is-principal account) "Account must be a principal account")
     (with-capability (UPDATE_ACCOUNT account min-approvals min-registration-approvals)
       (update account-table account
@@ -261,13 +256,13 @@
         , 'min-registration-approvals := min-registration-approvals
         , 'devices                    := devices
         }
+        (emit-event (REGISTER_DEVICE account (at 'credential-id (at 0 devices))))
         (write account-table account
           { 'min-approvals              : min-approvals
           , 'min-registration-approvals : min-registration-approvals
           , 'devices                    : devices
           }
         )
-        (emit-event (REGISTER_DEVICE account (at 'credential-id (at 0 devices))))
       )
     )
   )

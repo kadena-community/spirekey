@@ -83,9 +83,14 @@
   )
 )
 (expect "An event to be fired after registering an account, containing the account name, credential-id and device index"
-  (env-events true)
+  (map (lambda (x) 
+      { 'name    :  (at 'name x)
+      , 'params  :  (at 'params x)
+      }
+    )
+    (env-events true)
+  )
   [{
-    "module-hash": "Ti4rbekt1idqjtN3SBoNXoeIpgTzgvURhHQ9pehQb90",
     "name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.REGISTER_DEVICE",
     "params": [
       "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
@@ -138,9 +143,14 @@
   ]
 )
 (expect "An event to be fired after adding a device to an account, containing the account name, credential-id and device index"
-  (env-events true)
+  (map (lambda (x) 
+      { 'name    :  (at 'name x)
+      , 'params  :  (at 'params x)
+      }
+    )
+    (env-events true)
+  )
   [{
-    "module-hash": "Ti4rbekt1idqjtN3SBoNXoeIpgTzgvURhHQ9pehQb90",
     "name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.REGISTER_DEVICE",
     "params": [
       "w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any"
@@ -297,20 +307,22 @@
     "cid-yubi"
   ]
 )
-
 (expect "An event to be fired after copying the account, containing the account name and credential-id"
-  (env-events true)
+  (map (lambda (x) 
+      { 'name    :  (at 'name x)
+      , 'params  :  (at 'params x)
+      }
+    )
+    (env-events true)
+  )
   [{
-    "module-hash": "Ti4rbekt1idqjtN3SBoNXoeIpgTzgvURhHQ9pehQb90",
     "name": "pact.X_YIELD",
     "params": ["14" "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.copy-account" ["w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any" "14"]]
   }, {
-    "module-hash": "Ti4rbekt1idqjtN3SBoNXoeIpgTzgvURhHQ9pehQb90",
     "name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.REGISTER_DEVICE",
     "params": ["w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any" "cid-yubi"]
   },
   {
-    "module-hash": "Ti4rbekt1idqjtN3SBoNXoeIpgTzgvURhHQ9pehQb90",
     "name": "pact.X_RESUME",
     "params": ["1" "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-guard.copy-account" ["w:ORId-8MN11eMhwFQKqOmYBNwV3QPZUjKdRThzOn1WLQ:keys-any" "14"]]
   }]
