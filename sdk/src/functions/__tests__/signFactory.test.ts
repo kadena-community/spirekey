@@ -75,7 +75,7 @@ describe('signFactory', () => {
     const promise = sign(transactions);
 
     await expect(promise).rejects.toThrow(
-      'Currently we only support signing one transaction at a time',
+      'Currently Kadena SpireKey only supports signing one transaction at a time',
     );
   });
 
