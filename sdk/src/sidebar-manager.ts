@@ -5,7 +5,15 @@ export class SidebarManager {
 
   public iframe: HTMLIFrameElement;
 
-  static makeIFrame = (baseUrl: string) => {
+  static manager: SidebarManager;
+
+  static getInstance(baseUrl: string) {
+    if (!SidebarManager.manager)
+      SidebarManager.manager = new SidebarManager(baseUrl);
+    return SidebarManager.manager;
+  }
+
+  private makeIFrame(baseUrl: string) {
     const iframe = document.createElement('iframe');
     iframe.classList.add(styles.spirekeySidebar);
     iframe.src = `${baseUrl}/embedded/sidebar`;
@@ -14,11 +22,11 @@ export class SidebarManager {
     document.body.appendChild(iframe);
 
     return iframe;
-  };
+  }
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
-    this.iframe = SidebarManager.makeIFrame(this.baseUrl);
+    this.iframe = this.makeIFrame(this.baseUrl);
   }
 
   public open() {

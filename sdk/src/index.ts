@@ -15,7 +15,7 @@ const initSpireKey = (
     hostUrl: 'https://spirekey.kadena.io',
   },
 ) => {
-  const sidebarManager = new SidebarManager(options.hostUrl);
+  const sidebarManager = SidebarManager.getInstance(options.hostUrl);
 
   onAccountConnected(() => {
     sidebarManager.close();
