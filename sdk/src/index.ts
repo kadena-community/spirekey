@@ -1,9 +1,8 @@
 import { connectFactory } from './functions/connectFactory';
-import { hideSidebarFactory } from './functions/hideSidebarFactory';
+import { onAccountConnected } from './functions/events';
 import { signFactory } from './functions/signFactory';
-import type { SpireKeyEvent, SpireKeyWindow } from './types';
-
-import * as styles from './styles.css';
+import { SidebarManager } from './sidebar-manager';
+import type { SpireKeyWindow } from './types';
 
 declare global {
   interface Window {
@@ -11,46 +10,27 @@ declare global {
   }
 }
 
-const onEvent = (callback: (data: SpireKeyEvent) => void): void => {
-  window.addEventListener('message', (event: MessageEvent) => {
-    if (event.data?.source === 'kadena-spirekey') {
-      callback(event.data);
-    }
-  });
-};
-
 const initSpireKey = (
   options: { hostUrl: string } = {
     hostUrl: 'https://spirekey.kadena.io',
   },
 ) => {
-  const iframe = document.createElement('iframe');
-  iframe.className = styles.spirekeySidebar;
-  iframe.src = `${options.hostUrl}/embedded/sidebar`;
-  iframe.allow = 'publickey-credentials-get *';
-  document.body.appendChild(iframe);
+  const sidebarManager = new SidebarManager(options.hostUrl);
 
-  const hideSidebar = hideSidebarFactory({ iframe });
-
-  window.addEventListener('message', (event) => {
-    if (
-      event.data?.source === 'kadena-spirekey' &&
-      event.data?.name === 'close-sidebar'
-    ) {
-      hideSidebar();
-    }
+  onAccountConnected(() => {
+    sidebarManager.close();
   });
 
   const functions = {
-    connect: connectFactory({ iframe, hideSidebar }),
-    sign: signFactory({ iframe }),
-    onEvent,
+    connect: connectFactory({ sidebarManager }),
+    sign: signFactory({ sidebarManager }),
   };
 
   window.spireKey = functions;
 
-  return functions;
+  return { functions };
 };
 
+export * from './functions/events';
 export * from './types';
-export { initSpireKey, onEvent };
+export { initSpireKey };

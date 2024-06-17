@@ -1,5 +1,9 @@
 'use client';
 
+import type { Account, Device } from '@kadena-spirekey/types';
+import type { ChainId, ITransactionDescriptor } from '@kadena/client';
+import { createContext, useContext, useEffect, useState } from 'react';
+
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { fundAccount } from '@/utils/fund';
 import {
@@ -11,9 +15,20 @@ import { retryPromises } from '@/utils/retryPromises';
 import { getAccountFromChains } from '@/utils/shared/account';
 import { l1Client } from '@/utils/shared/client';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
-import { ITransactionDescriptor } from '@kadena/client';
-import { createContext, useContext, useEffect, useState } from 'react';
-import { Account, AccountRecovery, AccountRegistration, Device } from './types';
+
+export type AccountRegistration = {
+  accountName: string;
+  alias: string;
+  color: string;
+  deviceType: string;
+  domain: string;
+  credentialId: string;
+  credentialPubkey: string;
+  networkId: string;
+  chainId?: ChainId;
+};
+
+export type AccountRecovery = Omit<AccountRegistration, 'accountName'>;
 
 const migrateAccountStructure = (
   account: Account & { network?: string },

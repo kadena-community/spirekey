@@ -1,10 +1,10 @@
+import type { Account } from '@kadena-spirekey/types';
 import { MonoCheck, MonoContentCopy } from '@kadena/react-icons';
 import { Stack, Text } from '@kadena/react-ui';
 import { useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'usehooks-ts';
 
 import { AccountRevealer } from '@/components/AccountRevealer/AccountRevealer';
-import type { Account } from '@/context/types';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 
 import * as styles from './AccountNetwork.css';

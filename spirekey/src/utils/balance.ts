@@ -1,4 +1,4 @@
-import type { Account } from '@/context/types';
+import type { Account } from '@kadena-spirekey/types';
 
 // Minimum is set to ten to always show some indication of balance
 const minimumPercentage = 10;

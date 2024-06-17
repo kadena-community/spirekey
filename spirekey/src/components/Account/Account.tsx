@@ -1,3 +1,4 @@
+import type { Account } from '@kadena-spirekey/types';
 import type { ChainId } from '@kadena/client';
 import { Grid, Stack } from '@kadena/react-ui';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -16,7 +17,6 @@ import { Button } from '@/components/shared/Button/Button';
 import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
-import type { Account } from '@/context/types';
 import { calculateBalancePercentage } from '@/utils/balance';
 import { onConnectWith } from '@/utils/connect';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';

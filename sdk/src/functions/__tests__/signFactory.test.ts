@@ -1,21 +1,22 @@
 import type { IUnsignedCommand } from '@kadena/client';
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 
+import { SidebarManager } from '../../sidebar-manager';
 import * as styles from '../../styles.css';
+import { publishEvent } from '../events';
 import { signFactory } from '../signFactory';
 
 vitest.mock('@kadena/client');
 
 describe('signFactory', () => {
   let sign: ReturnType<typeof signFactory>;
-  let iframe = document.createElement('iframe');
-  iframe.src = 'http://localhost:1337';
+  let sidebarManager = new SidebarManager('http://localhost:1337');
 
   beforeEach(() => {
-    iframe = document.createElement('iframe');
-    iframe.src = 'http://localhost:1337';
+    sidebarManager = new SidebarManager('http://localhost:1337');
+
     sign = signFactory({
-      iframe,
+      sidebarManager,
     });
   });
 
@@ -27,22 +28,16 @@ describe('signFactory', () => {
     };
     const promise = sign(transaction);
 
-    expect(iframe.classList.contains(styles.spirekeySidebarOpened)).toBe(true);
-    expect(iframe.src).toContain(`/embedded/sidebar#transaction=`);
-
-    window.dispatchEvent(
-      new MessageEvent('message', {
-        data: {
-          source: 'kadena-spirekey',
-          name: 'all-transaction-signatures',
-          payload: {
-            signatures: {
-              123: { sig: 'signature' },
-            },
-          },
-        },
-      }),
+    expect(
+      sidebarManager.iframe.classList.contains(styles.spirekeySidebarOpen),
+    ).toBe(true);
+    expect(sidebarManager.iframe.src).toContain(
+      `/embedded/sidebar#transaction=`,
     );
+
+    publishEvent('signed', {
+      '123': { sig: 'signature' },
+    });
 
     await expect(promise).resolves.toEqual({
       ...transaction,
@@ -50,33 +45,38 @@ describe('signFactory', () => {
     });
   });
 
-  it('signs multiple transactions', async () => {
+  it.skip('signs multiple transactions', async () => {
     const transactions: IUnsignedCommand[] = [
       { hash: '123', cmd: '{"code": "test1"}', sigs: [] },
       { hash: '456', cmd: '{"code": "test2"}', sigs: [] },
     ];
     const promise = sign(transactions);
 
-    expect(iframe.src).toContain(`/embedded/sidebar#transaction=`);
-
-    window.dispatchEvent(
-      new MessageEvent('message', {
-        data: {
-          name: 'all-transaction-signatures',
-          payload: {
-            signatures: {
-              123: { sig: 'signature1' },
-              456: { sig: 'signature2' },
-            },
-          },
-        },
-      }),
+    expect(sidebarManager.iframe.src).toContain(
+      `/embedded/sidebar#transaction=`,
     );
+
+    publishEvent('signed', {
+      '123': { sig: 'signature1' },
+      '456': { sig: 'signature2', pubKey: 'pubKey2' },
+    });
 
     await expect(promise).resolves.toEqual([
       { ...transactions[0], sigs: [{ sig: 'signature1' }] },
       { ...transactions[1], sigs: [{ sig: 'signature2' }] },
     ]);
+  });
+
+  it('throws when signing multiple transactions', async () => {
+    const transactions: IUnsignedCommand[] = [
+      { hash: '123', cmd: '{"code": "test1"}', sigs: [] },
+      { hash: '456', cmd: '{"code": "test2"}', sigs: [] },
+    ];
+    const promise = sign(transactions);
+
+    await expect(promise).rejects.toThrow(
+      'Currently Kadena SpireKey only supports signing one transaction at a time',
+    );
   });
 
   it('handles a timeout correctly', async () => {

@@ -38,15 +38,15 @@
     "test:watch": "vitest --no-coverage"
   },
   "dependencies": {
-    "@kadena-spirekey/spirekey": "workspace:*",
-    "@kadena/client": "^1.11.2",
-    "@kadena/react-ui": "^0.10.0",
-    "@vanilla-extract/css": "^1.14.1"
+    "@kadena/client": "^1.12.0",
+    "@kadena/react-ui": "^0.11.0",
+    "@vanilla-extract/css": "^1.15.3"
   },
   "devDependencies": {
     "@crackle/cli": "^0.15.4",
-    "@vanilla-extract/esbuild-plugin": "^2.3.6",
-    "@vanilla-extract/vite-plugin": "^4.0.7",
+    "@kadena-spirekey/types": "workspace:^",
+    "@vanilla-extract/esbuild-plugin": "^2.3.7",
+    "@vanilla-extract/vite-plugin": "^4.0.11",
     "@vitest/coverage-v8": "^1.5.2",
     "vitest": "^1.6.0"
   }

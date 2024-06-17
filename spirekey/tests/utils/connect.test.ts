@@ -1,10 +1,12 @@
-import type { Account } from '@/context/AccountsContext';
+import type { Account } from '@kadena-spirekey/types';
+import { Mock, describe, expect, it, vi } from 'vitest';
+
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { onConnectWith } from '@/utils/connect';
 import { l1Client } from '@/utils/shared/client';
-import { Mock, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@kadena/client');
+
 describe('connect', () => {
   describe('When connecting an account', () => {
     const account: Account = {

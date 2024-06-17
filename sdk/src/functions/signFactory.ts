@@ -5,10 +5,11 @@ import {
   type IUnsignedCommand,
 } from '@kadena/client';
 
-import * as styles from '../styles.css';
+import { SidebarManager } from '../sidebar-manager';
+import { onTransactionsSigned } from './events';
 
 export interface SignParams {
-  iframe: HTMLIFrameElement;
+  sidebarManager: SidebarManager;
   timeout?: number;
 }
 
@@ -18,12 +19,19 @@ type ReturnValue =
   | ICommand;
 
 export const signFactory = ({
-  iframe,
+  sidebarManager,
   timeout = 5 * 60 * 1000,
 }: SignParams): ISignFunction =>
   (async (transactionList) => {
     const isList = Array.isArray(transactionList);
     const transactions = isList ? transactionList : [transactionList];
+
+    if (transactions.length > 1) {
+      throw new Error(
+        'Currently Kadena SpireKey only supports signing one transaction at a time',
+      );
+    }
+
     const transactionsParams = transactions
       .map(
         (tx) =>
@@ -31,12 +39,12 @@ export const signFactory = ({
       )
       .join('&');
 
-    iframe.classList.add(styles.spirekeySidebarOpened);
-
-    const newSrc = new URL(iframe.src);
+    const newSrc = new URL(sidebarManager.iframe.src);
     newSrc.pathname = '/embedded/sidebar';
     newSrc.hash = `#${transactionsParams}`;
-    iframe.src = newSrc.toString();
+
+    sidebarManager.open();
+    sidebarManager.setIFramePath(`/embedded/sidebar#${transactionsParams}`);
 
     const timeoutPromise = new Promise<ReturnValue>((_, reject) =>
       setTimeout(
@@ -45,25 +53,20 @@ export const signFactory = ({
       ),
     );
 
-    let handleMessage: (event: MessageEvent) => void;
+    let removeListener: () => void;
 
     const eventListenerPromise = new Promise<ReturnValue>((resolve) => {
-      handleMessage = (event: MessageEvent) => {
-        if (event.data.name === 'all-transaction-signatures') {
-          const signedTransactions = transactions.map((tx) =>
-            addSignatures(tx, {
-              ...event.data.payload.signatures[tx.hash],
-            }),
-          );
+      removeListener = onTransactionsSigned((signatures) => {
+        const signedTransactions = transactions.map((tx) =>
+          addSignatures(tx, signatures[tx.hash]),
+        );
 
-          resolve(isList ? signedTransactions : signedTransactions[0]);
-        }
-      };
-
-      window.addEventListener('message', handleMessage);
+        resolve(isList ? signedTransactions : signedTransactions[0]);
+      });
     });
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
-      window.removeEventListener('message', handleMessage);
+      sidebarManager.close();
+      removeListener();
     });
   }) as ISignFunction;

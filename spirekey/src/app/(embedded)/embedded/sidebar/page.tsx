@@ -54,11 +54,12 @@ export default function SidebarSign() {
         height: '100%',
         padding: '25px',
         background: 'rgba(19, 30, 43, 0.8)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        marginBottom: '48px',
       }}
     >
-      <div style={{ paddingBlock: '10px' }}>
-        <button onClick={() => closeSidebar()}>Close</button>
-      </div>
       {transaction && <Sign transaction={transaction} />}
       {!transaction && <Connect />}
     </Box>

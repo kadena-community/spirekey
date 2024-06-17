@@ -1,4 +1,5 @@
-import { Account } from '@/context/AccountsContext';
+import type { Account } from '@kadena-spirekey/types';
+
 import { calculateBalancePercentage } from '@/utils/balance';
 import { describe, expect, it } from 'vitest';
 
@@ -10,6 +11,7 @@ const defaultAccount: Account = {
   networkId: 'development',
   minApprovals: 1,
   minRegistrationApprovals: 1,
+  chainIds: [],
 };
 
 describe('balance', () => {

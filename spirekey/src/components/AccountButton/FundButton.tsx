@@ -1,3 +1,4 @@
+import type { Account } from '@kadena-spirekey/types';
 import { MonoCheck, MonoClose, MonoLoading } from '@kadena/react-icons';
 import { Box, Stack, Text } from '@kadena/react-ui';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -5,7 +6,6 @@ import { FC, useEffect, useState } from 'react';
 
 import { Fund } from '@/components/icons/Fund';
 import { useNotifications } from '@/context/shared/NotificationsContext';
-import type { Account } from '@/context/types';
 import { fundAccount } from '@/utils/fund';
 
 import * as styles from './AccountButton.css';

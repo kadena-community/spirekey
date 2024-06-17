@@ -1,3 +1,4 @@
+import type { Account } from '@kadena-spirekey/types';
 import { Grid, GridItem } from '@kadena/react-ui';
 import classNames from 'classnames';
 import { Fragment } from 'react';
@@ -5,7 +6,6 @@ import useSWR from 'swr';
 
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { useNotifications } from '@/context/shared/NotificationsContext';
-import type { Account } from '@/context/types';
 import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 

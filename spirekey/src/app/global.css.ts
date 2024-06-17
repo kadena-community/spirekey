@@ -13,6 +13,7 @@ globalStyle('body', {
   backgroundAttachment: 'fixed',
   borderTop: `3px solid transparent`,
   borderBottom: `3px solid transparent`,
+  border: '0',
 });
 
 globalStyle('body.developer', {

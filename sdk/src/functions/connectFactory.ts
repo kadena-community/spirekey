@@ -1,17 +1,17 @@
-import type { Account } from '@kadena-spirekey/spirekey';
+import type { Account } from '@kadena-spirekey/types';
 
-import * as styles from '../styles.css';
+import { SidebarManager } from '../sidebar-manager';
+import { onAccountConnected } from './events';
 
 export interface ConnectParams {
-  iframe: HTMLIFrameElement;
-  hideSidebar: () => void;
+  sidebarManager: SidebarManager;
   timeout?: number;
 }
 
 export const connectFactory =
-  ({ iframe, hideSidebar, timeout = 5 * 60 * 1000 }: ConnectParams) =>
+  ({ sidebarManager, timeout = 5 * 60 * 1000 }: ConnectParams) =>
   (): Promise<Account> => {
-    iframe.classList.add(styles.spirekeySidebarOpened);
+    sidebarManager.open();
 
     const timeoutPromise = new Promise<Account>((_, reject) =>
       setTimeout(
@@ -20,20 +20,16 @@ export const connectFactory =
       ),
     );
 
-    let handleMessage: (event: MessageEvent) => void;
+    let removeListener: () => void;
 
     const eventListenerPromise = new Promise<Account>((resolve) => {
-      handleMessage = (event: MessageEvent) => {
-        if (event.data.name === 'account-connected') {
-          resolve(event.data.payload);
-        }
-      };
-
-      window.addEventListener('message', handleMessage);
+      removeListener = onAccountConnected((account: Account) => {
+        resolve(account);
+      });
     });
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
-      hideSidebar();
-      window.removeEventListener('message', handleMessage);
+      sidebarManager.close();
+      removeListener();
     });
   };

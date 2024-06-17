@@ -1,8 +1,8 @@
+import type { Account, Device } from '@kadena-spirekey/types';
 import { ICommand, addSignatures } from '@kadena/client';
 import { startAuthentication } from '@simplewebauthn/browser';
 
 import { useAccounts } from '@/context/AccountsContext';
-import type { Account, Device } from '@/context/types';
 import { getSignature } from '@/utils/getSignature';
 
 const getPubkey = (

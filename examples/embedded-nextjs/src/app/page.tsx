@@ -2,27 +2,20 @@
 
 import {
   initSpireKey,
+  onAccountConnected,
   type Account,
-  type SpireKeyEvent,
 } from '@kadena-spirekey/sdk';
 import { transfer } from '@kadena/client-utils/coin';
 import { useEffect, useState } from 'react';
 
-import styles from './styles.module.css';
-
 export default function Home() {
-  const [events, setEvents] = useState<SpireKeyEvent[]>([]);
   const [account, setAccount] = useState<Account>();
 
   useEffect(() => {
-    const { onEvent } = initSpireKey({ hostUrl: 'http://localhost:1337' });
+    initSpireKey({ hostUrl: 'http://localhost:1337' });
 
-    onEvent((event) => {
-      setEvents((events) => [...events, event]);
-
-      if (event.name === 'account-connected') {
-        setAccount(event.payload as Account);
-      }
+    onAccountConnected((account) => {
+      setAccount(account);
     });
   }, []);
 
@@ -35,7 +28,12 @@ export default function Home() {
       {
         sender: {
           account: account.accountName,
-          publicKeys: [account.devices[0].guard.keys[0]],
+          publicKeys: [
+            {
+              pubKey: account.devices[0].guard.keys[0],
+              scheme: 'WebAuthn',
+            },
+          ],
         },
         receiver: 'k:abcd',
         amount: '1',
@@ -60,31 +58,10 @@ export default function Home() {
       )}
       {account && (
         <>
-          <div>{account.alias}</div>
+          Connected as {account.alias} ({account.accountName}){' '}
           <button onClick={signTransaction}>Sign</button>
         </>
       )}
-
-      <details>
-        <summary>View events</summary>
-        <div>
-          {events.map((event, i) => (
-            <div key={i} className={styles.event}>
-              <div>
-                <strong>Name</strong>
-                <br /> {event.name}
-              </div>
-
-              {event.payload && (
-                <div>
-                  <strong>Payload</strong>
-                  <pre>{JSON.stringify(event.payload, null, 2)}</pre>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </details>
     </main>
   );
 }
