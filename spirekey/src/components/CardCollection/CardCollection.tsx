@@ -92,7 +92,7 @@ export default function CardCollection({
                 }}
                 className={card({ variant: getCardVariant(i) })}
                 style={{
-                  zIndex: `${i}`,
+                  zIndex: `${activeCard === i ? accounts.length : i}`,
                   marginBlockEnd: `${
                     hasActiveCard ? marginBlockEnd : cardOverlap
                   }px`,
