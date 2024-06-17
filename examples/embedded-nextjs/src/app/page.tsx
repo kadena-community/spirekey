@@ -28,7 +28,12 @@ export default function Home() {
       {
         sender: {
           account: account.accountName,
-          publicKeys: [account.devices[0].guard.keys[0]],
+          publicKeys: [
+            {
+              pubKey: account.devices[0].guard.keys[0],
+              scheme: 'WebAuthn',
+            },
+          ],
         },
         receiver: 'k:abcd',
         amount: '1',

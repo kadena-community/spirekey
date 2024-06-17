@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@kadena-spirekey/sdk": "workspace:*",
-    "@kadena/client-utils": "^0.6.0",
+    "@kadena/client-utils": "^0.7.0",
     "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18"

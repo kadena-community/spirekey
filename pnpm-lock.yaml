@@ -27,8 +27,8 @@ importers:
         specifier: workspace:*
         version: link:../../sdk
       '@kadena/client-utils':
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.7.0
+        version: 0.7.0
       next:
         specifier: 14.2.4
         version: 14.2.4(react-dom@18.3.1)(react@18.3.1)
@@ -1670,14 +1670,14 @@ packages:
     transitivePeerDependencies:
       - encoding
 
-  /@kadena/client-utils@0.6.0:
-    resolution: {integrity: sha512-xabDmP1sBLW4A/su9K0pf5PkjVAb7lVEm7IgWXvXA5YlfpZ0thznL7Pmp4DpCns3KQSA1u+HqEZKtCtqzlA2Gw==}
+  /@kadena/client-utils@0.7.0:
+    resolution: {integrity: sha512-y5VvJsV7zGqaqk1Od7f9z+4wlV6EDzZ0iLPmI/R63i/IQhbauKVD/rxrRue3YFQKGZibK0KDjWKMFPMVmSTSSg==}
     dependencies:
       '@kadena/chainweb-node-client': 0.6.2(encoding@0.1.13)
-      '@kadena/client': 1.11.2(encoding@0.1.13)
+      '@kadena/client': 1.12.0
       '@kadena/cryptography-utils': 0.4.4
       '@kadena/pactjs': 0.4.3
-      '@kadena/pactjs-cli': 1.11.2(encoding@0.1.13)
+      '@kadena/pactjs-cli': 1.12.0
       '@kadena/types': 0.6.2
       debug: 4.3.4
       js-yaml: 4.1.0
@@ -1807,6 +1807,41 @@ packages:
       - supports-color
       - uWebSockets.js
       - utf-8-validate
+    dev: true
+
+  /@kadena/pactjs-cli@1.12.0:
+    resolution: {integrity: sha512-o8MTHRZrdPT5tTOroqIW0gQetBH8tTQignFy029dHiZCgaQbm0/8xT5xYRXLbaSJ+8IC3esrSs6NPTyOKPZryQ==}
+    hasBin: true
+    dependencies:
+      '@kadena/client': 1.12.0
+      '@kadena/pactjs-generator': 1.12.0
+      commander: 11.1.0
+      cross-fetch: 3.1.8(encoding@0.1.13)
+      debug: 4.3.4
+      mkdirp: 1.0.4
+      prettier: 3.2.5
+      rimraf: 5.0.7
+      zod: 3.23.8
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - bufferutil
+      - encoding
+      - ioredis
+      - supports-color
+      - uWebSockets.js
+      - utf-8-validate
+    dev: false
 
   /@kadena/pactjs-generator@1.11.2:
     resolution: {integrity: sha512-OuEqOK2fOEXwn6gt2KpHcG+PNbRc0VeOmF2a4Cn2bO5qqXGRGHJ4BApFnwojIu0ub+WKYd5/2utayfRQCXOTVA==}
@@ -1814,6 +1849,15 @@ packages:
       memfs: 3.5.3
       moo: 0.5.2
       nearley: 2.20.1
+    dev: true
+
+  /@kadena/pactjs-generator@1.12.0:
+    resolution: {integrity: sha512-6IkSNaXv3yZOO1iK9N/t6sjYgKEfXuYKRcruaxdbqj/1qNoLMxEptAm+JgFXMHekHbpsTJK6/3PwFrrunPk4gw==}
+    dependencies:
+      memfs: 3.5.3
+      moo: 0.5.2
+      nearley: 2.20.1
+    dev: false
 
   /@kadena/pactjs@0.4.3:
     resolution: {integrity: sha512-EYqIrhw5YbGz7+10rq4QnqC9I22OfApCRfNIvrcq6Lwg0I04grFXCspgEFrgZO1ThTvG4nN0gs8DZl72HBleGw==}
