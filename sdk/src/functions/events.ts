@@ -15,7 +15,10 @@ export const onAccountConnected = (
   callback: (account: Account) => void,
 ): (() => void) => {
   const listener = (event: MessageEvent) => {
-    if (event.data.name === 'connected') {
+    if (
+      event.data.source === 'kadena-spirekey' &&
+      event.data.name === 'connected'
+    ) {
       callback(event.data.payload as SpireKeyEventPayloads['connected']);
     }
   };
