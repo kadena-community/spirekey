@@ -50,19 +50,6 @@ export const card = style({
   },
 });
 
-export const cardBackground = style([
-  atoms({
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-  }),
-  {
-    borderRadius: '1rem',
-    objectFit: 'cover',
-    objectPosition: 'center',
-  },
-]);
-
 export const cardContentContainer = style([
   atoms({
     height: '100%',

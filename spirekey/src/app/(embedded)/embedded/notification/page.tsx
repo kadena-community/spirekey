@@ -9,11 +9,18 @@ import spireKeyLogo from '@/assets/images/SpireKey-logo-animated.svg';
 import { SpireKeySpinner } from '@/components/Spinners/SpireKeySpinner';
 import { publishEvent } from '@/utils/publishEvent';
 
+import { deviceColors } from '@/styles/shared/tokens.css';
+import { hexadecimalToRGB } from '@/utils/color';
 import * as styles from './notification.css';
 
 export default function SidebarSign() {
   const [title, setTitle] = useState<string | null>('In Progress');
   const [isMinimized, setIsMinimized] = useState(false);
+
+  const { r, g, b } = hexadecimalToRGB(deviceColors.blue);
+
+  const colorStart = `rgba(${r}, ${g}, ${b}, 0)`;
+  const colorEnd = `rgba(${r}, ${g}, ${b}, 1)`;
 
   useEffect(() => {
     const getHash = () => {
@@ -56,6 +63,13 @@ export default function SidebarSign() {
       <div
         className={styles.wrapper}
         onClick={isMinimized ? maximize : () => {}}
+        style={
+          {
+            '--card-progress': `50%`,
+            '--card-progress-color-start': colorStart,
+            '--card-progress-color-end': colorEnd,
+          } as React.CSSProperties
+        }
       >
         <div>
           <Image
