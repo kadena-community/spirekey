@@ -134,7 +134,10 @@ const AccountsProvider = ({ children }: Props) => {
             chainIds,
           });
 
-          if (remoteAccount === null) {
+          if (
+            !remoteAccount?.chainIds?.length ||
+            !remoteAccount?.devices?.length
+          ) {
             throw new Error('Account not found on chain');
           }
 
@@ -151,16 +154,22 @@ const AccountsProvider = ({ children }: Props) => {
         } catch (e: unknown) {
           try {
             // @TODO: We should move the recovery to the retieval, so accounts can be recovered per chain
-            await retryPromises<ITransactionDescriptor>(() =>
-              recoverAccount({
-                alias,
-                networkId,
-                credentialPubkey: devices[0].guard.keys[0],
-                credentialId: devices[0]['credential-id'],
-                color: devices[0].color,
-                deviceType: devices[0].deviceType,
-                domain: host,
-              }),
+
+            await Promise.all(
+              chainIds.map((chainId) =>
+                retryPromises<ITransactionDescriptor>(() =>
+                  recoverAccount({
+                    alias,
+                    networkId,
+                    credentialPubkey: devices[0].guard.keys[0],
+                    credentialId: devices[0]['credential-id'],
+                    color: devices[0].color,
+                    deviceType: devices[0].deviceType,
+                    domain: host,
+                    chainId,
+                  }),
+                ),
+              ),
             );
           } catch (e: unknown) {
             console.error(
@@ -263,6 +272,7 @@ const AccountsProvider = ({ children }: Props) => {
     credentialId,
     credentialPubkey,
     networkId,
+    chainId: cid,
   }: AccountRecovery): Promise<ITransactionDescriptor> => {
     // TODO: remove this when we support mainnet
     if (networkId === 'mainnet01')
@@ -281,6 +291,7 @@ const AccountsProvider = ({ children }: Props) => {
       credentialId,
       credentialPubkey,
       networkId,
+      chainId: cid,
     });
 
     return {
