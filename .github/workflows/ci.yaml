@@ -21,7 +21,7 @@ jobs:
       - name: Runner setup
         uses: ./.github/actions/runner-setup
 
-      - name: Build
+      - name: Build & Test
         run: pnpm turbo build test
 
   e2e:
