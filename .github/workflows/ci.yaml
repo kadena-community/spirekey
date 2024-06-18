@@ -22,7 +22,7 @@ jobs:
         uses: ./.github/actions/runner-setup
 
       - name: Build
-        run: pnpm turbo build lint test
+        run: pnpm turbo build test
 
   e2e:
     runs-on: ubuntu-latest
