@@ -1,6 +1,6 @@
 'use client';
 
-import { MonoKeyboardArrowRight, MonoRemoveRedEye } from '@kadena/react-icons';
+import { MonoLastPage, MonoRemoveRedEye } from '@kadena/react-icons';
 import { Heading } from '@kadena/react-ui';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -38,17 +38,17 @@ export default function SidebarSign() {
   }, []);
 
   const minimize = () => {
-    publishEvent('toggle-notification');
+    publishEvent('minimize-notification');
     setIsMinimized(true);
   };
 
   const maximize = () => {
-    publishEvent('toggle-notification');
+    publishEvent('maximize-notification');
     setIsMinimized(false);
   };
 
   const showSidebarNotifications = () => {
-    publishEvent('toggle-sidebar-notifications');
+    publishEvent('show-notifications-sidebar');
   };
 
   return (
@@ -61,8 +61,8 @@ export default function SidebarSign() {
           <Image
             src={spireKeyLogo}
             alt="SpireKey Logo"
-            width={32}
-            height={32}
+            width={64}
+            height={64}
           />
         </div>
         <div>
@@ -72,7 +72,7 @@ export default function SidebarSign() {
           <MonoRemoveRedEye onClick={showSidebarNotifications} />
         </div>
         <div>
-          <MonoKeyboardArrowRight onClick={minimize} />
+          <MonoLastPage onClick={minimize} />
         </div>
       </div>
     </div>

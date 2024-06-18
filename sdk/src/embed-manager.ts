@@ -1,4 +1,19 @@
+import { SpireKeyEvent } from '@kadena-spirekey/types';
 import * as styles from './styles.css';
+
+const onSpireKeyEvent = (
+  eventName: string,
+  callback: (event: SpireKeyEvent) => void,
+) => {
+  window.addEventListener('message', (event: MessageEvent<SpireKeyEvent>) => {
+    if (
+      event.data.source === 'kadena-spirekey' &&
+      event.data.name === eventName
+    ) {
+      callback(event.data);
+    }
+  });
+};
 
 export class EmbedManager {
   public baseUrl: string;
@@ -29,24 +44,18 @@ export class EmbedManager {
     iframe.classList.add(styles.spirekeyNotification);
     iframe.src = `${baseUrl}/embedded/notification`;
 
-    window.addEventListener('message', (event) => {
-      if (
-        event.data.source === 'kadena-spirekey' &&
-        event.data.name === 'toggle-notification'
-      ) {
-        this.minimizeNotification();
-      }
+    onSpireKeyEvent('minimize-notification', () => {
+      this.minimizeNotification();
     });
 
-    window.addEventListener('message', (event) => {
-      if (
-        event.data.source === 'kadena-spirekey' &&
-        event.data.name === 'toggle-sidebar-notifications'
-      ) {
-        this.minimizeNotification();
-        this.openSidebar();
-        this.setSidebarPath('/embedded/sidebar/notifications');
-      }
+    onSpireKeyEvent('maximize-notification', () => {
+      this.maximizeNotification();
+    });
+
+    onSpireKeyEvent('show-notifications-sidebar', () => {
+      this.setSidebarPath('/embedded/sidebar/notifications');
+      this.hideNotification();
+      this.openSidebar();
     });
 
     document.body.appendChild(iframe);
@@ -73,10 +82,14 @@ export class EmbedManager {
   }
 
   public minimizeNotification() {
-    this.notification.classList.toggle(styles.spirekeyNotificationMinimized);
+    this.notification.classList.add(styles.spirekeyNotificationMinimized);
   }
 
-  public removeNotification() {
-    this.notification.remove();
+  public maximizeNotification() {
+    this.notification.classList.remove(styles.spirekeyNotificationMinimized);
+  }
+
+  public hideNotification() {
+    this.notification.classList.add(styles.spirekeyNotificationHidden);
   }
 }

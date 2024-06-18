@@ -34,9 +34,15 @@ export const spirekeyNotification = style({
   zIndex: 999999,
   transition:
     'transform 200ms cubic-bezier(0.33, 1, 0.68, 1), right 200ms cubic-bezier(0.33, 1, 0.68, 1)',
+  willChange: 'transform, right',
 });
 
 export const spirekeyNotificationMinimized = style({
   right: '0',
   transform: 'translateX(396px)',
+});
+
+export const spirekeyNotificationHidden = style({
+  right: 0,
+  transform: 'translateX(100%)',
 });

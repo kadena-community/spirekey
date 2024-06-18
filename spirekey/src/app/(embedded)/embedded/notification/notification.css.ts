@@ -1,4 +1,4 @@
-import { style } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 
 import { atoms } from '@kadena/react-ui/styles';
 
@@ -17,3 +17,9 @@ export const wrapper = style([
     background: 'rgba(255, 255, 255, 0.5)',
   },
 ]);
+
+globalStyle(`${wrapper} div`, {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+});
