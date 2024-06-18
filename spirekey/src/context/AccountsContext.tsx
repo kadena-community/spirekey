@@ -12,7 +12,10 @@ import {
   registerAccountOnChain,
 } from '@/utils/register';
 import { retryPromises } from '@/utils/retryPromises';
-import { getAccountFromChains } from '@/utils/shared/account';
+import {
+  getAccountFromChain,
+  getAccountFromChains,
+} from '@/utils/shared/account';
 import { l1Client } from '@/utils/shared/client';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 
@@ -156,8 +159,16 @@ const AccountsProvider = ({ children }: Props) => {
             // @TODO: We should move the recovery to the retieval, so accounts can be recovered per chain
 
             await Promise.all(
-              chainIds.map((chainId) =>
-                retryPromises<ITransactionDescriptor>(() =>
+              chainIds.map(async (chainId) => {
+                const acc = await getAccountFromChain({
+                  chainId,
+                  networkId,
+                  accountName,
+                });
+                if (acc?.devices?.length) return acc;
+                if (localAccount.devices.some((d) => d.pendingRegistrationTx))
+                  return localAccount;
+                return retryPromises<ITransactionDescriptor>(() =>
                   recoverAccount({
                     alias,
                     networkId,
@@ -168,8 +179,8 @@ const AccountsProvider = ({ children }: Props) => {
                     domain: host,
                     chainId,
                   }),
-                ),
-              ),
+                );
+              }),
             );
           } catch (e: unknown) {
             console.error(
