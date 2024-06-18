@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 
-import { SidebarManager } from '../../sidebar-manager';
+import { SidebarManager } from '../../embed-manager';
 import * as styles from '../../styles.css';
 import { connectFactory } from '../connectFactory';
 import { publishEvent } from '../events';

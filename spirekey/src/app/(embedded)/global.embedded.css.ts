@@ -1,3 +1,4 @@
+import '@kadena/react-ui/global';
 import { globalStyle } from '@vanilla-extract/css';
 
 globalStyle('html, body', {

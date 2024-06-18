@@ -4,12 +4,20 @@ import type {
   SpireKeyEventPayloads,
 } from '@kadena-spirekey/types';
 
-export const publishEvent = <T extends SpireKeyEventName>(
+export function publishEvent<T extends SpireKeyEventName>(
   name: T,
-  payload: SpireKeyEventPayloads[T],
-): void => {
+  ...args: SpireKeyEventPayloads[T] extends void
+    ? []
+    : [SpireKeyEventPayloads[T]]
+): void;
+
+export function publishEvent<T extends SpireKeyEventName>(
+  name: T,
+  ...args: any[]
+): void {
+  const payload = args[0];
   window.postMessage({ source: 'kadena-spirekey', name, payload }, '*');
-};
+}
 
 export const onAccountConnected = (
   callback: (account: Account) => void,

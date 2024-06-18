@@ -65,7 +65,7 @@ importers:
     dependencies:
       '@kadena/client':
         specifier: ^1.12.0
-        version: 1.12.0
+        version: 1.12.0(encoding@0.1.13)
       '@kadena/react-ui':
         specifier: ^0.11.0
         version: 0.11.0
@@ -95,8 +95,8 @@ importers:
   spirekey:
     dependencies:
       '@kadena/client':
-        specifier: ^1.11.2
-        version: 1.11.2(encoding@0.1.13)
+        specifier: ^1.12.0
+        version: 1.12.0(encoding@0.1.13)
       '@kadena/cryptography-utils':
         specifier: ^0.4.4
         version: 0.4.4
@@ -110,8 +110,8 @@ importers:
         specifier: ^0.0.3
         version: 0.0.3
       '@kadena/react-ui':
-        specifier: ^0.10.0
-        version: 0.10.0
+        specifier: ^0.11.0
+        version: 0.11.0
       '@kadena/types':
         specifier: ^0.6.2
         version: 0.6.2
@@ -1687,7 +1687,7 @@ packages:
     resolution: {integrity: sha512-y5VvJsV7zGqaqk1Od7f9z+4wlV6EDzZ0iLPmI/R63i/IQhbauKVD/rxrRue3YFQKGZibK0KDjWKMFPMVmSTSSg==}
     dependencies:
       '@kadena/chainweb-node-client': 0.6.2(encoding@0.1.13)
-      '@kadena/client': 1.12.0
+      '@kadena/client': 1.12.0(encoding@0.1.13)
       '@kadena/cryptography-utils': 0.4.4
       '@kadena/pactjs': 0.4.3
       '@kadena/pactjs-cli': 1.12.0
@@ -1745,7 +1745,7 @@ packages:
       - uWebSockets.js
       - utf-8-validate
 
-  /@kadena/client@1.12.0:
+  /@kadena/client@1.12.0(encoding@0.1.13):
     resolution: {integrity: sha512-Pg2pMC95e4XaYS8RjQIMauCyFtgFhBrQ98kv485npj+022XfZphD3dff7Q9hL+6QptTgvS6c4wB/JNU2Hta1Tw==}
     dependencies:
       '@kadena/chainweb-node-client': 0.6.2(encoding@0.1.13)
@@ -1826,7 +1826,7 @@ packages:
     resolution: {integrity: sha512-o8MTHRZrdPT5tTOroqIW0gQetBH8tTQignFy029dHiZCgaQbm0/8xT5xYRXLbaSJ+8IC3esrSs6NPTyOKPZryQ==}
     hasBin: true
     dependencies:
-      '@kadena/client': 1.12.0
+      '@kadena/client': 1.12.0(encoding@0.1.13)
       '@kadena/pactjs-generator': 1.12.0
       commander: 11.1.0
       cross-fetch: 3.1.8(encoding@0.1.13)
@@ -1881,32 +1881,6 @@ packages:
     resolution: {integrity: sha512-Sb99hRnUTX2/gMz3bf9eBZSQii7MlPE0JVVyP+vKSspYzavRO6XJNLnjT6Exod3enyiAcUcaHmpPhqrRpQ0cPw==}
     dependencies:
       react: 18.3.1
-    dev: false
-
-  /@kadena/react-ui@0.10.0:
-    resolution: {integrity: sha512-V9h/X34WoEuT1yUQK2t9NrsEQqJEu1979CT30IBUhsG3ELmqkG3EnzYgfI4GMP6eAtRFjESIHXyos51stv9dTw==}
-    dependencies:
-      '@kadena/react-icons': 0.0.3
-      '@react-aria/accordion': 3.0.0-alpha.25(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/focus': 3.17.1(react@18.3.1)
-      '@react-aria/selection': 3.17.3(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/utils': 3.24.1(react@18.3.1)
-      '@react-stately/table': 3.11.8(react@18.3.1)
-      '@react-stately/utils': 3.10.1(react@18.3.1)
-      '@react-types/grid': 3.2.6(react@18.3.1)
-      '@react-types/table': 3.9.5(react@18.3.1)
-      '@vanilla-extract/css': 1.14.2
-      '@vanilla-extract/css-utils': 0.1.4
-      '@vanilla-extract/recipes': 0.5.1(@vanilla-extract/css@1.14.2)
-      '@vanilla-extract/sprinkles': 1.6.1(@vanilla-extract/css@1.14.2)
-      classnames: 2.5.1
-      lodash.get: 4.4.2
-      lodash.mapvalues: 4.6.0
-      lodash.omit: 4.5.0
-      react: 18.3.1
-      react-aria: 3.33.1(react-dom@18.3.1)(react@18.3.1)
-      react-dom: 18.3.1(react@18.3.1)
-      react-stately: 3.31.1(react@18.3.1)
     dev: false
 
   /@kadena/react-ui@0.11.0:
@@ -4598,7 +4572,7 @@ packages:
       std-env: 3.7.0
       strip-literal: 2.1.0
       test-exclude: 6.0.0
-      vitest: 1.6.0
+      vitest: 1.6.0(@types/node@20.14.2)(jsdom@24.1.0)
     transitivePeerDependencies:
       - supports-color
     dev: true
