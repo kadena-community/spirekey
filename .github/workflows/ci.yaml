@@ -21,11 +21,8 @@ jobs:
       - name: Runner setup
         uses: ./.github/actions/runner-setup
 
-      - name: Build
-        run: pnpm build
-
-      - name: Test
-        run: pnpm test
+      - name: Build & Test
+        run: pnpm turbo build test
 
   e2e:
     runs-on: ubuntu-latest

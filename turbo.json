@@ -1,10 +1,17 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
-  "pipeline": {
+  "globalDependencies": [
+    "**/.env.*local"
+  ],
+  "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"],
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**"
+      ],
       "inputs": [
         "src/**",
         "public/**",
@@ -17,8 +24,13 @@
       ]
     },
     "build:e2e": {
-      "dependsOn": ["^build:e2e"],
-      "outputs": [".next/**", "!.next/cache/**"],
+      "dependsOn": [
+        "^build:e2e"
+      ],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**"
+      ],
       "inputs": [
         "src/**",
         "public/**",
@@ -30,13 +42,19 @@
       ]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": [
+        "^lint"
+      ]
     },
     "test": {
-      "dependsOn": ["^test"]
+      "dependsOn": [
+        "^test"
+      ]
     },
     "test:e2e": {
-      "dependsOn": ["build:e2e"],
+      "dependsOn": [
+        "build:e2e"
+      ],
       "inputs": [
         "pact/**",
         "e2e/**",
