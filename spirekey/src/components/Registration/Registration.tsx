@@ -13,6 +13,7 @@ import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { Box, Stack, Text } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';
+import { ChainId } from '@kadena/types';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -24,9 +25,14 @@ import { Surface } from '../Surface/Surface';
 interface Props {
   redirectUrl?: string;
   networkId?: string;
+  chainId?: ChainId;
 }
 
-export default function Registration({ redirectUrl, networkId }: Props) {
+export default function Registration({
+  redirectUrl,
+  networkId,
+  chainId,
+}: Props) {
   const router = useRouter();
   const { registerAccount, accounts } = useAccounts();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -39,9 +45,9 @@ export default function Registration({ redirectUrl, networkId }: Props) {
 
   const skipNetworkId = process.env.WALLET_NETWORK_ID && !devMode;
   const defaultFormData = {
-    networkId: skipNetworkId
-      ? process.env.WALLET_NETWORK_ID!
-      : networkId || getDevnetNetworkId(),
+    networkId:
+      networkId ||
+      (skipNetworkId ? process.env.WALLET_NETWORK_ID! : getDevnetNetworkId()),
     accountName: '',
   };
 
@@ -99,6 +105,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
       credentialId,
       domain: host,
       networkId: currentNetwork,
+      chainId,
     });
 
     completeRedirect();
@@ -138,7 +145,7 @@ export default function Registration({ redirectUrl, networkId }: Props) {
             networkId: currentNetwork,
             minApprovals: 1,
             minRegistrationApprovals: 1,
-            chainIds: [process.env.CHAIN_ID],
+            chainIds: [chainId || process.env.CHAIN_ID],
             devices: [
               {
                 'credential-id': '',

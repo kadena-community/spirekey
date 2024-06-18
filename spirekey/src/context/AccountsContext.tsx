@@ -105,11 +105,15 @@ const AccountsProvider = ({ children }: Props) => {
       for (const account of accounts) {
         for (const device of account.devices) {
           if (device.pendingRegistrationTx) {
-            pollForRegistrationTx({
-              requestKey: device.pendingRegistrationTx,
-              chainId: process.env.CHAIN_ID,
-              networkId: account.networkId,
-            });
+            await Promise.race(
+              account.chainIds.map((chainId) =>
+                pollForRegistrationTx({
+                  requestKey: device.pendingRegistrationTx!,
+                  chainId,
+                  networkId: account.networkId,
+                }),
+              ),
+            );
           }
         }
       }
@@ -191,6 +195,7 @@ const AccountsProvider = ({ children }: Props) => {
     credentialId,
     credentialPubkey,
     networkId,
+    chainId: cid,
   }: AccountRegistration): Promise<ITransactionDescriptor> => {
     const { requestKey, chainId } = await registerAccountOnChain({
       accountName,
@@ -200,6 +205,7 @@ const AccountsProvider = ({ children }: Props) => {
       credentialId,
       credentialPubkey,
       networkId,
+      chainId: cid,
     });
 
     const devices: Device[] = [
