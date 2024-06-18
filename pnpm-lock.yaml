@@ -74,7 +74,7 @@ importers:
         specifier: ^0.15.4
         version: 0.15.4(typescript@5.4.5)(webpack@5.92.0)
       '@kadena-spirekey/types':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../packages/types
       '@vanilla-extract/esbuild-plugin':
         specifier: ^2.3.7
@@ -213,7 +213,7 @@ importers:
         specifier: ^8.4.1
         version: 8.4.1
       '@kadena-spirekey/types':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../packages/types
       '@kadena/pactjs-cli':
         specifier: ^1.11.2
