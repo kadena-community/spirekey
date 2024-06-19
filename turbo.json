@@ -1,17 +1,11 @@
 {
+  "ui": "tui",
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [
-    "**/.env.*local"
-  ],
+  "globalDependencies": ["**/.env.*local"],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**"
-      ],
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"],
       "inputs": [
         "src/**",
         "public/**",
@@ -21,16 +15,12 @@
         ".env.production",
         ".env.local",
         ".env"
-      ]
+      ],
+      "outputLogs": "new-only"
     },
     "build:e2e": {
-      "dependsOn": [
-        "^build:e2e"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**"
-      ],
+      "dependsOn": ["^build:e2e"],
+      "outputs": [".next/**", "!.next/cache/**"],
       "inputs": [
         "src/**",
         "public/**",
@@ -39,28 +29,21 @@
         "next.config.js",
         ".env.test",
         ".env"
-      ]
+      ],
+      "outputLogs": "new-only"
     },
     "lint": {
-      "dependsOn": [
-        "^lint"
-      ]
+      "dependsOn": ["^lint"],
+      "outputLogs": "new-only"
     },
     "test": {
-      "dependsOn": [
-        "^test"
-      ]
+      "dependsOn": ["^test"],
+      "outputLogs": "new-only"
     },
     "test:e2e": {
-      "dependsOn": [
-        "build:e2e"
-      ],
-      "inputs": [
-        "pact/**",
-        "e2e/**",
-        "deploy.ts",
-        "playwright.config.ts"
-      ]
+      "dependsOn": ["build:e2e"],
+      "inputs": ["pact/**", "e2e/**", "deploy.ts", "playwright.config.ts"],
+      "outputLogs": "new-only"
     },
     "dev": {
       "cache": false,
