@@ -11,6 +11,7 @@ export default defineConfig({
     },
   },
   test: {
+    reporters: ['hanging-process'],
     include: ['{src,tests}/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     environment: 'jsdom',
     env: {
@@ -36,3 +37,4 @@ export default defineConfig({
     setupFiles: [path.resolve(__dirname, './tests/components/test-mocks.ts')],
   },
 });
+
