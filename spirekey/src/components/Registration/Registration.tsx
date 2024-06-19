@@ -77,13 +77,25 @@ export default function Registration({
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    let accountName = '';
     const { credentialId, publicKey } = await getNewWebauthnKey(
       `${alias} (${getNetworkDisplayName(currentNetwork)})`,
     );
     try {
-      accountName = await getAccountName(publicKey, currentNetwork);
+      const accountName = await getAccountName(publicKey, currentNetwork);
       setCurrentAccountName(accountName);
+
+      await registerAccount({
+        accountName,
+        alias,
+        color,
+        deviceType,
+        credentialPubkey: publicKey,
+        credentialId,
+        domain: host,
+        networkId: currentNetwork,
+        chainId,
+      });
+      completeRedirect();
     } catch (error: unknown) {
       if (error instanceof Error) {
         addNotification({
@@ -95,20 +107,6 @@ export default function Registration({
       }
       setIsSubmitting(false);
     }
-
-    await registerAccount({
-      accountName,
-      alias,
-      color,
-      deviceType,
-      credentialPubkey: publicKey,
-      credentialId,
-      domain: host,
-      networkId: currentNetwork,
-      chainId,
-    });
-
-    completeRedirect();
   };
 
   const completeRedirect = () => {
