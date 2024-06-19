@@ -5,8 +5,7 @@ import { Heading } from '@kadena/react-ui';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-import spireKeyLogo from '@/assets/images/SpireKey-logo-animated.svg';
-import { SpireKeySpinner } from '@/components/Spinners/SpireKeySpinner';
+import spireKeyLogo from '@/assets/images/spireKey-logo-animated.svg';
 import { publishEvent } from '@/utils/publishEvent';
 
 import { deviceColors } from '@/styles/shared/tokens.css';
