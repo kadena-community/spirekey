@@ -11,6 +11,7 @@ export default defineConfig({
     },
   },
   test: {
+    reporters: ['default', 'hanging-process'],
     include: ['{src,tests}/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     environment: 'jsdom',
     env: {
@@ -26,13 +27,14 @@ export default defineConfig({
       ],
       provider: 'v8',
       thresholds: {
-        lines: 23.25,
-        functions: 30.58,
-        branches: 44.91,
-        statements: 23.25,
+        lines: 23.53,
+        functions: 30.76,
+        branches: 46.27,
+        statements: 23.53,
         autoUpdate: true,
       },
     },
     setupFiles: [path.resolve(__dirname, './tests/components/test-mocks.ts')],
   },
 });
+

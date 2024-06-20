@@ -38,6 +38,7 @@ export default function Registration({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
   const [currentAccountName, setCurrentAccountName] = useState<string>('');
+  const [deviceType, setDeviceType] = useState<string>('security-key');
   const { host } = useReturnUrl();
   const { devMode } = useSettings();
   const { addNotification } = useNotifications();
@@ -70,20 +71,32 @@ export default function Registration({
   );
 
   const alias = `${accountPrefix} ${numberOfSpireKeyAccounts + 1}`;
-  const deviceType = 'security-key';
   const color = deviceColors.purple;
 
   const onSubmit: SubmitHandler<typeof defaultFormData> = async (data) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    let accountName = '';
-    const { credentialId, publicKey } = await getNewWebauthnKey(
+    const { credentialId, publicKey, deviceType } = await getNewWebauthnKey(
       `${alias} (${getNetworkDisplayName(currentNetwork)})`,
     );
     try {
-      accountName = await getAccountName(publicKey, currentNetwork);
+      const accountName = await getAccountName(publicKey, currentNetwork);
       setCurrentAccountName(accountName);
+
+      setDeviceType(deviceType);
+      await registerAccount({
+        accountName,
+        alias,
+        color,
+        deviceType,
+        credentialPubkey: publicKey,
+        credentialId,
+        domain: host,
+        networkId: currentNetwork,
+        chainId,
+      });
+      completeRedirect();
     } catch (error: unknown) {
       if (error instanceof Error) {
         addNotification({
@@ -95,20 +108,6 @@ export default function Registration({
       }
       setIsSubmitting(false);
     }
-
-    await registerAccount({
-      accountName,
-      alias,
-      color,
-      deviceType,
-      credentialPubkey: publicKey,
-      credentialId,
-      domain: host,
-      networkId: currentNetwork,
-      chainId,
-    });
-
-    completeRedirect();
   };
 
   const completeRedirect = () => {
