@@ -1,17 +1,17 @@
 import type { Account } from '@kadena-spirekey/types';
 
-import { SidebarManager } from '../sidebar-manager';
+import { EmbedManager } from '../embed-manager';
 import { onAccountConnected } from './events';
 
 export interface ConnectParams {
-  sidebarManager: SidebarManager;
+  embedManager: EmbedManager;
   timeout?: number;
 }
 
 export const connectFactory =
-  ({ sidebarManager, timeout = 5 * 60 * 1000 }: ConnectParams) =>
+  ({ embedManager, timeout = 5 * 60 * 1000 }: ConnectParams) =>
   (): Promise<Account> => {
-    sidebarManager.open();
+    embedManager.openSidebar();
 
     const timeoutPromise = new Promise<Account>((_, reject) =>
       setTimeout(
@@ -29,7 +29,7 @@ export const connectFactory =
     });
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
-      sidebarManager.close();
+      embedManager.closeSidebar();
       removeListener();
     });
   };

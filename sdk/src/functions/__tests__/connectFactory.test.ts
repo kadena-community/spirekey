@@ -1,18 +1,18 @@
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 
-import { SidebarManager } from '../../sidebar-manager';
+import { EmbedManager } from '../../embed-manager';
 import * as styles from '../../styles.css';
 import { connectFactory } from '../connectFactory';
 import { publishEvent } from '../events';
 
 describe('connectFactory', () => {
   let connect: ReturnType<typeof connectFactory>;
-  let sidebarManager = new SidebarManager('http://localhost:1337');
+  let embedManager = new EmbedManager('http://localhost:1337');
 
   beforeEach(() => {
-    sidebarManager = new SidebarManager('http://localhost:1337');
+    embedManager = new EmbedManager('http://localhost:1337');
     connect = connectFactory({
-      sidebarManager,
+      embedManager,
     });
   });
 
@@ -20,10 +20,10 @@ describe('connectFactory', () => {
     const promise = connect();
 
     expect(
-      sidebarManager.iframe.classList.contains(styles.spirekeySidebarOpen),
+      embedManager.sidebar.classList.contains(styles.spirekeySidebarOpen),
     ).toBe(true);
-    expect(sidebarManager.iframe.src).toContain(`/embedded/sidebar`);
-    expect(sidebarManager.iframe.src).not.toContain(`transaction=`);
+    expect(embedManager.sidebar.src).toContain(`/embedded/sidebar`);
+    expect(embedManager.sidebar.src).not.toContain(`transaction=`);
 
     publishEvent('connected', {
       accountName: 'test',

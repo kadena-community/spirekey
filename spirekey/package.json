@@ -33,12 +33,12 @@
     "*.{ts,tsx,md}": "prettier --write"
   },
   "dependencies": {
-    "@kadena/client": "^1.11.2",
+    "@kadena/client": "^1.12.0",
     "@kadena/cryptography-utils": "^0.4.4",
     "@kadena/fonts": "^0.0.1",
     "@kadena/pactjs": "^0.4.3",
     "@kadena/react-icons": "^0.0.3",
-    "@kadena/react-ui": "^0.10.0",
+    "@kadena/react-ui": "^0.11.0",
     "@kadena/types": "^0.6.2",
     "@playwright/test": "^1.44.1",
     "@react-aria/utils": "^3.24.1",

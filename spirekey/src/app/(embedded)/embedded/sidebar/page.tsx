@@ -37,16 +37,6 @@ export default function SidebarSign() {
     };
   }, []);
 
-  const closeSidebar = () => {
-    window.parent.postMessage(
-      {
-        source: 'kadena-spirekey',
-        name: 'close-sidebar',
-      },
-      '*',
-    );
-  };
-
   return (
     <Box
       style={{

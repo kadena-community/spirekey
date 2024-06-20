@@ -1,11 +1,14 @@
-import type {
-  SpireKeyEventName,
-  SpireKeyEventPayloads,
-} from '@kadena-spirekey/types';
+import type { SpireKeyEventName, SpireKeyEvents } from '@kadena-spirekey/types';
 
-export const publishEvent = <T extends SpireKeyEventName>(
+export function publishEvent<T extends SpireKeyEventName>(
   name: T,
-  payload: SpireKeyEventPayloads[T],
-): void => {
+  ...args: SpireKeyEvents[T] extends void ? [] : [SpireKeyEvents[T]]
+): void;
+
+export function publishEvent<T extends SpireKeyEventName>(
+  name: T,
+  ...args: any[]
+): void {
+  const payload = args[0];
   window.parent.postMessage({ source: 'kadena-spirekey', name, payload }, '*');
-};
+}

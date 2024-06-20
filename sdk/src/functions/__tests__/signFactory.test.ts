@@ -1,7 +1,7 @@
 import type { IUnsignedCommand } from '@kadena/client';
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 
-import { SidebarManager } from '../../sidebar-manager';
+import { EmbedManager } from '../../embed-manager';
 import * as styles from '../../styles.css';
 import { publishEvent } from '../events';
 import { signFactory } from '../signFactory';
@@ -10,13 +10,13 @@ vitest.mock('@kadena/client');
 
 describe('signFactory', () => {
   let sign: ReturnType<typeof signFactory>;
-  let sidebarManager = new SidebarManager('http://localhost:1337');
+  let embedManager = new EmbedManager('http://localhost:1337');
 
   beforeEach(() => {
-    sidebarManager = new SidebarManager('http://localhost:1337');
+    embedManager = new EmbedManager('http://localhost:1337');
 
     sign = signFactory({
-      sidebarManager,
+      embedManager,
     });
   });
 
@@ -29,9 +29,9 @@ describe('signFactory', () => {
     const promise = sign(transaction);
 
     expect(
-      sidebarManager.iframe.classList.contains(styles.spirekeySidebarOpen),
+      embedManager.sidebar.classList.contains(styles.spirekeySidebarOpen),
     ).toBe(true);
-    expect(sidebarManager.iframe.src).toContain(
+    expect(embedManager.sidebar.src).toContain(
       `/embedded/sidebar#transaction=`,
     );
 
@@ -52,7 +52,7 @@ describe('signFactory', () => {
     ];
     const promise = sign(transactions);
 
-    expect(sidebarManager.iframe.src).toContain(
+    expect(embedManager.sidebar.src).toContain(
       `/embedded/sidebar#transaction=`,
     );
 

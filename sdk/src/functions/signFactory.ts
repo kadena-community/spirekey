@@ -5,11 +5,11 @@ import {
   type IUnsignedCommand,
 } from '@kadena/client';
 
-import { SidebarManager } from '../sidebar-manager';
+import { EmbedManager } from '../embed-manager';
 import { onTransactionsSigned } from './events';
 
 export interface SignParams {
-  sidebarManager: SidebarManager;
+  embedManager: EmbedManager;
   timeout?: number;
 }
 
@@ -19,7 +19,7 @@ type ReturnValue =
   | ICommand;
 
 export const signFactory = ({
-  sidebarManager,
+  embedManager,
   timeout = 5 * 60 * 1000,
 }: SignParams): ISignFunction =>
   (async (transactionList) => {
@@ -39,12 +39,12 @@ export const signFactory = ({
       )
       .join('&');
 
-    const newSrc = new URL(sidebarManager.iframe.src);
+    const newSrc = new URL(embedManager.sidebar.src);
     newSrc.pathname = '/embedded/sidebar';
     newSrc.hash = `#${transactionsParams}`;
 
-    sidebarManager.open();
-    sidebarManager.setIFramePath(`/embedded/sidebar#${transactionsParams}`);
+    embedManager.openSidebar();
+    embedManager.setSidebarPath(`/embedded/sidebar#${transactionsParams}`);
 
     const timeoutPromise = new Promise<ReturnValue>((_, reject) =>
       setTimeout(
@@ -66,7 +66,7 @@ export const signFactory = ({
     });
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
-      sidebarManager.close();
+      embedManager.closeSidebar();
       removeListener();
     });
   }) as ISignFunction;

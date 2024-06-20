@@ -1,15 +1,21 @@
 import type {
   Account,
   SpireKeyEventName,
-  SpireKeyEventPayloads,
+  SpireKeyEvents,
 } from '@kadena-spirekey/types';
 
-export const publishEvent = <T extends SpireKeyEventName>(
+export function publishEvent<T extends SpireKeyEventName>(
   name: T,
-  payload: SpireKeyEventPayloads[T],
-): void => {
+  ...args: SpireKeyEvents[T] extends void ? [] : [SpireKeyEvents[T]]
+): void;
+
+export function publishEvent<T extends SpireKeyEventName>(
+  name: T,
+  ...args: any[]
+): void {
+  const payload = args[0];
   window.postMessage({ source: 'kadena-spirekey', name, payload }, '*');
-};
+}
 
 export const onAccountConnected = (
   callback: (account: Account) => void,
@@ -19,7 +25,7 @@ export const onAccountConnected = (
       event.data.source === 'kadena-spirekey' &&
       event.data.name === 'connected'
     ) {
-      callback(event.data.payload as SpireKeyEventPayloads['connected']);
+      callback(event.data.payload as SpireKeyEvents['connected']);
     }
   };
 
@@ -38,7 +44,7 @@ export const onTransactionsSigned = (
       event.data.source === 'kadena-spirekey' &&
       event.data.name === 'signed'
     ) {
-      callback(event.data.payload as SpireKeyEventPayloads['signed']);
+      callback(event.data.payload as SpireKeyEvents['signed']);
     }
   };
 

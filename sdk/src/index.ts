@@ -1,7 +1,7 @@
+import { EmbedManager } from './embed-manager';
 import { connectFactory } from './functions/connectFactory';
 import { onAccountConnected } from './functions/events';
 import { signFactory } from './functions/signFactory';
-import { SidebarManager } from './sidebar-manager';
 import type { SpireKeyWindow } from './types';
 
 declare global {
@@ -15,15 +15,15 @@ const initSpireKey = (
     hostUrl: 'https://spirekey.kadena.io',
   },
 ) => {
-  const sidebarManager = SidebarManager.getInstance(options.hostUrl);
+  const embedManager = EmbedManager.getInstance(options.hostUrl);
 
   onAccountConnected(() => {
-    sidebarManager.close();
+    embedManager.closeSidebar();
   });
 
   const functions = {
-    connect: connectFactory({ sidebarManager }),
-    sign: signFactory({ sidebarManager }),
+    connect: connectFactory({ embedManager }),
+    sign: signFactory({ embedManager }),
   };
 
   window.spireKey = functions;
