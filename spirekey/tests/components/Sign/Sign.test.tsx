@@ -1,7 +1,7 @@
 import Sign from '@/components/Sign/Sign';
 import { l1Client } from '@/utils/shared/client';
 import React from 'react';
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { Mock, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import MatchMediaMock from 'vitest-matchmedia-mock';
 import { cleanup, render, screen } from '../setup';
 import { mockAccount } from './mockAccount';
@@ -22,6 +22,33 @@ describe('Sign', () => {
           'localAccounts',
           JSON.stringify(mockAccount),
         );
+        (l1Client.local as Mock).mockResolvedValue({
+          result: {
+            status: 'success',
+            data: [
+              {
+                'min-registration-approvals': {
+                  int: 1,
+                },
+                devices: [
+                  {
+                    guard: {
+                      pred: 'keys-any',
+                      keys: ['WEBAUTHN-pubkey'],
+                    },
+                    domain: 'https://spirekey.kadena.io',
+                    'credential-id': 'fakecredid',
+                    name: 'phone_#D31510 ',
+                  },
+                ],
+                'min-approvals': {
+                  int: 1,
+                },
+              },
+              0,
+            ],
+          },
+        });
 
         render(
           <Sign
