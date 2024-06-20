@@ -1,7 +1,16 @@
 import Sign from '@/components/Sign/Sign';
 import { l1Client } from '@/utils/shared/client';
 import React from 'react';
-import { Mock, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import {
+  Mock,
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 import MatchMediaMock from 'vitest-matchmedia-mock';
 import { cleanup, render, screen } from '../setup';
 import { mockAccount } from './mockAccount';
@@ -77,6 +86,36 @@ describe('Sign', () => {
         );
         expect(
           screen.getByText('Redirecting you back to https://some.url/path'),
+        ).toBeVisible();
+      });
+    });
+    describe('And the account to sign for could not be retrieved from chain', () => {
+      beforeAll(() => {
+        vi
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+      });
+      afterAll(() => {
+        (console.error as Mock).mockReset();
+      });
+      it('should proceed with signing using locally stored data', () => {
+        window.localStorage.setItem(
+          'localAccounts',
+          JSON.stringify(mockAccount),
+        );
+        (l1Client.local as Mock).mockRejectedValue('Network error');
+
+        render(
+          <Sign
+            useHash
+            returnUrl="https://some.url/path"
+            transaction={mockTx}
+          />,
+        );
+        expect(
+          screen.getByText(
+            'Sign this transaction with the following credential: samSsQo2kizFNrLp_-hX_Q',
+          ),
         ).toBeVisible();
       });
     });
