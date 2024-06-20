@@ -3,7 +3,7 @@ import {
   bufferToBase64URLString,
   startRegistration,
 } from '@simplewebauthn/browser';
-import { RegistrationResponseJSON } from '@simplewebauthn/types';
+import { AuthenticatorTransportFuture, RegistrationResponseJSON } from '@simplewebauthn/types';
 import cbor from 'cbor';
 
 const getPublicKey = async (res: RegistrationResponseJSON) => {
@@ -20,6 +20,12 @@ const getPublicKey = async (res: RegistrationResponseJSON) => {
   const publicKeyBytes = authData.slice(55 + credentialIdLength);
 
   return Buffer.from(publicKeyBytes).toString('hex');
+};
+
+export const getDeviceType = (transports?: AuthenticatorTransportFuture[]) => {
+  if (transports?.includes('hybrid')) return 'phone'
+  if (transports?.includes('internal')) return 'desktop'
+  return 'security-key'
 };
 
 export const getNewWebauthnKey = async (displayName: string) => {
@@ -53,5 +59,6 @@ export const getNewWebauthnKey = async (displayName: string) => {
   return {
     credentialId: res.id,
     publicKey: await getPublicKey(res),
+    deviceType: getDeviceType(res.response.transports),
   };
 };
