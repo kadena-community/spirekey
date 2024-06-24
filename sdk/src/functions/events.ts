@@ -17,17 +17,21 @@ export function publishEvent<T extends SpireKeyEventName>(
   window.postMessage({ source: 'kadena-spirekey', name, payload }, '*');
 }
 
+const getEventListener =
+  <T extends SpireKeyEventName, K extends SpireKeyEvents[T]>(
+    eventName: T,
+    callback: (payload: K) => any,
+  ) =>
+  (event: MessageEvent) => {
+    if (event.data.source !== 'kadena-spirekey') return;
+    if (event.data.name !== eventName) return;
+    callback(event.data.payload);
+  };
+
 export const onAccountConnected = (
   callback: (account: Account) => void,
 ): (() => void) => {
-  const listener = (event: MessageEvent) => {
-    if (
-      event.data.source === 'kadena-spirekey' &&
-      event.data.name === 'connected'
-    ) {
-      callback(event.data.payload as SpireKeyEvents['connected']);
-    }
-  };
+  const listener = getEventListener('connected', callback)
 
   window.addEventListener('message', listener);
 
@@ -39,14 +43,7 @@ export const onAccountConnected = (
 export const onTransactionsSigned = (
   callback: (data: Record<string, { sig: string; pubKey?: string }>) => void,
 ): (() => void) => {
-  const listener = (event: MessageEvent) => {
-    if (
-      event.data.source === 'kadena-spirekey' &&
-      event.data.name === 'signed'
-    ) {
-      callback(event.data.payload as SpireKeyEvents['signed']);
-    }
-  };
+  const listener = getEventListener('signed', callback)
 
   window.addEventListener('message', listener);
 
