@@ -6,9 +6,12 @@
     "build#spirekey": {
       "dependsOn": ["build#sdk"]
     },
+    "build#examples": {
+      "dependsOn": ["build#sdk"]
+    },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "inputs": [
         "src/**",
         "public/**",
