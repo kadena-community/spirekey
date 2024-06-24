@@ -23,26 +23,26 @@ const getEventListener =
     callback(event.data.payload);
   };
 
+export const onSpireKeyEvent = <
+  T extends SpireKeyEventName,
+  K extends SpireKeyEvents[T],
+>(
+  eventName: T,
+  callback: (payload: K) => any,
+) => {
+  const listener = getEventListener(eventName, callback);
+
+  window.addEventListener('message', listener);
+
+  return () => {
+    window.removeEventListener('message', listener);
+  };
+};
+
 export const onAccountConnected = (
   callback: (account: Account) => void,
-): (() => void) => {
-  const listener = getEventListener('connected', callback);
-
-  window.addEventListener('message', listener);
-
-  return () => {
-    window.removeEventListener('message', listener);
-  };
-};
+): (() => void) => onSpireKeyEvent('connected', callback);
 
 export const onTransactionsSigned = (
-  callback: (data: Record<string, { sig: string; pubKey?: string }>) => void,
-): (() => void) => {
-  const listener = getEventListener('signed', callback);
-
-  window.addEventListener('message', listener);
-
-  return () => {
-    window.removeEventListener('message', listener);
-  };
-};
+  callback: (data: Record<string, { sig: string; pubKey?: string }[]>) => void,
+): (() => void) => onSpireKeyEvent('signed', callback);

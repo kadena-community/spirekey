@@ -1,19 +1,5 @@
-import { SpireKeyEvent } from '@kadena-spirekey/types';
+import { onSpireKeyEvent } from './functions/events';
 import * as styles from './styles.css';
-
-const onSpireKeyEvent = (
-  eventName: string,
-  callback: (event: SpireKeyEvent) => void,
-) => {
-  window.addEventListener('message', (event: MessageEvent<SpireKeyEvent>) => {
-    if (
-      event.data.source === 'kadena-spirekey' &&
-      event.data.name === eventName
-    ) {
-      callback(event.data);
-    }
-  });
-};
 
 export class EmbedManager {
   public baseUrl: string;
@@ -42,6 +28,7 @@ export class EmbedManager {
   private makeNotification(baseUrl: string) {
     const iframe = document.createElement('iframe');
     iframe.classList.add(styles.spirekeyNotification);
+    iframe.classList.add(styles.spirekeyNotificationHidden);
     iframe.src = `${baseUrl}/embedded/notification`;
 
     onSpireKeyEvent('minimize-notification', () => {
