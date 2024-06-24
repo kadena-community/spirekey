@@ -11,9 +11,9 @@ import {
 import Image from 'next/image';
 import { useState } from 'react';
 
-import logo from '@/assets/images/SpireKey-logo.svg';
+import SpireKeyLogo from '@/assets/images/SpireKey-logo.svg';
+import SpireKeyLogoAnimated from '@/assets/images/spireKey-logo-animated.svg';
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
-import { SpireKeySpinner } from '@/components/Spinners/SpireKeySpinner';
 import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
 import { publishEvent } from '@/utils/publishEvent';
@@ -32,7 +32,11 @@ export default function Connect() {
   return (
     <Stack flexDirection="column" gap="xxl">
       <Stack flexDirection="column" alignItems="center" gap="sm">
-        <Image src={logo} alt="SpireKey logo" style={{ marginTop: '2rem' }} />
+        <Image
+          src={SpireKeyLogo}
+          alt="SpireKey logo"
+          style={{ marginTop: '2rem' }}
+        />
       </Stack>
       {accounts.map((account) => (
         <Stack
@@ -63,7 +67,7 @@ export default function Connect() {
             >
               <Stack flexDirection="row" alignItems="center" gap="sm">
                 <Text>{connectingAccount ? 'Connecting' : 'Connect'}</Text>
-                {!!connectingAccount && <SpireKeySpinner size="xs" />}
+                {!!connectingAccount && <SpireKeyLogoAnimated />}
               </Stack>
             </Button>
           </Stack>
