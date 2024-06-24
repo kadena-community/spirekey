@@ -4,14 +4,20 @@ import { background } from './Surface.css';
 interface Props {
   children: React.ReactNode;
   onClick?: () => void;
+  onTouchStart?: () => void;
 }
 
 export function BaseSurface(
-  { children, onClick }: Props,
+  { children, onClick, onTouchStart }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   return (
-    <div ref={ref} className={background} onClick={onClick}>
+    <div
+      ref={ref}
+      className={background}
+      onClick={onClick}
+      onTouchStart={onTouchStart}
+    >
       {children}
     </div>
   );
