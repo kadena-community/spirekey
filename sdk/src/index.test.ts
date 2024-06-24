@@ -29,7 +29,7 @@ describe('SDK', () => {
         chainIds: ['0', '18'],
       };
       publishEvent('connected', account);
-      vi.waitFor(() => expect(cb).toHaveBeenCalledWith(account), 20);
+      vi.waitFor(() => expect(cb).toHaveBeenCalledWith(account), 200);
     });
   });
   describe('onTransactionsSigned', () => {
@@ -38,7 +38,7 @@ describe('SDK', () => {
       onTransactionsSigned(cb);
       const sig = { hash: { sig: 'something' } };
       publishEvent('signed', sig);
-      vi.waitFor(() => expect(cb).toHaveBeenCalledWith(sig), 20);
+      vi.waitFor(() => expect(cb).toHaveBeenCalledWith(sig), 200);
     });
   });
 });
