@@ -3,8 +3,8 @@ import type { Account } from './account';
 export type SpireKeyEvents = {
   connected: Account;
   'connected:minted': Account;
-  signed: Record<string, { sig: string; pubKey?: string }>;
-  'signed:submittable': Record<string, { sig: string; pubKey?: string }>;
+  signed: Record<string, { sig: string; pubKey?: string }[]>;
+  'signed:submittable': Record<string, { sig: string; pubKey?: string }[]>;
   'minimize-notification': void;
   'maximize-notification': void;
   'show-notifications-sidebar': void;
