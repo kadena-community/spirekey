@@ -7,11 +7,6 @@ import type {
 export function publishEvent<T extends SpireKeyEventName>(
   name: T,
   ...args: SpireKeyEvents[T] extends void ? [] : [SpireKeyEvents[T]]
-): void;
-
-export function publishEvent<T extends SpireKeyEventName>(
-  name: T,
-  ...args: any[]
 ): void {
   const payload = args[0];
   window.postMessage({ source: 'kadena-spirekey', name, payload }, '*');
@@ -31,7 +26,7 @@ const getEventListener =
 export const onAccountConnected = (
   callback: (account: Account) => void,
 ): (() => void) => {
-  const listener = getEventListener('connected', callback)
+  const listener = getEventListener('connected', callback);
 
   window.addEventListener('message', listener);
 
@@ -43,7 +38,7 @@ export const onAccountConnected = (
 export const onTransactionsSigned = (
   callback: (data: Record<string, { sig: string; pubKey?: string }>) => void,
 ): (() => void) => {
-  const listener = getEventListener('signed', callback)
+  const listener = getEventListener('signed', callback);
 
   window.addEventListener('message', listener);
 

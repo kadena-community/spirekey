@@ -35,6 +35,7 @@ describe('signFactory', () => {
       `/embedded/sidebar#transaction=`,
     );
 
+    // should refactor this to publish an array of signatured
     publishEvent('signed', {
       '123': { sig: 'signature' },
     });
