@@ -12,6 +12,12 @@ export type SpireKeyEvents = {
 
 export type SpireKeyEventName = keyof SpireKeyEvents;
 
+export type SpireKeyCallback<T extends SpireKeyEventName> = <
+  K extends SpireKeyEvents[T],
+>(
+  payload: K,
+) => void;
+
 export type SpireKeyEvent = {
   source: 'kadena-spirekey';
   name: SpireKeyEventName;

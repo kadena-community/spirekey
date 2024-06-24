@@ -1,5 +1,6 @@
 import type {
   Account,
+  SpireKeyCallback,
   SpireKeyEventName,
   SpireKeyEvents,
 } from '@kadena-spirekey/types';
@@ -39,10 +40,8 @@ export const onSpireKeyEvent = <
   };
 };
 
-export const onAccountConnected = (
-  callback: (account: Account) => void,
-): (() => void) => onSpireKeyEvent('connected', callback);
+export const onAccountConnected = (callback: SpireKeyCallback<'connected'>) =>
+  onSpireKeyEvent('connected', callback);
 
-export const onTransactionsSigned = (
-  callback: (data: Record<string, { sig: string; pubKey?: string }[]>) => void,
-): (() => void) => onSpireKeyEvent('signed', callback);
+export const onTransactionsSigned = (callback: SpireKeyCallback<'signed'>) =>
+  onSpireKeyEvent('signed', callback);
