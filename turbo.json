@@ -3,12 +3,6 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
   "tasks": {
-    "build#spirekey": {
-      "dependsOn": ["build#sdk"]
-    },
-    "build#examples": {
-      "dependsOn": ["build#sdk"]
-    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],

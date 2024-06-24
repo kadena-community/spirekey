@@ -50,10 +50,10 @@ export default function Sign(props: Props) {
     });
 
     publishEvent('signed', {
-      [tx.hash]: {
+      [tx.hash]: [{
         ...getSignature(res.response),
         pubKey: getPubkey(accounts, credentialId),
-      },
+      }],
     });
   };
 
