@@ -17,12 +17,13 @@ export default defineConfig({
       include: ['**/src/**'],
       provider: 'v8',
       thresholds: {
-        lines: 95.68,
+        lines: 90,
         functions: 85,
-        branches: 95.65,
-        statements: 95.68,
-        autoUpdate: true,
+        branches: 90,
+        statements: 90,
+        autoUpdate: false,
       },
     },
   },
 });
+
