@@ -13,13 +13,13 @@ importers:
         version: 3.2.5
       prettier-plugin-organize-imports:
         specifier: ^3.2.4
-        version: 3.2.4(prettier@3.2.5)(typescript@5.4.5)
+        version: 3.2.4(prettier@3.2.5)(typescript@5.5.2)
       prettier-plugin-packagejson:
         specifier: ^2.5.0
         version: 2.5.0(prettier@3.2.5)
       syncpack:
         specifier: 12.3.2
-        version: 12.3.2(typescript@5.4.5)
+        version: 12.3.2(typescript@5.5.2)
       turbo:
         specifier: ^2.0.4
         version: 2.0.4
@@ -52,8 +52,8 @@ importers:
         specifier: ^18
         version: 18.3.0
       typescript:
-        specifier: ^5
-        version: 5.4.5
+        specifier: ^5.5.2
+        version: 5.5.2
 
   packages/types:
     dependencies:
@@ -75,7 +75,7 @@ importers:
     devDependencies:
       '@crackle/cli':
         specifier: ^0.15.4
-        version: 0.15.4(typescript@5.4.5)(webpack@5.92.0)
+        version: 0.15.4(typescript@5.5.2)(webpack@5.92.0)
       '@kadena-spirekey/types':
         specifier: workspace:*
         version: link:../packages/types
@@ -88,6 +88,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^1.5.2
         version: 1.6.0(vitest@1.6.0)
+      typescript:
+        specifier: ^5.5.2
+        version: 5.5.2
       vitest:
         specifier: ^1.6.0
         version: 1.6.0
@@ -271,7 +274,7 @@ importers:
         version: 3.3.1
       prettier-plugin-organize-imports:
         specifier: ^3.2.4
-        version: 3.2.4(prettier@3.3.1)(typescript@5.4.5)
+        version: 3.2.4(prettier@3.3.1)(typescript@5.5.2)
       prettier-plugin-packagejson:
         specifier: ^2.5.0
         version: 2.5.0(prettier@3.3.1)
@@ -279,8 +282,8 @@ importers:
         specifier: ^4.15.1
         version: 4.15.1
       typescript:
-        specifier: ^5.4.5
-        version: 5.4.5
+        specifier: ^5.5.2
+        version: 5.5.2
       vitest:
         specifier: ^1.6.0
         version: 1.6.0(@types/node@20.14.2)(jsdom@24.1.0)
@@ -708,11 +711,11 @@ packages:
       - supports-color
     dev: true
 
-  /@crackle/cli@0.15.4(typescript@5.4.5)(webpack@5.92.0):
+  /@crackle/cli@0.15.4(typescript@5.5.2)(webpack@5.92.0):
     resolution: {integrity: sha512-ik+fgu863Us5FmFQYPvGUX4gGyrBlVr81MsYF07vk3dM2bkA3s8NCRUKMmd36kvFY6aQqVE0rM2EYemnZmzrQQ==}
     hasBin: true
     dependencies:
-      '@crackle/core': 0.33.3(typescript@5.4.5)(webpack@5.92.0)
+      '@crackle/core': 0.33.3(typescript@5.5.2)(webpack@5.92.0)
       yargs: 17.7.2
     transitivePeerDependencies:
       - '@swc/helpers'
@@ -729,7 +732,7 @@ packages:
       - webpack
     dev: true
 
-  /@crackle/core@0.33.3(typescript@5.4.5)(webpack@5.92.0):
+  /@crackle/core@0.33.3(typescript@5.5.2)(webpack@5.92.0):
     resolution: {integrity: sha512-v4Ztlszrb15HkV87KhEI7k7CTWXeMaVS9CTlwXgOoBMRN5NlQYMiPJiTJmeyBmdnznHnBRBBtva5HmF4evnpdQ==}
     peerDependencies:
       typescript: '>=5.2.2'
@@ -764,7 +767,7 @@ packages:
       react-dom: 18.3.1(react@18.3.1)
       resolve-from: 5.0.0
       rollup: 4.18.0
-      rollup-plugin-dts: 6.1.1(rollup@4.18.0)(typescript@5.4.5)
+      rollup-plugin-dts: 6.1.1(rollup@4.18.0)(typescript@5.5.2)
       rollup-plugin-node-externals: 7.1.2(rollup@4.18.0)
       semver: 7.6.2
       serialize-javascript: 6.0.2
@@ -772,7 +775,7 @@ packages:
       sort-package-json: 1.57.0
       tsx: 4.15.1
       type-fest: 3.13.1
-      typescript: 5.4.5
+      typescript: 5.5.2
       used-styles: 2.6.5
       vite: 5.2.13(@types/node@20.14.2)
     transitivePeerDependencies:
@@ -4572,7 +4575,7 @@ packages:
       std-env: 3.7.0
       strip-literal: 2.1.0
       test-exclude: 6.0.0
-      vitest: 1.6.0(@types/node@20.14.2)(jsdom@24.1.0)
+      vitest: 1.6.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5529,7 +5532,7 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
-  /cosmiconfig@9.0.0(typescript@5.4.5):
+  /cosmiconfig@9.0.0(typescript@5.5.2):
     resolution: {integrity: sha512-itvL5h8RETACmOTFc4UfIyB2RfEHi71Ax6E/PivVxq9NseKbOWpeyHEOIbmAw1rs8Ak0VursQNww7lf7YtUwzg==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -5542,7 +5545,7 @@ packages:
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
-      typescript: 5.4.5
+      typescript: 5.5.2
     dev: true
 
   /crc-32@1.2.2:
@@ -7699,7 +7702,7 @@ packages:
     resolution: {integrity: sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ==}
     dev: false
 
-  /prettier-plugin-organize-imports@3.2.4(prettier@3.2.5)(typescript@5.4.5):
+  /prettier-plugin-organize-imports@3.2.4(prettier@3.2.5)(typescript@5.5.2):
     resolution: {integrity: sha512-6m8WBhIp0dfwu0SkgfOxJqh+HpdyfqSSLfKKRZSFbDuEQXDDndb8fTpRWkUrX/uBenkex3MgnVk0J3b3Y5byog==}
     peerDependencies:
       '@volar/vue-language-plugin-pug': ^1.0.4
@@ -7713,10 +7716,10 @@ packages:
         optional: true
     dependencies:
       prettier: 3.2.5
-      typescript: 5.4.5
+      typescript: 5.5.2
     dev: true
 
-  /prettier-plugin-organize-imports@3.2.4(prettier@3.3.1)(typescript@5.4.5):
+  /prettier-plugin-organize-imports@3.2.4(prettier@3.3.1)(typescript@5.5.2):
     resolution: {integrity: sha512-6m8WBhIp0dfwu0SkgfOxJqh+HpdyfqSSLfKKRZSFbDuEQXDDndb8fTpRWkUrX/uBenkex3MgnVk0J3b3Y5byog==}
     peerDependencies:
       '@volar/vue-language-plugin-pug': ^1.0.4
@@ -7730,7 +7733,7 @@ packages:
         optional: true
     dependencies:
       prettier: 3.3.1
-      typescript: 5.4.5
+      typescript: 5.5.2
     dev: true
 
   /prettier-plugin-packagejson@2.5.0(prettier@3.2.5):
@@ -8275,7 +8278,7 @@ packages:
     dependencies:
       glob: 10.4.1
 
-  /rollup-plugin-dts@6.1.1(rollup@4.18.0)(typescript@5.4.5):
+  /rollup-plugin-dts@6.1.1(rollup@4.18.0)(typescript@5.5.2):
     resolution: {integrity: sha512-aSHRcJ6KG2IHIioYlvAOcEq6U99sVtqDDKVhnwt70rW6tsz3tv5OSjEiWcgzfsHdLyGXZ/3b/7b/+Za3Y6r1XA==}
     engines: {node: '>=16'}
     peerDependencies:
@@ -8284,7 +8287,7 @@ packages:
     dependencies:
       magic-string: 0.30.10
       rollup: 4.18.0
-      typescript: 5.4.5
+      typescript: 5.5.2
     optionalDependencies:
       '@babel/code-frame': 7.24.7
     dev: true
@@ -8786,7 +8789,7 @@ packages:
       tslib: 2.6.3
     dev: true
 
-  /syncpack@12.3.2(typescript@5.4.5):
+  /syncpack@12.3.2(typescript@5.5.2):
     resolution: {integrity: sha512-ePvaDfasxF8mwaPItN6urmABaH6FPT3/vJU+2DHt24j8EIKjgz6NCxXDx2bTXJXZ4QcEFwvoiu3EqaJsVrHvUg==}
     engines: {node: '>=16'}
     hasBin: true
@@ -8795,7 +8798,7 @@ packages:
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.0.0
-      cosmiconfig: 9.0.0(typescript@5.4.5)
+      cosmiconfig: 9.0.0(typescript@5.5.2)
       effect: 3.0.3
       enquirer: 2.4.1
       fast-check: 3.17.2
@@ -9095,8 +9098,8 @@ packages:
       mime-types: 2.1.35
     dev: true
 
-  /typescript@5.4.5:
-    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
+  /typescript@5.5.2:
+    resolution: {integrity: sha512-NcRtPEOsPFFWjobJEtfihkLCZCXZt/os3zf8nTxjVH3RvTSxjrCamJpbExGvYOF+tFHc3pA65qpdwPbzjohhew==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
