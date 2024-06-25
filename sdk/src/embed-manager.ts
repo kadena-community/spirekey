@@ -1,19 +1,5 @@
-import { SpireKeyEvent } from '@kadena-spirekey/types';
+import { onSpireKeyEvent } from './functions/events';
 import * as styles from './styles.css';
-
-const onSpireKeyEvent = (
-  eventName: string,
-  callback: (event: SpireKeyEvent) => void,
-) => {
-  window.addEventListener('message', (event: MessageEvent<SpireKeyEvent>) => {
-    if (
-      event.data.source === 'kadena-spirekey' &&
-      event.data.name === eventName
-    ) {
-      callback(event.data);
-    }
-  });
-};
 
 export class EmbedManager {
   public baseUrl: string;
@@ -23,15 +9,33 @@ export class EmbedManager {
 
   static manager: EmbedManager;
 
-  static getInstance(baseUrl: string) {
-    if (!EmbedManager.manager) EmbedManager.manager = new EmbedManager(baseUrl);
+  static getInstance(baseUrl?: string) {
+    if (!EmbedManager.manager)
+      EmbedManager.manager = new EmbedManager(
+        baseUrl || 'https://spirekey.kadena.io',
+      );
+    if (baseUrl) EmbedManager.manager.updateBaseUrl(baseUrl);
     return EmbedManager.manager;
+  }
+
+  private getSidebarUrl(baseUrl: string) {
+    return `${baseUrl}/embedded/sidebar`;
+  }
+
+  private getNotificationUrl(baseUrl: string) {
+    return `${baseUrl}/embedded/notification`;
+  }
+
+  public updateBaseUrl(baseUrl: string) {
+    this.baseUrl = baseUrl;
+    this.sidebar.src = this.getSidebarUrl(baseUrl)
+    this.notification.src = this.getNotificationUrl(baseUrl)
   }
 
   private makeSidebar(baseUrl: string) {
     const iframe = document.createElement('iframe');
     iframe.classList.add(styles.spirekeySidebar);
-    iframe.src = `${baseUrl}/embedded/sidebar`;
+    iframe.src = this.getSidebarUrl(baseUrl)
     iframe.allow = 'publickey-credentials-get *';
 
     document.body.appendChild(iframe);
@@ -42,7 +46,8 @@ export class EmbedManager {
   private makeNotification(baseUrl: string) {
     const iframe = document.createElement('iframe');
     iframe.classList.add(styles.spirekeyNotification);
-    iframe.src = `${baseUrl}/embedded/notification`;
+    iframe.classList.add(styles.spirekeyNotificationHidden);
+    iframe.src = this.getNotificationUrl(baseUrl)
 
     onSpireKeyEvent('minimize-notification', () => {
       this.minimizeNotification();

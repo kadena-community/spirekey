@@ -33,3 +33,6 @@ export const connectFactory =
       removeListener();
     });
   };
+
+export const connect = () =>
+  connectFactory({ embedManager: EmbedManager.getInstance() })();
