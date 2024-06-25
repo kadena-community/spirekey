@@ -7,8 +7,9 @@ import {
   sign,
   type Account,
 } from '@kadena-spirekey/sdk';
-import { createTransactionBuilder, Pact, createClient } from '@kadena/client';
-import { FormEvent, useEffect, useState } from 'react';
+import { createTransactionBuilder } from '@kadena/client';
+import { Button, NumberField, Stack, TextField } from '@kadena/react-ui';
+import { useEffect, useState, type FormEvent } from 'react';
 const ns = 'n_eef68e581f767dd66c4d4c39ed922be944ede505';
 export default function Home() {
   const [account, setAccount] = useState<Account>();
@@ -59,44 +60,36 @@ export default function Home() {
               { int: '1' },
               { decimal: '1' },
             ),
-            withCap(
-              `${ns}.webauthn-wallet.GAS`,
-              account.accountName,
-            ),
+            withCap(`${ns}.webauthn-wallet.GAS`, account.accountName),
           ],
         ),
       ),
     );
-    tx.setNetworkId('development')
-    sign([tx.createTransaction()])
+    tx.setNetworkId('development');
+    sign([tx.createTransaction()]);
   };
-
-  const onReceiverChange = (event: FormEvent<HTMLInputElement>) =>
-    setReceiver(event.currentTarget.value);
-  const onAmountChange = (event: FormEvent<HTMLInputElement>) =>
-    setAmount(parseFloat(event.currentTarget.value));
 
   return (
     <main>
       {!account && <button onClick={() => connect()}>Connect</button>}
       {account && (
-        <>
+        <Stack flexDirection="column" gap="md" margin="md">
           Connected as {account.alias} ({account.accountName}){' '}
-          <label>
-            receiver:
-            <input onChange={onReceiverChange} value={receiver} />
-          </label>
-          <label>
-            amount:
-            <input
-              onChange={onAmountChange}
-              value={amount}
-              min={0}
-              type="number"
-            />
-          </label>
-          <button onClick={signTransaction}>Sign</button>
-        </>
+          <TextField
+            type="text"
+            value={receiver}
+            onValueChange={setReceiver}
+            label="receiver"
+          />
+          <NumberField
+            value={amount}
+            minValue={0}
+            step={0.1}
+            onValueChange={setAmount}
+            label="amount"
+          />
+          <Button variant='primary' onClick={signTransaction}>Sign</Button>
+        </Stack>
       )}
     </main>
   );
