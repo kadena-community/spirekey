@@ -1,14 +1,18 @@
-import fingerprint from '@/assets/images/fingerprint.svg';
+import Fingerprint from '@/components/icons/Fingerprint/Fingerprint';
 import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
 import { Stack, Text } from '@kadena/react-ui';
-import Image from 'next/image';
 
 interface Props {
   isInProgress: boolean;
+  isSuccessful: boolean;
   onClick: () => void;
 }
 
-export default function Passkey({ isInProgress, onClick }: Props) {
+export default function Passkey({
+  isInProgress,
+  isSuccessful,
+  onClick,
+}: Props) {
   return (
     <SurfaceCard
       title="Passkey"
@@ -18,6 +22,7 @@ export default function Passkey({ isInProgress, onClick }: Props) {
           : 'Create your account with a Passkey'
       }
       onClick={onClick}
+      onTouchStart={onClick}
     >
       <Stack
         justifyContent="center"
@@ -25,12 +30,8 @@ export default function Passkey({ isInProgress, onClick }: Props) {
         flexDirection="column"
         gap="xs"
       >
-        <Image
-          src={fingerprint}
-          alt="fingerprint icon"
-          width={64}
-          height={64}
-        />
+        <Fingerprint animating={isInProgress} success={isSuccessful} />
+
         <Text variant="ui">Tap to continue</Text>
       </Stack>
     </SurfaceCard>

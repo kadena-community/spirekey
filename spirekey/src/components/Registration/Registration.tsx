@@ -1,5 +1,12 @@
 'use client';
 
+import type { ChainId } from '@kadena/client';
+import { Box, Stack, Text } from '@kadena/react-ui';
+import { atoms } from '@kadena/react-ui/styles';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+
 import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
 import { useSettings } from '@/context/SettingsContext';
@@ -11,12 +18,7 @@ import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { getAccountName } from '@/utils/register';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
-import { Box, Stack, Text } from '@kadena/react-ui';
-import { atoms } from '@kadena/react-ui/styles';
-import { ChainId } from '@kadena/types';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+
 import DeviceCard from '../Card/DeviceCard';
 import NetworkId from '../Form/NetworkId/NetworkId';
 import Passkey from '../Form/Passkey/Passkey';
@@ -33,15 +35,19 @@ export default function Registration({
   networkId,
   chainId,
 }: Props) {
-  const router = useRouter();
-  const { registerAccount, accounts } = useAccounts();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
   const [currentAccountName, setCurrentAccountName] = useState<string>('');
   const [deviceType, setDeviceType] = useState<string>('security-key');
+  const [succesfulAuthentication, setSuccesfulAuthentication] =
+    useState<boolean>(false);
+
+  const router = useRouter();
+  const { registerAccount, accounts } = useAccounts();
   const { host } = useReturnUrl();
   const { devMode } = useSettings();
   const { addNotification } = useNotifications();
+
   const accountPrefix = 'SpireKey Account';
 
   const skipNetworkId = process.env.WALLET_NETWORK_ID && !devMode;
@@ -77,14 +83,24 @@ export default function Registration({
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    const { credentialId, publicKey, deviceType } = await getNewWebauthnKey(
-      `${alias} (${getNetworkDisplayName(currentNetwork)})`,
-    );
     try {
-      const accountName = await getAccountName(publicKey, currentNetwork);
-      setCurrentAccountName(accountName);
+      var { credentialId, publicKey, deviceType } = await getNewWebauthnKey(
+        `${alias} (${getNetworkDisplayName(currentNetwork)})`,
+      );
+    } catch (error) {
+      console.error(error);
+      setIsSubmitting(false);
+      return;
+    }
 
+    try {
+      setSuccesfulAuthentication(true);
+      setIsSubmitting(false);
+      const accountName = await getAccountName(publicKey, currentNetwork);
+
+      setCurrentAccountName(accountName);
       setDeviceType(deviceType);
+
       await registerAccount({
         accountName,
         alias,
@@ -106,7 +122,6 @@ export default function Registration({
           timeout: 5000,
         });
       }
-      setIsSubmitting(false);
     }
   };
 
@@ -122,6 +137,7 @@ export default function Registration({
     }, 2000);
   };
 
+  // This should be fixed in another way, risk of side effects
   const decodedRedirectUrl = redirectUrl
     ? Buffer.from(redirectUrl, 'base64').toString()
     : '';
@@ -186,6 +202,7 @@ export default function Registration({
               )}
               <Passkey
                 isInProgress={isSubmitting}
+                isSuccessful={succesfulAuthentication}
                 onClick={handleSubmit(onSubmit)}
               />
             </Stack>

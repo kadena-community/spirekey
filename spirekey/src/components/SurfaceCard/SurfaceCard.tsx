@@ -6,6 +6,7 @@ interface Props {
   title?: string;
   description?: string | ReactNode;
   onClick?: () => void;
+  onTouchStart?: () => void;
   children: React.ReactNode;
 }
 
@@ -14,9 +15,10 @@ export const SurfaceCard: FC<Props> = ({
   description,
   children,
   onClick = () => {},
+  onTouchStart = () => {},
 }) => {
   return (
-    <Surface onClick={onClick}>
+    <Surface onClick={onClick} onTouchStart={onTouchStart}>
       <Box marginBlockEnd="lg">
         <Heading variant="h5">{title}</Heading>
         <Text>{description}</Text>
