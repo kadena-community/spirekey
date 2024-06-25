@@ -1,7 +1,7 @@
 import { EmbedManager } from './embed-manager';
-import { connectFactory } from './functions/connectFactory';
+import { connect, connectFactory } from './functions/connectFactory';
 import { onAccountConnected } from './functions/events';
-import { signFactory } from './functions/signFactory';
+import { sign, signFactory } from './functions/signFactory';
 import type { SpireKeyWindow } from './types';
 
 declare global {
@@ -33,4 +33,4 @@ const initSpireKey = (
 
 export * from './functions/events';
 export * from './types';
-export { initSpireKey };
+export { connect, initSpireKey, sign };

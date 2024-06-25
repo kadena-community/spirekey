@@ -1,24 +1,15 @@
 import type { IUnsignedCommand } from '@kadena/client';
-import { beforeEach, describe, expect, it, vitest } from 'vitest';
+import { describe, expect, it, vitest } from 'vitest';
 
 import { EmbedManager } from '../../embed-manager';
 import * as styles from '../../styles.css';
 import { publishEvent } from '../events';
-import { signFactory } from '../signFactory';
+import { sign } from '../signFactory';
 
 vitest.mock('@kadena/client');
 
 describe('signFactory', () => {
-  let sign: ReturnType<typeof signFactory>;
-  let embedManager = new EmbedManager('http://localhost:1337');
-
-  beforeEach(() => {
-    embedManager = new EmbedManager('http://localhost:1337');
-
-    sign = signFactory({
-      embedManager,
-    });
-  });
+  const embedManager = EmbedManager.getInstance('http://localhost:1337');
 
   it('signs a transaction', async () => {
     const transaction: IUnsignedCommand = {
@@ -26,7 +17,7 @@ describe('signFactory', () => {
       cmd: '{"code": "test"}',
       sigs: [],
     };
-    const promise = sign(transaction);
+    const promise = sign([transaction]);
 
     expect(
       embedManager.sidebar.classList.contains(styles.spirekeySidebarOpen),
@@ -37,13 +28,15 @@ describe('signFactory', () => {
 
     // should refactor this to publish an array of signatured
     publishEvent('signed', {
-      '123': { sig: 'signature' },
+      '123': [{ sig: 'signature' }],
     });
 
-    await expect(promise).resolves.toEqual({
-      ...transaction,
-      sigs: [{ sig: 'signature' }],
-    });
+    await expect(promise).resolves.toEqual([
+      {
+        ...transaction,
+        sigs: [{ sig: 'signature' }],
+      },
+    ]);
   });
 
   it.skip('signs multiple transactions', async () => {
@@ -58,8 +51,8 @@ describe('signFactory', () => {
     );
 
     publishEvent('signed', {
-      '123': { sig: 'signature1' },
-      '456': { sig: 'signature2', pubKey: 'pubKey2' },
+      '123': [{ sig: 'signature1' }],
+      '456': [{ sig: 'signature2', pubKey: 'pubKey2' }],
     });
 
     await expect(promise).resolves.toEqual([
@@ -87,7 +80,7 @@ describe('signFactory', () => {
       cmd: 'test',
       sigs: [],
     };
-    const promise = sign(transaction);
+    const promise = sign([transaction]);
 
     vitest.advanceTimersByTime(5 * 60 * 1000);
 

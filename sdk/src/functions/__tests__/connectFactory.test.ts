@@ -1,20 +1,12 @@
-import { beforeEach, describe, expect, it, vitest } from 'vitest';
+import { describe, expect, it, vitest } from 'vitest';
 
 import { EmbedManager } from '../../embed-manager';
 import * as styles from '../../styles.css';
-import { connectFactory } from '../connectFactory';
+import { connect } from '../connectFactory';
 import { publishEvent } from '../events';
 
 describe('connectFactory', () => {
-  let connect: ReturnType<typeof connectFactory>;
-  let embedManager = new EmbedManager('http://localhost:1337');
-
-  beforeEach(() => {
-    embedManager = new EmbedManager('http://localhost:1337');
-    connect = connectFactory({
-      embedManager,
-    });
-  });
+  let embedManager = EmbedManager.getInstance('http://localhost:1337');
 
   it('connects an account', async () => {
     const promise = connect();

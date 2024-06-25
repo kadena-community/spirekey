@@ -18,6 +18,9 @@ type ReturnValue =
   | IUnsignedCommand
   | ICommand;
 
+export const sign = (transactionList: IUnsignedCommand[]) =>
+  signFactory({ embedManager: EmbedManager.getInstance() })(transactionList);
+
 export const signFactory = ({
   embedManager,
   timeout = 5 * 60 * 1000,
@@ -55,10 +58,11 @@ export const signFactory = ({
 
     let removeListener: () => void;
 
+    // TODO: remove promise
     const eventListenerPromise = new Promise<ReturnValue>((resolve) => {
       removeListener = onTransactionsSigned((signatures) => {
-        const signedTransactions = transactions.map((tx) =>
-          addSignatures(tx, signatures[tx.hash]),
+        const signedTransactions = transactions.flatMap((tx) =>
+          signatures[tx.hash].map((sig) => addSignatures(tx, sig)),
         );
 
         resolve(isList ? signedTransactions : signedTransactions[0]);

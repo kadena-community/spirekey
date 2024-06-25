@@ -29,6 +29,9 @@ importers:
       '@kadena-spirekey/sdk':
         specifier: workspace:*
         version: link:../../sdk
+      '@kadena/client':
+        specifier: ^1.12.0
+        version: 1.12.0(encoding@0.1.13)
       '@kadena/client-utils':
         specifier: ^0.7.0
         version: 0.7.0
