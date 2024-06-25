@@ -9,15 +9,33 @@ export class EmbedManager {
 
   static manager: EmbedManager;
 
-  static getInstance(baseUrl: string) {
-    if (!EmbedManager.manager) EmbedManager.manager = new EmbedManager(baseUrl);
+  static getInstance(baseUrl?: string) {
+    if (!EmbedManager.manager)
+      EmbedManager.manager = new EmbedManager(
+        baseUrl || 'https://spirekey.kadena.io',
+      );
+    if (baseUrl) EmbedManager.manager.updateBaseUrl(baseUrl);
     return EmbedManager.manager;
+  }
+
+  private getSidebarUrl(baseUrl: string) {
+    return `${baseUrl}/embedded/sidebar`;
+  }
+
+  private getNotificationUrl(baseUrl: string) {
+    return `${baseUrl}/embedded/notification`;
+  }
+
+  public updateBaseUrl(baseUrl: string) {
+    this.baseUrl = baseUrl;
+    this.sidebar.src = this.getSidebarUrl(baseUrl)
+    this.notification.src = this.getNotificationUrl(baseUrl)
   }
 
   private makeSidebar(baseUrl: string) {
     const iframe = document.createElement('iframe');
     iframe.classList.add(styles.spirekeySidebar);
-    iframe.src = `${baseUrl}/embedded/sidebar`;
+    iframe.src = this.getSidebarUrl(baseUrl)
     iframe.allow = 'publickey-credentials-get *';
 
     document.body.appendChild(iframe);
@@ -29,7 +47,7 @@ export class EmbedManager {
     const iframe = document.createElement('iframe');
     iframe.classList.add(styles.spirekeyNotification);
     iframe.classList.add(styles.spirekeyNotificationHidden);
-    iframe.src = `${baseUrl}/embedded/notification`;
+    iframe.src = this.getNotificationUrl(baseUrl)
 
     onSpireKeyEvent('minimize-notification', () => {
       this.minimizeNotification();
