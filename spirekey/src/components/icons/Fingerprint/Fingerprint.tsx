@@ -60,6 +60,7 @@ const Fingerprint: React.FC<FingerprintProps> = ({
         [styles.animating]: isAnimating,
         [styles.success]: isSuccesful,
       })}
+      data-testid="fingerprint-icon"
     >
       <g>
         <path

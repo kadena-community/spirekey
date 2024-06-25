@@ -7,7 +7,7 @@ export class RegisterPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.passKeyBtn = this.page.getByAltText('fingerprint icon');
+    this.passKeyBtn = this.page.getByTestId('fingerprint-icon');
     this.alias = this.page.getByRole('heading', { level: 3 });
   }
 
