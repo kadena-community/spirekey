@@ -1,5 +1,5 @@
 import { getAccountsForTx } from '@/utils/consent';
-import { Account } from '@kadena-spirekey/types';
+import { Account, Device } from '@kadena-spirekey/types';
 import { type ChainId, createTransactionBuilder } from '@kadena/client';
 import { describe, expect, it } from 'vitest';
 
@@ -12,16 +12,27 @@ const createMockAccounts = ({
   chainId: ChainId;
   networkId: string;
 }): Account[] =>
-  pubKeys.map((pubKey, i) => ({
-    networkId,
-    accountName: `c:${pubKey}`,
-    chainIds: [chainId],
-    balance: '0.0',
-    alias: `SpireKey Account ${i}`,
-    minApprovals: 1,
-    minRegistrationApprovals: 1,
-    devices: [
-      {
+  pubKeys.map((pubKey, i) => {
+    const account = {
+      networkId,
+      accountName: `c:${pubKey}`,
+      chainIds: [chainId],
+      balance: '0.0',
+      alias: `SpireKey Account ${i}`,
+      minApprovals: 1,
+      minRegistrationApprovals: 1,
+      devices: [],
+    };
+
+    return addMockDevices(account, [pubKey]);
+  });
+
+const addMockDevices = (account: Account, pubKeys: string[]): Account => ({
+  ...account,
+  devices: [
+    ...account.devices,
+    ...pubKeys.map((pubKey) => {
+      const device: Device = {
         guard: {
           keys: [pubKey],
           pred: 'keys-any',
@@ -30,9 +41,11 @@ const createMockAccounts = ({
         domain: 'https://spirekey.kadena.io',
         deviceType: 'phone',
         'credential-id': 'credid',
-      },
-    ],
-  }));
+      };
+      return device;
+    }),
+  ],
+});
 
 const getTxFixture = ({
   pubKeys,
@@ -112,21 +125,43 @@ describe('consent', () => {
       });
     });
     describe('and there is one applicable account', () => {
-      it('should add the account to the accounts list', () => {
-        const pubKeys = ['WEBAUTHN-alice'];
-        const tx = getTxFixture({
-          pubKeys,
-          chainId: '4',
-          networkId: 'testnet04',
+      describe('and there is one one matching pubKey in the tx', () => {
+        it('should add the account to the accounts list', () => {
+          const pubKeys = ['WEBAUTHN-alice'];
+          const tx = getTxFixture({
+            pubKeys,
+            chainId: '4',
+            networkId: 'testnet04',
+          });
+          const accounts = createMockAccounts({
+            chainId: '4',
+            networkId: 'testnet04',
+            pubKeys,
+          });
+          const devices = getAccountsForTx(accounts)(tx);
+          expect(devices.accounts).toEqual(accounts);
+          expect(devices.candidates).toEqual([]);
         });
-        const accounts = createMockAccounts({
-          chainId: '4',
-          networkId: 'testnet04',
-          pubKeys,
+      });
+      describe('and there are multiple matching pubKeys', () => {
+        it('should only add the account to the accounts list once', () => {
+          const pubKeys = ['WEBAUTHN-alice', 'WEBAUTHN-alice-2'];
+          const tx = getTxFixture({
+            pubKeys,
+            chainId: '4',
+            networkId: 'testnet04',
+          });
+            console.warn("DEBUGPRINT[6]: consent.test.ts:149: tx=", tx)
+          const accounts = createMockAccounts({
+            chainId: '4',
+            networkId: 'testnet04',
+            pubKeys: [pubKeys[0]],
+          }).map((a) => addMockDevices(a, [pubKeys[1]]));
+          console.warn("DEBUGPRINT[5]: consent.test.ts:154: accounts=", accounts)
+          const devices = getAccountsForTx(accounts)(tx);
+          expect(devices.accounts).toEqual(accounts);
+          expect(devices.candidates).toEqual([]);
         });
-        const devices = getAccountsForTx(accounts)(tx);
-        expect(devices.accounts).toEqual(accounts);
-        expect(devices.candidates).toEqual([]);
       });
     });
   });
