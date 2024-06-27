@@ -1,4 +1,4 @@
-import type { Account } from '@kadena-spirekey/types';
+import type { Account } from '@kadena/spirekey-types';
 import { Grid, GridItem } from '@kadena/react-ui';
 import classNames from 'classnames';
 import { Fragment } from 'react';

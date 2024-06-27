@@ -1,4 +1,4 @@
-import type { Device } from '@kadena-spirekey/types';
+import type { Device } from '@kadena/spirekey-types';
 import { Box } from '@kadena/react-ui';
 import classNames from 'classnames';
 

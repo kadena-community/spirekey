@@ -26,9 +26,6 @@ importers:
 
   examples/embedded-nextjs:
     dependencies:
-      '@kadena-spirekey/sdk':
-        specifier: workspace:*
-        version: link:../../sdk
       '@kadena/client':
         specifier: ^1.12.0
         version: 1.12.0(encoding@0.1.13)
@@ -38,6 +35,9 @@ importers:
       '@kadena/react-ui':
         specifier: ^0.11.0
         version: 0.11.0
+      '@kadena/spirekey-sdk':
+        specifier: workspace:*
+        version: link:../../sdk
       next:
         specifier: 14.2.4
         version: 14.2.4(@babel/core@7.24.7)(@playwright/test@1.44.1)(react-dom@18.3.1)(react@18.3.1)
@@ -85,7 +85,7 @@ importers:
       '@crackle/cli':
         specifier: ^0.15.4
         version: 0.15.4(typescript@5.5.2)(webpack@5.92.0)
-      '@kadena-spirekey/types':
+      '@kadena/spirekey-types':
         specifier: workspace:*
         version: link:../packages/types
       '@vanilla-extract/esbuild-plugin':
@@ -227,12 +227,12 @@ importers:
       '@faker-js/faker':
         specifier: ^8.4.1
         version: 8.4.1
-      '@kadena-spirekey/types':
-        specifier: workspace:*
-        version: link:../packages/types
       '@kadena/pactjs-cli':
         specifier: ^1.11.2
         version: 1.11.2(encoding@0.1.13)
+      '@kadena/spirekey-types':
+        specifier: workspace:*
+        version: link:../packages/types
       '@testing-library/dom':
         specifier: ^10.1.0
         version: 10.1.0

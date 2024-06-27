@@ -1,6 +1,6 @@
 'use client';
 
-import type { Account, Device } from '@kadena-spirekey/types';
+import type { Account, Device } from '@kadena/spirekey-types';
 import type { ICommand } from '@kadena/client';
 import { Box, ProgressCircle, Stack } from '@kadena/react-ui';
 import { atoms } from '@kadena/react-ui/styles';

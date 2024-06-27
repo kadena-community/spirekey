@@ -1,4 +1,4 @@
-import type { SpireKeyEventName, SpireKeyEvents } from '@kadena-spirekey/types';
+import type { SpireKeyEventName, SpireKeyEvents } from '@kadena/spirekey-types';
 
 export function publishEvent<T extends SpireKeyEventName>(
   name: T,

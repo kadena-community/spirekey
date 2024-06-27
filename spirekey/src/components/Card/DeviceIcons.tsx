@@ -1,4 +1,4 @@
-import type { Account, Device } from '@kadena-spirekey/types';
+import type { Account, Device } from '@kadena/spirekey-types';
 import { Box } from '@kadena/react-ui';
 
 import { getDeviceIcon } from '@/utils/getDeviceIcon';

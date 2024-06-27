@@ -1,4 +1,4 @@
-import type { Account } from '@kadena-spirekey/types';
+import type { Account } from '@kadena/spirekey-types';
 import type { ICap } from '@kadena/client';
 
 export type CapabilityMeta = {

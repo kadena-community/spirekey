@@ -1,4 +1,4 @@
-import type { Account } from '@kadena-spirekey/types';
+import type { Account } from '@kadena/spirekey-types';
 import { Stack } from '@kadena/react-ui';
 import useSWR from 'swr';
 

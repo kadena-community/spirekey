@@ -1,6 +1,6 @@
 'use client';
 
-import type { Account } from '@kadena-spirekey/types';
+import type { Account } from '@kadena/spirekey-types';
 import { MonoManageAccounts } from '@kadena/react-icons';
 import {
   Notification,

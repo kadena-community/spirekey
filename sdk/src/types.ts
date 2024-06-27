@@ -1,4 +1,4 @@
-import type { Account } from '@kadena-spirekey/types';
+import type { Account } from '@kadena/spirekey-types';
 import { ISignFunction } from '@kadena/client';
 
 export interface SpireKeyWindow {
@@ -6,4 +6,4 @@ export interface SpireKeyWindow {
   sign: ISignFunction;
 }
 
-export type { Account, Device } from '@kadena-spirekey/types';
+export type { Account, Device } from '@kadena/spirekey-types';

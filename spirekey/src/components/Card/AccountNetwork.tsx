@@ -1,4 +1,4 @@
-import type { Account } from '@kadena-spirekey/types';
+import type { Account } from '@kadena/spirekey-types';
 import { MonoCheck, MonoContentCopy } from '@kadena/react-icons';
 import { Stack, Text } from '@kadena/react-ui';
 import { useEffect, useState } from 'react';

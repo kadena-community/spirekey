@@ -1,4 +1,4 @@
-import type { Account } from '@kadena-spirekey/types';
+import type { Account } from '@kadena/spirekey-types';
 import { Heading, Stack } from '@kadena/react-ui';
 import Link from 'next/link';
 

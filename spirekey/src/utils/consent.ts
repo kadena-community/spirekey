@@ -1,4 +1,4 @@
-import { Account } from '@kadena-spirekey/types';
+import { Account } from '@kadena/spirekey-types';
 import { IPactCommand } from '@kadena/client';
 import { IUnsignedCommand } from '@kadena/types';
 

@@ -1,4 +1,4 @@
-import type { Account } from '@kadena-spirekey/types';
+import type { Account } from '@kadena/spirekey-types';
 import type { ChainId, ITransactionDescriptor } from '@kadena/client';
 
 import type { AddNotification } from '@/context/shared/NotificationsContext';
