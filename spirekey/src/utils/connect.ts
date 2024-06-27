@@ -1,5 +1,5 @@
 import type { Account } from '@kadena-spirekey/types';
-import type { ChainId } from '@kadena/client';
+import type { ChainId, ITransactionDescriptor } from '@kadena/client';
 
 import type { AddNotification } from '@/context/shared/NotificationsContext';
 
@@ -16,7 +16,7 @@ type Credential = {
 type User = {
   alias: string;
   accountName: string;
-  pendingTxIds: string[];
+  pendingTxIds: ITransactionDescriptor[];
   credentials: Credential[];
 };
 
@@ -25,7 +25,7 @@ export const getUser = (account: Account): User => {
   return {
     alias: account.alias,
     accountName: account.accountName,
-    pendingTxIds: [device.pendingRegistrationTx].filter(Boolean) as string[],
+    pendingTxIds: device.pendingRegistrationTxs || [],
     credentials: [
       {
         type: 'WebAuthn',
@@ -144,7 +144,7 @@ export const onConnectWith =
       Buffer.from(
         JSON.stringify({
           ...user,
-          pendingTxIds: [pendingTransaction.requestKey],
+          pendingTxIds: [pendingTransaction],
         }),
       ).toString('base64'),
     );

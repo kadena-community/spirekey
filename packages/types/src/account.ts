@@ -1,4 +1,4 @@
-import type { ChainId } from '@kadena/client';
+import type { ChainId, ITransactionDescriptor } from '@kadena/client';
 
 export type Account = {
   alias: string;
@@ -20,6 +20,6 @@ export type Device = {
     keys: string[];
     pred: 'keys-any';
   };
-  pendingRegistrationTx?: string;
+  pendingRegistrationTxs?: ITransactionDescriptor[];
   name?: string;
 };

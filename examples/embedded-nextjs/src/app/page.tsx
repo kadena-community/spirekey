@@ -9,7 +9,7 @@ import {
 } from '@kadena-spirekey/sdk';
 import { createTransactionBuilder } from '@kadena/client';
 import { Button, NumberField, Stack, TextField } from '@kadena/react-ui';
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useState } from 'react';
 const ns = 'n_eef68e581f767dd66c4d4c39ed922be944ede505';
 export default function Home() {
   const [account, setAccount] = useState<Account>();
@@ -88,7 +88,9 @@ export default function Home() {
             onValueChange={setAmount}
             label="amount"
           />
-          <Button variant='primary' onClick={signTransaction}>Sign</Button>
+          <Button variant="primary" onClick={signTransaction}>
+            Sign
+          </Button>
         </Stack>
       )}
     </main>
