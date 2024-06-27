@@ -28,15 +28,15 @@ describe('signFactory', () => {
 
     // should refactor this to publish an array of signatured
     publishEvent('signed', {
-      '123': [{ sig: 'signature' }],
+      '123': [{ sig: 'signature', pubKey: 'pubkey' }],
     });
 
-    await expect(promise).resolves.toEqual([
+    await expect(promise).resolves.toMatchObject({ transactions: [
       {
         ...transaction,
         sigs: [{ sig: 'signature' }],
       },
-    ]);
+    ]});
   });
 
   it.skip('signs multiple transactions', async () => {
@@ -51,7 +51,7 @@ describe('signFactory', () => {
     );
 
     publishEvent('signed', {
-      '123': [{ sig: 'signature1' }],
+      '123': [{ sig: 'signature1', pubKey: 'pubKey1' }],
       '456': [{ sig: 'signature2', pubKey: 'pubKey2' }],
     });
 

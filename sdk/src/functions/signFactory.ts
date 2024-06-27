@@ -1,31 +1,35 @@
 import {
   addSignatures,
   type ICommand,
-  type ISignFunction,
   type IUnsignedCommand,
 } from '@kadena/client';
 
+import { Account } from '@kadena-spirekey/types';
 import { EmbedManager } from '../embed-manager';
 import { onTransactionsSigned } from './events';
+import { areAccountsReady } from './ready';
 
 export interface SignParams {
   embedManager: EmbedManager;
   timeout?: number;
 }
+type ReturnValue = {
+  transactions: (IUnsignedCommand | ICommand)[];
+  isReady: () => Promise<(IUnsignedCommand | ICommand)[]>;
+};
 
-type ReturnValue =
-  | (IUnsignedCommand | ICommand)[]
-  | IUnsignedCommand
-  | ICommand;
+export const sign = (
+  transactionList: IUnsignedCommand[],
+  accounts: Account[] = [],
+) =>
+  signFactory({ embedManager: EmbedManager.getInstance() })(
+    transactionList,
+    accounts,
+  );
 
-export const sign = (transactionList: IUnsignedCommand[]) =>
-  signFactory({ embedManager: EmbedManager.getInstance() })(transactionList);
-
-export const signFactory = ({
-  embedManager,
-  timeout = 5 * 60 * 1000,
-}: SignParams): ISignFunction =>
-  (async (transactionList) => {
+export const signFactory =
+  ({ embedManager, timeout = 5 * 60 * 1000 }: SignParams) =>
+  async (transactionList: IUnsignedCommand[], accounts: Account[] = []) => {
     const isList = Array.isArray(transactionList);
     const transactions = isList ? transactionList : [transactionList];
 
@@ -58,14 +62,16 @@ export const signFactory = ({
 
     let removeListener: () => void;
 
-    // TODO: remove promise
     const eventListenerPromise = new Promise<ReturnValue>((resolve) => {
       removeListener = onTransactionsSigned((signatures) => {
         const signedTransactions = transactions.flatMap((tx) =>
           signatures[tx.hash].map((sig) => addSignatures(tx, sig)),
         );
 
-        resolve(isList ? signedTransactions : signedTransactions[0]);
+        resolve({
+          transactions: signedTransactions,
+          isReady: areAccountsReady(signedTransactions, accounts),
+        });
       });
     });
 
@@ -73,4 +79,4 @@ export const signFactory = ({
       embedManager.closeSidebar();
       removeListener();
     });
-  }) as ISignFunction;
+  };
