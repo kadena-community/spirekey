@@ -3,11 +3,10 @@
 import {
   connect,
   initSpireKey,
-  onAccountConnected,
   sign,
   type Account,
 } from '@kadena-spirekey/sdk';
-import { createTransactionBuilder } from '@kadena/client';
+import { createTransactionBuilder, ICommand, IUnsignedCommand } from '@kadena/client';
 import { Button, NumberField, Stack, TextField } from '@kadena/react-ui';
 import { useEffect, useState } from 'react';
 const ns = 'n_eef68e581f767dd66c4d4c39ed922be944ede505';
@@ -15,13 +14,11 @@ export default function Home() {
   const [account, setAccount] = useState<Account>();
   const [receiver, setReceiver] = useState<string>('');
   const [amount, setAmount] = useState<number>(0);
+  const [isReady, setIsReady] = useState<boolean>(false);
+  const [txs, setTxs] = useState<(IUnsignedCommand|ICommand)[]>([]);
 
   useEffect(() => {
     initSpireKey({ hostUrl: 'http://localhost:1337' });
-
-    onAccountConnected((account) => {
-      setAccount(account);
-    });
   }, []);
 
   const signTransaction = async () => {
@@ -66,15 +63,26 @@ export default function Home() {
       ),
     );
     tx.setNetworkId('development');
-    sign([tx.createTransaction()]);
+    const { transactions, isReady } = await sign([tx.createTransaction()]);
+    setTxs(transactions)
+    setIsReady(false)
+    await isReady()
+    setIsReady(true)
+  };
+  const onConnect = async () => {
+    const account = await connect();
+    setAccount(account);
+    setAccount(await account.isReady());
+    setIsReady(true);
   };
 
   return (
     <main>
-      {!account && <button onClick={() => connect()}>Connect</button>}
+      {!account && <button onClick={onConnect}>Connect</button>}
       {account && (
         <Stack flexDirection="column" gap="md" margin="md">
-          Connected as {account.alias} ({account.accountName}){' '}
+          Connected as {account.alias} ({account.accountName}) (
+          {isReady ? 'Minted' : 'Mining...'})
           <TextField
             type="text"
             value={receiver}
@@ -88,11 +96,12 @@ export default function Home() {
             onValueChange={setAmount}
             label="amount"
           />
-          <Button variant="primary" onClick={signTransaction}>
+          <Button variant="primary" onPress={signTransaction}>
             Sign
           </Button>
         </Stack>
       )}
+      {!!txs?.length && JSON.stringify(txs)}
     </main>
   );
 }

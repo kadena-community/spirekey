@@ -31,12 +31,14 @@ describe('signFactory', () => {
       '123': [{ sig: 'signature', pubKey: 'pubkey' }],
     });
 
-    await expect(promise).resolves.toMatchObject({ transactions: [
-      {
-        ...transaction,
-        sigs: [{ sig: 'signature' }],
-      },
-    ]});
+    await expect(promise).resolves.toMatchObject({
+      transactions: [
+        {
+          ...transaction,
+          sigs: [{ sig: 'signature' }],
+        },
+      ],
+    });
   });
 
   it.skip('signs multiple transactions', async () => {
