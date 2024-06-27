@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import * as styles from './AccountButton.css';
+import { ITransactionDescriptor } from '@kadena/client';
 
 interface Credential {
   type: 'WebAuthn' | 'ED25519';
@@ -16,7 +17,7 @@ export interface ConnectAccount {
   credentials: Credential[];
   accountName: string;
   alias: string;
-  pendingTxIds: string[];
+  pendingTxIds: ITransactionDescriptor[];
 }
 
 export const AccountButton = ({

@@ -2,18 +2,24 @@ import type { Account } from '@kadena-spirekey/types';
 
 import { EmbedManager } from '../embed-manager';
 import { onAccountConnected } from './events';
+import { isAccountReady } from './ready';
 
 export interface ConnectParams {
   embedManager: EmbedManager;
   timeout?: number;
 }
 
+type ConnectedAccount = Account & { isReady: () => Promise<Account> };
+
+export const connect = () =>
+  connectFactory({ embedManager: EmbedManager.getInstance() })();
+
 export const connectFactory =
   ({ embedManager, timeout = 5 * 60 * 1000 }: ConnectParams) =>
-  (): Promise<Account> => {
+  (): Promise<ConnectedAccount> => {
     embedManager.openSidebar();
 
-    const timeoutPromise = new Promise<Account>((_, reject) =>
+    const timeoutPromise = new Promise<ConnectedAccount>((_, reject) =>
       setTimeout(
         () => reject([new Error('Timeout: Connecting took too long')]),
         timeout,
@@ -22,9 +28,9 @@ export const connectFactory =
 
     let removeListener: () => void;
 
-    const eventListenerPromise = new Promise<Account>((resolve) => {
+    const eventListenerPromise = new Promise<ConnectedAccount>((resolve) => {
       removeListener = onAccountConnected((account: Account) => {
-        resolve(account);
+        resolve({ ...account, isReady: isAccountReady(account) });
       });
     });
 
@@ -33,6 +39,3 @@ export const connectFactory =
       removeListener();
     });
   };
-
-export const connect = () =>
-  connectFactory({ embedManager: EmbedManager.getInstance() })();

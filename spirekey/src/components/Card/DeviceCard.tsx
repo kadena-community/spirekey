@@ -24,7 +24,7 @@ export default function DeviceCard({
   showSingleIcon = false,
 }: CardProps) {
   // @todo: check isRegistered for a specific device
-  const hasPendingTX = !!account.devices[0].pendingRegistrationTx;
+  const hasPendingTX = !!account.devices[0].pendingRegistrationTxs?.length;
 
   return (
     <Card

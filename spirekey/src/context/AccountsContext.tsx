@@ -107,15 +107,9 @@ const AccountsProvider = ({ children }: Props) => {
     const checkPendingTxs = async () => {
       for (const account of accounts) {
         for (const device of account.devices) {
-          if (device.pendingRegistrationTx) {
+          if (device.pendingRegistrationTxs?.length) {
             await Promise.race(
-              account.chainIds.map((chainId) =>
-                pollForRegistrationTx({
-                  requestKey: device.pendingRegistrationTx!,
-                  chainId,
-                  networkId: account.networkId,
-                }),
-              ),
+              device.pendingRegistrationTxs.map(pollForRegistrationTx),
             );
           }
         }
@@ -166,7 +160,11 @@ const AccountsProvider = ({ children }: Props) => {
                   accountName,
                 });
                 if (acc?.devices?.length) return acc;
-                if (localAccount.devices.some((d) => d.pendingRegistrationTx))
+                if (
+                  localAccount.devices.some(
+                    (d) => d.pendingRegistrationTxs?.length,
+                  )
+                )
                   return localAccount;
                 return retryPromises<ITransactionDescriptor>(() =>
                   recoverAccount({
@@ -217,7 +215,7 @@ const AccountsProvider = ({ children }: Props) => {
     networkId,
     chainId: cid,
   }: AccountRegistration): Promise<ITransactionDescriptor> => {
-    const { requestKey, chainId } = await registerAccountOnChain({
+    const txDescriptor = await registerAccountOnChain({
       accountName,
       color,
       deviceType,
@@ -227,7 +225,7 @@ const AccountsProvider = ({ children }: Props) => {
       networkId,
       chainId: cid,
     });
-
+    const { chainId } = txDescriptor;
     const devices: Device[] = [
       {
         domain,
@@ -238,7 +236,7 @@ const AccountsProvider = ({ children }: Props) => {
           keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
           pred: 'keys-any',
         },
-        pendingRegistrationTx: requestKey,
+        pendingRegistrationTxs: [txDescriptor],
       },
     ];
     const account = {
@@ -258,21 +256,13 @@ const AccountsProvider = ({ children }: Props) => {
       process.env.INSTA_FUND === 'true' &&
       networkId === getDevnetNetworkId()
     ) {
-      const accountResponse = await l1Client.listen({
-        requestKey,
-        chainId,
-        networkId,
-      });
+      const accountResponse = await l1Client.listen(txDescriptor);
       if (accountResponse.result.status === 'success') {
         await fundAccount(account);
       }
     }
 
-    return {
-      requestKey,
-      chainId,
-      networkId,
-    };
+    return txDescriptor;
   };
 
   const recoverAccount = async ({
@@ -313,22 +303,17 @@ const AccountsProvider = ({ children }: Props) => {
   };
 
   const removePendingTransaction = (requestKey: string) => {
-    const account = accounts.find((a) =>
-      a.devices.map((d) => d.pendingRegistrationTx).includes(requestKey),
+    setAccounts(
+      accounts.map((account) => ({
+        ...account,
+        devices: account.devices.map((d) => ({
+          ...d,
+          pendingRegistrationTxs: d.pendingRegistrationTxs?.filter(
+            (p) => p.requestKey !== requestKey,
+          ),
+        })),
+      })),
     );
-
-    if (!account) {
-      return;
-    }
-
-    for (let device of account.devices) {
-      if (device.pendingRegistrationTx === requestKey) {
-        delete device.pendingRegistrationTx;
-        break;
-      }
-    }
-
-    setAccount(account);
   };
 
   const pollForRegistrationTx = async (tx: ITransactionDescriptor) => {

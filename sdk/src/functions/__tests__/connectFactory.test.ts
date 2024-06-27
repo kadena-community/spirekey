@@ -28,7 +28,7 @@ describe('connectFactory', () => {
       chainIds: ['0', '18'],
     });
 
-    await expect(promise).resolves.toEqual({
+    await expect(promise).resolves.toMatchObject({
       accountName: 'test',
       alias: 'test',
       minApprovals: 0,

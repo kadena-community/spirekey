@@ -75,7 +75,7 @@ interface Device {
     keys: string[];
     pred: 'keys-any';
   };
-  pendingRegistrationTx?: string;
+  pendingRegistrationTxs?: ITransactionDescriptor[];
   name?: string;
 }
 
@@ -125,7 +125,7 @@ interface Device {
     keys: string[];
     pred: 'keys-any';
   };
-  pendingRegistrationTx?: string;
+  pendingRegistrationTxs?: ITransactionDescriptor[];
 }
 
 const getDeviceByPublicKey = (accounts: Account[], publicKey: string) => {
@@ -231,7 +231,7 @@ using the following example code.
 
 ```typescript
 const pendingRegistrationTransactions = devices
-  .map((device) => device?.pendingRegistrationTx)
+  .map((device) => device?.pendingRegistrationTxs?.length)
   .filter(Boolean);
 
 if (pendingRegistrationTransactions.length > 0) {

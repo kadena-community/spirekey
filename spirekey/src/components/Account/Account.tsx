@@ -35,7 +35,7 @@ export function Account({
   account,
   isActive = false,
   returnUrl,
-  optimistic = false,
+  optimistic = true,
   chainId = process.env.CHAIN_ID as ChainId,
 }: AccountProps) {
   const { accounts } = useAccounts();
@@ -166,7 +166,7 @@ export function Account({
                   >
                     Cancel
                   </ButtonLink>
-                  {(optimistic || !d.pendingRegistrationTx) && (
+                  {(optimistic || !d.pendingRegistrationTxs?.length) && (
                     <Button
                       onPress={onConnect({
                         url,

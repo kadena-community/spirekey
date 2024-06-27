@@ -67,7 +67,13 @@ export default function Connect() {
             >
               <Stack flexDirection="row" alignItems="center" gap="sm">
                 <Text>{connectingAccount ? 'Connecting' : 'Connect'}</Text>
-                {!!connectingAccount && <SpireKeyLogoAnimated />}
+                {!!connectingAccount && (
+                  <Image
+                    src={SpireKeyLogoAnimated}
+                    alt="Connecting account.."
+                    style={{ marginTop: '2rem' }}
+                  />
+                )}
               </Stack>
             </Button>
           </Stack>

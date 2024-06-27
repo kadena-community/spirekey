@@ -151,13 +151,11 @@ describe('consent', () => {
             chainId: '4',
             networkId: 'testnet04',
           });
-            console.warn("DEBUGPRINT[6]: consent.test.ts:149: tx=", tx)
           const accounts = createMockAccounts({
             chainId: '4',
             networkId: 'testnet04',
             pubKeys: [pubKeys[0]],
           }).map((a) => addMockDevices(a, [pubKeys[1]]));
-          console.warn("DEBUGPRINT[5]: consent.test.ts:154: accounts=", accounts)
           const devices = getAccountsForTx(accounts)(tx);
           expect(devices.accounts).toEqual(accounts);
           expect(devices.candidates).toEqual([]);
