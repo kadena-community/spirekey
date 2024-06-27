@@ -2,7 +2,7 @@ import type {
   SpireKeyCallback,
   SpireKeyEventName,
   SpireKeyEvents,
-} from '@kadena-spirekey/types';
+} from '@kadena/spirekey-types';
 
 export function publishEvent<T extends SpireKeyEventName>(
   name: T,

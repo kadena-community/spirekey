@@ -1,6 +1,6 @@
 'use client';
 
-import type { Account, Device } from '@kadena-spirekey/types';
+import type { Account, Device } from '@kadena/spirekey-types';
 import type { ChainId, ITransactionDescriptor } from '@kadena/client';
 import { createContext, useContext, useEffect, useState } from 'react';
 

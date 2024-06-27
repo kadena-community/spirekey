@@ -1,4 +1,4 @@
-import type { Account, Device } from '@kadena-spirekey/types';
+import type { Account, Device } from '@kadena/spirekey-types';
 import { ICommand, addSignatures } from '@kadena/client';
 import { startAuthentication } from '@simplewebauthn/browser';
 

@@ -5,7 +5,7 @@ import {
   initSpireKey,
   sign,
   type Account,
-} from '@kadena-spirekey/sdk';
+} from '@kadena/spirekey-sdk';
 import { createTransactionBuilder, ICommand, IUnsignedCommand } from '@kadena/client';
 import { Button, NumberField, Stack, TextField } from '@kadena/react-ui';
 import { useEffect, useState } from 'react';

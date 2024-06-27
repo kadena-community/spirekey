@@ -1,6 +1,6 @@
 {
-  "name": "@kadena-spirekey/sdk",
-  "version": "0.0.1",
+  "name": "@kadena/spirekey-sdk",
+  "version": "0.0.1-dev",
   "description": "",
   "keywords": [],
   "license": "ISC",
@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@crackle/cli": "^0.15.4",
-    "@kadena-spirekey/types": "workspace:*",
+    "@kadena/spirekey-types": "workspace:*",
     "@vanilla-extract/esbuild-plugin": "^2.3.7",
     "@vanilla-extract/vite-plugin": "^4.0.11",
     "@vitest/coverage-v8": "^1.5.2",

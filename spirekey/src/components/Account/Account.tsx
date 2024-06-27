@@ -1,4 +1,4 @@
-import type { Account } from '@kadena-spirekey/types';
+import type { Account } from '@kadena/spirekey-types';
 import type { ChainId } from '@kadena/client';
 import { Grid, Stack } from '@kadena/react-ui';
 import { AnimatePresence, motion } from 'framer-motion';

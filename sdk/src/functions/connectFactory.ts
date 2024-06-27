@@ -1,4 +1,4 @@
-import type { Account } from '@kadena-spirekey/types';
+import type { Account } from '@kadena/spirekey-types';
 
 import { EmbedManager } from '../embed-manager';
 import { onAccountConnected } from './events';

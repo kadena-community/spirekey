@@ -1,4 +1,4 @@
-import type { Account } from '@kadena-spirekey/types';
+import type { Account } from '@kadena/spirekey-types';
 
 import { calculateBalancePercentage } from '@/utils/balance';
 import { describe, expect, it } from 'vitest';

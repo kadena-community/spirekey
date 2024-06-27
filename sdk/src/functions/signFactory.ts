@@ -4,7 +4,7 @@ import {
   type IUnsignedCommand,
 } from '@kadena/client';
 
-import { Account } from '@kadena-spirekey/types';
+import { Account } from '@kadena/spirekey-types';
 import { EmbedManager } from '../embed-manager';
 import { onTransactionsSigned } from './events';
 import { areAccountsReady } from './ready';

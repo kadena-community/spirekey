@@ -1,4 +1,4 @@
-import type { Account } from '@kadena-spirekey/types';
+import type { Account } from '@kadena/spirekey-types';
 import { Mock, describe, expect, it, vi } from 'vitest';
 
 import { deviceColors } from '@/styles/shared/tokens.css';

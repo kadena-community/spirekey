@@ -1,4 +1,4 @@
-import type { Account } from '@kadena-spirekey/types';
+import type { Account } from '@kadena/spirekey-types';
 import classNames from 'classnames';
 import { Children, useLayoutEffect, useRef, useState } from 'react';
 import { InView } from 'react-intersection-observer';

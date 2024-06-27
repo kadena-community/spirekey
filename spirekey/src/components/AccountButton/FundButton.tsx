@@ -1,4 +1,4 @@
-import type { Account } from '@kadena-spirekey/types';
+import type { Account } from '@kadena/spirekey-types';
 import { MonoCheck, MonoClose, MonoLoading } from '@kadena/react-icons';
 import { Box, Stack, Text } from '@kadena/react-ui';
 import { AnimatePresence, motion } from 'framer-motion';

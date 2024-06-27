@@ -1,4 +1,4 @@
-import type { Account, Device } from '@kadena-spirekey/types';
+import type { Account, Device } from '@kadena/spirekey-types';
 import { ChainId, createTransaction } from '@kadena/client';
 import {
   addData,

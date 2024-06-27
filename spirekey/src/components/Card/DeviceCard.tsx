@@ -1,4 +1,4 @@
-import type { Account, Device } from '@kadena-spirekey/types';
+import type { Account, Device } from '@kadena/spirekey-types';
 
 import AccountNetwork from './AccountNetwork';
 import Alias from './Alias';

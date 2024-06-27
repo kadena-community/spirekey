@@ -1,4 +1,4 @@
-import type { Account } from "@kadena-spirekey/types";
+import type { Account } from "@kadena/spirekey-types";
 import { createClient, ICommand, IUnsignedCommand } from "@kadena/client";
 
 export const isAccountReady = (account: Account) => async () => {

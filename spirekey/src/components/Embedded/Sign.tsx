@@ -1,6 +1,6 @@
 'use client';
 
-import type { Account, Device } from '@kadena-spirekey/types';
+import type { Account, Device } from '@kadena/spirekey-types';
 import { startAuthentication } from '@simplewebauthn/browser';
 
 import { Button } from '@/components/shared/Button/Button';
