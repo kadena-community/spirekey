@@ -166,7 +166,7 @@ export function Account({
                   >
                     Cancel
                   </ButtonLink>
-                  {(optimistic || !d.pendingRegistrationTx) && (
+                  {(optimistic || !d.pendingRegistrationTxs?.length) && (
                     <Button
                       onPress={onConnect({
                         url,
