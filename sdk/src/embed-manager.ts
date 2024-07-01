@@ -9,7 +9,7 @@ export class EmbedManager {
 
   static manager: EmbedManager;
 
-  static getInstance(baseUrl?: string) {
+  static getInstance(baseUrl?: string): EmbedManager {
     if (!EmbedManager.manager)
       EmbedManager.manager = new EmbedManager(
         baseUrl || 'https://spirekey.kadena.io',
@@ -26,16 +26,16 @@ export class EmbedManager {
     return `${baseUrl}/embedded/notification`;
   }
 
-  public updateBaseUrl(baseUrl: string) {
+  public updateBaseUrl(baseUrl: string): void {
     this.baseUrl = baseUrl;
-    this.sidebar.src = this.getSidebarUrl(baseUrl)
-    this.notification.src = this.getNotificationUrl(baseUrl)
+    this.sidebar.src = this.getSidebarUrl(baseUrl);
+    this.notification.src = this.getNotificationUrl(baseUrl);
   }
 
   private makeSidebar(baseUrl: string) {
     const iframe = document.createElement('iframe');
     iframe.classList.add(styles.spirekeySidebar);
-    iframe.src = this.getSidebarUrl(baseUrl)
+    iframe.src = this.getSidebarUrl(baseUrl);
     iframe.allow = 'publickey-credentials-get *';
 
     document.body.appendChild(iframe);
@@ -47,7 +47,7 @@ export class EmbedManager {
     const iframe = document.createElement('iframe');
     iframe.classList.add(styles.spirekeyNotification);
     iframe.classList.add(styles.spirekeyNotificationHidden);
-    iframe.src = this.getNotificationUrl(baseUrl)
+    iframe.src = this.getNotificationUrl(baseUrl);
 
     onSpireKeyEvent('minimize-notification', () => {
       this.minimizeNotification();

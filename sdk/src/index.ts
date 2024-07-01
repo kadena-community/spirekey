@@ -1,34 +1,24 @@
 import { EmbedManager } from './embed-manager';
-import { connect, connectFactory } from './functions/connectFactory';
+import { connect } from './functions/connectFactory';
 import { onAccountConnected } from './functions/events';
-import { sign, signFactory } from './functions/signFactory';
-import type { SpireKeyWindow } from './types';
+import { sign } from './functions/signFactory';
 
-declare global {
-  interface Window {
-    spireKey: SpireKeyWindow;
-  }
-}
-
+type SpireKeySDK = {
+  connect: typeof connect;
+  sign: typeof sign;
+};
 const initSpireKey = (
   options: { hostUrl: string } = {
     hostUrl: 'https://spirekey.kadena.io',
   },
-) => {
+): SpireKeySDK => {
   const embedManager = EmbedManager.getInstance(options.hostUrl);
 
   onAccountConnected(() => {
     embedManager.closeSidebar();
   });
 
-  const functions = {
-    connect: connectFactory({ embedManager }),
-    sign: signFactory({ embedManager }),
-  };
-
-  window.spireKey = functions;
-
-  return { functions };
+  return { connect, sign };
 };
 
 export * from './functions/events';

@@ -1,0 +1,14 @@
+{
+  "name": "@kadena/spirekey-sdk",
+  "version": "0.0.1-dev",
+  "exports": "./src/index.ts",
+  "publish": {
+    "exclude": [
+      "crackle.config.ts",
+      "vitest.config.mts",
+      "**/__mocks__/**",
+      "**/__tests__/**",
+      "**/*.test.*"
+    ],
+  }
+}

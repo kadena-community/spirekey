@@ -10,8 +10,9 @@ import {
 describe('SDK', () => {
   describe('initSpireKey', () => {
     it('should init spirekey', () => {
-      initSpireKey();
-      expect(window.spireKey).toBeTruthy();
+      const sdk = initSpireKey();
+      expect(sdk.connect).toBeTruthy();
+      expect(sdk.sign).toBeTruthy();
     });
   });
   describe('onAccountConnected', () => {
