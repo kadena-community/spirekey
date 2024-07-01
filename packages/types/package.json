@@ -1,7 +1,6 @@
 {
   "name": "@kadena/spirekey-types",
-  "version": "0.0.1",
-  "private": true,
+  "version": "0.0.1-dev-1",
   "description": "",
   "keywords": [],
   "license": "ISC",
