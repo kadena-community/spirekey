@@ -11,12 +11,12 @@ export interface ConnectParams {
 
 type ConnectedAccount = Account & { isReady: () => Promise<Account> };
 
-export const connect = () =>
+export const connect = (): Promise<ConnectedAccount> =>
   connectFactory({ embedManager: EmbedManager.getInstance() })();
 
 export const connectFactory =
   ({ embedManager, timeout = 5 * 60 * 1000 }: ConnectParams) =>
-  (): Promise<ConnectedAccount> => {
+  async (): Promise<ConnectedAccount> => {
     embedManager.openSidebar();
 
     const timeoutPromise = new Promise<ConnectedAccount>((_, reject) =>

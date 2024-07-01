@@ -21,7 +21,7 @@ type ReturnValue = {
 export const sign = (
   transactionList: IUnsignedCommand[],
   accounts: Account[] = [],
-) =>
+): Promise<ReturnValue> =>
   signFactory({ embedManager: EmbedManager.getInstance() })(
     transactionList,
     accounts,
@@ -29,7 +29,7 @@ export const sign = (
 
 export const signFactory =
   ({ embedManager, timeout = 5 * 60 * 1000 }: SignParams) =>
-  async (transactionList: IUnsignedCommand[], accounts: Account[] = []) => {
+  async (transactionList: IUnsignedCommand[], accounts: Account[] = []): Promise<ReturnValue> => {
     const isList = Array.isArray(transactionList);
     const transactions = isList ? transactionList : [transactionList];
 

@@ -23,13 +23,14 @@ const getEventListener =
     callback(event.data.payload);
   };
 
+type RemoveListener = () => void;
 export const onSpireKeyEvent = <
   T extends SpireKeyEventName,
   K extends SpireKeyEvents[T],
 >(
   eventName: T,
   callback: (payload: K) => any,
-) => {
+): RemoveListener => {
   const listener = getEventListener(eventName, callback);
 
   window.addEventListener('message', listener);
@@ -39,8 +40,10 @@ export const onSpireKeyEvent = <
   };
 };
 
-export const onAccountConnected = (callback: SpireKeyCallback<'connected'>) =>
-  onSpireKeyEvent('connected', callback);
+export const onAccountConnected = (
+  callback: SpireKeyCallback<'connected'>,
+): RemoveListener => onSpireKeyEvent('connected', callback);
 
-export const onTransactionsSigned = (callback: SpireKeyCallback<'signed'>) =>
-  onSpireKeyEvent('signed', callback);
+export const onTransactionsSigned = (
+  callback: SpireKeyCallback<'signed'>,
+): RemoveListener => onSpireKeyEvent('signed', callback);
