@@ -1,0 +1,6 @@
+{
+  "name": "@kadena/spirekey-types",
+  "version": "0.0.1-dev",
+  "exports": "./src/index.ts"
+}
+
