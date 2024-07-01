@@ -1,7 +1,10 @@
 {
   "name": "@kadena/spirekey-sdk",
-  "version": "0.0.1-dev",
+  "version": "0.0.1-dev-1",
   "exports": "./src/index.ts",
+  "imports": {
+    "@kadena/spirekey-types": "jsr:@kadena/spirekey-types@0.0.1-dev-1"
+  },
   "publish": {
     "exclude": [
       "crackle.config.ts",
