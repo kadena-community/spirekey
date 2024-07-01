@@ -1,12 +1,14 @@
 import { genesisPrivateKey, genesisPubKey } from '@/utils/constants';
 import {
+    decryptContent,
   DeployConfiguration,
+  encryptContent,
+  EncryptedContent,
   executeStepWith,
+  getKey,
   resolveConfiguration,
 } from '@/utils/deploy';
-import assert from 'node:assert';
-import { mock } from 'node:test';
-import { beforeEach, describe, it } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('deploy', () => {
   const config: DeployConfiguration = {
@@ -33,20 +35,16 @@ describe('deploy', () => {
     ],
   };
   const mockClient = {
-    submit: mock.fn((x) => Promise.resolve(x)),
-    pollOne: mock.fn((x) => Promise.resolve(x)),
+    submit: vi.fn((x) => Promise.resolve(x)),
+    pollOne: vi.fn((x) => Promise.resolve(x)),
   };
   beforeEach(() => {
-    mockClient.submit.mock.resetCalls();
-    mockClient.pollOne.mock.resetCalls();
+    mockClient.submit.mockReset();
+    mockClient.pollOne.mockReset();
   });
   it('should resolve configuration', async () => {
     const resolvedConfig = await resolveConfiguration(config);
-    assert.equal(
-      resolvedConfig.steps[0].code,
-      '(coin.details "some-id")\n',
-      'code should be resolved',
-    );
+    expect(resolvedConfig.steps[0].code).toEqual('(coin.details "some-id")\n');
   });
   it('should execute the step on all defined chains', async () => {
     await executeStepWith(mockClient)(
@@ -58,15 +56,30 @@ describe('deploy', () => {
       },
       config,
     );
-    assert.equal(
-      mockClient.submit.mock.callCount(),
-      2,
-      'should have submitted for each chain',
-    );
-    assert.equal(
-      mockClient.pollOne.mock.callCount(),
-      2,
-      'should have polled for each chain',
-    );
+    expect(mockClient.submit.mock.calls.length).toEqual(2);
+    expect(mockClient.pollOne.mock.calls.length).toEqual(2);
+  });
+});
+
+describe('encryption', () => {
+  describe('when encrypting and decrypting files', () => {
+    const original = JSON.stringify({ x: 123, y: 654 });
+    const pw = 'XereYe24Ra';
+    let encrypted: EncryptedContent;
+    let decrypted: string;
+    beforeAll(async () => {
+    const key = await getKey(pw)
+      encrypted = await encryptContent(original, key);
+      decrypted = await decryptContent(encrypted, key)
+    });
+    it('should create an object with the encrypted content', () => {
+      expect(encrypted.content).toBeTruthy();
+    });
+    it('should create an object with the iv used', () => {
+      expect(encrypted.iv).toBeTruthy();
+    });
+    it('should decrypt to the original content', () => {
+      expect(decrypted).toEqual(original)
+    });
   });
 });
