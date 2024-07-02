@@ -1,13 +1,11 @@
 'use client';
 
 import type { ChainId } from '@kadena/client';
-import { Box, Stack, Text } from '@kadena/react-ui';
-import { atoms } from '@kadena/react-ui/styles';
-import { useRouter } from 'next/navigation';
+import { Button, Stack, Text } from '@kadena/react-ui';
+import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { Button } from '@/components/shared/Button/Button';
+import { LayoutSurface } from '@/components/LayoutSurface/LayoutSurface';
 import { useAccounts } from '@/context/AccountsContext';
 import { useSettings } from '@/context/SettingsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
@@ -19,26 +17,13 @@ import { getAccountName } from '@/utils/register';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 
-import DeviceCard from '../Card/DeviceCard';
-import NetworkId from '../Form/NetworkId/NetworkId';
-import Passkey from '../Form/Passkey/Passkey';
-import { Surface } from '../Surface/Surface';
+import PasskeyCard from '../Card/PasskeyCard';
+import * as styles from './Registration.css';
 
-interface Props {
-  redirectUrl?: string;
-  networkId?: string;
-  chainId?: ChainId;
-}
-
-export default function Registration({
-  redirectUrl,
-  networkId,
-  chainId,
-}: Props) {
+export default function Registration() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
   const [currentAccountName, setCurrentAccountName] = useState<string>('');
-  const [deviceType, setDeviceType] = useState<string>('security-key');
   const [succesfulAuthentication, setSuccesfulAuthentication] =
     useState<boolean>(false);
 
@@ -48,26 +33,18 @@ export default function Registration({
   const { devMode } = useSettings();
   const { addNotification } = useNotifications();
 
+  const {
+    redirectUrl,
+    networkId,
+    chainId,
+  }: { redirectUrl: string; networkId: string; chainId: ChainId } = useParams();
+
   const accountPrefix = 'SpireKey Account';
 
   const skipNetworkId = process.env.WALLET_NETWORK_ID && !devMode;
-  const defaultFormData = {
-    networkId:
-      networkId ||
-      (skipNetworkId ? process.env.WALLET_NETWORK_ID! : getDevnetNetworkId()),
-    accountName: '',
-  };
-
-  const {
-    handleSubmit,
-    register,
-    watch,
-    formState: { errors },
-  } = useForm({
-    defaultValues: defaultFormData,
-  });
-
-  const currentNetwork = watch('networkId');
+  const currentNetwork =
+    networkId ||
+    (skipNetworkId ? process.env.WALLET_NETWORK_ID! : getDevnetNetworkId());
 
   const numberOfSpireKeyAccounts = countWithPrefixOnDomain(
     accounts,
@@ -79,7 +56,7 @@ export default function Registration({
   const alias = `${accountPrefix} ${numberOfSpireKeyAccounts + 1}`;
   const color = deviceColors.purple;
 
-  const onSubmit: SubmitHandler<typeof defaultFormData> = async (data) => {
+  const handleSubmit = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
@@ -99,7 +76,6 @@ export default function Registration({
       const accountName = await getAccountName(publicKey, currentNetwork);
 
       setCurrentAccountName(accountName);
-      setDeviceType(deviceType);
 
       await registerAccount({
         accountName,
@@ -144,86 +120,38 @@ export default function Registration({
   const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
   const completeRedirectUrl = decodedRedirectUrl || '/';
 
-  const handleCancelClick = () => {
+  const handleCancel = () => {
     router.push(cancelRedirectUrl);
   };
 
   return (
-    <Stack flexDirection="column" gap="md">
-      <Box width="100%" padding="lg">
-        <DeviceCard
-          color={color}
-          account={{
-            alias,
-            accountName: currentAccountName,
-            balance: '0',
-            networkId: currentNetwork,
-            minApprovals: 1,
-            minRegistrationApprovals: 1,
-            chainIds: [chainId || process.env.CHAIN_ID],
-            devices: [
-              {
-                'credential-id': '',
-                domain: host,
-                color,
-                deviceType,
-                guard: {
-                  keys: [''],
-                  pred: 'keys-any',
-                },
-              },
-            ],
-          }}
-          isLoading
-        />
-      </Box>
-
-      {isRedirecting && (
-        <Box width="100%" padding="lg">
-          <Surface>
-            <Stack flexDirection="column" gap="md" margin="xl">
-              <Text>Redirecting you back to {completeRedirectUrl}</Text>
-            </Stack>
-          </Surface>
-        </Box>
-      )}
-
-      {!isRedirecting && (
-        <>
-          <form id="registration-form">
-            <Stack flexDirection="column" gap="md" paddingInline="lg">
-              {!skipNetworkId && (
-                <NetworkId
-                  networkId={currentNetwork}
-                  name="networkId"
-                  register={register}
-                  error={errors.networkId}
-                />
-              )}
-              <Passkey
-                isInProgress={isSubmitting}
-                isSuccessful={succesfulAuthentication}
-                onClick={handleSubmit(onSubmit)}
-              />
-            </Stack>
-          </form>
-
-          <Stack
-            flexDirection="row"
-            gap="xl"
-            marginBlock="lg"
-            paddingInline="lg"
-          >
-            <Button
-              variant="secondary"
-              onPress={handleCancelClick}
-              className={atoms({ flex: 1 })}
-            >
-              Cancel
-            </Button>
-          </Stack>
-        </>
-      )}
-    </Stack>
+    <LayoutSurface title="Register" subtitle="your account with a passkey">
+      <div className={styles.card}>
+        <PasskeyCard
+          isInProgress={isSubmitting}
+          isSuccessful={succesfulAuthentication}
+        >
+          {isRedirecting && (
+            <Text>Redirecting you back to {completeRedirectUrl}</Text>
+          )}
+        </PasskeyCard>
+      </div>
+      <Stack className={styles.buttons}>
+        <Button
+          variant="outlined"
+          onPress={handleCancel}
+          isDisabled={isSubmitting || succesfulAuthentication}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="primary"
+          onPress={() => handleSubmit()}
+          isDisabled={isSubmitting || succesfulAuthentication}
+        >
+          Continue
+        </Button>
+      </Stack>
+    </LayoutSurface>
   );
 }

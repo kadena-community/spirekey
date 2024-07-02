@@ -1,10 +1,9 @@
 import { atoms } from '@kadena/react-ui/styles';
-import { style } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 
 export const card = style({
   position: 'relative',
   overflow: 'hidden',
-  maxWidth: '600px',
   color: 'black',
   margin: '0 auto',
   aspectRatio: '8560 / 5398',
@@ -157,4 +156,16 @@ export const plusIconContainer = style({
 
 export const cardLink = style({
   textDecoration: 'none',
+});
+
+export const icon = style({
+  padding: '32px',
+});
+
+export const logo = style({
+  fontSize: '64px',
+});
+
+globalStyle(`${icon} > div`, {
+  position: 'absolute',
 });

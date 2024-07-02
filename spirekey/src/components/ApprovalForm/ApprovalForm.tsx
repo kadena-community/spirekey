@@ -67,7 +67,7 @@ export default function ApprovalForm() {
       minApprovals: Number(data.minApprovals),
       minRegistrationApprovals: Number(data.minRegistrationApprovals),
       publicKey: selectedPublicKey,
-      chainId: process.env.CHAIN_ID as ChainId,
+      chainId: process.env.CHAIN_ID,
     });
 
     router.push(

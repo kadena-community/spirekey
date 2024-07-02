@@ -21,7 +21,7 @@ export default function CardCollection({
   returnUrl,
   optimistic,
   networkId,
-  chainId = process.env.CHAIN_ID as ChainId,
+  chainId = process.env.CHAIN_ID,
 }: CardCollectionProps) {
   const { accounts } = useAccounts();
   const [activeCard, setActiveCard] = useState<number | null>(

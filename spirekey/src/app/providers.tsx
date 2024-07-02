@@ -55,7 +55,7 @@ export default function Providers({
               value={{
                 dark: darkThemeClass,
               }}
-              defaultTheme="dark"
+              defaultTheme="light"
               enableColorScheme={enableColorScheme}
             >
               <>

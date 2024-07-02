@@ -1,6 +1,6 @@
-import type { Account } from '@kadena/spirekey-types';
 import type { ChainId } from '@kadena/client';
 import { Grid, Stack } from '@kadena/react-ui';
+import type { Account } from '@kadena/spirekey-types';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -36,11 +36,12 @@ export function Account({
   isActive = false,
   returnUrl,
   optimistic = true,
-  chainId = process.env.CHAIN_ID as ChainId,
+  chainId = process.env.CHAIN_ID,
 }: AccountProps) {
   const { accounts } = useAccounts();
   const { addNotification } = useNotifications();
   const [delayedIsActive, setDelayedIsActive] = useState(false);
+  const { push } = useRouter();
 
   const balancePercentage = calculateBalancePercentage(account, accounts);
 
@@ -53,7 +54,6 @@ export function Account({
     }
     () => setDelayedIsActive(false);
   }, [isActive]);
-  const { push } = useRouter();
 
   const onConnect = onConnectWith({
     addNotification,
