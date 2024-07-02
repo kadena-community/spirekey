@@ -65,17 +65,22 @@ export default function Registration() {
   const alias = `${accountPrefix} ${numberOfSpireKeyAccounts + 1}`;
   const color = deviceColors.purple;
 
-  useEffect(() => {
-    if (!allowRedirect || !animationFinished) return;
+  useEffect(
+    function doRedirect() {
+      if (!allowRedirect || !animationFinished) return;
 
-    if (decodedRedirectUrl) {
+      if (!decodedRedirectUrl) {
+        router.push(completeRedirectUrl);
+        return;
+      }
+
       setShowRedirectMessage(true);
-    }
-
-    setTimeout(() => {
-      router.push(completeRedirectUrl);
-    }, 2000);
-  }, [animationFinished, allowRedirect]);
+      setTimeout(() => {
+        router.push(completeRedirectUrl);
+      }, 2000);
+    },
+    [animationFinished, allowRedirect],
+  );
 
   const handleSubmit = async () => {
     if (isSubmitting) return;

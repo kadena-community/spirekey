@@ -19,13 +19,18 @@ export default function PasskeyCard({
   onSuccessfulAnimationEnd,
   children,
 }: Props) {
-  const [isDone, setIsDone] = useState<boolean>(false);
+  const [fingerprintAnimationDone, setFingerprintAnimationDone] =
+    useState<boolean>(false);
 
   return (
     <Card balancePercentage={50}>
       <div className={styles.icon}>
-        <AnimatePresence>
-          {!isDone && (
+        <AnimatePresence
+          onExitComplete={() => {
+            onSuccessfulAnimationEnd?.();
+          }}
+        >
+          {!fingerprintAnimationDone && (
             <motion.div
               key="fingerprint"
               initial={{ opacity: 0 }}
@@ -36,13 +41,14 @@ export default function PasskeyCard({
                 animating={isInProgress}
                 success={isSuccessful}
                 onSuccessAnimationEnd={() => {
-                  onSuccessfulAnimationEnd?.();
-                  setIsDone(true);
+                  setTimeout(() => {
+                    setFingerprintAnimationDone(true);
+                  }, 1000);
                 }}
               />
             </motion.div>
           )}
-          {isDone && (
+          {fingerprintAnimationDone && (
             <motion.div
               key="logo"
               initial={{ opacity: 0 }}
