@@ -12,6 +12,7 @@ import {
   setNetworkId,
 } from '@kadena/client/fp';
 import { readFile } from 'fs/promises';
+import { TextEncoder } from 'util';
 import { asyncPipe } from './shared/asyncPipe';
 import { signWithKeyPair } from './signSubmitListen';
 
@@ -140,11 +141,67 @@ export const deploy = async (
   }
 };
 
+const getFile = async (path: string, pw?: string) => {
+  const content = JSON.parse(await readFile(path, 'utf8'));
+  if (!pw) return content;
+  return JSON.parse(await decryptContent(content, await getKey(pw)));
+};
+
 export const deployFile = async (
   configFilePath: string,
   signersFilePath: string,
+  pw?: string,
 ) => {
-  const config = JSON.parse(await readFile(configFilePath, 'utf-8'));
-  const signers = JSON.parse(await readFile(signersFilePath, 'utf-8'));
+  const config = await getFile(configFilePath);
+  const signers = await getFile(signersFilePath, pw);
   await deploy({ ...config, signers });
+};
+
+export type EncryptedContent = { content: string; iv: string };
+export const encryptContent = async (
+  content: string,
+  key: CryptoKey,
+): Promise<EncryptedContent> => {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encryptedContent = await crypto.subtle.encrypt(
+    {
+      name: 'AES-GCM',
+      iv,
+    },
+    key,
+    new TextEncoder().encode(content),
+  );
+  return {
+    content: Buffer.from(encryptedContent).toString('base64'),
+    iv: Buffer.from(iv).toString('base64'),
+  };
+};
+
+export const decryptContent = async (
+  { content, iv }: EncryptedContent,
+  key: CryptoKey,
+): Promise<string> => {
+  const decryptedContent = await crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv: Buffer.from(iv, 'base64') },
+    key,
+    Buffer.from(content, 'base64'),
+  );
+  return new TextDecoder().decode(decryptedContent);
+};
+
+export const getKey = async (pw: string) => {
+  const key = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(pw),
+  );
+  return crypto.subtle.importKey(
+    'raw',
+    key,
+    {
+      name: 'AES-GCM',
+      length: 256,
+    },
+    true,
+    ['encrypt', 'decrypt'],
+  );
 };
