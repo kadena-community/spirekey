@@ -1,6 +1,5 @@
 'use client';
 
-import type { Account } from '@kadena/spirekey-types';
 import { MonoManageAccounts } from '@kadena/react-icons';
 import {
   Notification,
@@ -8,6 +7,7 @@ import {
   Stack,
   Text,
 } from '@kadena/react-ui';
+import type { Account } from '@kadena/spirekey-types';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -17,8 +17,13 @@ import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
 import { publishEvent } from '@/utils/publishEvent';
+import { ChainId } from '@kadena/client';
 
-export default function Connect() {
+type ConnectProps = {
+  chainId: ChainId;
+  networkId: string;
+};
+export default function Connect({ chainId, networkId }: ConnectProps) {
   const { accounts } = useAccounts();
   const [connectingAccount, setConnectingAccount] = useState<
     Account | undefined
@@ -29,6 +34,10 @@ export default function Connect() {
     publishEvent('connected', account);
   };
 
+  const candidateAccounts = accounts.filter(
+    (account) =>
+      account.networkId === networkId && account.chainIds.includes(chainId),
+  );
   return (
     <Stack flexDirection="column" gap="xxl">
       <Stack flexDirection="column" alignItems="center" gap="sm">
@@ -38,7 +47,7 @@ export default function Connect() {
           style={{ marginTop: '2rem' }}
         />
       </Stack>
-      {accounts.map((account) => (
+      {candidateAccounts.map((account) => (
         <Stack
           key={account.accountName}
           flexDirection="column"

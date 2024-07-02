@@ -70,7 +70,7 @@ export default function Home() {
     setIsReady(true)
   };
   const onConnect = async () => {
-    const account = await connect();
+    const account = await connect('development', '14');
     setAccount(account);
     setAccount(await account.isReady());
     setIsReady(true);

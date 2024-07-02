@@ -29,7 +29,10 @@ export const sign = (
 
 export const signFactory =
   ({ embedManager, timeout = 5 * 60 * 1000 }: SignParams) =>
-  async (transactionList: IUnsignedCommand[], accounts: Account[] = []): Promise<ReturnValue> => {
+  async (
+    transactionList: IUnsignedCommand[],
+    accounts: Account[] = [],
+  ): Promise<ReturnValue> => {
     const isList = Array.isArray(transactionList);
     const transactions = isList ? transactionList : [transactionList];
 
@@ -39,19 +42,16 @@ export const signFactory =
       );
     }
 
-    const transactionsParams = transactions
-      .map(
-        (tx) =>
-          `transaction=${Buffer.from(JSON.stringify(tx)).toString('base64')}`,
-      )
-      .join('&');
+    const transactionsParams = transactions.reduce((params, tx) => {
+      params.append(
+        'transaction',
+        Buffer.from(JSON.stringify(tx)).toString('base64'),
+      );
+      return params;
+    }, new URLSearchParams());
 
-    const newSrc = new URL(embedManager.sidebar.src);
-    newSrc.pathname = '/embedded/sidebar';
-    newSrc.hash = `#${transactionsParams}`;
-
+    embedManager.setSidebarPath(`/embedded/sidebar#${transactionsParams.toString()}`);
     embedManager.openSidebar();
-    embedManager.setSidebarPath(`/embedded/sidebar#${transactionsParams}`);
 
     const timeoutPromise = new Promise<ReturnValue>((_, reject) =>
       setTimeout(
