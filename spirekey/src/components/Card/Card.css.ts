@@ -62,11 +62,10 @@ export const cardContentContainer = style([
 
 export const cardLogo = style([
   {
+    position: 'absolute',
+    bottom: '1.5em',
+    right: '1.5em',
     width: 'auto',
-    objectFit: 'contain',
-    objectPosition: 'bottom',
-  },
-  {
     height: 'clamp(1rem, 5vw, 2rem)',
   },
 ]);
