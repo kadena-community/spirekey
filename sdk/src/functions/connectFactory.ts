@@ -1,5 +1,6 @@
 import type { Account } from '@kadena/spirekey-types';
 
+import { type ChainId } from '@kadena/client';
 import { EmbedManager } from '../embed-manager';
 import { onAccountConnected } from './events';
 import { isAccountReady } from './ready';
@@ -11,12 +12,23 @@ export interface ConnectParams {
 
 type ConnectedAccount = Account & { isReady: () => Promise<Account> };
 
-export const connect = (): Promise<ConnectedAccount> =>
-  connectFactory({ embedManager: EmbedManager.getInstance() })();
+export const connect = (
+  networkId: string,
+  chainId: ChainId,
+): Promise<ConnectedAccount> =>
+  connectFactory({ embedManager: EmbedManager.getInstance() })(
+    networkId,
+    chainId,
+  );
 
 export const connectFactory =
   ({ embedManager, timeout = 5 * 60 * 1000 }: ConnectParams) =>
-  async (): Promise<ConnectedAccount> => {
+  async (networkId: string, chainId: ChainId): Promise<ConnectedAccount> => {
+    const connectParams = new URLSearchParams({
+      networkId,
+      chainId,
+    });
+    embedManager.setSidebarPath(`/embedded/sidebar#${connectParams.toString()}`);
     embedManager.openSidebar();
 
     const timeoutPromise = new Promise<ConnectedAccount>((_, reject) =>

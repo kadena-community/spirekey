@@ -1,5 +1,6 @@
 'use client';
 
+import { type ChainId } from '@kadena/client';
 import { Box } from '@kadena/react-ui';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
@@ -14,15 +15,17 @@ const Sign = dynamic(() => import('@/components/Embedded/Sign'), {
 
 export default function SidebarSign() {
   const [transaction, setTransaction] = useState<string | null>(null);
+  const [networkId, setNetworkId] = useState<string | null>(null);
+  const [chainId, setChainId] = useState<ChainId | null>(null);
 
   useEffect(() => {
     const getHash = () => {
       const params = new URLSearchParams(
         window.location.hash.replace(/^#/, '?'),
       );
-      if (params.get('transaction')) {
-        setTransaction(params.get('transaction'));
-      }
+      setTransaction(params.get('transaction'));
+      setNetworkId(params.get('networkId'));
+      setChainId(params.get('chainId') as ChainId);
     };
 
     const onHashChanged = () => {
@@ -51,7 +54,9 @@ export default function SidebarSign() {
       }}
     >
       {transaction && <Sign transaction={transaction} />}
-      {!transaction && <Connect />}
+      {networkId && chainId && (
+        <Connect networkId={networkId} chainId={chainId} />
+      )}
     </Box>
   );
 }
