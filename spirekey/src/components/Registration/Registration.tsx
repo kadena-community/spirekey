@@ -3,7 +3,7 @@
 import type { ChainId } from '@kadena/client';
 import { Button, Stack, Text } from '@kadena/react-ui';
 import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { LayoutSurface } from '@/components/LayoutSurface/LayoutSurface';
 import { useAccounts } from '@/context/AccountsContext';
@@ -22,7 +22,10 @@ import * as styles from './Registration.css';
 
 export default function Registration() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
+  const [allowRedirect, setAllowRedirect] = useState<boolean>(false);
+  const [animationFinished, setAnimationFinished] = useState<boolean>(false);
+  const [showRedirectMessage, setShowRedirectMessage] =
+    useState<boolean>(false);
   const [currentAccountName, setCurrentAccountName] = useState<string>('');
   const [succesfulAuthentication, setSuccesfulAuthentication] =
     useState<boolean>(false);
@@ -38,6 +41,12 @@ export default function Registration() {
     networkId,
     chainId,
   }: { redirectUrl: string; networkId: string; chainId: ChainId } = useParams();
+
+  const decodedRedirectUrl = redirectUrl
+    ? Buffer.from(redirectUrl, 'base64').toString()
+    : '';
+  const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
+  const completeRedirectUrl = decodedRedirectUrl || '/';
 
   const accountPrefix = 'SpireKey Account';
 
@@ -56,6 +65,18 @@ export default function Registration() {
   const alias = `${accountPrefix} ${numberOfSpireKeyAccounts + 1}`;
   const color = deviceColors.purple;
 
+  useEffect(() => {
+    if (!allowRedirect || !animationFinished) return;
+
+    if (decodedRedirectUrl) {
+      setShowRedirectMessage(true);
+    }
+
+    setTimeout(() => {
+      router.push(completeRedirectUrl);
+    }, 2000);
+  }, [animationFinished, allowRedirect]);
+
   const handleSubmit = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
@@ -72,12 +93,11 @@ export default function Registration() {
 
     try {
       setSuccesfulAuthentication(true);
-      setIsSubmitting(false);
       const accountName = await getAccountName(publicKey, currentNetwork);
 
       setCurrentAccountName(accountName);
 
-      await registerAccount({
+      registerAccount({
         accountName,
         alias,
         color,
@@ -88,7 +108,8 @@ export default function Registration() {
         networkId: currentNetwork,
         chainId,
       });
-      completeRedirect();
+
+      setAllowRedirect(true);
     } catch (error: unknown) {
       if (error instanceof Error) {
         addNotification({
@@ -98,27 +119,10 @@ export default function Registration() {
           timeout: 5000,
         });
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
-
-  const completeRedirect = () => {
-    if (!decodedRedirectUrl) {
-      router.push(completeRedirectUrl);
-      return;
-    }
-
-    setIsRedirecting(true);
-    setTimeout(() => {
-      router.push(completeRedirectUrl);
-    }, 2000);
-  };
-
-  // This should be fixed in another way, risk of side effects
-  const decodedRedirectUrl = redirectUrl
-    ? Buffer.from(redirectUrl, 'base64').toString()
-    : '';
-  const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
-  const completeRedirectUrl = decodedRedirectUrl || '/';
 
   const handleCancel = () => {
     router.push(cancelRedirectUrl);
@@ -130,8 +134,9 @@ export default function Registration() {
         <PasskeyCard
           isInProgress={isSubmitting}
           isSuccessful={succesfulAuthentication}
+          onSuccessfulAnimationEnd={() => setAnimationFinished(true)}
         >
-          {isRedirecting && (
+          {showRedirectMessage && (
             <Text>Redirecting you back to {completeRedirectUrl}</Text>
           )}
         </PasskeyCard>

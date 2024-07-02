@@ -9,12 +9,14 @@ import * as styles from './Card.css';
 interface Props {
   isInProgress: boolean;
   isSuccessful: boolean;
+  onSuccessfulAnimationEnd?: () => void;
   children?: React.ReactNode;
 }
 
 export default function PasskeyCard({
   isInProgress,
   isSuccessful,
+  onSuccessfulAnimationEnd,
   children,
 }: Props) {
   const [isDone, setIsDone] = useState<boolean>(false);
@@ -33,7 +35,10 @@ export default function PasskeyCard({
               <Fingerprint
                 animating={isInProgress}
                 success={isSuccessful}
-                onSuccessAnimationEnd={() => setIsDone(true)}
+                onSuccessAnimationEnd={() => {
+                  onSuccessfulAnimationEnd?.();
+                  setIsDone(true);
+                }}
               />
             </motion.div>
           )}
