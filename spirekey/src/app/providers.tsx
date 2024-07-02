@@ -51,12 +51,10 @@ export default function Providers({
           <AccountsProvider>
             <ThemeProvider
               attribute="class"
-              enableSystem={false}
               value={{
                 dark: darkThemeClass,
               }}
-              defaultTheme="light"
-              enableColorScheme={enableColorScheme}
+              enableColorScheme={enableColorScheme} // When enabled, we can't make the background of the embedded iframe transparent
             >
               <>
                 {children}
