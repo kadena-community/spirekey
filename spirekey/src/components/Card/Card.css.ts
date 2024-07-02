@@ -167,4 +167,5 @@ export const logo = style({
 
 globalStyle(`${icon} > div`, {
   position: 'absolute',
+  paddingInlineEnd: '32px',
 });

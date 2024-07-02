@@ -10,6 +10,11 @@ export const card = style({
   },
 });
 
+export const redirectMessage = style({
+  wordBreak: 'break-all',
+  color: '#000000',
+});
+
 export const buttons = style({
   flexDirection: 'row',
   justifyContent: 'space-between',

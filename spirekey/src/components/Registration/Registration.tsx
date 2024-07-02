@@ -148,7 +148,9 @@ export default function Registration({
           onSuccessfulAnimationEnd={() => setAnimationFinished(true)}
         >
           {showRedirectMessage && (
-            <Text>Redirecting you back to {completeRedirectUrl}</Text>
+            <Text className={styles.redirectMessage}>
+              Redirecting you back to {completeRedirectUrl}
+            </Text>
           )}
         </PasskeyCard>
       </div>
