@@ -7,6 +7,13 @@ const AccountDetail = dynamic(
   },
 );
 
-export default function AccountDetailPage() {
-  return <AccountDetail />;
+interface Props {
+  searchParams: {
+    caccount: string;
+  };
+}
+
+export default function AccountDetailPage({ searchParams }: Props) {
+  const accountName = decodeURIComponent(String(searchParams.caccount));
+  return <AccountDetail accountName={accountName} />;
 }

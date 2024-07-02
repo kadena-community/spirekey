@@ -17,13 +17,16 @@ import { updateAccount } from '@/utils/updateAccount';
 import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
 import * as styles from './AccountDetail.css';
 
-export default function AccountDetail() {
+interface Props {
+  accountName: string;
+}
+
+export default function AccountDetail({ accountName }: Props) {
   const { accounts, setAccount } = useAccounts();
   const params = useParams();
   const { addNotification } = useNotifications();
   const router = useRouter();
 
-  const accountName = decodeURIComponent(params.caccount.toString());
   const account = accounts.find((a) => a.accountName === accountName);
   const device = account?.devices[0];
 

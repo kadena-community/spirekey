@@ -2,7 +2,7 @@
 
 import type { ChainId } from '@kadena/client';
 import { Button, Stack, Text } from '@kadena/kode-ui';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { LayoutSurface } from '@/components/LayoutSurface/LayoutSurface';
@@ -20,7 +20,17 @@ import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import PasskeyCard from '../Card/PasskeyCard';
 import * as styles from './Registration.css';
 
-export default function Registration() {
+interface Props {
+  redirectUrl?: string;
+  networkId?: string;
+  chainId?: ChainId;
+}
+
+export default function Registration({
+  redirectUrl,
+  networkId,
+  chainId,
+}: Props) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [allowRedirect, setAllowRedirect] = useState<boolean>(false);
   const [animationFinished, setAnimationFinished] = useState<boolean>(false);
@@ -36,11 +46,7 @@ export default function Registration() {
   const { devMode } = useSettings();
   const { addNotification } = useNotifications();
 
-  const {
-    redirectUrl,
-    networkId,
-    chainId,
-  }: { redirectUrl: string; networkId: string; chainId: ChainId } = useParams();
+  console.log(redirectUrl);
 
   const decodedRedirectUrl = redirectUrl
     ? Buffer.from(redirectUrl, 'base64').toString()
@@ -73,8 +79,8 @@ export default function Registration() {
         router.push(completeRedirectUrl);
         return;
       }
-
       setShowRedirectMessage(true);
+
       setTimeout(() => {
         router.push(completeRedirectUrl);
       }, 2000);
