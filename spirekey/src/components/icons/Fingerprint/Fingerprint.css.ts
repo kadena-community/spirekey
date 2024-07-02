@@ -1,10 +1,9 @@
-import { tokens } from '@kadena/react-ui/styles';
 import { globalStyle, keyframes, style } from '@vanilla-extract/css';
 
 const dashoffset = keyframes({
-  '0%': { strokeDashoffset: '0px' },
-  '50%': { strokeDashoffset: '-40px' },
-  '100%': { strokeDashoffset: '0px' },
+  '0%': { strokeDashoffset: '0px', strokeDasharray: '50px' },
+  '50%': { strokeDashoffset: '-40px', strokeDasharray: '10px' },
+  '100%': { strokeDashoffset: '0px', strokeDasharray: '50px' },
 });
 
 const finalize = keyframes({
@@ -18,16 +17,16 @@ const finalize = keyframes({
 
 export const backgroundLine = style({
   fill: 'none',
-  stroke: '#bbbbbb',
+  stroke: '#E4E5E5',
   strokeLinecap: 'round',
 });
 
 export const line = style({
   fill: 'none',
-  stroke: tokens.kda.foundation.color.icon.brand.primary.default,
+  stroke: '#4A9079',
   strokeLinecap: 'round',
   strokeMiterlimit: 10,
-  strokeDasharray: '10px',
+  strokeDasharray: '50px',
   strokeDashoffset: '0px',
 });
 
