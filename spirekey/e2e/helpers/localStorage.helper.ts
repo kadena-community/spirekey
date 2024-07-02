@@ -18,6 +18,7 @@ export class LocalStorageHelper {
     await this.page.evaluate(() => {
       localStorage.removeItem('localAccounts');
     });
+    await this.page.context().clearCookies();
     await this.page.reload();
   }
 }

@@ -211,6 +211,9 @@ importers:
       react-intersection-observer:
         specifier: ^9.10.3
         version: 9.10.3(react-dom@18.3.1)(react@18.3.1)
+      react-use-cookie:
+        specifier: ^1.6.1
+        version: 1.6.1(react@18.3.1)
       sharp:
         specifier: ^0.33.4
         version: 0.33.4
@@ -4605,7 +4608,7 @@ packages:
       std-env: 3.7.0
       strip-literal: 2.1.0
       test-exclude: 6.0.0
-      vitest: 1.6.0
+      vitest: 1.6.0(@types/node@20.14.2)(jsdom@24.1.0)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8190,6 +8193,15 @@ packages:
       '@react-stately/tooltip': 3.4.9(react@18.3.1)
       '@react-stately/tree': 3.8.1(react@18.3.1)
       '@react-types/shared': 3.23.1(react@18.3.1)
+      react: 18.3.1
+    dev: false
+
+  /react-use-cookie@1.6.1(react@18.3.1):
+    resolution: {integrity: sha512-77bENFpc+pi1roLJIrRvekprB4IjwG1Mowir0QdbwA0pDjgMtp3Ya9E1H9dJAisCxBvTZih6k5+2SSVo9BR2qw==}
+    engines: {node: '>=8', npm: '>=5'}
+    peerDependencies:
+      react: '>=16.8'
+    dependencies:
       react: 18.3.1
     dev: false
 

@@ -1,8 +1,9 @@
 'use client';
 
-import type { Account, Device } from '@kadena/spirekey-types';
 import type { ChainId, ITransactionDescriptor } from '@kadena/client';
+import type { Account, Device } from '@kadena/spirekey-types';
 import { createContext, useContext, useEffect, useState } from 'react';
+import useCookie, { getCookie } from 'react-use-cookie';
 
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { fundAccount } from '@/utils/fund';
@@ -44,16 +45,21 @@ const migrateAccountStructure = (
 });
 
 const getAccountsFromLocalStorage = (): Account[] => {
-  if (typeof window === 'undefined') {
-    return [];
-  }
+  if (typeof window === 'undefined') return [];
 
   const rawLocalAccounts = localStorage.getItem('localAccounts') || '[]';
+  const cookieAccounts = getCookie('localAccounts') || '[]';
 
   try {
-    const parsedAccounts = JSON.parse(rawLocalAccounts) as
-      | Account[]
-      | Record<string, Account>;
+    const parsedAccounts = [
+      ...[...JSON.parse(cookieAccounts), ...JSON.parse(rawLocalAccounts)]
+        .reduce(
+          (u, a) =>
+            u.set(a.accountName + a.networkId + a.chainIds.join(','), a),
+          new Map(),
+        )
+        .values(),
+    ] as Account[] | Record<string, Account>;
     const accounts = Array.isArray(parsedAccounts)
       ? parsedAccounts
       : Object.values(parsedAccounts);
@@ -86,6 +92,7 @@ type Props = {
 const AccountsProvider = ({ children }: Props) => {
   const { host } = useReturnUrl();
 
+  const [, setCookieAccounts] = useCookie('localAccounts', '');
   const [accounts, setAccounts] = useState<Account[]>(
     getAccountsFromLocalStorage(),
   );
@@ -103,9 +110,25 @@ const AccountsProvider = ({ children }: Props) => {
   // - check pending device registration transactions
   useEffect(() => {
     localStorage.setItem('localAccounts', JSON.stringify(accounts));
+    if (accounts.length)
+      setCookieAccounts(
+        JSON.stringify(
+          accounts.map(({ accountName, networkId, chainIds }) => ({
+            accountName,
+            networkId,
+            chainIds,
+          })),
+        ),
+        {
+          days: 365,
+          Secure: true,
+          SameSite: 'Strict',
+        },
+      );
 
     const checkPendingTxs = async () => {
       for (const account of accounts) {
+        if (!account.devices?.length) continue;
         for (const device of account.devices) {
           if (device.pendingRegistrationTxs?.length) {
             await Promise.race(
