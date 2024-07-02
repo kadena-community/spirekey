@@ -2,7 +2,7 @@ import { ConnectAccount } from '@/app/(examples)/v1/example/delivery/components/
 import { Order } from '@/app/(examples)/v1/example/delivery/components/Order/Order';
 import { Surface } from '@/components/Surface/Surface';
 import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
-import { Heading, Stack } from '@kadena/react-ui';
+import { Heading, Stack } from '@kadena/kode-ui';
 import { ICap, ISigner } from '@kadena/types';
 
 interface Props {

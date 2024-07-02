@@ -1,10 +1,10 @@
 import { Surface } from '@/components/Surface/Surface';
 import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { useAccounts } from '@/context/AccountsContext';
-import { MonoSupervisorAccount } from '@kadena/react-icons';
-import { Box, ContentHeader, Stack } from '@kadena/react-ui';
-import './ConnectHeader.css';
+import { MonoSupervisorAccount } from '@kadena/kode-icons';
+import { Box, ContentHeader, Stack } from '@kadena/kode-ui';
 import { ChainId } from '@kadena/types';
+import './ConnectHeader.css';
 
 type Props = {
   returnUrl: string;
@@ -13,7 +13,12 @@ type Props = {
   chainId?: ChainId;
 };
 
-export default function ConnectHeader({ returnUrl, reason, networkId, chainId }: Props) {
+export default function ConnectHeader({
+  returnUrl,
+  reason,
+  networkId,
+  chainId,
+}: Props) {
   const { accounts } = useAccounts();
 
   const filteredAccounts = accounts.filter(

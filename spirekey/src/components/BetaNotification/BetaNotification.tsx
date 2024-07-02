@@ -1,6 +1,6 @@
 'use client';
 
-import { Notification, NotificationHeading } from '@kadena/react-ui';
+import { Notification, NotificationHeading } from '@kadena/kode-ui';
 
 import * as styles from './BetaNotification.css';
 

@@ -1,7 +1,7 @@
 'use client';
 
-import { MonoCheck } from '@kadena/react-icons/system';
-import { Button, NumberField, Stack, TextField } from '@kadena/react-ui';
+import { MonoCheck } from '@kadena/kode-icons/system';
+import { Button, NumberField, Stack, TextField } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
 import { useParams, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';

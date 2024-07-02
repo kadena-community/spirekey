@@ -4,7 +4,7 @@ import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { useAccounts } from '@/context/AccountsContext';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { transfer } from '@/utils/shared/transfer';
-import { Button, Stack, TextField } from '@kadena/react-ui';
+import { Button, Stack, TextField } from '@kadena/kode-ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import * as style from './SendForm.css';

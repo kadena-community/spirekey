@@ -17,7 +17,7 @@ import {
   TextField,
   TextareaField,
   TrackerCard,
-} from '@kadena/react-ui';
+} from '@kadena/kode-ui';
 import { FC, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {

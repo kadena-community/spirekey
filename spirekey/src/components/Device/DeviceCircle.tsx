@@ -1,5 +1,5 @@
+import { Box } from '@kadena/kode-ui';
 import type { Device } from '@kadena/spirekey-types';
-import { Box } from '@kadena/react-ui';
 import classNames from 'classnames';
 
 import { getDeviceIcon } from '@/utils/getDeviceIcon';

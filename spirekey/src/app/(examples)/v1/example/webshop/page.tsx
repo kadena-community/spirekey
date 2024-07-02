@@ -3,7 +3,7 @@
 import { AccountButton } from '@/app/(examples)/v1/example/delivery/components/AccountButton';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { decodeAccount } from '@/utils/shared/decodeAccount';
-import { MonoCookie } from '@kadena/react-icons';
+import { MonoCookie } from '@kadena/kode-icons';
 import {
   Box,
   Button,
@@ -14,7 +14,7 @@ import {
   Heading,
   Stack,
   Text,
-} from '@kadena/react-ui';
+} from '@kadena/kode-ui';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import cookieImg from './chocolate-chip-cookie.jpg';

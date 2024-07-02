@@ -1,12 +1,12 @@
 'use client';
 
-import { MonoManageAccounts } from '@kadena/react-icons';
+import { MonoManageAccounts } from '@kadena/kode-icons';
 import {
   Notification,
   NotificationHeading,
   Stack,
   Text,
-} from '@kadena/react-ui';
+} from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
 import Image from 'next/image';
 import { useState } from 'react';

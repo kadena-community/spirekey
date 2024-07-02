@@ -22,7 +22,7 @@ import { SubmitStatus, useSubmit } from '@/hooks/shared/useSubmit';
 import { getAccountFromChain } from '@/utils/shared/account';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { getSmartContractMeta } from '@/utils/shared/smartContractMeta';
-import { Heading, Stack } from '@kadena/react-ui';
+import { Heading, Stack } from '@kadena/kode-ui';
 import { ChainId } from '@kadena/types';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';

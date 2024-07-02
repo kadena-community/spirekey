@@ -1,5 +1,5 @@
 import type { ChainId } from '@kadena/client';
-import { Box, Stack } from '@kadena/react-ui';
+import { Box, Stack } from '@kadena/kode-ui';
 import { motion } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useResizeObserver } from 'usehooks-ts';

@@ -1,4 +1,4 @@
-import { Box } from '@kadena/react-ui';
+import { Box } from '@kadena/kode-ui';
 import { motion } from 'framer-motion';
 import { FC, ReactNode } from 'react';
 import { progressBar, wrapper } from './ProgressBox.css';

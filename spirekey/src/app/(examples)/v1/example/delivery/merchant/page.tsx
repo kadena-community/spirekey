@@ -10,7 +10,7 @@ import { PizzaWorld } from '@/components/icons/PizzaWorld';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/shared/useSubmit';
 import { getSmartContractMeta } from '@/utils/shared/smartContractMeta';
-import { Box, Heading, Stack, Text } from '@kadena/react-ui';
+import { Box, Heading, Stack, Text } from '@kadena/kode-ui';
 import { ChainId, ISigner } from '@kadena/types';
 import { useEffect } from 'react';
 import { useConnection } from '../Connection';

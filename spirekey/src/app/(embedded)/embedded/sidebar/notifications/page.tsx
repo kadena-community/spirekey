@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Heading } from '@kadena/react-ui';
+import { Box, Heading } from '@kadena/kode-ui';
 
 export default function SidebarSign() {
   return (

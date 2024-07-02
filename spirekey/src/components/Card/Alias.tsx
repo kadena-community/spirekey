@@ -1,5 +1,5 @@
-import { MonoSupervisorAccount } from '@kadena/react-icons';
-import { Box, Heading } from '@kadena/react-ui';
+import { MonoSupervisorAccount } from '@kadena/kode-icons';
+import { Box, Heading } from '@kadena/kode-ui';
 import { accountAlias, accountIcon, accountIconInner } from './Card.css';
 
 type CardProps = {

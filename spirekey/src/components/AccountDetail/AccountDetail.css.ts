@@ -1,4 +1,4 @@
-import { breakpoints, tokens } from '@kadena/react-ui/styles';
+import { breakpoints, tokens } from '@kadena/kode-ui/styles';
 import { style } from '@vanilla-extract/css';
 
 export const buttons = style({

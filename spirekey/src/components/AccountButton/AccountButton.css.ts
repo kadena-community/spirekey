@@ -1,5 +1,5 @@
 import { customTokens } from '@/styles/shared/tokens.css';
-import { atoms, tokens } from '@kadena/react-ui/styles';
+import { atoms, tokens } from '@kadena/kode-ui/styles';
 import { keyframes, style } from '@vanilla-extract/css';
 
 export const button = style([

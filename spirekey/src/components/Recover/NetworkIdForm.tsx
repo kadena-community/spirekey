@@ -3,7 +3,7 @@ import { NetworkMainnet } from '@/components/icons/NetworkMainnet';
 import { NetworkTestnet } from '@/components/icons/NetworkTestnet';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
-import { Box, Text } from '@kadena/react-ui';
+import { Box, Text } from '@kadena/kode-ui';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';

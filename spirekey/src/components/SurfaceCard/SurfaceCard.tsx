@@ -1,4 +1,4 @@
-import { Box, Heading, Text } from '@kadena/react-ui';
+import { Box, Heading, Text } from '@kadena/kode-ui';
 import type { FC, ReactNode } from 'react';
 import { Surface } from '../Surface/Surface';
 

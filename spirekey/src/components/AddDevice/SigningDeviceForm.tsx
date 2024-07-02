@@ -1,6 +1,6 @@
 import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
 import { getDeviceIcon } from '@/utils/getDeviceIcon';
-import { Box, Grid, GridItem } from '@kadena/react-ui';
+import { Box, Grid, GridItem } from '@kadena/kode-ui';
 import classnames from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FC } from 'react';

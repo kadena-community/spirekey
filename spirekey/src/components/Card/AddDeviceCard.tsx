@@ -1,5 +1,5 @@
+import { Heading, Stack } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
-import { Heading, Stack } from '@kadena/react-ui';
 import Link from 'next/link';
 
 import { PlusCircle } from '@/components/icons/PlusCircle';

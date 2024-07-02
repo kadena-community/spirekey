@@ -1,5 +1,5 @@
-import { SpireKeyKdacolorLogoGreen } from '@kadena/react-icons/product';
-import { Grid, Heading, Stack, Text } from '@kadena/react-ui';
+import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
+import { Grid, Heading, Stack, Text } from '@kadena/kode-ui';
 
 import * as styles from './LayoutSurface.css';
 

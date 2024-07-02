@@ -1,5 +1,5 @@
+import { Grid, GridItem } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
-import { Grid, GridItem } from '@kadena/react-ui';
 import classNames from 'classnames';
 import { Fragment } from 'react';
 import useSWR from 'swr';

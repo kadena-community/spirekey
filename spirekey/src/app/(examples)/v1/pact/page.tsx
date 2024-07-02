@@ -1,7 +1,7 @@
 'use client';
 
-import { MonoKey } from '@kadena/react-icons';
-import { Box, ContentHeader, Heading, Stack } from '@kadena/react-ui';
+import { MonoKey } from '@kadena/kode-icons';
+import { Box, ContentHeader, Heading, Stack } from '@kadena/kode-ui';
 import { useState } from 'react';
 
 import { PreviewForm, PreviewFormValues } from './PreviewForm';

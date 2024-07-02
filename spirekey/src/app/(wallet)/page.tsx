@@ -3,7 +3,7 @@
 import { Background } from '@/components/Background/Background';
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { useAccounts } from '@/context/AccountsContext';
-import { Stack } from '@kadena/react-ui';
+import { Stack } from '@kadena/kode-ui';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

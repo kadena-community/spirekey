@@ -1,6 +1,6 @@
+import { MonoCheck, MonoContentCopy } from '@kadena/kode-icons';
+import { Stack, Text } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
-import { MonoCheck, MonoContentCopy } from '@kadena/react-icons';
-import { Stack, Text } from '@kadena/react-ui';
 import { useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'usehooks-ts';
 

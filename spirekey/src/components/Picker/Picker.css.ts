@@ -1,4 +1,4 @@
-import { atoms } from '@kadena/react-ui/styles';
+import { atoms } from '@kadena/kode-ui/styles';
 import { style, styleVariants } from '@vanilla-extract/css';
 
 export const picker = style({});

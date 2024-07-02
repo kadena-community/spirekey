@@ -1,5 +1,5 @@
 import type { ChainId } from '@kadena/client';
-import { Grid, Stack } from '@kadena/react-ui';
+import { Grid, Stack } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';

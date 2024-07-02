@@ -1,5 +1,5 @@
+import { Stack } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
-import { Stack } from '@kadena/react-ui';
 import useSWR from 'swr';
 
 import { useNotifications } from '@/context/shared/NotificationsContext';

@@ -2,7 +2,7 @@ import fingerprint from '@/assets/images/fingerprint.svg';
 import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
-import { Stack, Text } from '@kadena/react-ui';
+import { Stack, Text } from '@kadena/kode-ui';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { FC } from 'react';

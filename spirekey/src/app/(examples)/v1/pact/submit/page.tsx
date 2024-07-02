@@ -1,6 +1,6 @@
 'use client';
 
-import { MonoCheckCircle, MonoClose, MonoFlight } from '@kadena/react-icons';
+import { MonoCheckCircle, MonoClose, MonoFlight } from '@kadena/kode-icons';
 import {
   Box,
   Button,
@@ -8,7 +8,7 @@ import {
   Heading,
   Stack,
   Text,
-} from '@kadena/react-ui';
+} from '@kadena/kode-ui';
 
 import { SubmitResult } from '@/components/shared/SubmitResult';
 import { usePreview } from '@/hooks/shared/usePreview';

@@ -7,7 +7,7 @@ import { Button } from '@/components/shared/Button/Button';
 import { Surface } from '@/components/Surface/Surface';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { getAccountFromChain } from '@/utils/shared/account';
-import { Heading, maskValue, Stack } from '@kadena/react-ui';
+import { Heading, maskValue, Stack } from '@kadena/kode-ui';
 import { ChainId } from '@kadena/types';
 import { useRouter } from 'next/navigation';
 

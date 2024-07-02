@@ -1,4 +1,4 @@
-import { SpireKeyKdacolorLogoGreen } from '@kadena/react-icons/product';
+import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 

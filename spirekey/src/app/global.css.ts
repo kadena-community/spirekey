@@ -1,5 +1,5 @@
-import '@kadena/react-ui/global';
-import { vars } from '@kadena/react-ui/styles';
+import '@kadena/kode-ui/global';
+import { vars } from '@kadena/kode-ui/styles';
 import { globalStyle } from '@vanilla-extract/css';
 
 const developerBackgroundColor = vars.colors.$gray70;

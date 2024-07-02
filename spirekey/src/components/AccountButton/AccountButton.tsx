@@ -1,4 +1,4 @@
-import { Stack, Text } from '@kadena/react-ui';
+import { Stack, Text } from '@kadena/kode-ui';
 import Link from 'next/link';
 import type { ComponentProps, ReactElement } from 'react';
 import * as styles from './AccountButton.css';

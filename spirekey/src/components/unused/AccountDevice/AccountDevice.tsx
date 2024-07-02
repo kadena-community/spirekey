@@ -1,4 +1,4 @@
-import { MaskedValue, Stack } from '@kadena/react-ui';
+import { MaskedValue, Stack } from '@kadena/kode-ui';
 import { ReactNode } from 'react';
 import { container } from './AccountDevices.css';
 

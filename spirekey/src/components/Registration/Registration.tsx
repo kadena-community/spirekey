@@ -1,7 +1,7 @@
 'use client';
 
 import type { ChainId } from '@kadena/client';
-import { Button, Stack, Text } from '@kadena/react-ui';
+import { Button, Stack, Text } from '@kadena/kode-ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 

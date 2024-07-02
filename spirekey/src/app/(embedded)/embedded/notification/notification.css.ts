@@ -1,6 +1,6 @@
 import { globalStyle, style } from '@vanilla-extract/css';
 
-import { atoms } from '@kadena/react-ui/styles';
+import { atoms } from '@kadena/kode-ui/styles';
 
 export const wrapper = style([
   atoms({}),

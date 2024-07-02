@@ -1,5 +1,5 @@
-import { MonoLoading } from '@kadena/react-icons';
-import { Heading, Stack } from '@kadena/react-ui';
+import { MonoLoading } from '@kadena/kode-icons';
+import { Heading, Stack } from '@kadena/kode-ui';
 import { ICap, ISigner } from '@kadena/types';
 
 import { ConnectAccount } from '@/app/(examples)/v1/example/delivery/components/AccountButton';
