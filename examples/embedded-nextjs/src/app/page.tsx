@@ -22,7 +22,9 @@ export default function Home() {
   const [txs, setTxs] = useState<(IUnsignedCommand | ICommand)[]>([]);
 
   useEffect(() => {
-    initSpireKey({ hostUrl: 'http://localhost:1337' });
+    initSpireKey({
+      hostUrl: localStorage.getItem('wallet') || 'https://spirekey.kadena.io',
+    });
   }, []);
 
   const signTransaction = async () => {
