@@ -11,6 +11,7 @@ export default defineConfig({
   },
   test: {
     include: ['{src,tests}/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+    globals: true,
     environment: 'jsdom',
     coverage: {
       enabled: true,

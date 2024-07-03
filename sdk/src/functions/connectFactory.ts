@@ -29,6 +29,7 @@ export const connectFactory =
       chainId,
     });
     embedManager.openPopup(`/embedded/sidebar#${connectParams.toString()}`);
+    embedManager.showNotification();
 
     const timeoutPromise = new Promise<ConnectedAccount>((_, reject) =>
       setTimeout(

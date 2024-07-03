@@ -36,12 +36,6 @@ export const signFactory =
     const isList = Array.isArray(transactionList);
     const transactions = isList ? transactionList : [transactionList];
 
-    if (transactions.length > 1) {
-      throw new Error(
-        'Currently Kadena SpireKey only supports signing one transaction at a time',
-      );
-    }
-
     const transactionsParams = transactions.reduce((params, tx) => {
       params.append(
         'transaction',
