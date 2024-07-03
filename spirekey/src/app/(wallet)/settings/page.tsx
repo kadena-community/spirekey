@@ -3,7 +3,7 @@
 import { Background } from '@/components/Background/Background';
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
-import { Stack } from '@kadena/react-ui';
+import { Stack } from '@kadena/kode-ui';
 import { useLocalStorage } from 'usehooks-ts';
 
 export default function Settings() {

@@ -1,7 +1,7 @@
 'use client';
 
-import { Heading } from '@kadena/react-ui';
-import { atoms } from '@kadena/react-ui/styles';
+import { Heading } from '@kadena/kode-ui';
+import { atoms } from '@kadena/kode-ui/styles';
 import dynamic from 'next/dynamic';
 
 const Recover = dynamic(() => import('@/components/Recover/Recover'), {

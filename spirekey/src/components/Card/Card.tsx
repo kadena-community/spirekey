@@ -1,6 +1,6 @@
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { hexadecimalToRGB } from '@/utils/color';
-import { Box, Stack } from '@kadena/react-ui';
+import { Box, Stack } from '@kadena/kode-ui';
 import classnames from 'classnames';
 import Image from 'next/image';
 import { ReactNode } from 'react';
@@ -14,15 +14,17 @@ type CardProps = {
   icons?: ReactNode;
   center?: ReactNode;
   cardBottom?: ReactNode;
+  children?: ReactNode;
 };
 
 export default function Card({
   color = deviceColors.green,
   balancePercentage = 10,
-  title = undefined,
-  icons = undefined,
-  center = undefined,
-  cardBottom = undefined,
+  title,
+  icons,
+  center,
+  cardBottom,
+  children,
 }: CardProps) {
   const { r, g, b } = hexadecimalToRGB(color);
   const colorStart = `rgba(${r}, ${g}, ${b}, 0)`;
@@ -40,6 +42,7 @@ export default function Card({
         } as React.CSSProperties
       }
     >
+      {children}
       <Stack
         flexDirection="column"
         justifyContent="space-between"
@@ -67,15 +70,16 @@ export default function Card({
           <Stack flexDirection="column" className={styles.txAndBalance}>
             {cardBottom}
           </Stack>
-          <Image
-            src={CardLogo}
-            alt="Card logo"
-            className={styles.cardLogo}
-            width={64}
-            height={64}
-          />
         </Stack>
       </Stack>
+      <Image
+        src={CardLogo}
+        alt="Kadena logo"
+        className={styles.cardLogo}
+        width={68}
+        height={20}
+        role="presentation"
+      />
     </Box>
   );
 }

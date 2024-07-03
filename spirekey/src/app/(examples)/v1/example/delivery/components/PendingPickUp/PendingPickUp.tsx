@@ -1,5 +1,5 @@
-import { MonoLoading } from '@kadena/react-icons';
-import { Heading, Stack, maskValue } from '@kadena/react-ui';
+import { MonoLoading } from '@kadena/kode-icons';
+import { Heading, Stack, maskValue } from '@kadena/kode-ui';
 
 import { Order } from '@/app/(examples)/v1/example/delivery/useDelivery';
 import { Surface } from '@/components/Surface/Surface';

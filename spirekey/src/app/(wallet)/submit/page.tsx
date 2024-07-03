@@ -6,7 +6,7 @@ import {
   MonoCheckCircle,
   MonoClose,
   MonoSwapHorizontalCircle,
-} from '@kadena/react-icons';
+} from '@kadena/kode-icons';
 import {
   Box,
   Button,
@@ -14,7 +14,7 @@ import {
   Heading,
   Stack,
   Text,
-} from '@kadena/react-ui';
+} from '@kadena/kode-ui';
 
 type SearchParams = {
   searchParams: {

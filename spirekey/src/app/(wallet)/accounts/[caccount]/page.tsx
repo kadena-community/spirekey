@@ -1,27 +1,19 @@
-'use client';
-
-import { PageTitle } from '@/components/Layout/PageTitle';
 import dynamic from 'next/dynamic';
-import { useParams } from 'next/navigation';
 
 const AccountDetail = dynamic(
-  () =>
-    import('@/components/AccountDetail/AccountDetail').then(
-      (mod) => mod.AccountDetail,
-    ),
+  () => import('@/components/AccountDetail/AccountDetail'),
   {
     ssr: false,
   },
 );
 
-export default function AccountDetailPage() {
-  const params = useParams();
-  const accountName = decodeURIComponent(String(params.caccount));
+interface Props {
+  searchParams: {
+    caccount: string;
+  };
+}
 
-  return (
-    <>
-      <PageTitle>Account details</PageTitle>
-      <AccountDetail accountName={accountName} />
-    </>
-  );
+export default function AccountDetailPage({ searchParams }: Props) {
+  const accountName = decodeURIComponent(String(searchParams.caccount));
+  return <AccountDetail accountName={accountName} />;
 }

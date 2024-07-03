@@ -3,7 +3,7 @@ import {
   useOrder,
 } from '@/app/(examples)/v1/example/delivery/context/OrderContext';
 import { Button } from '@/components/shared/Button/Button';
-import { Box, Heading, Stack, Text } from '@kadena/react-ui';
+import { Box, Heading, Stack, Text } from '@kadena/kode-ui';
 import Image from 'next/image';
 import * as styles from './Product.css';
 

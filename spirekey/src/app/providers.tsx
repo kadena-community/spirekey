@@ -1,6 +1,6 @@
 'use client';
 
-import { darkThemeClass } from '@kadena/react-ui/styles';
+import { darkThemeClass } from '@kadena/kode-ui/styles';
 import { ThemeProvider } from 'next-themes';
 import { ReactNode } from 'react';
 
@@ -51,12 +51,10 @@ export default function Providers({
           <AccountsProvider>
             <ThemeProvider
               attribute="class"
-              enableSystem={false}
               value={{
                 dark: darkThemeClass,
               }}
-              defaultTheme="dark"
-              enableColorScheme={enableColorScheme}
+              enableColorScheme={enableColorScheme} // When enabled, we can't make the background of the embedded iframe transparent
             >
               <>
                 {children}

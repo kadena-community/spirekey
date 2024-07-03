@@ -1,4 +1,4 @@
-import { Card } from '@kadena/react-ui';
+import { Card } from '@kadena/kode-ui';
 import * as base64url from 'base64url-universal';
 import { useRouter } from 'next/navigation';
 import QRScanner from 'qr-scanner';

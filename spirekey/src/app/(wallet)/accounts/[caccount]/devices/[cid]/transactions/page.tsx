@@ -2,7 +2,7 @@
 
 import { AccountDetails } from '@/components/AccountDetails/AccountDetails';
 import { useAccounts } from '@/context/AccountsContext';
-import { Box } from '@kadena/react-ui';
+import { Box } from '@kadena/kode-ui';
 import { useParams } from 'next/navigation';
 import React from 'react';
 

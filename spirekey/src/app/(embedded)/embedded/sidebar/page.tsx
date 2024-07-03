@@ -1,7 +1,7 @@
 'use client';
 
 import { type ChainId } from '@kadena/client';
-import { Box } from '@kadena/react-ui';
+import { Box } from '@kadena/kode-ui';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 

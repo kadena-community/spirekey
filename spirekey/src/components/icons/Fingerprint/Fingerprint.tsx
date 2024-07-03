@@ -25,9 +25,14 @@ const Fingerprint: React.FC<FingerprintProps> = ({
     const svgElement = lineRef.current;
     if (svgElement && !animating) {
       const handleAnimationEnd = () => {
+        console.log('1');
         if (success) {
           setIsSuccesful(true);
-          onSuccessAnimationEnd?.();
+
+          svgElement.addEventListener('animationend', () => {
+            console.log('2');
+            onSuccessAnimationEnd?.();
+          });
         }
         setIsAnimating(false);
       };

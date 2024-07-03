@@ -1,5 +1,5 @@
 import { SurfaceCard } from '@/components/SurfaceCard/SurfaceCard';
-import { Box, Text } from '@kadena/react-ui';
+import { Box, Text } from '@kadena/kode-ui';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';

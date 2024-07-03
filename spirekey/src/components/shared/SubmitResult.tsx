@@ -1,5 +1,5 @@
 import { SubmitStatus } from '@/hooks/shared/useSubmit';
-import { TrackerCard } from '@kadena/react-ui';
+import { TrackerCard } from '@kadena/kode-ui';
 
 interface Props {
   result: any;

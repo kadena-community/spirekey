@@ -1,5 +1,5 @@
 import { customTokens } from '@/styles/shared/tokens.css';
-import { atoms } from '@kadena/react-ui/styles';
+import { atoms } from '@kadena/kode-ui/styles';
 import { globalStyle, style } from '@vanilla-extract/css';
 
 export const wrapper = style({

@@ -1,6 +1,6 @@
-import { MonoInfo } from '@kadena/react-icons';
-import { Heading, Text } from '@kadena/react-ui';
-import { tokens } from '@kadena/react-ui/styles';
+import { MonoInfo } from '@kadena/kode-icons';
+import { Heading, Text } from '@kadena/kode-ui';
+import { tokens } from '@kadena/kode-ui/styles';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
 import * as styles from './Notification.css';

@@ -1,5 +1,5 @@
 import { getCustomTranslation } from '@/utils/translation';
-import { Box, Heading, Stack, Text } from '@kadena/react-ui';
+import { Box, Heading, Stack, Text } from '@kadena/kode-ui';
 import { ICap } from '@kadena/types';
 import * as styles from './Capability.css';
 

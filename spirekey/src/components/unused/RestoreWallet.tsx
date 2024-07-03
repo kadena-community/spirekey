@@ -1,7 +1,7 @@
 'use client';
 
-import { MonoSupervisorAccount } from '@kadena/react-icons';
-import { Card, ContentHeader, Stack } from '@kadena/react-ui';
+import { MonoSupervisorAccount } from '@kadena/kode-icons';
+import { Card, ContentHeader, Stack } from '@kadena/kode-ui';
 import Link from 'next/link';
 
 export const Restore = () => {

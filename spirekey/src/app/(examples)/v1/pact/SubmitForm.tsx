@@ -1,7 +1,7 @@
 'use client';
 
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
-import { Box, Button, Stack, Text } from '@kadena/react-ui';
+import { Box, Button, Stack, Text } from '@kadena/kode-ui';
 import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 import { PreviewFormValues } from './PreviewForm';

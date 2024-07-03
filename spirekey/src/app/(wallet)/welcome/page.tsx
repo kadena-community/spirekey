@@ -3,7 +3,7 @@
 import logo from '@/assets/images/SpireKey-logo.svg';
 import { Background } from '@/components/Background/Background';
 import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
-import { Stack } from '@kadena/react-ui';
+import { Stack } from '@kadena/kode-ui';
 import Image from 'next/image';
 
 export default function Home() {

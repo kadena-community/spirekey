@@ -2,8 +2,8 @@
 
 import { useAccounts } from '@/context/AccountsContext';
 import { fundAccount } from '@/utils/fund';
-import { MonoSupervisorAccount } from '@kadena/react-icons';
-import { Box, Button, Card, ContentHeader, Stack } from '@kadena/react-ui';
+import { MonoSupervisorAccount } from '@kadena/kode-icons';
+import { Box, Button, Card, ContentHeader, Stack } from '@kadena/kode-ui';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 

@@ -1,7 +1,7 @@
 'use client';
 
-import { MonoLastPage, MonoRemoveRedEye } from '@kadena/react-icons';
-import { Heading } from '@kadena/react-ui';
+import { MonoLastPage, MonoRemoveRedEye } from '@kadena/kode-icons';
+import { Heading } from '@kadena/kode-ui';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 

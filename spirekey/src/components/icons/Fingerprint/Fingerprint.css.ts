@@ -1,34 +1,32 @@
 import { globalStyle, keyframes, style } from '@vanilla-extract/css';
 
 const dashoffset = keyframes({
-  '0%': { strokeDashoffset: '0px' },
-  '50%': { strokeDashoffset: '-40px' },
-  '100%': { strokeDashoffset: '0px' },
+  '0%': { strokeDashoffset: '0px', strokeDasharray: '50px' },
+  '50%': { strokeDashoffset: '-40px', strokeDasharray: '10px' },
+  '100%': { strokeDashoffset: '0px', strokeDasharray: '50px' },
 });
 
 const finalize = keyframes({
   '0%': {
-    stroke: '#16B681',
     strokeDasharray: '10px',
   },
   '100%': {
-    stroke: '#4BE9B5',
     strokeDasharray: '50px',
   },
 });
 
 export const backgroundLine = style({
   fill: 'none',
-  stroke: '#4A9079',
+  stroke: '#E4E5E5',
   strokeLinecap: 'round',
 });
 
 export const line = style({
   fill: 'none',
-  stroke: '#16B681',
+  stroke: '#4A9079',
   strokeLinecap: 'round',
   strokeMiterlimit: 10,
-  strokeDasharray: '10px',
+  strokeDasharray: '50px',
   strokeDashoffset: '0px',
 });
 

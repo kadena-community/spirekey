@@ -1,7 +1,7 @@
 import { Order } from '@/app/(examples)/v1/example/delivery/useDelivery';
 import { Surface } from '@/components/Surface/Surface';
-import { MonoCheck } from '@kadena/react-icons';
-import { Heading, Stack, maskValue } from '@kadena/react-ui';
+import { MonoCheck } from '@kadena/kode-icons';
+import { Heading, Stack, maskValue } from '@kadena/kode-ui';
 
 interface Props {
   order: Order;

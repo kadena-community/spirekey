@@ -1,11 +1,11 @@
 import { Button } from '@/components/shared/Button/Button';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
-import { Text } from '@kadena/react-ui';
+import { ITransactionDescriptor } from '@kadena/client';
+import { Text } from '@kadena/kode-ui';
 import classNames from 'classnames';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import * as styles from './AccountButton.css';
-import { ITransactionDescriptor } from '@kadena/client';
 
 interface Credential {
   type: 'WebAuthn' | 'ED25519';

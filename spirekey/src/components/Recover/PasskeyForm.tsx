@@ -1,4 +1,4 @@
-import { Stack, Text } from '@kadena/react-ui';
+import { Stack, Text } from '@kadena/kode-ui';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { motion } from 'framer-motion';
 import Image from 'next/image';

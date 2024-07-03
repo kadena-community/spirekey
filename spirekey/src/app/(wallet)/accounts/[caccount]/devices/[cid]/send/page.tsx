@@ -1,6 +1,6 @@
 'use client';
 
-import { Box } from '@kadena/react-ui';
+import { Box } from '@kadena/kode-ui';
 import dynamic from 'next/dynamic';
 import React from 'react';
 

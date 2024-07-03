@@ -1,2 +1,1 @@
-import '@kadena/react-ui/global';
-
+import '@kadena/kode-ui/global';

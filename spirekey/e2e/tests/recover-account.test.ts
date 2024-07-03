@@ -13,11 +13,10 @@ test('Recover SpireKey Account', async ({
   recoverPage,
   localStorageHelper,
 }) => {
-  let alias = '';
+  let alias = 'SpireKey Account 1';
 
   await test.step('Create account', async () => {
     await welcomePage.startRegistration();
-    alias = await registerPage.getAlias();
     await registerPage.createPassKey();
     await accountsPage.isMinted();
     await expect(await accountsPage.getAccountCard(alias)).toBeVisible();

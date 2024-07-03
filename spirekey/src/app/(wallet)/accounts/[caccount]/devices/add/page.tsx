@@ -1,8 +1,8 @@
 'use client';
 
-import type { Device } from '@kadena/spirekey-types';
 import type { ICommand } from '@kadena/client';
-import { Stack } from '@kadena/react-ui';
+import { Stack } from '@kadena/kode-ui';
+import type { Device } from '@kadena/spirekey-types';
 import dynamic from 'next/dynamic';
 
 import { PageTitle } from '@/components/Layout/PageTitle';

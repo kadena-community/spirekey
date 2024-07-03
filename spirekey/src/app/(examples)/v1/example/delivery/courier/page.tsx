@@ -7,7 +7,7 @@ import { PickUpApproval } from '@/app/(examples)/v1/example/delivery/components/
 import { ReadyForPickUp } from '@/app/(examples)/v1/example/delivery/components/ReadyForPickUp/ReadyForPickUp';
 import { OrderProvider } from '@/app/(examples)/v1/example/delivery/context/OrderContext';
 import { PizzaWorld } from '@/components/icons/PizzaWorld';
-import { Box, Heading, Stack, Text } from '@kadena/react-ui';
+import { Box, Heading, Stack, Text } from '@kadena/kode-ui';
 import { ChainId } from '@kadena/types';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';

@@ -21,7 +21,7 @@ import {
   Text,
   TextField,
   TrackerCard,
-} from '@kadena/react-ui';
+} from '@kadena/kode-ui';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';

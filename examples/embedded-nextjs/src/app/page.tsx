@@ -1,13 +1,17 @@
 'use client';
 
 import {
+  createTransactionBuilder,
+  ICommand,
+  IUnsignedCommand,
+} from '@kadena/client';
+import { Button, NumberField, Stack, TextField } from '@kadena/kode-ui';
+import {
   connect,
   initSpireKey,
   sign,
   type Account,
 } from '@kadena/spirekey-sdk';
-import { createTransactionBuilder, ICommand, IUnsignedCommand } from '@kadena/client';
-import { Button, NumberField, Stack, TextField } from '@kadena/react-ui';
 import { useEffect, useState } from 'react';
 const ns = 'n_eef68e581f767dd66c4d4c39ed922be944ede505';
 export default function Home() {
@@ -15,7 +19,7 @@ export default function Home() {
   const [receiver, setReceiver] = useState<string>('');
   const [amount, setAmount] = useState<number>(0);
   const [isReady, setIsReady] = useState<boolean>(false);
-  const [txs, setTxs] = useState<(IUnsignedCommand|ICommand)[]>([]);
+  const [txs, setTxs] = useState<(IUnsignedCommand | ICommand)[]>([]);
 
   useEffect(() => {
     initSpireKey({ hostUrl: 'http://localhost:1337' });
@@ -64,10 +68,10 @@ export default function Home() {
     );
     tx.setNetworkId('development');
     const { transactions, isReady } = await sign([tx.createTransaction()]);
-    setTxs(transactions)
-    setIsReady(false)
-    await isReady()
-    setIsReady(true)
+    setTxs(transactions);
+    setIsReady(false);
+    await isReady();
+    setIsReady(true);
   };
   const onConnect = async () => {
     const account = await connect('development', '14');

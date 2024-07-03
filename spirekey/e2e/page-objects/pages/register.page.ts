@@ -2,17 +2,13 @@ import { Locator, Page } from '@playwright/test';
 
 export class RegisterPage {
   private page: Page;
-  private passKeyBtn: Locator;
+  private continueButton: Locator;
   private alias: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.passKeyBtn = this.page.getByTestId('fingerprint-icon');
+    this.continueButton = this.page.getByRole('button', { name: 'Continue' });
     this.alias = this.page.getByRole('heading', { level: 3 });
-  }
-
-  async getAlias(): Promise<string> {
-    return await this.alias.innerText();
   }
 
   async setNetworkTo(
@@ -25,9 +21,8 @@ export class RegisterPage {
   }
 
   async createPassKey(): Promise<void> {
-    await this.page.getByRole('heading', { name: 'Passkey' }).waitFor();
-    await this.passKeyBtn.click();
-    await this.page.getByTestId('accountNameRevealer').waitFor();
+    await this.page.getByRole('heading', { name: 'Register' }).waitFor();
+    await this.continueButton.click();
   }
 
   async getRedirectMessage(message: string): Promise<Locator> {

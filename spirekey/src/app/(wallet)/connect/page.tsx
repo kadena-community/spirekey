@@ -1,7 +1,7 @@
 'use client';
 
 import type { ChainId } from '@kadena/client';
-import { Stack } from '@kadena/react-ui';
+import { Stack } from '@kadena/kode-ui';
 import dynamic from 'next/dynamic';
 
 const ConnectHeader = dynamic(

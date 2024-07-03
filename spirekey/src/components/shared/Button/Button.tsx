@@ -1,4 +1,4 @@
-import { Box } from '@kadena/react-ui';
+import { Box } from '@kadena/kode-ui';
 import cn from 'classnames';
 import { ForwardedRef, forwardRef } from 'react';
 import type { ButtonProps } from 'react-aria-components';

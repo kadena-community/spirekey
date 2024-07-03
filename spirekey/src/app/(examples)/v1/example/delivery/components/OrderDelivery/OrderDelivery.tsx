@@ -2,8 +2,8 @@ import { ConnectAccount } from '@/app/(examples)/v1/example/delivery/components/
 import { Order as OrderComponent } from '@/app/(examples)/v1/example/delivery/components/Order/Order';
 import { Order } from '@/app/(examples)/v1/example/delivery/useDelivery';
 import { Surface } from '@/components/Surface/Surface';
-import { MonoCheck, MonoLoading } from '@kadena/react-icons';
-import { Heading, Stack, maskValue } from '@kadena/react-ui';
+import { MonoCheck, MonoLoading } from '@kadena/kode-icons';
+import { Heading, Stack, maskValue } from '@kadena/kode-ui';
 import { ICap, ISigner } from '@kadena/types';
 import * as styles from './OrderDelivery.css';
 
