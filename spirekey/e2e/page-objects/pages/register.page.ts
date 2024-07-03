@@ -11,10 +11,6 @@ export class RegisterPage {
     this.alias = this.page.getByRole('heading', { level: 3 });
   }
 
-  async getAlias(): Promise<string> {
-    return await this.alias.innerText();
-  }
-
   async setNetworkTo(
     networkId: 'devnet' | 'testnet' | 'mainnet',
   ): Promise<void> {
@@ -27,7 +23,6 @@ export class RegisterPage {
   async createPassKey(): Promise<void> {
     await this.page.getByRole('heading', { name: 'Register' }).waitFor();
     await this.continueButton.click();
-    // await this.page.getByTestId('accountNameRevealer').waitFor();
   }
 
   async getRedirectMessage(message: string): Promise<Locator> {
