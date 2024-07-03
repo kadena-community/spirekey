@@ -1,12 +1,16 @@
 'use client';
 
 import type { ChainId } from '@kadena/client';
-import { Button, Stack, Text } from '@kadena/kode-ui';
+import { Button, PressEvent, Stack, Text } from '@kadena/kode-ui';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { LayoutSurface } from '@/components/LayoutSurface/LayoutSurface';
-import { useAccounts } from '@/context/AccountsContext';
+import {
+  AccountRegistration,
+  RegisterAccountFn,
+  useAccounts,
+} from '@/context/AccountsContext';
 import { useSettings } from '@/context/SettingsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
@@ -25,6 +29,37 @@ interface Props {
   networkId?: string;
   chainId?: ChainId;
 }
+
+export const registerNewDevice =
+  (registerAccount: RegisterAccountFn) =>
+  async ({
+    alias,
+    networkId,
+    chainId,
+    color,
+    domain,
+  }: Omit<
+    AccountRegistration,
+    'accountName' | 'credentialPubkey' | 'deviceType' | 'credentialId'
+  >): Promise<AccountRegistration> => {
+    const { publicKey, deviceType, credentialId } =
+      await getNewWebauthnKey(alias);
+
+    const accountName = await getAccountName(publicKey, networkId);
+    const account = {
+      networkId,
+      credentialId,
+      deviceType,
+      accountName,
+      chainId,
+      alias,
+      color,
+      domain,
+      credentialPubkey: publicKey,
+    };
+    await registerAccount(account);
+    return account;
+  };
 
 export default function Registration({
   redirectUrl,
@@ -45,8 +80,6 @@ export default function Registration({
   const { host } = useReturnUrl();
   const { devMode } = useSettings();
   const { addNotification } = useNotifications();
-
-  console.log(redirectUrl);
 
   const decodedRedirectUrl = redirectUrl
     ? Buffer.from(redirectUrl, 'base64').toString()
@@ -93,33 +126,14 @@ export default function Registration({
     setIsSubmitting(true);
 
     try {
-      var { credentialId, publicKey, deviceType } = await getNewWebauthnKey(
-        `${alias} (${getNetworkDisplayName(currentNetwork)})`,
-      );
-    } catch (error) {
-      console.error(error);
-      setIsSubmitting(false);
-      return;
-    }
-
-    try {
-      setSuccesfulAuthentication(true);
-      const accountName = await getAccountName(publicKey, currentNetwork);
-
-      setCurrentAccountName(accountName);
-
-      registerAccount({
-        accountName,
-        alias,
-        color,
-        deviceType,
-        credentialPubkey: publicKey,
-        credentialId,
+      const acc = await registerNewDevice(registerAccount)({
+        alias: `${alias} (${getNetworkDisplayName(currentNetwork)})`,
         domain: host,
-        networkId: currentNetwork,
+        color,
         chainId,
+        networkId: currentNetwork,
       });
-
+      setCurrentAccountName(acc.accountName);
       setAllowRedirect(true);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -127,6 +141,13 @@ export default function Registration({
           variant: 'error',
           title: 'Error getting accountname',
           message: error.message,
+          timeout: 5000,
+        });
+      } else {
+        addNotification({
+          variant: 'error',
+          title: 'Could not create an account',
+          message: 'Please try again later...',
           timeout: 5000,
         });
       }
@@ -140,31 +161,59 @@ export default function Registration({
   };
 
   return (
+    <RegisterComponent
+      redirectMessage={
+        showRedirectMessage
+          ? `Redirecting you back to ${completeRedirectUrl}`
+          : undefined
+      }
+      isSubmitting={isSubmitting}
+      succesfulAuthentication={succesfulAuthentication}
+      onCancel={handleCancel}
+      onSubmit={handleSubmit}
+      onAnimationFinished={setAnimationFinished}
+    />
+  );
+}
+const RegisterComponent = ({
+  redirectMessage,
+  isSubmitting,
+  succesfulAuthentication,
+  onCancel,
+  onSubmit,
+  onAnimationFinished,
+}: {
+  redirectMessage?: string;
+  isSubmitting: boolean;
+  succesfulAuthentication: boolean;
+  onCancel: (e: PressEvent) => void;
+  onSubmit: (e: PressEvent) => void;
+  onAnimationFinished: (isFinished: boolean) => void;
+}) => {
+  return (
     <LayoutSurface title="Register" subtitle="your account with a passkey">
       <div className={styles.card}>
         <PasskeyCard
           isInProgress={isSubmitting}
           isSuccessful={succesfulAuthentication}
-          onSuccessfulAnimationEnd={() => setAnimationFinished(true)}
+          onSuccessfulAnimationEnd={() => onAnimationFinished(true)}
         >
-          {showRedirectMessage && (
-            <Text className={styles.redirectMessage}>
-              Redirecting you back to {completeRedirectUrl}
-            </Text>
+          {redirectMessage && (
+            <Text className={styles.redirectMessage}>{redirectMessage}</Text>
           )}
         </PasskeyCard>
       </div>
       <Stack className={styles.buttons}>
         <Button
           variant="outlined"
-          onPress={handleCancel}
+          onPress={onCancel}
           isDisabled={isSubmitting || succesfulAuthentication}
         >
           Cancel
         </Button>
         <Button
           variant="primary"
-          onPress={() => handleSubmit()}
+          onPress={onSubmit}
           isDisabled={isSubmitting || succesfulAuthentication}
         >
           Continue
@@ -172,4 +221,4 @@ export default function Registration({
       </Stack>
     </LayoutSurface>
   );
-}
+};

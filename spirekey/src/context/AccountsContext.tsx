@@ -75,6 +75,8 @@ const defaultState = {
   setAccount: (account: Account): void => undefined,
 };
 
+export type RegisterAccountFn = typeof defaultState.registerAccount
+
 const networks = ['mainnet01', 'testnet04', getDevnetNetworkId()];
 
 export const AccountsContext = createContext(defaultState);
