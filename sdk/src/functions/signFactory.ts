@@ -50,8 +50,7 @@ export const signFactory =
       return params;
     }, new URLSearchParams());
 
-    embedManager.setSidebarPath(`/embedded/sidebar#${transactionsParams.toString()}`);
-    embedManager.openSidebar();
+    embedManager.openPopup(`/embedded/sidebar#${transactionsParams.toString()}`);
 
     const timeoutPromise = new Promise<ReturnValue>((_, reject) =>
       setTimeout(
@@ -76,7 +75,7 @@ export const signFactory =
     });
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
-      embedManager.closeSidebar();
+      embedManager.closePopup();
       removeListener();
     });
   };

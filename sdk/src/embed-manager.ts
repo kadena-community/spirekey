@@ -4,6 +4,7 @@ import * as styles from './styles.css';
 export class EmbedManager {
   public baseUrl: string;
 
+  public popup: WindowProxy | null = null;
   public sidebar: HTMLIFrameElement;
   public notification: HTMLIFrameElement;
 
@@ -72,6 +73,16 @@ export class EmbedManager {
     this.baseUrl = baseUrl;
     this.sidebar = this.makeSidebar(this.baseUrl);
     this.notification = this.makeNotification(this.baseUrl);
+  }
+
+  public openPopup(path: string) {
+    const { width, height } = screen;
+    const params = `width=500,height=${height},left=${width - 500},top=0,popup=1`;
+    this.popup = open(this.baseUrl + path, 'SpireKeyPopup', params);
+  }
+
+  public closePopup() {
+    this.popup?.close();
   }
 
   public openSidebar() {
