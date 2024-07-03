@@ -1,6 +1,5 @@
 import { EmbedManager } from './embed-manager';
 import { connect } from './functions/connectFactory';
-import { onAccountConnected } from './functions/events';
 import { sign } from './functions/signFactory';
 
 type SpireKeySDK = {
@@ -12,12 +11,7 @@ const initSpireKey = (
     hostUrl: 'https://spirekey.kadena.io',
   },
 ): SpireKeySDK => {
-  const embedManager = EmbedManager.getInstance(options.hostUrl);
-
-  onAccountConnected(() => {
-    embedManager.closeSidebar();
-  });
-
+  EmbedManager.getInstance(options.hostUrl);
   return { connect, sign };
 };
 

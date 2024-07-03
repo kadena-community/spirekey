@@ -1,21 +1,13 @@
-import { describe, expect, it, vitest } from 'vitest';
+import { describe, expect, it, vi, vitest } from 'vitest';
 
-import { EmbedManager } from '../../embed-manager';
-import * as styles from '../../styles.css';
 import { connect } from '../connectFactory';
 import { publishEvent } from '../events';
 
+vitest.stubGlobal('open', vi.fn());
+
 describe('connectFactory', () => {
-  let embedManager = EmbedManager.getInstance('http://localhost:1337');
-
   it('connects an account', async () => {
-    const promise = connect();
-
-    expect(
-      embedManager.sidebar.classList.contains(styles.spirekeySidebarOpen),
-    ).toBe(true);
-    expect(embedManager.sidebar.src).toContain(`/embedded/sidebar`);
-    expect(embedManager.sidebar.src).not.toContain(`transaction=`);
+    const promise = connect('development', '15');
 
     publishEvent('connected', {
       accountName: 'test',
@@ -42,7 +34,7 @@ describe('connectFactory', () => {
 
   it('handles a timeout correctly', async () => {
     vitest.useFakeTimers();
-    const promise = connect();
+    const promise = connect('development', '18');
 
     vitest.advanceTimersByTime(5 * 60 * 1000);
 

@@ -37,7 +37,7 @@ describe('SDK', () => {
     it('should fire the event', () => {
       const cb = vi.fn();
       onTransactionsSigned(cb);
-      const sig = { hash: { sig: 'something' } };
+      const sig = { hash: [{ sig: 'something', pubKey: 'pubKey' }] };
       publishEvent('signed', sig);
       vi.waitFor(() => expect(cb).toHaveBeenCalledWith(sig), 1000);
     });

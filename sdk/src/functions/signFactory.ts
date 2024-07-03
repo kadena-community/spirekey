@@ -36,12 +36,6 @@ export const signFactory =
     const isList = Array.isArray(transactionList);
     const transactions = isList ? transactionList : [transactionList];
 
-    if (transactions.length > 1) {
-      throw new Error(
-        'Currently Kadena SpireKey only supports signing one transaction at a time',
-      );
-    }
-
     const transactionsParams = transactions.reduce((params, tx) => {
       params.append(
         'transaction',
@@ -50,8 +44,7 @@ export const signFactory =
       return params;
     }, new URLSearchParams());
 
-    embedManager.setSidebarPath(`/embedded/sidebar#${transactionsParams.toString()}`);
-    embedManager.openSidebar();
+    embedManager.openPopup(`/embedded/sidebar#${transactionsParams.toString()}`);
 
     const timeoutPromise = new Promise<ReturnValue>((_, reject) =>
       setTimeout(
@@ -76,7 +69,7 @@ export const signFactory =
     });
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
-      embedManager.closeSidebar();
+      embedManager.closePopup();
       removeListener();
     });
   };

@@ -28,8 +28,8 @@ export const connectFactory =
       networkId,
       chainId,
     });
-    embedManager.setSidebarPath(`/embedded/sidebar#${connectParams.toString()}`);
-    embedManager.openSidebar();
+    embedManager.openPopup(`/embedded/sidebar#${connectParams.toString()}`);
+    embedManager.showNotification();
 
     const timeoutPromise = new Promise<ConnectedAccount>((_, reject) =>
       setTimeout(
@@ -47,7 +47,7 @@ export const connectFactory =
     });
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
-      embedManager.closeSidebar();
+      embedManager.closePopup();
       removeListener();
     });
   };

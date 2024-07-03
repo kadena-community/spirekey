@@ -10,5 +10,8 @@ export function publishEvent<T extends SpireKeyEventName>(
   ...args: any[]
 ): void {
   const payload = args[0];
-  window.parent.postMessage({ source: 'kadena-spirekey', name, payload }, '*');
+  (window.opener || window.parent).postMessage(
+    { source: 'kadena-spirekey', name, payload },
+    '*',
+  );
 }
