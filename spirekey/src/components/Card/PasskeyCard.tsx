@@ -34,7 +34,7 @@ export default function PasskeyCard({
             onSuccessfulAnimationEnd?.();
           }}
         >
-          {!fingerprintAnimationDone && (
+          {!isSuccessful && (
             <motion.div
               key="fingerprint"
               initial={{ opacity: 0 }}
@@ -52,7 +52,7 @@ export default function PasskeyCard({
               />
             </motion.div>
           )}
-          {fingerprintAnimationDone && (
+          {isSuccessful && (
             <motion.div
               key="logo"
               initial={{ opacity: 0 }}

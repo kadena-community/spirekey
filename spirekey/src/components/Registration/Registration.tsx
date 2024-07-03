@@ -69,8 +69,6 @@ export default function Registration({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [allowRedirect, setAllowRedirect] = useState<boolean>(false);
   const [animationFinished, setAnimationFinished] = useState<boolean>(false);
-  const [showRedirectMessage, setShowRedirectMessage] =
-    useState<boolean>(false);
   const [currentAccountName, setCurrentAccountName] = useState<string>('');
   const [succesfulAuthentication, setSuccesfulAuthentication] =
     useState<boolean>(false);
@@ -108,15 +106,9 @@ export default function Registration({
     function doRedirect() {
       if (!allowRedirect || !animationFinished) return;
 
-      if (!decodedRedirectUrl) {
-        router.push(completeRedirectUrl);
-        return;
-      }
-      setShowRedirectMessage(true);
-
       setTimeout(() => {
         router.push(completeRedirectUrl);
-      }, 2000);
+      }, 3000);
     },
     [animationFinished, allowRedirect],
   );
@@ -135,6 +127,7 @@ export default function Registration({
       });
       setCurrentAccountName(acc.accountName);
       setAllowRedirect(true);
+      setSuccesfulAuthentication(true);
     } catch (error: unknown) {
       if (error instanceof Error) {
         addNotification({
@@ -163,7 +156,7 @@ export default function Registration({
   return (
     <RegisterComponent
       redirectMessage={
-        showRedirectMessage
+        allowRedirect
           ? `Redirecting you back to ${completeRedirectUrl}`
           : undefined
       }
@@ -190,13 +183,22 @@ const RegisterComponent = ({
   onSubmit: (e: PressEvent) => void;
   onAnimationFinished: (isFinished: boolean) => void;
 }) => {
+  console.warn(
+    'DEBUGPRINT[5]: Registration.tsx:183: redirectMessage=',
+    redirectMessage,
+  );
   return (
     <LayoutSurface title="Register" subtitle="your account with a passkey">
       <div className={styles.card}>
         <PasskeyCard
           isInProgress={isSubmitting}
           isSuccessful={succesfulAuthentication}
-          onSuccessfulAnimationEnd={() => onAnimationFinished(true)}
+          onSuccessfulAnimationEnd={() => {
+            onAnimationFinished(true);
+            console.warn(
+              'DEBUGPRINT[6]: Registration.tsx:203 (after onAnimationFinished(true);)',
+            );
+          }}
         >
           {redirectMessage && (
             <Text className={styles.redirectMessage}>{redirectMessage}</Text>
