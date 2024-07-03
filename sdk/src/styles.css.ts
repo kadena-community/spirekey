@@ -5,6 +5,7 @@ export const spirekeySidebar = style({
   height: '100%',
   position: 'fixed',
   border: 0,
+  borderRadius: '1rem',
   right: 0,
   top: 0,
   zIndex: 999998,
@@ -39,7 +40,7 @@ export const spirekeyNotification = style({
 
 export const spirekeyNotificationMinimized = style({
   right: '0',
-  transform: 'translateX(396px)',
+  transform: 'translateX(370px)',
 });
 
 export const spirekeyNotificationHidden = style({

@@ -44,7 +44,10 @@ export const signFactory =
       return params;
     }, new URLSearchParams());
 
-    embedManager.openPopup(`/embedded/sidebar#${transactionsParams.toString()}`);
+    embedManager.showNotification();
+    embedManager.openPopup(
+      `/embedded/sidebar#${transactionsParams.toString()}`,
+    );
 
     const timeoutPromise = new Promise<ReturnValue>((_, reject) =>
       setTimeout(
@@ -63,13 +66,22 @@ export const signFactory =
 
         resolve({
           transactions: signedTransactions,
-          isReady: areAccountsReady(signedTransactions, accounts),
+          isReady: async (...args) => {
+            embedManager.showNotification();
+            const res = await areAccountsReady(
+              signedTransactions,
+              accounts,
+            )(...args);
+            embedManager.hideNotification();
+            return res;
+          },
         });
       });
     });
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
       embedManager.closePopup();
+      embedManager.hideNotification();
       removeListener();
     });
   };

@@ -55,6 +55,14 @@ export const wrapper = style([
   },
 ]);
 
+export const spireKeyLoader = style({
+  marginInline: '1rem',
+});
+
+export const title = style({
+  marginInline: '1.5rem'
+})
+
 globalStyle(`${wrapper} div`, {
   display: 'flex',
   alignItems: 'center',

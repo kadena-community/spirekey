@@ -1,7 +1,7 @@
 'use client';
 
 import { MonoLastPage, MonoRemoveRedEye } from '@kadena/kode-icons';
-import { Heading } from '@kadena/kode-ui';
+import { Heading, useTheme } from '@kadena/kode-ui';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
@@ -56,6 +56,9 @@ export default function SidebarSign() {
   const showSidebarNotifications = () => {
     publishEvent('show-notifications-sidebar');
   };
+  const { setTheme } = useTheme();
+
+  useEffect(() => setTheme('light'));
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
@@ -70,23 +73,16 @@ export default function SidebarSign() {
           } as React.CSSProperties
         }
       >
-        <div>
-          <Image
-            src={spireKeyLogo}
-            alt="SpireKey Logo"
-            width={64}
-            height={64}
-          />
-        </div>
-        <div>
-          <Heading>{title}</Heading>
-        </div>
-        <div>
-          <MonoRemoveRedEye onClick={showSidebarNotifications} />
-        </div>
-        <div>
-          <MonoLastPage onClick={minimize} />
-        </div>
+        <Image
+          className={styles.spireKeyLoader}
+          src={spireKeyLogo}
+          alt="SpireKey Logo"
+          width={64}
+          height={64}
+        />
+        <Heading className={styles.title}>{title}</Heading>
+        <MonoRemoveRedEye onClick={showSidebarNotifications} />
+        <MonoLastPage onClick={minimize} />
       </div>
     </div>
   );

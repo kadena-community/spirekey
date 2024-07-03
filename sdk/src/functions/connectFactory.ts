@@ -28,8 +28,8 @@ export const connectFactory =
       networkId,
       chainId,
     });
-    embedManager.openPopup(`/embedded/sidebar#${connectParams.toString()}`);
     embedManager.showNotification();
+    embedManager.openPopup(`/embedded/sidebar#${connectParams.toString()}`);
 
     const timeoutPromise = new Promise<ConnectedAccount>((_, reject) =>
       setTimeout(
@@ -42,12 +42,21 @@ export const connectFactory =
 
     const eventListenerPromise = new Promise<ConnectedAccount>((resolve) => {
       removeListener = onAccountConnected((account: Account) => {
-        resolve({ ...account, isReady: isAccountReady(account) });
+        resolve({
+          ...account,
+          isReady: async () => {
+            embedManager.showNotification();
+            const res = await isAccountReady(account)();
+            embedManager.hideNotification();
+            return res;
+          },
+        });
       });
     });
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
       embedManager.closePopup();
+      embedManager.hideNotification();
       removeListener();
     });
   };
