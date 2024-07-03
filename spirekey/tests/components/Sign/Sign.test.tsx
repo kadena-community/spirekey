@@ -1,5 +1,3 @@
-import Sign from '@/components/Sign/Sign';
-import { l1Client } from '@/utils/shared/client';
 import React from 'react';
 import {
   Mock,
@@ -12,7 +10,15 @@ import {
   vi,
 } from 'vitest';
 import MatchMediaMock from 'vitest-matchmedia-mock';
-import { cleanup, render, screen } from '../setup';
+
+import {
+  cleanup,
+  renderWithAllProviders,
+  screen,
+} from '@/../tests/components/setup';
+import Sign from '@/components/Sign/Sign';
+import { l1Client } from '@/utils/shared/client';
+
 import { mockAccount } from './mockAccount';
 import { mockTx } from './mockTx';
 
@@ -59,7 +65,7 @@ describe('Sign', () => {
           },
         });
 
-        render(
+        renderWithAllProviders(
           <Sign
             useHash
             returnUrl="https://some.url/path"
@@ -77,7 +83,7 @@ describe('Sign', () => {
       it('should tell the user it cannot sign for this tx', () => {
         window.localStorage.setItem('localAccounts', JSON.stringify([]));
 
-        render(
+        renderWithAllProviders(
           <Sign
             useHash
             returnUrl="https://some.url/path"
@@ -91,9 +97,7 @@ describe('Sign', () => {
     });
     describe('And the account to sign for could not be retrieved from chain', () => {
       beforeAll(() => {
-        vi
-          .spyOn(console, 'error')
-          .mockImplementation(() => undefined);
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
       });
       afterAll(() => {
         (console.error as Mock).mockReset();
@@ -105,7 +109,7 @@ describe('Sign', () => {
         );
         (l1Client.local as Mock).mockRejectedValue('Network error');
 
-        render(
+        renderWithAllProviders(
           <Sign
             useHash
             returnUrl="https://some.url/path"
