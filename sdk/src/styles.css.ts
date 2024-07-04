@@ -32,6 +32,7 @@ export const spirekeyNotification = style({
   border: 0,
   right: '20px',
   top: '20px',
+  borderRadius: '1rem',
   zIndex: 999999,
   transition:
     'transform 200ms cubic-bezier(0.33, 1, 0.68, 1), right 200ms cubic-bezier(0.33, 1, 0.68, 1)',

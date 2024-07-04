@@ -56,9 +56,6 @@ export default function SidebarSign() {
   const showSidebarNotifications = () => {
     publishEvent('show-notifications-sidebar');
   };
-  const { setTheme } = useTheme();
-
-  useEffect(() => setTheme('light'), []);
 
   return (
     <div style={{ width: '100%', height: '100%' }}>

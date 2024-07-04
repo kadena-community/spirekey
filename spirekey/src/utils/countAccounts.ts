@@ -8,7 +8,7 @@ export const countWithPrefixOnDomain = (
 ): number =>
   accounts.filter(
     (account) =>
-      account.alias.startsWith(prefix) &&
-      account.devices.some((device) => device.domain.includes(domain)) &&
-      (!excludeAccountName || account.accountName === excludeAccountName),
+      account?.alias?.startsWith(prefix) &&
+      account?.devices?.some((device) => device.domain.includes(domain)) &&
+      (!excludeAccountName || account?.accountName === excludeAccountName),
   ).length;
