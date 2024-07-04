@@ -61,11 +61,16 @@ export const registerNewDevice =
     return account;
   };
 
-export default function Registration({
-  redirectUrl,
-  networkId,
+type UseRegistration = {
+  chainId?: ChainId;
+  networkId?: string;
+  redirectUrl?: string;
+};
+const useRegistration = ({
   chainId,
-}: Props) {
+  networkId,
+  redirectUrl,
+}: UseRegistration) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [allowRedirect, setAllowRedirect] = useState<boolean>(false);
   const [animationFinished, setAnimationFinished] = useState<boolean>(false);
@@ -76,21 +81,15 @@ export default function Registration({
   const router = useRouter();
   const { registerAccount, accounts } = useAccounts();
   const { host } = useReturnUrl();
-  const { devMode } = useSettings();
   const { addNotification } = useNotifications();
 
-  const decodedRedirectUrl = redirectUrl
-    ? Buffer.from(redirectUrl, 'base64').toString()
-    : '';
+  const decodedRedirectUrl = decodeURI(redirectUrl || '');
   const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
   const completeRedirectUrl = decodedRedirectUrl || '/';
 
   const accountPrefix = 'SpireKey Account';
 
-  const skipNetworkId = process.env.WALLET_NETWORK_ID && !devMode;
-  const currentNetwork =
-    networkId ||
-    (skipNetworkId ? process.env.WALLET_NETWORK_ID! : getDevnetNetworkId());
+  const currentNetwork = networkId || process.env.WALLET_NETWORK_ID!;
 
   const numberOfSpireKeyAccounts = countWithPrefixOnDomain(
     accounts,
@@ -102,16 +101,10 @@ export default function Registration({
   const alias = `${accountPrefix} ${numberOfSpireKeyAccounts + 1}`;
   const color = deviceColors.purple;
 
-  useEffect(
-    function doRedirect() {
-      if (!allowRedirect || !animationFinished) return;
-
-      setTimeout(() => {
-        router.push(completeRedirectUrl);
-      }, 3000);
-    },
-    [animationFinished, allowRedirect],
-  );
+  useEffect(() => {
+    if (!allowRedirect || !animationFinished) return;
+    setTimeout(() => router.push(completeRedirectUrl), 3000);
+  }, [animationFinished, allowRedirect]);
 
   const handleSubmit = async () => {
     if (isSubmitting) return;
@@ -128,22 +121,13 @@ export default function Registration({
       setCurrentAccountName(acc.accountName);
       setAllowRedirect(true);
       setSuccesfulAuthentication(true);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        addNotification({
-          variant: 'error',
-          title: 'Error getting accountname',
-          message: error.message,
-          timeout: 5000,
-        });
-      } else {
-        addNotification({
-          variant: 'error',
-          title: 'Could not create an account',
-          message: 'Please try again later...',
-          timeout: 5000,
-        });
-      }
+    } catch (error: any) {
+      addNotification({
+        variant: 'error',
+        title: 'Could not create an account',
+        message: error?.message || 'Please try again later...',
+        timeout: 5000,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -152,7 +136,31 @@ export default function Registration({
   const handleCancel = () => {
     router.push(cancelRedirectUrl);
   };
+  return {
+    allowRedirect,
+    isSubmitting,
+    completeRedirectUrl,
+    succesfulAuthentication,
+    handleCancel,
+    handleSubmit,
+    setAnimationFinished,
+  };
+};
 
+export default function Registration({
+  redirectUrl,
+  networkId,
+  chainId,
+}: Props) {
+  const {
+    allowRedirect,
+    isSubmitting,
+    completeRedirectUrl,
+    succesfulAuthentication,
+    handleCancel,
+    handleSubmit,
+    setAnimationFinished,
+  } = useRegistration({ redirectUrl, networkId, chainId });
   return (
     <RegisterComponent
       redirectMessage={
@@ -183,22 +191,13 @@ const RegisterComponent = ({
   onSubmit: (e: PressEvent) => void;
   onAnimationFinished: (isFinished: boolean) => void;
 }) => {
-  console.warn(
-    'DEBUGPRINT[5]: Registration.tsx:183: redirectMessage=',
-    redirectMessage,
-  );
   return (
     <LayoutSurface title="Register" subtitle="your account with a passkey">
       <div className={styles.card}>
         <PasskeyCard
           isInProgress={isSubmitting}
           isSuccessful={succesfulAuthentication}
-          onSuccessfulAnimationEnd={() => {
-            onAnimationFinished(true);
-            console.warn(
-              'DEBUGPRINT[6]: Registration.tsx:203 (after onAnimationFinished(true);)',
-            );
-          }}
+          onSuccessfulAnimationEnd={() => onAnimationFinished(true)}
         >
           {redirectMessage && (
             <Text className={styles.redirectMessage}>{redirectMessage}</Text>
