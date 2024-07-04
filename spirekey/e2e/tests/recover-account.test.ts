@@ -18,6 +18,7 @@ test('Recover SpireKey Account', async ({
   await test.step('Create account', async () => {
     await welcomePage.startRegistration();
     await registerPage.createPassKey();
+    await registerPage.completeRegistration();
     await accountsPage.isMinted();
     await expect(await accountsPage.getAccountCard(alias)).toBeVisible();
   });

@@ -174,9 +174,10 @@ export default function Registration({
     });
   const handleComplete = () => {
     if (!account) throw new Error('No user registered');
-    router.push(
-      `${completeRedirectUrl}?${new URLSearchParams({ user: Buffer.from(JSON.stringify(getUser(account))).toString('base64') })}`,
+    const user = Buffer.from(JSON.stringify(getUser(account))).toString(
+      'base64',
     );
+    router.push(`${completeRedirectUrl}?${new URLSearchParams({ user })}`);
   };
   return (
     <RegisterComponent
