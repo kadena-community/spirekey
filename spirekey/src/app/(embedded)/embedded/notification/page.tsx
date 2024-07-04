@@ -10,6 +10,7 @@ import { publishEvent } from '@/utils/publishEvent';
 
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { hexadecimalToRGB } from '@/utils/color';
+import { ThemeProvider } from 'next-themes';
 import * as styles from './notification.css';
 
 export default function SidebarSign() {
@@ -57,6 +58,8 @@ export default function SidebarSign() {
     publishEvent('show-notifications-sidebar');
   };
 
+  useTheme({ lockedTheme: 'light' });
+
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <div
@@ -77,7 +80,9 @@ export default function SidebarSign() {
           width={64}
           height={64}
         />
-        <Heading className={styles.title}>{title}</Heading>
+        <Heading className={styles.title} variant="h4">
+          {title}
+        </Heading>
         <MonoRemoveRedEye onClick={showSidebarNotifications} />
         <MonoLastPage onClick={minimize} />
       </div>

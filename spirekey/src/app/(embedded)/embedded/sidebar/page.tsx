@@ -1,8 +1,11 @@
 'use client';
 
+import SpireKeyLogoAnimated from '@/assets/images/spireKey-logo-animated.svg';
+import { LayoutSurface } from '@/components/LayoutSurface/LayoutSurface';
 import { type ChainId } from '@kadena/client';
-import { Box } from '@kadena/kode-ui';
+import { Stack } from '@kadena/kode-ui';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 const Connect = dynamic(() => import('@/components/Embedded/Connect'), {
@@ -40,23 +43,17 @@ export default function SidebarSign() {
     };
   }, []);
 
+  if (transaction) return <Sign transaction={transaction} />;
+  if (networkId && chainId)
+    return <Connect networkId={networkId} chainId={chainId} />;
   return (
-    <Box
-      style={{
-        width: '100%',
-        height: '100%',
-        padding: '25px',
-        background: 'rgba(19, 30, 43, 0.8)',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        marginBottom: '48px',
-      }}
-    >
-      {transaction && <Sign transaction={transaction} />}
-      {networkId && chainId && (
-        <Connect networkId={networkId} chainId={chainId} />
-      )}
-    </Box>
+    <Stack alignItems="center" justifyContent="center" height="100%">
+      <Image
+        src={SpireKeyLogoAnimated}
+        alt="Connecting account.."
+        height={128}
+        width={128}
+      />
+    </Stack>
   );
 }
