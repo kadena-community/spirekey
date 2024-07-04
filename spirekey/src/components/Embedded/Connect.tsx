@@ -9,7 +9,7 @@ import {
 } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import SpireKeyLogo from '@/assets/images/SpireKey-logo.svg';
 import SpireKeyLogoAnimated from '@/assets/images/spireKey-logo-animated.svg';
@@ -18,6 +18,7 @@ import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
 import { publishEvent } from '@/utils/publishEvent';
 import { ChainId } from '@kadena/client';
+import Registration from '../Registration/Registration';
 
 type ConnectProps = {
   chainId: ChainId;
@@ -28,6 +29,7 @@ export default function Connect({ chainId, networkId }: ConnectProps) {
   const [connectingAccount, setConnectingAccount] = useState<
     Account | undefined
   >(undefined);
+  const [isRegister, setIsRegister] = useState(false);
 
   const connect = (account: Account) => {
     setConnectingAccount(account);
@@ -38,6 +40,11 @@ export default function Connect({ chainId, networkId }: ConnectProps) {
     (account) =>
       account.networkId === networkId && account.chainIds.includes(chainId),
   );
+
+  useEffect(() => {
+    setIsRegister(!candidateAccounts.length);
+  }, []);
+
   return (
     <Stack flexDirection="column" gap="xxl">
       <Stack flexDirection="column" alignItems="center" gap="sm">
@@ -47,7 +54,14 @@ export default function Connect({ chainId, networkId }: ConnectProps) {
           style={{ marginTop: '2rem' }}
         />
       </Stack>
-      {candidateAccounts.map((account) => (
+      {isRegister && (
+        <Registration
+          networkId={networkId}
+          chainId={chainId}
+          onComplete={connect}
+        />
+      )}
+      {!isRegister && candidateAccounts.map((account) => (
         <Stack
           key={account.accountName}
           flexDirection="column"

@@ -58,7 +58,7 @@ export default function SidebarSign() {
   };
   const { setTheme } = useTheme();
 
-  useEffect(() => setTheme('light'));
+  useEffect(() => setTheme('light'), []);
 
   return (
     <div style={{ width: '100%', height: '100%' }}>

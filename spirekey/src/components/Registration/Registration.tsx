@@ -33,6 +33,7 @@ interface Props {
   redirectUrl?: string;
   networkId?: string;
   chainId?: ChainId;
+  onComplete?: (account: Account) => void
 }
 
 export const registerNewDevice =
@@ -161,6 +162,7 @@ export default function Registration({
   redirectUrl,
   networkId,
   chainId,
+  onComplete,
 }: Props) {
   const router = useRouter();
   const decodedRedirectUrl = decodeURI(redirectUrl || '');
@@ -174,6 +176,7 @@ export default function Registration({
     });
   const handleComplete = () => {
     if (!account) throw new Error('No user registered');
+    if (onComplete) return onComplete(account)
     const user = Buffer.from(JSON.stringify(getUser(account))).toString(
       'base64',
     );
