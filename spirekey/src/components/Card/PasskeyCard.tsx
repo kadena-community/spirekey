@@ -25,8 +25,7 @@ export default function PasskeyCard({
   return (
     <Card
       balancePercentage={50}
-      color="#4A9079
-"
+      color="#4A9079"
     >
       <div className={styles.icon}>
         <AnimatePresence
@@ -34,7 +33,7 @@ export default function PasskeyCard({
             onSuccessfulAnimationEnd?.();
           }}
         >
-          {!isSuccessful && (
+          {!fingerprintAnimationDone && (
             <motion.div
               key="fingerprint"
               initial={{ opacity: 0 }}
@@ -52,7 +51,7 @@ export default function PasskeyCard({
               />
             </motion.div>
           )}
-          {isSuccessful && (
+          {fingerprintAnimationDone && (
             <motion.div
               key="logo"
               initial={{ opacity: 0 }}
