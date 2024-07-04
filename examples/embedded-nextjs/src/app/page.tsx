@@ -72,7 +72,7 @@ export default function Home() {
               `${ns}.webauthn-wallet.GAS_PAYER`,
               account.accountName,
               { int: '1' },
-              { decimal: '1' },
+              { decimal: '1.0' },
             ),
             withCap(`${ns}.webauthn-wallet.GAS`, account.accountName),
           ],
