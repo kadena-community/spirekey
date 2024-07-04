@@ -1,7 +1,7 @@
 'use client';
 
-import type { Account, Device } from '@kadena/spirekey-types';
 import type { ChainId, ITransactionDescriptor } from '@kadena/client';
+import type { Account, Device } from '@kadena/spirekey-types';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
@@ -75,7 +75,7 @@ const defaultState = {
   setAccount: (account: Account): void => undefined,
 };
 
-export type RegisterAccountFn = typeof defaultState.registerAccount
+export type RegisterAccountFn = typeof defaultState.registerAccount;
 
 const networks = ['mainnet01', 'testnet04', getDevnetNetworkId()];
 

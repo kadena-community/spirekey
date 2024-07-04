@@ -3,7 +3,7 @@
 import type { ChainId } from '@kadena/client';
 import { Button, PressEvent, Stack, Text } from '@kadena/kode-ui';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { LayoutSurface } from '@/components/LayoutSurface/LayoutSurface';
 import {
@@ -19,6 +19,12 @@ import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { getAccountName } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 
+import { Account } from '@kadena/spirekey-types';
+import AccountNetwork from '../Card/AccountNetwork';
+import Alias from '../Card/Alias';
+import Card from '../Card/Card';
+import CardBottom from '../Card/CardBottom';
+import DeviceIcons from '../Card/DeviceIcons';
 import PasskeyCard from '../Card/PasskeyCard';
 import * as styles from './Registration.css';
 
@@ -29,7 +35,10 @@ interface Props {
 }
 
 export const registerNewDevice =
-  (registerAccount: RegisterAccountFn) =>
+  (
+    registerAccount: RegisterAccountFn,
+    onPasskeyRetrieved: (account: Account) => void,
+  ) =>
   async ({
     alias,
     networkId,
@@ -39,7 +48,7 @@ export const registerNewDevice =
   }: Omit<
     AccountRegistration,
     'accountName' | 'credentialPubkey' | 'deviceType' | 'credentialId'
-  >): Promise<AccountRegistration> => {
+  >): Promise<void> => {
     const { publicKey, deviceType, credentialId } =
       await getNewWebauthnKey(alias);
 
@@ -55,26 +64,41 @@ export const registerNewDevice =
       domain,
       credentialPubkey: publicKey,
     };
-    await registerAccount(account);
-    return account;
+    onPasskeyRetrieved({
+      accountName,
+      networkId,
+      alias,
+      balance: '0.0',
+      chainIds: [chainId || process.env.CHAIN_ID],
+      minApprovals: 1,
+      minRegistrationApprovals: 1,
+      devices: [
+        {
+          color,
+          deviceType,
+          guard: {
+            keys: [publicKey],
+            pred: 'keys-any',
+          },
+          domain,
+          'credential-id': credentialId,
+        },
+      ],
+    });
+    registerAccount(account);
   };
 
 type UseRegistration = {
   chainId?: ChainId;
   networkId?: string;
-  onCreated: () => void;
 };
-const useRegistration = ({
-  chainId,
-  networkId,
-  onCreated,
-}: UseRegistration) => {
+const useRegistration = ({ chainId, networkId }: UseRegistration) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [allowRedirect, setAllowRedirect] = useState<boolean>(false);
-  const [animationFinished, setAnimationFinished] = useState<boolean>(false);
   const [currentAccountName, setCurrentAccountName] = useState<string>('');
   const [succesfulAuthentication, setSuccesfulAuthentication] =
     useState<boolean>(false);
+  const [account, setAccount] = useState<Account>();
 
   const { registerAccount, accounts } = useAccounts();
   const { host } = useReturnUrl();
@@ -94,26 +118,23 @@ const useRegistration = ({
   const alias = `${accountPrefix} ${numberOfSpireKeyAccounts + 1}`;
   const color = deviceColors.purple;
 
-  useEffect(() => {
-    if (!allowRedirect || !animationFinished) return;
-    setTimeout(onCreated, 3000);
-  }, [animationFinished, allowRedirect]);
-
   const handleSubmit = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
     try {
-      const acc = await registerNewDevice(registerAccount)({
+      await registerNewDevice(registerAccount, (account) => {
+        setSuccesfulAuthentication(true);
+        setAccount(account);
+        setCurrentAccountName(account.accountName);
+        setAllowRedirect(true);
+      })({
         alias: `${alias} (${getNetworkDisplayName(currentNetwork)})`,
         domain: host,
         color,
         chainId,
         networkId: currentNetwork,
       });
-      setCurrentAccountName(acc.accountName);
-      setAllowRedirect(true);
-      setSuccesfulAuthentication(true);
     } catch (error: any) {
       addNotification({
         variant: 'error',
@@ -131,7 +152,7 @@ const useRegistration = ({
     isSubmitting,
     succesfulAuthentication,
     handleSubmit,
-    setAnimationFinished,
+    account,
   };
 };
 
@@ -145,19 +166,20 @@ export default function Registration({
   const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
   const completeRedirectUrl = decodedRedirectUrl || '/';
   const handleCancel = () => router.push(cancelRedirectUrl);
+  const handleComplete = () => router.push(decodedRedirectUrl);
   const {
+    account,
     allowRedirect,
     isSubmitting,
     succesfulAuthentication,
     handleSubmit,
-    setAnimationFinished,
   } = useRegistration({
     networkId,
     chainId,
-    onCreated: () => router.push(completeRedirectUrl),
   });
   return (
     <RegisterComponent
+      account={account}
       redirectMessage={
         allowRedirect
           ? `Redirecting you back to ${completeRedirectUrl}`
@@ -167,37 +189,59 @@ export default function Registration({
       succesfulAuthentication={succesfulAuthentication}
       onCancel={handleCancel}
       onSubmit={handleSubmit}
-      onAnimationFinished={setAnimationFinished}
+      onComplete={handleComplete}
     />
   );
 }
 const RegisterComponent = ({
+  account,
   redirectMessage,
   isSubmitting,
   succesfulAuthentication,
   onCancel,
   onSubmit,
-  onAnimationFinished,
+  onComplete,
 }: {
+  account?: Account;
   redirectMessage?: string;
   isSubmitting: boolean;
   succesfulAuthentication: boolean;
   onCancel: (e: PressEvent) => void;
   onSubmit: (e: PressEvent) => void;
-  onAnimationFinished: (isFinished: boolean) => void;
+  onComplete: (e: PressEvent) => void;
 }) => {
+  const [isAnimationFinished, setAnimationFinished] = useState(false);
+  if (account && isAnimationFinished)
+    return (
+      <LayoutSurface title="Register" subtitle="your account with a passkey">
+        <div className={styles.card}>
+          <Card
+            color={deviceColors.purple}
+            balancePercentage={50}
+            title={<Alias title={account.alias.replace(/\(.*\)/, '')} />}
+            icons={<DeviceIcons account={account} />}
+            center={<AccountNetwork account={account} isLoading={true} />}
+            cardBottom={<CardBottom account={account} />}
+          />
+        </div>
+        <Stack className={styles.buttons}>
+          <Button variant="outlined" onPress={onCancel}>
+            Cancel
+          </Button>
+          <Button variant="primary" onPress={onComplete}>
+            Complete
+          </Button>
+        </Stack>
+      </LayoutSurface>
+    );
   return (
     <LayoutSurface title="Register" subtitle="your account with a passkey">
       <div className={styles.card}>
         <PasskeyCard
-          isInProgress={isSubmitting}
+          isInProgress={!succesfulAuthentication && isSubmitting}
           isSuccessful={succesfulAuthentication}
-          onSuccessfulAnimationEnd={() => onAnimationFinished(true)}
-        >
-          {redirectMessage && (
-            <Text className={styles.redirectMessage}>{redirectMessage}</Text>
-          )}
-        </PasskeyCard>
+          onSuccessfulAnimationEnd={() => setAnimationFinished(true)}
+        />
       </div>
       <Stack className={styles.buttons}>
         <Button
