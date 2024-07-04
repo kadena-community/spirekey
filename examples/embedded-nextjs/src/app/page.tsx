@@ -1,11 +1,19 @@
 'use client';
 
 import {
+  type ChainId,
   createTransactionBuilder,
   ICommand,
   IUnsignedCommand,
 } from '@kadena/client';
-import { Button, NumberField, Stack, TextField } from '@kadena/kode-ui';
+import {
+  Button,
+  NumberField,
+  Select,
+  SelectItem,
+  Stack,
+  TextField,
+} from '@kadena/kode-ui';
 import {
   connect,
   initSpireKey,
@@ -21,11 +29,14 @@ export default function Home() {
   const [isReady, setIsReady] = useState<boolean>(false);
   const [txs, setTxs] = useState<(IUnsignedCommand | ICommand)[]>([]);
 
+  const [wallet, setWallet] = useState<string>('https://spirekey.kadena.io/');
+  const [networkId, setNetworkId] = useState<string>('testnet04');
+  const [chainId, setChainId] = useState<ChainId>('14');
   useEffect(() => {
     initSpireKey({
-      hostUrl: localStorage.getItem('wallet') || 'https://spirekey.kadena.io',
+      hostUrl: wallet,
     });
-  }, []);
+  }, [wallet]);
 
   const signTransaction = async () => {
     if (!account) throw new Error('No account connected');
@@ -68,7 +79,7 @@ export default function Home() {
         ),
       ),
     );
-    tx.setNetworkId('development');
+    tx.setNetworkId(networkId);
     const { transactions, isReady } = await sign([tx.createTransaction()]);
     setTxs(transactions);
     setIsReady(false);
@@ -76,7 +87,7 @@ export default function Home() {
     setIsReady(true);
   };
   const onConnect = async () => {
-    const account = await connect('development', '14');
+    const account = await connect(networkId, chainId);
     setAccount(account);
     setAccount(await account.isReady());
     setIsReady(true);
@@ -84,6 +95,34 @@ export default function Home() {
 
   return (
     <main>
+      <Select
+        label="Wallet"
+        onSelectionChange={(w) => setWallet(w as string)}
+        selectedKey={wallet}
+      >
+        <SelectItem key="https://spirekey.kadena.io/">SpireKey</SelectItem>
+        <SelectItem key="http://localhost:1337/">Local</SelectItem>
+      </Select>
+      <Select
+        label="Network"
+        onSelectionChange={(n) => setNetworkId(n as string)}
+        selectedKey={networkId}
+      >
+        <SelectItem key="mainnet01">Mainnet</SelectItem>
+        <SelectItem key="testnet04">Testnet</SelectItem>
+        <SelectItem key="development">Devnet</SelectItem>
+      </Select>
+      <Select
+        label="Chain"
+        onSelectionChange={(c) => setChainId(c as ChainId)}
+        selectedKey={chainId}
+      >
+        {Array(20)
+          .fill(1)
+          .map((_, i) => (
+            <SelectItem key={i}>{i.toString()}</SelectItem>
+          ))}
+      </Select>
       {!account && <button onClick={onConnect}>Connect</button>}
       {account && (
         <Stack flexDirection="column" gap="md" margin="md">
