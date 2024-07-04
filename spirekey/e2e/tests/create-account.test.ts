@@ -18,8 +18,12 @@ test('Create new account using SpireKey', async ({
     await registerPage.createPassKey();
   });
 
+  await test.step('Complete registration.', async () => {
+    await registerPage.completeRegistration();
+  });
+
   await test.step('An account with the default alias has been generated.', async () => {
-    // check if the account is created
+    await accountsPage.isMinted();
   });
 });
 
@@ -45,7 +49,11 @@ test('Create new account using SpireKey with dev mode enabled', async ({
     await registerPage.createPassKey();
   });
 
+  await test.step('Complete registration.', async () => {
+    await registerPage.completeRegistration();
+  });
+
   await test.step('An account with the default alias has been generated.', async () => {
-    // check if the account is created
+    await accountsPage.isMinted();
   });
 });

@@ -23,10 +23,7 @@ export default function PasskeyCard({
     useState<boolean>(false);
 
   return (
-    <Card
-      balancePercentage={50}
-      color="#4A9079"
-    >
+    <Card balancePercentage={50} color="#4A9079">
       <div className={styles.icon}>
         <AnimatePresence
           onExitComplete={() => {

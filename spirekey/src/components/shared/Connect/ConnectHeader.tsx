@@ -55,7 +55,7 @@ export default function ConnectHeader({
             </ButtonLink>
             <ButtonLink
               variant="primary"
-              href={`/register?redirectUrl=${Buffer.from(window.location.href).toString('base64')}&networkId=${networkId}&chainId=${chainId}`}
+              href={`/register?redirectUrl=${encodeURI(returnUrl)}&networkId=${networkId}&chainId=${chainId}`}
             >
               Create
             </ButtonLink>
