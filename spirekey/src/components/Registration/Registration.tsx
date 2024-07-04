@@ -11,14 +11,12 @@ import {
   RegisterAccountFn,
   useAccounts,
 } from '@/context/AccountsContext';
-import { useSettings } from '@/context/SettingsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { getAccountName } from '@/utils/register';
-import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 
 import PasskeyCard from '../Card/PasskeyCard';
@@ -64,12 +62,12 @@ export const registerNewDevice =
 type UseRegistration = {
   chainId?: ChainId;
   networkId?: string;
-  redirectUrl?: string;
+  onCreated: () => void;
 };
 const useRegistration = ({
   chainId,
   networkId,
-  redirectUrl,
+  onCreated,
 }: UseRegistration) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [allowRedirect, setAllowRedirect] = useState<boolean>(false);
@@ -78,14 +76,9 @@ const useRegistration = ({
   const [succesfulAuthentication, setSuccesfulAuthentication] =
     useState<boolean>(false);
 
-  const router = useRouter();
   const { registerAccount, accounts } = useAccounts();
   const { host } = useReturnUrl();
   const { addNotification } = useNotifications();
-
-  const decodedRedirectUrl = decodeURI(redirectUrl || '');
-  const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
-  const completeRedirectUrl = decodedRedirectUrl || '/';
 
   const accountPrefix = 'SpireKey Account';
 
@@ -103,7 +96,7 @@ const useRegistration = ({
 
   useEffect(() => {
     if (!allowRedirect || !animationFinished) return;
-    setTimeout(() => router.push(completeRedirectUrl), 3000);
+    setTimeout(onCreated, 3000);
   }, [animationFinished, allowRedirect]);
 
   const handleSubmit = async () => {
@@ -133,15 +126,10 @@ const useRegistration = ({
     }
   };
 
-  const handleCancel = () => {
-    router.push(cancelRedirectUrl);
-  };
   return {
     allowRedirect,
     isSubmitting,
-    completeRedirectUrl,
     succesfulAuthentication,
-    handleCancel,
     handleSubmit,
     setAnimationFinished,
   };
@@ -152,15 +140,22 @@ export default function Registration({
   networkId,
   chainId,
 }: Props) {
+  const router = useRouter();
+  const decodedRedirectUrl = decodeURI(redirectUrl || '');
+  const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
+  const completeRedirectUrl = decodedRedirectUrl || '/';
+  const handleCancel = () => router.push(cancelRedirectUrl);
   const {
     allowRedirect,
     isSubmitting,
-    completeRedirectUrl,
     succesfulAuthentication,
-    handleCancel,
     handleSubmit,
     setAnimationFinished,
-  } = useRegistration({ redirectUrl, networkId, chainId });
+  } = useRegistration({
+    networkId,
+    chainId,
+    onCreated: () => router.push(completeRedirectUrl),
+  });
   return (
     <RegisterComponent
       redirectMessage={
