@@ -204,9 +204,9 @@ const RegisterComponent = ({
   account?: Account;
   isSubmitting: boolean;
   succesfulAuthentication: boolean;
-  onCancel: (e: PressEvent) => void;
-  onSubmit: (e: PressEvent) => void;
-  onComplete: (e: PressEvent) => void;
+  onCancel: () => void;
+  onSubmit: () => void;
+  onComplete: () => void;
 }) => {
   const [isAnimationFinished, setAnimationFinished] = useState(false);
   if (account && isAnimationFinished)
@@ -239,6 +239,7 @@ const RegisterComponent = ({
           isInProgress={!succesfulAuthentication && isSubmitting}
           isSuccessful={succesfulAuthentication}
           onSuccessfulAnimationEnd={() => setAnimationFinished(true)}
+          onSubmit={onSubmit}
         />
       </div>
       <Stack className={styles.buttons}>

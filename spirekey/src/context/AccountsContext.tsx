@@ -5,6 +5,7 @@ import type { Account, Device } from '@kadena/spirekey-types';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
+import { deviceColors } from '@/styles/shared/tokens.css';
 import { fundAccount } from '@/utils/fund';
 import {
   getAccountName,
@@ -37,6 +38,11 @@ const migrateAccountStructure = (
   account: Account & { network?: string },
 ): Account => ({
   ...account,
+  devices: account.devices.map((d) => ({
+    ...d,
+    deviceType: d.name?.replace(/_.*/, '') || 'security-key',
+    color: d.name?.replace(/.*_/, '') || deviceColors.orange,
+  })),
   networkId: account.network || account.networkId,
   chainIds: account.chainIds?.length
     ? account.chainIds
@@ -140,7 +146,7 @@ const AccountsProvider = ({ children }: Props) => {
             throw new Error('Account not found on chain');
           }
 
-          return {
+          return migrateAccountStructure({
             accountName,
             networkId,
             alias,
@@ -149,7 +155,7 @@ const AccountsProvider = ({ children }: Props) => {
             balance: remoteAccount.balance || '0',
             devices: remoteAccount.devices,
             chainIds: remoteAccount.chainIds,
-          };
+          });
         } catch (e: unknown) {
           try {
             // @TODO: We should move the recovery to the retieval, so accounts can be recovered per chain

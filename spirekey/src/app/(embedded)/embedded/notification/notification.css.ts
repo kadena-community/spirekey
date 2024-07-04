@@ -60,8 +60,8 @@ export const spireKeyLoader = style({
 });
 
 export const title = style({
-  marginInline: '1.5rem'
-})
+  marginInline: '1.5rem',
+});
 
 globalStyle(`${wrapper} div`, {
   display: 'flex',

@@ -2,6 +2,8 @@
 
 import { MonoManageAccounts } from '@kadena/kode-icons';
 import {
+  Avatar,
+  Box,
   Notification,
   NotificationHeading,
   Stack,
@@ -11,13 +13,14 @@ import type { Account } from '@kadena/spirekey-types';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-import SpireKeyLogo from '@/assets/images/SpireKey-logo.svg';
 import SpireKeyLogoAnimated from '@/assets/images/spireKey-logo-animated.svg';
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
 import { publishEvent } from '@/utils/publishEvent';
 import { ChainId } from '@kadena/client';
+import DeviceCircle from '../Device/DeviceCircle';
+import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
 import Registration from '../Registration/Registration';
 
 type ConnectProps = {
@@ -45,63 +48,42 @@ export default function Connect({ chainId, networkId }: ConnectProps) {
     setIsRegister(!candidateAccounts.length);
   }, []);
 
+  if (isRegister)
+    return (
+      <Registration
+        networkId={networkId}
+        chainId={chainId}
+        onComplete={connect}
+      />
+    );
+
   return (
-    <Stack flexDirection="column" gap="xxl">
-      <Stack flexDirection="column" alignItems="center" gap="sm">
-        <Image
-          src={SpireKeyLogo}
-          alt="SpireKey logo"
-          style={{ marginTop: '2rem' }}
-        />
-      </Stack>
-      {isRegister && (
-        <Registration
-          networkId={networkId}
-          chainId={chainId}
-          onComplete={connect}
-        />
-      )}
-      {!isRegister && candidateAccounts.map((account) => (
-        <Stack
-          key={account.accountName}
-          flexDirection="column"
-          gap="xl"
-          marginBlockEnd="xl"
-        >
-          <Notification role="none" icon={<MonoManageAccounts />}>
-            <NotificationHeading>{account.alias}</NotificationHeading>
-            <Stack flexDirection="column" gap="sm">
-              <Text>
-                {connectingAccount ? 'Signing' : 'Sign'} in with your existing
-                account.
-              </Text>
-              <MaskedValue value={account.accountName} />
-            </Stack>
-          </Notification>
+    <LayoutSurface title="Accounts" subtitle="available for use">
+      <Stack flexDirection="column" gap="sm">
+        {candidateAccounts.map((account) => (
           <Stack
+            key={account.accountName}
             flexDirection="row"
-            justifyContent="center"
+            gap="xl"
             marginBlockEnd="xl"
+            borderColor="base.subtle"
+            borderWidth="normal"
+            borderStyle="solid"
+            borderRadius="sm"
+            paddingBlock="md"
+            paddingInline="lg"
+            alignItems="center"
+            onClick={() => connect(account)}
+            cursor="pointer"
           >
-            <Button
-              variant="primary"
-              onPress={() => connect(account)}
-              isDisabled={!!connectingAccount}
-            >
-              <Stack flexDirection="row" alignItems="center" gap="sm">
-                <Text>{connectingAccount ? 'Connecting' : 'Connect'}</Text>
-                {!!connectingAccount && (
-                  <Image
-                    src={SpireKeyLogoAnimated}
-                    alt="Connecting account.."
-                    style={{ marginTop: '2rem' }}
-                  />
-                )}
-              </Stack>
-            </Button>
+            <Stack flexGrow={1} alignItems="center" gap="sm">
+              <DeviceCircle device={account.devices[0]} />
+              <Text>{account.alias}</Text>
+            </Stack>
+            <MaskedValue value={account.accountName} />
           </Stack>
-        </Stack>
-      ))}
-    </Stack>
+        ))}
+      </Stack>
+    </LayoutSurface>
   );
 }
