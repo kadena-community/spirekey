@@ -3,11 +3,13 @@ import { Locator, Page } from '@playwright/test';
 export class RegisterPage {
   private page: Page;
   private continueButton: Locator;
+  private completeButton: Locator;
   private alias: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.continueButton = this.page.getByRole('button', { name: 'Continue' });
+    this.completeButton = this.page.getByRole('button', { name: 'Complete' });
     this.alias = this.page.getByRole('heading', { level: 3 });
   }
 
@@ -23,6 +25,13 @@ export class RegisterPage {
   async createPassKey(): Promise<void> {
     await this.page.getByRole('heading', { name: 'Register' }).waitFor();
     await this.continueButton.click();
+  }
+
+  async completeRegistration(): Promise<void> {
+    await this.page
+      .getByRole('heading', { name: 'SpireKey Account 1' })
+      .waitFor();
+    await this.completeButton.click();
   }
 
   async getRedirectMessage(message: string): Promise<Locator> {

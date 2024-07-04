@@ -25,19 +25,11 @@ test('Connect SpireKey Account: Onboarding', async ({
     await registerPage.createPassKey();
   });
 
-  await test.step('Redirect back to Connect page', async () => {
-    await expect(
-      await registerPage.getRedirectMessage(
-        `http://localhost:1337/connect?returnUrl=${returnUrl}&networkId=${networkId}`,
-      ),
-    ).toBeVisible();
+  await test.step('Complete registration.', async () => {
+    await registerPage.completeRegistration();
   });
 
   await test.step('Connect and redirect to dApp', async () => {
-    await expect(
-      connectPage.getConnectMessage('http://localhost:1337/welcome'),
-    ).toBeVisible();
-    await connectPage.connect();
     await welcomePage.page.waitForURL('http://localhost:1337/welcome*');
     const url = new URL(welcomePage.page.url());
     expect(url.pathname).toBe('/welcome');

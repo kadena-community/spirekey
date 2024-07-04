@@ -19,6 +19,7 @@ import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { getAccountName } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 
+import { getUser } from '@/utils/connect';
 import { Account } from '@kadena/spirekey-types';
 import AccountNetwork from '../Card/AccountNetwork';
 import Alias from '../Card/Alias';
@@ -166,25 +167,20 @@ export default function Registration({
   const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
   const completeRedirectUrl = decodedRedirectUrl || '/';
   const handleCancel = () => router.push(cancelRedirectUrl);
-  const handleComplete = () => router.push(decodedRedirectUrl);
-  const {
-    account,
-    allowRedirect,
-    isSubmitting,
-    succesfulAuthentication,
-    handleSubmit,
-  } = useRegistration({
-    networkId,
-    chainId,
-  });
+  const { account, isSubmitting, succesfulAuthentication, handleSubmit } =
+    useRegistration({
+      networkId,
+      chainId,
+    });
+  const handleComplete = () => {
+    if (!account) throw new Error('No user registered');
+    router.push(
+      `${completeRedirectUrl}?${new URLSearchParams({ user: Buffer.from(JSON.stringify(getUser(account))).toString('base64') })}`,
+    );
+  };
   return (
     <RegisterComponent
       account={account}
-      redirectMessage={
-        allowRedirect
-          ? `Redirecting you back to ${completeRedirectUrl}`
-          : undefined
-      }
       isSubmitting={isSubmitting}
       succesfulAuthentication={succesfulAuthentication}
       onCancel={handleCancel}
@@ -195,7 +191,6 @@ export default function Registration({
 }
 const RegisterComponent = ({
   account,
-  redirectMessage,
   isSubmitting,
   succesfulAuthentication,
   onCancel,
@@ -203,7 +198,6 @@ const RegisterComponent = ({
   onComplete,
 }: {
   account?: Account;
-  redirectMessage?: string;
   isSubmitting: boolean;
   succesfulAuthentication: boolean;
   onCancel: (e: PressEvent) => void;
