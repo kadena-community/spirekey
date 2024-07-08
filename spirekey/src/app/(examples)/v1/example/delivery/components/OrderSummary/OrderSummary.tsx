@@ -1,5 +1,5 @@
 import { useOrder } from '@/app/(examples)/v1/example/delivery/context/OrderContext';
-import { MonoLocationOn } from '@kadena/kode-icons';
+import { MonoLocationOn } from '@kadena/kode-icons/system';
 import { Box, Heading, Stack } from '@kadena/kode-ui';
 import Image from 'next/image';
 import * as styles from './OrderSummary.css';

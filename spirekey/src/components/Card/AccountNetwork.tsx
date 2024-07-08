@@ -1,4 +1,4 @@
-import { MonoCheck, MonoContentCopy } from '@kadena/kode-icons';
+import { MonoCheck, MonoContentCopy } from '@kadena/kode-icons/system';
 import { Stack, Text } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
 import { useEffect, useState } from 'react';

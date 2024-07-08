@@ -1,7 +1,7 @@
 import { Surface } from '@/components/Surface/Surface';
 import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { useAccounts } from '@/context/AccountsContext';
-import { MonoSupervisorAccount } from '@kadena/kode-icons';
+import { MonoSupervisorAccount } from '@kadena/kode-icons/system';
 import { Box, ContentHeader, Stack } from '@kadena/kode-ui';
 import { ChainId } from '@kadena/types';
 import './ConnectHeader.css';

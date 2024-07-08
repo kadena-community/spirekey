@@ -1,4 +1,4 @@
-import { MonoSupervisorAccount } from '@kadena/kode-icons';
+import { MonoSupervisorAccount } from '@kadena/kode-icons/system';
 import { Box, Heading } from '@kadena/kode-ui';
 import { accountAlias, accountIcon, accountIconInner } from './Card.css';
 

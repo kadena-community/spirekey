@@ -1,4 +1,4 @@
-import { MonoCheck, MonoClose, MonoLoading } from '@kadena/kode-icons';
+import { MonoCheck, MonoClose, MonoLoading } from '@kadena/kode-icons/system';
 import { Box, Stack, Text } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
 import { AnimatePresence, motion } from 'framer-motion';

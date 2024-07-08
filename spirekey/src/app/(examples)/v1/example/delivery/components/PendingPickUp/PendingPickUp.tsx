@@ -1,4 +1,4 @@
-import { MonoLoading } from '@kadena/kode-icons';
+import { MonoLoading } from '@kadena/kode-icons/system';
 import { Heading, Stack, maskValue } from '@kadena/kode-ui';
 
 import { Order } from '@/app/(examples)/v1/example/delivery/useDelivery';
