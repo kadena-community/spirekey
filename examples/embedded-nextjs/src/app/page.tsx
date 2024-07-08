@@ -1,10 +1,10 @@
 'use client';
 
 import {
-  type ChainId,
   createTransactionBuilder,
   ICommand,
   IUnsignedCommand,
+  type ChainId,
 } from '@kadena/client';
 import {
   Button,
@@ -22,6 +22,23 @@ import {
 } from '@kadena/spirekey-sdk';
 import { useEffect, useState } from 'react';
 const ns = 'n_eef68e581f767dd66c4d4c39ed922be944ede505';
+
+const useLocalState = (
+  key: string,
+  defaultValue: string,
+): [string, (newValue: string) => void] => {
+  const [value, setValue] = useState(defaultValue);
+  useEffect(() => {
+    const localValue = localStorage.getItem(key);
+    if (localValue) setValue(localValue);
+  }, []);
+  const setLocalValue = (newValue: string) => {
+    localStorage.setItem(key, newValue);
+    setValue(newValue);
+  };
+  return [value, setLocalValue];
+};
+
 export default function Home() {
   const [account, setAccount] = useState<Account>();
   const [receiver, setReceiver] = useState<string>('');
@@ -29,9 +46,13 @@ export default function Home() {
   const [isReady, setIsReady] = useState<boolean>(false);
   const [txs, setTxs] = useState<(IUnsignedCommand | ICommand)[]>([]);
 
-  const [wallet, setWallet] = useState<string>('https://spirekey.kadena.io/');
-  const [networkId, setNetworkId] = useState<string>('testnet04');
-  const [chainId, setChainId] = useState<ChainId>('14');
+  const [wallet, setWallet] = useLocalState(
+    'wallet',
+    'https://spirekey.kadena.io/',
+  );
+  const [networkId, setNetworkId] = useLocalState('networkId', 'testnet04');
+  const [chainId, setChainId] = useLocalState('chainId', '14');
+
   useEffect(() => {
     initSpireKey({
       hostUrl: wallet,
@@ -87,7 +108,7 @@ export default function Home() {
     setIsReady(true);
   };
   const onConnect = async () => {
-    const account = await connect(networkId, chainId);
+    const account = await connect(networkId, chainId as ChainId);
     setAccount(account);
     setAccount(await account.isReady());
     setIsReady(true);
