@@ -10,7 +10,7 @@ export interface ConnectParams {
   timeout?: number;
 }
 
-type ConnectedAccount = Account & { isReady: () => Promise<Account> };
+export type ConnectedAccount = Account & { isReady: () => Promise<Account> };
 
 export const connect = (
   networkId: string,
