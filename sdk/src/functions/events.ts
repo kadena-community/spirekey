@@ -40,6 +40,14 @@ export const onSpireKeyEvent = <
   };
 };
 
+export const onConnectCanceled = (
+  callback: SpireKeyCallback<'canceled:connect'>,
+): RemoveListener => onSpireKeyEvent('canceled:connect', callback);
+
+export const onSignCanceled = (
+  callback: SpireKeyCallback<'canceled:sign'>,
+): RemoveListener => onSpireKeyEvent('canceled:sign', callback);
+
 export const onAccountConnected = (
   callback: SpireKeyCallback<'connected'>,
 ): RemoveListener => onSpireKeyEvent('connected', callback);

@@ -2,7 +2,7 @@ import type { Account } from '@kadena/spirekey-types';
 
 import { type ChainId } from '@kadena/client';
 import { EmbedManager } from '../embed-manager';
-import { onAccountConnected } from './events';
+import { onAccountConnected, onConnectCanceled } from './events';
 import { isAccountReady } from './ready';
 
 export interface ConnectParams {
@@ -38,25 +38,32 @@ export const connectFactory =
       ),
     );
 
-    let removeListener: () => void;
+    let removeConnectListener: () => void;
+    let removeCancelListener: () => void;
 
-    const eventListenerPromise = new Promise<ConnectedAccount>((resolve) => {
-      removeListener = onAccountConnected((account: Account) => {
-        resolve({
-          ...account,
-          isReady: async () => {
-            embedManager.showNotification();
-            const res = await isAccountReady(account)();
-            embedManager.hideNotification();
-            return res;
-          },
+    const eventListenerPromise = new Promise<ConnectedAccount>(
+      (resolve, reject) => {
+        removeConnectListener = onAccountConnected((account: Account) => {
+          resolve({
+            ...account,
+            isReady: async () => {
+              embedManager.showNotification();
+              const res = await isAccountReady(account)();
+              embedManager.hideNotification();
+              return res;
+            },
+          });
         });
-      });
-    });
+        removeCancelListener = onConnectCanceled(() => {
+          reject(new Error('User canceled connection'));
+        });
+      },
+    );
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
       embedManager.closePopup();
       embedManager.hideNotification();
-      removeListener();
+      removeConnectListener();
+      removeCancelListener();
     });
   };

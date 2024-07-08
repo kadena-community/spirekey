@@ -108,10 +108,14 @@ export default function Home() {
     setIsReady(true);
   };
   const onConnect = async () => {
-    const account = await connect(networkId, chainId as ChainId);
-    setAccount(account);
-    setAccount(await account.isReady());
-    setIsReady(true);
+    try {
+      const account = await connect(networkId, chainId as ChainId);
+      setAccount(account);
+      setAccount(await account.isReady());
+      setIsReady(true);
+    } catch (e) {
+      console.warn('User canceled', e);
+    }
   };
 
   return (

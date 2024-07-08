@@ -1,21 +1,10 @@
 'use client';
 
-import { MonoManageAccounts } from '@kadena/kode-icons';
-import {
-  Avatar,
-  Box,
-  Notification,
-  NotificationHeading,
-  Stack,
-  Text,
-} from '@kadena/kode-ui';
+import { Button, Stack, Text } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-import SpireKeyLogoAnimated from '@/assets/images/spireKey-logo-animated.svg';
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
-import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
 import { publishEvent } from '@/utils/publishEvent';
 import { ChainId } from '@kadena/client';
@@ -38,6 +27,9 @@ export default function Connect({ chainId, networkId }: ConnectProps) {
     setConnectingAccount(account);
     publishEvent('connected', account);
   };
+  const cancel = () => {
+    publishEvent('canceled:connect');
+  };
 
   const candidateAccounts = accounts.filter(
     (account) =>
@@ -54,6 +46,7 @@ export default function Connect({ chainId, networkId }: ConnectProps) {
         networkId={networkId}
         chainId={chainId}
         onComplete={connect}
+        onCancel={cancel}
       />
     );
 
@@ -83,6 +76,9 @@ export default function Connect({ chainId, networkId }: ConnectProps) {
             <MaskedValue value={account.accountName} />
           </Stack>
         ))}
+        <Button onPress={cancel} variant="outlined">
+          Cancel
+        </Button>
       </Stack>
     </LayoutSurface>
   );
