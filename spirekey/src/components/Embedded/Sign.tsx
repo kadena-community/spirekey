@@ -9,9 +9,21 @@ import { getSignature } from '@/utils/getSignature';
 
 import { getAccountsForTx } from '@/utils/consent';
 import { publishEvent } from '@/utils/publishEvent';
-import { Heading, MaskedValue, maskValue, Stack, Tag } from '@kadena/kode-ui';
+import {
+  Avatar,
+  Badge,
+  Heading,
+  MaskedValue,
+  maskValue,
+  Stack,
+  Text,
+} from '@kadena/kode-ui';
 import { ICap, ICommandPayload, IUnsignedCommand } from '@kadena/types';
+import { useEffect, useRef, useState } from 'react';
 import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
+
+import { Permissions } from '@/components/Permissions/Permissions';
+import * as styles from './sign.css';
 
 interface Props {
   transaction?: string;
@@ -78,35 +90,15 @@ export default function Sign(props: Props) {
       return caps;
     }, new Map());
 
-  return (
-    <LayoutSurface
-      title="Permissions"
-      subtitle="asked for the following x modules"
-    >
-      {[...caps.entries()].map(([k, v]) => (
-        <div>
-          <Heading>{k.replace(/^.*\./, '')}</Heading>
-          <Heading variant="h4">{maskValue(k.replace(/\..*$/, ''))}</Heading>
-          <Stack marginBlock="md" flexDirection="column">
-            {v.map((c: ICap) => (
-              <Stack flexDirection="row" justifyContent="space-between" gap="md">
-                <Stack flexDirection="column">
-                  <Tag>{c.name.replace(/^.*\./g, '')}</Tag>
-                </Stack>
+  const getSubtitle = (size: number) => {
+    if (size > 1) return `asked for the following ${caps.size} modules`;
+    return 'asked for the following module';
+  };
 
-                <Stack flexDirection="column" textAlign="right">
-                  {c.args.map((a: any) => {
-                    if (a.length > 44) return <MaskedValue value={a} />;
-                    if (typeof a !== 'object') return <span>{a}</span>;
-                    if (a.int) return <span>{a.int}</span>;
-                    if (a.decimal) return <span>{a.decimal}</span>;
-                    return <span>{JSON.stringify(a)}</span>;
-                  })}
-                </Stack>
-              </Stack>
-            ))}
-          </Stack>
-        </div>
+  return (
+    <LayoutSurface title="Permissions" subtitle={getSubtitle(caps.size)}>
+      {[...caps.entries()].map(([module, capabilities]) => (
+        <Permissions module={module} capabilities={capabilities} key={module} />
       ))}
       <Button variant="primary" onPress={onSign}>
         Sign
