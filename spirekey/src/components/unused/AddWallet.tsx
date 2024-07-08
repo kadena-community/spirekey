@@ -1,6 +1,6 @@
 'use client';
 
-import { MonoSupervisorAccount } from '@kadena/kode-icons';
+import { MonoSupervisorAccount } from '@kadena/kode-icons/system';
 import { Card, ContentHeader, Stack } from '@kadena/kode-ui';
 import Link from 'next/link';
 

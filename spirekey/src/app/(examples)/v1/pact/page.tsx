@@ -1,6 +1,6 @@
 'use client';
 
-import { MonoKey } from '@kadena/kode-icons';
+import { MonoKey } from '@kadena/kode-icons/system';
 import { Box, ContentHeader, Heading, Stack } from '@kadena/kode-ui';
 import { useState } from 'react';
 

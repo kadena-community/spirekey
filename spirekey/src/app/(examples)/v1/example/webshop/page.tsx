@@ -3,7 +3,7 @@
 import { AccountButton } from '@/app/(examples)/v1/example/delivery/components/AccountButton';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { decodeAccount } from '@/utils/shared/decodeAccount';
-import { MonoCookie } from '@kadena/kode-icons';
+import { MonoCookie } from '@kadena/kode-icons/system';
 import {
   Box,
   Button,

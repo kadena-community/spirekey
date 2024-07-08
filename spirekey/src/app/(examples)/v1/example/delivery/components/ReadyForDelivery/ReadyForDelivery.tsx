@@ -1,4 +1,4 @@
-import { MonoLoading } from '@kadena/kode-icons';
+import { MonoLoading } from '@kadena/kode-icons/system';
 import { Heading, Stack } from '@kadena/kode-ui';
 import { ICap, ISigner } from '@kadena/types';
 

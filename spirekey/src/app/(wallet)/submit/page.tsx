@@ -6,7 +6,7 @@ import {
   MonoCheckCircle,
   MonoClose,
   MonoSwapHorizontalCircle,
-} from '@kadena/kode-icons';
+} from '@kadena/kode-icons/system';
 import {
   Box,
   Button,

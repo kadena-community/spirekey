@@ -1,6 +1,6 @@
 'use client';
 
-import { MonoLastPage, MonoRemoveRedEye } from '@kadena/kode-icons';
+import { MonoLastPage, MonoRemoveRedEye } from '@kadena/kode-icons/system';
 import { Heading, useTheme } from '@kadena/kode-ui';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -10,7 +10,6 @@ import { publishEvent } from '@/utils/publishEvent';
 
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { hexadecimalToRGB } from '@/utils/color';
-import { ThemeProvider } from 'next-themes';
 import * as styles from './notification.css';
 
 export default function SidebarSign() {

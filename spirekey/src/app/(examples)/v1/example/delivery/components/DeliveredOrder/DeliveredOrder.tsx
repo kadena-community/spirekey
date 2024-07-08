@@ -1,6 +1,6 @@
 import { Order } from '@/app/(examples)/v1/example/delivery/useDelivery';
 import { Surface } from '@/components/Surface/Surface';
-import { MonoCheck } from '@kadena/kode-icons';
+import { MonoCheck } from '@kadena/kode-icons/system';
 import { Heading, Stack, maskValue } from '@kadena/kode-ui';
 
 interface Props {

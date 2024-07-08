@@ -5,7 +5,7 @@ import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { SubmitStatus, useSubmit } from '@/hooks/shared/useSubmit';
 import { continueCopy, copyAccount } from '@/utils/copyAccount';
 import { l1Client } from '@/utils/shared/client';
-import { MonoSupervisorAccount } from '@kadena/kode-icons';
+import { MonoSupervisorAccount } from '@kadena/kode-icons/system';
 import { Box, Button, Card, ContentHeader, Stack } from '@kadena/kode-ui';
 import type { ChainId } from '@kadena/types';
 import { useParams, useRouter } from 'next/navigation';
