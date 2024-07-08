@@ -9,9 +9,10 @@ import { getSignature } from '@/utils/getSignature';
 
 import { getAccountsForTx } from '@/utils/consent';
 import { publishEvent } from '@/utils/publishEvent';
-import { Heading, MaskedValue, maskValue, Stack, Tag } from '@kadena/kode-ui';
+import { Heading, MaskedValue, maskValue, Stack, Badge } from '@kadena/kode-ui';
 import { ICap, ICommandPayload, IUnsignedCommand } from '@kadena/types';
 import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
+import { useEffect, useRef, useState } from 'react';
 
 interface Props {
   transaction?: string;
@@ -35,7 +36,32 @@ const getPubkey = (
 export default function Sign(props: Props) {
   const { transaction } = props;
   const { accounts } = useAccounts();
+  const rowRef = useRef<HTMLDivElement | null>(null);
+  const [isHovered, setIsHovered] = useState(false)
+
   if (!transaction) return;
+
+  useEffect(() => {
+    const handleMouseEnter = () => setIsHovered(true);
+    const handleMouseLeave = () => setIsHovered(false);
+
+    // Get the current element from the ref
+    const element = rowRef.current;
+
+    // Add event listeners to the element
+    if (element) {
+      element.addEventListener('mouseenter', handleMouseEnter);
+      element.addEventListener('mouseleave', handleMouseLeave);
+    }
+
+    // Clean up event listeners on component unmount
+    return () => {
+      if (element) {
+        element.removeEventListener('mouseenter', handleMouseEnter);
+        element.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+  }, []);
 
   const data = transaction
     ? Buffer.from(transaction, 'base64').toString()
@@ -89,9 +115,9 @@ export default function Sign(props: Props) {
           <Heading variant="h4">{maskValue(k.replace(/\..*$/, ''))}</Heading>
           <Stack marginBlock="md" flexDirection="column">
             {v.map((c: ICap) => (
-              <Stack flexDirection="row" justifyContent="space-between" gap="md">
+              <Stack flexDirection="row" justifyContent="space-between" gap="md" ref={rowRef}>
                 <Stack flexDirection="column">
-                  <Tag>{c.name.replace(/^.*\./g, '')}</Tag>
+                  <Badge size='sm' style={isHovered ? 'highContrast' : 'default'}>{c.name.replace(/^.*\./g, '')}</Badge>
                 </Stack>
 
                 <Stack flexDirection="column" textAlign="right">
