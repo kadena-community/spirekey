@@ -22,7 +22,7 @@
     "syncpack": "12.3.2",
     "turbo": "^2.0.4"
   },
-  "packageManager": "pnpm@8.15.8",
+  "packageManager": "pnpm@9.5.0",
   "engines": {
     "pnpm": ">=9 <10"
   }
