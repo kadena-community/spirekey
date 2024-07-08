@@ -3,7 +3,6 @@
 import type { Account, Device } from '@kadena/spirekey-types';
 import { startAuthentication } from '@simplewebauthn/browser';
 
-import { Button } from '@/components/shared/Button/Button';
 import { useAccounts } from '@/context/AccountsContext';
 import { getSignature } from '@/utils/getSignature';
 
@@ -12,6 +11,7 @@ import { publishEvent } from '@/utils/publishEvent';
 import {
   Avatar,
   Badge,
+  Button,
   Heading,
   MaskedValue,
   maskValue,
@@ -76,6 +76,9 @@ export default function Sign(props: Props) {
       ],
     });
   };
+
+  const onCancel = () => publishEvent('canceled:sign');
+
   const { signers }: ICommandPayload = JSON.parse(tx.cmd);
   const keys = txAccounts.accounts.flatMap((a) =>
     a.devices.flatMap((d) => d.guard.keys),
@@ -100,9 +103,14 @@ export default function Sign(props: Props) {
       {[...caps.entries()].map(([module, capabilities]) => (
         <Permissions module={module} capabilities={capabilities} key={module} />
       ))}
-      <Button variant="primary" onPress={onSign}>
-        Sign
-      </Button>
+      <Stack gap="md" justifyContent="space-between">
+        <Button variant="outlined" onPress={onCancel}>
+          Cancel
+        </Button>
+        <Button variant="primary" onPress={onSign}>
+          Sign
+        </Button>
+      </Stack>
     </LayoutSurface>
   );
 }

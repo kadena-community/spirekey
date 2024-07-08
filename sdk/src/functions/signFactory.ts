@@ -6,7 +6,7 @@ import {
 
 import { Account } from '@kadena/spirekey-types';
 import { EmbedManager } from '../embed-manager';
-import { onTransactionsSigned } from './events';
+import { onSignCanceled, onTransactionsSigned } from './events';
 import { areAccountsReady } from './ready';
 
 export interface SignParams {
@@ -56,10 +56,11 @@ export const signFactory =
       ),
     );
 
-    let removeListener: () => void;
+    let removeSignListener: () => void;
+    let removeCancelListener: () => void;
 
-    const eventListenerPromise = new Promise<ReturnValue>((resolve) => {
-      removeListener = onTransactionsSigned((signatures) => {
+    const eventListenerPromise = new Promise<ReturnValue>((resolve, reject) => {
+      removeSignListener = onTransactionsSigned((signatures) => {
         const signedTransactions = transactions.flatMap((tx) =>
           signatures[tx.hash].map((sig) => addSignatures(tx, sig)),
         );
@@ -77,11 +78,16 @@ export const signFactory =
           },
         });
       });
+
+      removeCancelListener = onSignCanceled(() => {
+        reject(new Error('Uses canceled signin'));
+      });
     });
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
       embedManager.closePopup();
       embedManager.hideNotification();
-      removeListener();
+      removeSignListener();
+      removeCancelListener();
     });
   };

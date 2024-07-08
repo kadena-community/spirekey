@@ -62,50 +62,54 @@ export default function Home() {
   const signTransaction = async () => {
     if (!account) throw new Error('No account connected');
     if (!receiver) throw new Error('No receiver defined');
-    const tx = createTransactionBuilder()
-      .execution(
-        `(${ns}.webauthn-wallet.transfer
+    try {
+      const tx = createTransactionBuilder()
+        .execution(
+          `(${ns}.webauthn-wallet.transfer
         "${account.accountName}"
         "${receiver}"
       )`,
-      )
-      .setMeta({
-        senderAccount: account.accountName,
-        chainId: account.chainIds[0],
-      });
+        )
+        .setMeta({
+          senderAccount: account.accountName,
+          chainId: account.chainIds[0],
+        });
 
-    // Note: tx is an instance that is being mutated
-    account.devices.flatMap((d) =>
-      d.guard.keys.map((k) =>
-        tx.addSigner(
-          {
-            pubKey: k,
-            scheme: /^WEBAUTHN-/.test(k) ? 'WebAuthn' : 'ED25519',
-          },
-          (withCap) => [
-            withCap(
-              `${ns}.webauthn-wallet.TRANSFER`,
-              account.accountName,
-              receiver,
-              { decimal: amount.toFixed(8) },
-            ),
-            withCap(
-              `${ns}.webauthn-wallet.GAS_PAYER`,
-              account.accountName,
-              { int: '1' },
-              { decimal: '1.0' },
-            ),
-            withCap(`${ns}.webauthn-wallet.GAS`, account.accountName),
-          ],
+      // Note: tx is an instance that is being mutated
+      account.devices.flatMap((d) =>
+        d.guard.keys.map((k) =>
+          tx.addSigner(
+            {
+              pubKey: k,
+              scheme: /^WEBAUTHN-/.test(k) ? 'WebAuthn' : 'ED25519',
+            },
+            (withCap) => [
+              withCap(
+                `${ns}.webauthn-wallet.TRANSFER`,
+                account.accountName,
+                receiver,
+                { decimal: amount.toFixed(8) },
+              ),
+              withCap(
+                `${ns}.webauthn-wallet.GAS_PAYER`,
+                account.accountName,
+                { int: '1' },
+                { decimal: '1.0' },
+              ),
+              withCap(`${ns}.webauthn-wallet.GAS`, account.accountName),
+            ],
+          ),
         ),
-      ),
-    );
-    tx.setNetworkId(networkId);
-    const { transactions, isReady } = await sign([tx.createTransaction()]);
-    setTxs(transactions);
-    setIsReady(false);
-    await isReady();
-    setIsReady(true);
+      );
+      tx.setNetworkId(networkId);
+      const { transactions, isReady } = await sign([tx.createTransaction()]);
+      setTxs(transactions);
+      setIsReady(false);
+      await isReady();
+      setIsReady(true);
+    } catch (e) {
+      console.warn('User canceled signin', e);
+    }
   };
   const onConnect = async () => {
     try {
