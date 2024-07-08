@@ -8,6 +8,8 @@ export type SpireKeyEvents = {
   'minimize-notification': void;
   'maximize-notification': void;
   'show-notifications-sidebar': void;
+  'canceled:connect': void;
+  'canceled:sign': void;
 };
 
 export type SpireKeyEventName = keyof SpireKeyEvents;

@@ -1,6 +1,6 @@
 {
   "name": "@kadena/spirekey-sdk",
-  "version": "0.0.1-dev-4",
+  "version": "0.0.1-dev-5",
   "description": "",
   "keywords": [],
   "license": "ISC",
@@ -33,7 +33,7 @@
   ],
   "scripts": {
     "build": "crackle package",
-    "dev": "crackle package",
+    "dev": "crackle dev",
     "test": "vitest run",
     "test:watch": "vitest --no-coverage"
   },

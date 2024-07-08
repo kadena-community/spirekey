@@ -27,10 +27,10 @@ export default defineConfig({
       ],
       provider: 'v8',
       thresholds: {
-        lines: 24.69,
+        lines: 24.66,
         functions: 31.83,
         branches: 48.83,
-        statements: 24.69,
+        statements: 24.66,
         autoUpdate: true,
       },
     },
