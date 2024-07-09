@@ -1,4 +1,3 @@
-import { Box } from '@kadena/kode-ui';
 import type { Device } from '@kadena/spirekey-types';
 import classNames from 'classnames';
 
@@ -11,13 +10,13 @@ interface Props {
 }
 export default function DeviceCircle({ device }: Props) {
   return (
-    <Box
+    <div
       className={classNames(
         styles.device,
         styles.backgroundColors[device.color],
       )}
     >
       {getDeviceIcon(device.deviceType)}
-    </Box>
+    </div>
   );
 }
