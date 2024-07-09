@@ -13,7 +13,7 @@ export interface SignParams {
   embedManager: EmbedManager;
   timeout?: number;
 }
-type ReturnValue = {
+export type SignedTransactions = {
   transactions: (IUnsignedCommand | ICommand)[];
   isReady: () => Promise<(IUnsignedCommand | ICommand)[]>;
 };
@@ -21,7 +21,7 @@ type ReturnValue = {
 export const sign = (
   transactionList: IUnsignedCommand[],
   accounts: Account[] = [],
-): Promise<ReturnValue> =>
+): Promise<SignedTransactions> =>
   signFactory({ embedManager: EmbedManager.getInstance() })(
     transactionList,
     accounts,
@@ -32,7 +32,7 @@ export const signFactory =
   async (
     transactionList: IUnsignedCommand[],
     accounts: Account[] = [],
-  ): Promise<ReturnValue> => {
+  ): Promise<SignedTransactions> => {
     const isList = Array.isArray(transactionList);
     const transactions = isList ? transactionList : [transactionList];
 
@@ -49,7 +49,7 @@ export const signFactory =
       `/embedded/sidebar#${transactionsParams.toString()}`,
     );
 
-    const timeoutPromise = new Promise<ReturnValue>((_, reject) =>
+    const timeoutPromise = new Promise<SignedTransactions>((_, reject) =>
       setTimeout(
         () => reject([new Error('Timeout: Signing took too long')]),
         timeout,
@@ -59,7 +59,7 @@ export const signFactory =
     let removeSignListener: () => void;
     let removeCancelListener: () => void;
 
-    const eventListenerPromise = new Promise<ReturnValue>((resolve, reject) => {
+    const eventListenerPromise = new Promise<SignedTransactions>((resolve, reject) => {
       removeSignListener = onTransactionsSigned((signatures) => {
         const signedTransactions = transactions.flatMap((tx) =>
           signatures[tx.hash].map((sig) => addSignatures(tx, sig)),
