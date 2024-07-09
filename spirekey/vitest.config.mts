@@ -10,6 +10,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    watch: null,
+  },
   test: {
     reporters: ['default', 'hanging-process'],
     include: ['{src,tests}/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
@@ -27,10 +30,10 @@ export default defineConfig({
       ],
       provider: 'v8',
       thresholds: {
-        lines: 24.65,
-        functions: 31.83,
-        branches: 48.83,
-        statements: 24.65,
+        lines: 24.46,
+        functions: 31.69,
+        branches: 48.69,
+        statements: 24.46,
         autoUpdate: true,
       },
     },

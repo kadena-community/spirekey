@@ -27,10 +27,18 @@ export const wrapper = style({
   },
 });
 
+export const logoWrapper = style({
+  marginBlockEnd: tokens.kda.foundation.spacing.n4,
+  '@media': {
+    [breakpoints.md]: {
+      marginBlockEnd: 0,
+    },
+  }
+})
+
 export const logo = style({
   gridColumn: '1 / span 1',
   gridRow: '1 / span 1',
-  marginBlockEnd: tokens.kda.foundation.spacing.n4,
   fontSize: '32px',
 
   '@media': {
