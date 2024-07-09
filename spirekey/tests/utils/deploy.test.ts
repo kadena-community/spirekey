@@ -1,6 +1,6 @@
 import { genesisPrivateKey, genesisPubKey } from '@/utils/constants';
 import {
-    decryptContent,
+  decryptContent,
   DeployConfiguration,
   encryptContent,
   EncryptedContent,
@@ -68,9 +68,9 @@ describe('encryption', () => {
     let encrypted: EncryptedContent;
     let decrypted: string;
     beforeAll(async () => {
-    const key = await getKey(pw)
+      const key = await getKey(pw);
       encrypted = await encryptContent(original, key);
-      decrypted = await decryptContent(encrypted, key)
+      decrypted = await decryptContent(encrypted, key);
     });
     it('should create an object with the encrypted content', () => {
       expect(encrypted.content).toBeTruthy();
@@ -79,7 +79,7 @@ describe('encryption', () => {
       expect(encrypted.iv).toBeTruthy();
     });
     it('should decrypt to the original content', () => {
-      expect(decrypted).toEqual(original)
+      expect(decrypted).toEqual(original);
     });
   });
 });

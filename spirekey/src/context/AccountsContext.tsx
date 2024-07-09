@@ -11,7 +11,6 @@ import {
   getAccountName,
   getRegisterCommand,
   getWebAuthnPubkeyFormat,
-  registerAccountOnChain,
 } from '@/utils/register';
 import { retryPromises } from '@/utils/retryPromises';
 import {
@@ -34,12 +33,16 @@ export type AccountRegistration = {
 };
 
 export type AccountRecovery = Omit<AccountRegistration, 'accountName'>;
-export type SpireKeyAccount = Account & { txQueue: ICommand[] };
+export type QueuedTx = {
+  cmd: ICommand;
+  tx: ITransactionDescriptor;
+};
+export type SpireKeyAccount = Account & { txQueue: QueuedTx[] };
 
 const migrateAccountStructure = (
   account: Omit<SpireKeyAccount, 'network' | 'txQueue'> & {
     network?: string;
-    txQueue?: ICommand[];
+    txQueue?: QueuedTx[];
   },
 ): SpireKeyAccount => ({
   ...account,
@@ -208,13 +211,17 @@ const AccountsProvider = ({ children }: Props) => {
   };
 
   const setAccount = (account: SpireKeyAccount): void => {
-    const updatedAccounts =
-      accounts?.filter((a) => a.accountName !== account.accountName) || [];
-    updatedAccounts.unshift(account);
+    if (accounts.every((a) => a.accountName !== account.accountName))
+      return addAccount(account);
+    const updatedAccounts = accounts.map((acc) => {
+      if (account.accountName !== acc.accountName) return acc;
+      return account;
+    });
     setAccounts(updatedAccounts);
   };
 
   const addAccount = (account: SpireKeyAccount): void => {
+    if (accounts.some((a) => a.accountName === account.accountName)) return;
     setAccounts([account, ...accounts]);
   };
 
@@ -263,7 +270,7 @@ const AccountsProvider = ({ children }: Props) => {
       minApprovals: 1,
       minRegistrationApprovals: 1,
       chainIds: [chainId],
-      txQueue: [tx],
+      txQueue: [{ tx: txDescriptor, cmd: tx }],
     };
     addAccount(account);
 
