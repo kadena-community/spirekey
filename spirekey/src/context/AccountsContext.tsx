@@ -1,6 +1,6 @@
 'use client';
 
-import type { ChainId, ITransactionDescriptor } from '@kadena/client';
+import type { ChainId, ICommand, ITransactionDescriptor } from '@kadena/client';
 import type { Account, Device } from '@kadena/spirekey-types';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -9,6 +9,7 @@ import { deviceColors } from '@/styles/shared/tokens.css';
 import { fundAccount } from '@/utils/fund';
 import {
   getAccountName,
+  getRegisterCommand,
   getWebAuthnPubkeyFormat,
   registerAccountOnChain,
 } from '@/utils/register';
@@ -33,10 +34,14 @@ export type AccountRegistration = {
 };
 
 export type AccountRecovery = Omit<AccountRegistration, 'accountName'>;
+export type SpireKeyAccount = Account & { txQueue: ICommand[] };
 
 const migrateAccountStructure = (
-  account: Account & { network?: string },
-): Account => ({
+  account: Omit<SpireKeyAccount, 'network' | 'txQueue'> & {
+    network?: string;
+    txQueue?: ICommand[];
+  },
+): SpireKeyAccount => ({
   ...account,
   devices: account.devices.map((d) => ({
     ...d,
@@ -44,12 +49,13 @@ const migrateAccountStructure = (
     color: d.name?.replace(/.*_/, '') || deviceColors.orange,
   })),
   networkId: account.network || account.networkId,
+  txQueue: account.txQueue || [],
   chainIds: account.chainIds?.length
     ? account.chainIds
     : [process.env.CHAIN_ID],
 });
 
-const getAccountsFromLocalStorage = (): Account[] => {
+const getAccountsFromLocalStorage = (): SpireKeyAccount[] => {
   if (typeof window === 'undefined') {
     return [];
   }
@@ -58,8 +64,8 @@ const getAccountsFromLocalStorage = (): Account[] => {
 
   try {
     const parsedAccounts = JSON.parse(rawLocalAccounts) as
-      | Account[]
-      | Record<string, Account>;
+      | SpireKeyAccount[]
+      | Record<string, SpireKeyAccount>;
     const accounts = Array.isArray(parsedAccounts)
       ? parsedAccounts
       : Object.values(parsedAccounts);
@@ -78,7 +84,7 @@ const defaultState = {
   registerAccount: async (
     data: AccountRegistration,
   ): Promise<ITransactionDescriptor | undefined> => undefined,
-  setAccount: (account: Account): void => undefined,
+  setAccount: (account: SpireKeyAccount): void => undefined,
 };
 
 export type RegisterAccountFn = typeof defaultState.registerAccount;
@@ -94,7 +100,7 @@ type Props = {
 const AccountsProvider = ({ children }: Props) => {
   const { host } = useReturnUrl();
 
-  const [accounts, setAccounts] = useState<Account[]>(
+  const [accounts, setAccounts] = useState<SpireKeyAccount[]>(
     getAccountsFromLocalStorage(),
   );
 
@@ -127,7 +133,7 @@ const AccountsProvider = ({ children }: Props) => {
     checkPendingTxs();
   }, [accounts]);
 
-  const fetchAccountsFromChain = async (localAccounts: Account[]) => {
+  const fetchAccountsFromChain = async (localAccounts: SpireKeyAccount[]) => {
     return Promise.all(
       localAccounts.map(async (localAccount) => {
         const { accountName, networkId, alias, devices, chainIds } =
@@ -201,14 +207,14 @@ const AccountsProvider = ({ children }: Props) => {
     );
   };
 
-  const setAccount = (account: Account): void => {
+  const setAccount = (account: SpireKeyAccount): void => {
     const updatedAccounts =
       accounts?.filter((a) => a.accountName !== account.accountName) || [];
     updatedAccounts.unshift(account);
     setAccounts(updatedAccounts);
   };
 
-  const addAccount = (account: Account): void => {
+  const addAccount = (account: SpireKeyAccount): void => {
     setAccounts([account, ...accounts]);
   };
 
@@ -223,7 +229,7 @@ const AccountsProvider = ({ children }: Props) => {
     networkId,
     chainId: cid,
   }: AccountRegistration): Promise<ITransactionDescriptor> => {
-    const txDescriptor = await registerAccountOnChain({
+    const tx = await getRegisterCommand({
       accountName,
       color,
       deviceType,
@@ -233,6 +239,7 @@ const AccountsProvider = ({ children }: Props) => {
       networkId,
       chainId: cid,
     });
+    const txDescriptor = await l1Client.submit(tx);
     const { chainId } = txDescriptor;
     const devices: Device[] = [
       {
@@ -256,6 +263,7 @@ const AccountsProvider = ({ children }: Props) => {
       minApprovals: 1,
       minRegistrationApprovals: 1,
       chainIds: [chainId],
+      txQueue: [tx],
     };
     addAccount(account);
 

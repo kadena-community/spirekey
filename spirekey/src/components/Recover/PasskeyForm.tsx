@@ -97,6 +97,7 @@ export const PasskeyForm: FC<StepProps> = ({
             color: deviceName.split('_')[1] || deviceColors.purple,
           };
         }),
+        txQueue: [],
       });
 
       navigation.next();
