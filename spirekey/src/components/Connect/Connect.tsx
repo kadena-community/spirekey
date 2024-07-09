@@ -1,13 +1,15 @@
-import { Button, Stack, Text } from '@kadena/kode-ui';
+import { Button, Link, Stack, Text } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
 import { useEffect, useState } from 'react';
 
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { useAccounts } from '@/context/AccountsContext';
 import { ChainId } from '@kadena/client';
+import { Heading } from 'react-aria-components';
 import DeviceCircle from '../Device/DeviceCircle';
 import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
 import Registration from '../Registration/Registration';
+import { ButtonLink } from '../shared/ButtonLink/ButtonLink';
 
 type ConnectComponentProps = {
   chainId: ChainId;
@@ -30,9 +32,9 @@ export default function ConnectComponent({
       account.networkId === networkId && account.chainIds.includes(chainId),
   );
 
-  useEffect(() => {
+  const startRegister = () => {
     setIsRegister(!candidateAccounts.length);
-  }, []);
+  };
 
   if (isRegister)
     return (
@@ -42,6 +44,32 @@ export default function ConnectComponent({
         onComplete={onConnect}
         onCancel={onCancel}
       />
+    );
+
+  if (!candidateAccounts.length)
+    return (
+      <LayoutSurface title="" subtitle="" useLogoTitle>
+        <Stack flexDirection="column" gap="xxxl">
+          <Stack flexDirection="column">
+            <Heading>No account yet?</Heading>
+            <Text>Create an new account with a passkey.</Text>
+          </Stack>
+          <Stack flexDirection="column">
+            <Heading>Inspired Already</Heading>
+            <Text>Recover your existing account with your passkey.</Text>
+          </Stack>
+          <Stack
+            flexDirection="row"
+            justifyContent="space-between"
+            marginBlock="lg"
+          >
+            <Link variant="outlined" href="/recover">
+              Recover
+            </Link>
+            <Button onPress={startRegister}>Register</Button>
+          </Stack>
+        </Stack>
+      </LayoutSurface>
     );
 
   return (
