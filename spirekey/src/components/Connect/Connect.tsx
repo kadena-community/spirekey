@@ -1,15 +1,16 @@
 import { Button, Link, Stack, Text } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
-import { useAccounts } from '@/context/AccountsContext';
+import { SpireKeyAccount, useAccounts } from '@/context/AccountsContext';
+import { getRegisterCommand } from '@/utils/register';
+import { l1Client } from '@/utils/shared/client';
 import { ChainId } from '@kadena/client';
 import { Heading } from 'react-aria-components';
 import DeviceCircle from '../Device/DeviceCircle';
 import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
 import Registration from '../Registration/Registration';
-import { ButtonLink } from '../shared/ButtonLink/ButtonLink';
 
 type ConnectComponentProps = {
   chainId: ChainId;
@@ -24,16 +25,47 @@ export default function ConnectComponent({
   onConnect,
   onCancel,
 }: ConnectComponentProps) {
-  const { accounts } = useAccounts();
+  const { accounts, setAccount } = useAccounts();
   const [isRegister, setIsRegister] = useState(false);
 
   const candidateAccounts = accounts.filter(
-    (account) =>
-      account.networkId === networkId && account.chainIds.includes(chainId),
+    (account) => account.networkId === networkId,
   );
 
   const startRegister = () => {
     setIsRegister(!candidateAccounts.length);
+  };
+
+  const connectAndPrime = async ({
+    devices,
+    txQueue,
+    chainIds,
+    ...account
+  }: SpireKeyAccount) => {
+    if (chainIds.includes(chainId))
+      return onConnect({ ...account, devices, chainIds });
+
+    const device = devices[0];
+    const cmd = await getRegisterCommand({
+      accountName: account.accountName,
+      networkId,
+      chainId,
+      color: device.color,
+      domain: device.domain,
+      deviceType: device.deviceType,
+      credentialId: device['credential-id'],
+      credentialPubkey: device.guard.keys[0],
+    });
+
+    const tx = await l1Client.submit(cmd);
+    const updatedAccount = {
+      ...account,
+      devices,
+      txQueue: [...txQueue, { tx, cmd }],
+      chainIds: [...chainIds, chainId],
+    };
+    setAccount(updatedAccount);
+    onConnect({ ...account, devices, chainIds });
   };
 
   if (isRegister)
@@ -88,7 +120,7 @@ export default function ConnectComponent({
             paddingBlock="md"
             paddingInline="lg"
             alignItems="center"
-            onClick={() => onConnect(account)}
+            onClick={() => connectAndPrime(account)}
             cursor="pointer"
           >
             <Stack flexGrow={1} alignItems="center" gap="sm">

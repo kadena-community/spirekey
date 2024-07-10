@@ -1,5 +1,6 @@
 import {
   createTransaction,
+  ICommand,
   type ChainId,
   type ITransactionDescriptor,
 } from '@kadena/client';
@@ -64,6 +65,29 @@ export const registerAccountOnChain = async ({
   networkId,
   chainId = process.env.CHAIN_ID,
 }: Omit<AccountRegistration, 'alias'>): Promise<ITransactionDescriptor> => {
+  return l1Client.submit(
+    await getRegisterCommand({
+      accountName,
+      color,
+      deviceType,
+      domain,
+      credentialId,
+      credentialPubkey,
+      networkId,
+      chainId,
+    }),
+  );
+};
+export const getRegisterCommand = async ({
+  accountName,
+  color,
+  deviceType,
+  domain,
+  credentialId,
+  credentialPubkey,
+  networkId,
+  chainId = process.env.CHAIN_ID,
+}: Omit<AccountRegistration, 'alias'>): Promise<ICommand> => {
   return asyncPipe(
     registerAccountCommand({
       accountName,
@@ -77,7 +101,6 @@ export const registerAccountOnChain = async ({
     }),
     createTransaction,
     signWithKeyPair({ publicKey: genesisPubKey, secretKey: genesisPrivateKey }),
-    l1Client.submit,
   )({});
 };
 
