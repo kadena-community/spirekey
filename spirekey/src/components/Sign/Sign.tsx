@@ -168,7 +168,14 @@ export default function Sign(props: Props) {
 
   return (
     <>
-      <Stack flexDirection="column" gap="md" alignItems="center" margin="xl">
+      <Stack
+        flexDirection="column"
+        gap="md"
+        alignItems="center"
+        marginBlock="xl"
+        marginInline="auto"
+        maxWidth="content.maxWidth"
+      >
         <Stack gap="sm" alignItems="center">
           <ProductIcon.ManageKda size="lg" />
           <Heading variant="h5">Preview and sign transaction</Heading>

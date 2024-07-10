@@ -54,7 +54,8 @@ export default function Providers({
               value={{
                 dark: darkThemeClass,
               }}
-              enableColorScheme={enableColorScheme} // When enabled, we can't make the background of the embedded iframe transparent
+              enableSystem={true}
+              enableColorScheme={true} // When enabled, we can't make the background of the embedded iframe transparent
             >
               <>
                 {children}

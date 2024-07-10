@@ -9,21 +9,13 @@ import { getSignature } from '@/utils/getSignature';
 import { getAccountsForTx } from '@/utils/consent';
 import { publishEvent } from '@/utils/publishEvent';
 import {
-  Avatar,
-  Badge,
   Button,
-  Heading,
-  MaskedValue,
-  maskValue,
   Stack,
-  Text,
 } from '@kadena/kode-ui';
-import { ICap, ICommandPayload, IUnsignedCommand } from '@kadena/types';
-import { useEffect, useRef, useState } from 'react';
+import {  ICommandPayload, } from '@kadena/types';
 import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
 
 import { Permissions } from '@/components/Permissions/Permissions';
-import * as styles from './sign.css';
 
 interface Props {
   transaction?: string;
