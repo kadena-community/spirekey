@@ -4,7 +4,7 @@ import {
   type IUnsignedCommand,
 } from '@kadena/client';
 
-import { Account } from '@kadena/spirekey-types';
+import { Account, SpireKeyAccount } from '@kadena/spirekey-types';
 import { EmbedManager } from '../embed-manager';
 import { onSignCanceled, onTransactionsSigned } from './events';
 import { areAccountsReady } from './ready';
@@ -20,7 +20,7 @@ export type SignedTransactions = {
 
 export const sign = (
   transactionList: IUnsignedCommand[],
-  accounts: Account[] = [],
+  accounts: SpireKeyAccount[] = [],
 ): Promise<SignedTransactions> =>
   signFactory({ embedManager: EmbedManager.getInstance() })(
     transactionList,
@@ -31,7 +31,7 @@ export const signFactory =
   ({ embedManager, timeout = 5 * 60 * 1000 }: SignParams) =>
   async (
     transactionList: IUnsignedCommand[],
-    accounts: Account[] = [],
+    accounts: SpireKeyAccount[] = [],
   ): Promise<SignedTransactions> => {
     const isList = Array.isArray(transactionList);
     const transactions = isList ? transactionList : [transactionList];
@@ -59,30 +59,29 @@ export const signFactory =
     let removeSignListener: () => void;
     let removeCancelListener: () => void;
 
-    const eventListenerPromise = new Promise<SignedTransactions>((resolve, reject) => {
-      removeSignListener = onTransactionsSigned((signatures) => {
-        const signedTransactions = transactions.flatMap((tx) =>
-          signatures[tx.hash].map((sig) => addSignatures(tx, sig)),
-        );
+    const eventListenerPromise = new Promise<SignedTransactions>(
+      (resolve, reject) => {
+        removeSignListener = onTransactionsSigned((signatures) => {
+          const signedTransactions = transactions.flatMap((tx) =>
+            signatures[tx.hash].map((sig) => addSignatures(tx, sig)),
+          );
 
-        resolve({
-          transactions: signedTransactions,
-          isReady: async (...args) => {
-            embedManager.showNotification();
-            const res = await areAccountsReady(
-              signedTransactions,
-              accounts,
-            )(...args);
-            embedManager.hideNotification();
-            return res;
-          },
+          resolve({
+            transactions: signedTransactions,
+            isReady: async (...args) => {
+              embedManager.showNotification();
+              await areAccountsReady(accounts)(...args);
+              embedManager.hideNotification();
+              return signedTransactions;
+            },
+          });
         });
-      });
 
-      removeCancelListener = onSignCanceled(() => {
-        reject(new Error('Uses canceled signin'));
-      });
-    });
+        removeCancelListener = onSignCanceled(() => {
+          reject(new Error('Uses canceled signin'));
+        });
+      },
+    );
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
       embedManager.closePopup();

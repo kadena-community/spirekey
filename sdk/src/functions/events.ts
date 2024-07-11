@@ -40,6 +40,10 @@ export const onSpireKeyEvent = <
   };
 };
 
+export const onIsReady = (
+  callback: SpireKeyCallback<'isReady'>,
+): RemoveListener => onSpireKeyEvent('isReady', callback);
+
 export const onConnectCanceled = (
   callback: SpireKeyCallback<'canceled:connect'>,
 ): RemoveListener => onSpireKeyEvent('canceled:connect', callback);

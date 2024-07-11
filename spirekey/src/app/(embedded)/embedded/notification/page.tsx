@@ -8,27 +8,34 @@ import { useEffect, useState } from 'react';
 import spireKeyLogo from '@/assets/images/spireKey-logo-animated.svg';
 import { publishEvent } from '@/utils/publishEvent';
 
+import { useTxQueue } from '@/hooks/useTxQueue';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { hexadecimalToRGB } from '@/utils/color';
+import type { SpireKeyAccount } from '@kadena/spirekey-types';
 import * as styles from './notification.css';
 
 export default function SidebarSign() {
   const [title, setTitle] = useState<string | null>('In Progress');
   const [isMinimized, setIsMinimized] = useState(false);
+  const [accounts, setAccounts] = useState<SpireKeyAccount[]>([]);
 
   const { r, g, b } = hexadecimalToRGB(deviceColors.blue);
 
   const colorStart = `rgba(${r}, ${g}, ${b}, 0)`;
   const colorEnd = `rgba(${r}, ${g}, ${b}, 1)`;
 
+  useTxQueue(accounts, (updatedAccounts) => {
+    publishEvent('isReady', updatedAccounts);
+  });
+
   useEffect(() => {
     const getHash = () => {
       const params = new URLSearchParams(
         window.location.hash.replace(/^#/, '?'),
       );
-      if (params.get('title')) {
-        setTitle(params.get('title'));
-      }
+      if (params.get('title')) setTitle(params.get('title'));
+      const accs = params.get('accounts');
+      if (accs) setAccounts(JSON.parse(accs));
     };
 
     const onHashChanged = () => {

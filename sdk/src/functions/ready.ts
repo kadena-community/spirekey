@@ -1,20 +1,18 @@
-import type { Account } from "@kadena/spirekey-types";
-import { createClient, ICommand, IUnsignedCommand } from "@kadena/client";
+import { ICommand, IUnsignedCommand } from '@kadena/client';
+import type { SpireKeyAccount } from '@kadena/spirekey-types';
+import { EmbedManager } from '../embed-manager';
+import { onIsReady } from './events';
 
-export const isAccountReady = (account: Account) => async () => {
-  const pendingRegistrations = account.devices
-    .flatMap((d) => d.pendingRegistrationTxs)
-    .filter((x) => !!x)
-    .map((tx) => createClient().pollOne(tx));
-  await Promise.allSettled(pendingRegistrations);
-  return account;
+export const isAccountReady = (account: SpireKeyAccount) => async () => {
+  EmbedManager.getInstance().areAccountsReady([account]);
+  return new Promise((resolve) => {
+    onIsReady((a) => resolve(a));
+  });
 };
 
-export const areAccountsReady =
-  (transactions: (IUnsignedCommand | ICommand)[], accounts: Account[]) =>
-  async () => {
-    await Promise.all(accounts.map(isAccountReady));
-    return transactions;
-  };
-
-
+export const areAccountsReady = (accounts: SpireKeyAccount[]) => async () => {
+  EmbedManager.getInstance().areAccountsReady(accounts);
+  return new Promise((resolve) => {
+    onIsReady((a) => resolve(a));
+  });
+};
