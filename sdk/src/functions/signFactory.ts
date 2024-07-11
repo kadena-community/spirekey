@@ -59,30 +59,29 @@ export const signFactory =
     let removeSignListener: () => void;
     let removeCancelListener: () => void;
 
-    const eventListenerPromise = new Promise<SignedTransactions>((resolve, reject) => {
-      removeSignListener = onTransactionsSigned((signatures) => {
-        const signedTransactions = transactions.flatMap((tx) =>
-          signatures[tx.hash].map((sig) => addSignatures(tx, sig)),
-        );
+    const eventListenerPromise = new Promise<SignedTransactions>(
+      (resolve, reject) => {
+        removeSignListener = onTransactionsSigned((signatures) => {
+          const signedTransactions = transactions.flatMap((tx) =>
+            signatures[tx.hash].map((sig) => addSignatures(tx, sig)),
+          );
 
-        resolve({
-          transactions: signedTransactions,
-          isReady: async (...args) => {
-            embedManager.showNotification();
-            const res = await areAccountsReady(
-              signedTransactions,
-              accounts,
-            )(...args);
-            embedManager.hideNotification();
-            return res;
-          },
+          resolve({
+            transactions: signedTransactions,
+            isReady: async (...args) => {
+              embedManager.showNotification();
+              await areAccountsReady(accounts)(...args);
+              embedManager.hideNotification();
+              return signedTransactions;
+            },
+          });
         });
-      });
 
-      removeCancelListener = onSignCanceled(() => {
-        reject(new Error('Uses canceled signin'));
-      });
-    });
+        removeCancelListener = onSignCanceled(() => {
+          reject(new Error('Uses canceled signin'));
+        });
+      },
+    );
 
     return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
       embedManager.closePopup();

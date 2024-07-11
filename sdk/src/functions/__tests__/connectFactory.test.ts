@@ -30,6 +30,13 @@ describe('connectFactory', () => {
       networkId: 'mainnet01',
       chainIds: ['0', '18'],
     });
+
+    const { isReady, account } = await promise;
+    const isReadyPromise = isReady();
+
+    publishEvent('isReady', account);
+
+    await expect(isReadyPromise).resolves.toBeTruthy();
   });
 
   it('handles a timeout correctly', async () => {

@@ -43,17 +43,19 @@ export const connectFactory =
 
     const eventListenerPromise = new Promise<ConnectedAccount>(
       (resolve, reject) => {
-        removeConnectListener = onAccountConnected((account: Account) => {
-          resolve({
-            ...account,
-            isReady: async () => {
-              embedManager.showNotification();
-              const res = await isAccountReady(account)();
-              embedManager.hideNotification();
-              return res;
-            },
-          });
-        });
+        removeConnectListener = onAccountConnected(
+          (account: SpireKeyAccount) => {
+            resolve({
+              ...account,
+              isReady: async () => {
+                embedManager.showNotification();
+                await isAccountReady(account)();
+                embedManager.hideNotification();
+                return account;
+              },
+            });
+          },
+        );
         removeCancelListener = onConnectCanceled(() => {
           reject(new Error('User canceled connection'));
         });

@@ -1,5 +1,7 @@
 import type { ChainId, ITransactionDescriptor } from '@kadena/client';
 
+export type QueuedTx = ITransactionDescriptor;
+
 export type Account = {
   alias: string;
   accountName: string;
@@ -9,6 +11,7 @@ export type Account = {
   devices: Device[];
   networkId: string;
   chainIds: ChainId[];
+  txQueue: QueuedTx[];
 };
 
 export type Device = {

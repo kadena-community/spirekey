@@ -1,7 +1,7 @@
 'use client';
 
 import type { ChainId } from '@kadena/client';
-import { Button, PressEvent, Stack, Text } from '@kadena/kode-ui';
+import { Button, Stack } from '@kadena/kode-ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -16,7 +16,9 @@ import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
-import { getAccountName, getWebAuthnPubkeyFormat } from '@/utils/register';
+import {
+  getAccountName,
+} from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 
 import { getUser } from '@/utils/connect';
@@ -67,28 +69,7 @@ export const registerNewDevice =
       domain,
       credentialPubkey: publicKey,
     };
-    onPasskeyRetrieved({
-      accountName,
-      networkId,
-      alias,
-      balance: '0.0',
-      chainIds: [chainId || process.env.CHAIN_ID],
-      minApprovals: 1,
-      minRegistrationApprovals: 1,
-      devices: [
-        {
-          color,
-          deviceType,
-          guard: {
-            keys: [getWebAuthnPubkeyFormat(publicKey)],
-            pred: 'keys-any',
-          },
-          domain,
-          'credential-id': credentialId,
-        },
-      ],
-    });
-    registerAccount(account);
+    onPasskeyRetrieved(await registerAccount(account));
   };
 
 type UseRegistration = {

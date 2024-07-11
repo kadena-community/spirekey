@@ -1,10 +1,11 @@
 'use client';
 
-import type { ChainId, ICommand, ITransactionDescriptor } from '@kadena/client';
-import type { Account, Device } from '@kadena/spirekey-types';
-import { createContext, useContext, useEffect, useState } from 'react';
+import type { ChainId, ITransactionDescriptor } from '@kadena/client';
+import type { Account, Device, QueuedTx } from '@kadena/spirekey-types';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
+import { useTxQueue } from '@/hooks/useTxQueue';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { fundAccount } from '@/utils/fund';
 import {
@@ -19,6 +20,7 @@ import {
 } from '@/utils/shared/account';
 import { l1Client } from '@/utils/shared/client';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
+import useSWR from 'swr';
 
 export type AccountRegistration = {
   accountName: string;
@@ -33,18 +35,13 @@ export type AccountRegistration = {
 };
 
 export type AccountRecovery = Omit<AccountRegistration, 'accountName'>;
-export type QueuedTx = {
-  cmd: ICommand;
-  tx: ITransactionDescriptor;
-};
-export type SpireKeyAccount = Account & { txQueue: QueuedTx[] };
 
 const migrateAccountStructure = (
-  account: Omit<SpireKeyAccount, 'network' | 'txQueue'> & {
+  account: Omit<Account, 'network' | 'txQueue'> & {
     network?: string;
     txQueue?: QueuedTx[];
   },
-): SpireKeyAccount => ({
+): Account => ({
   ...account,
   devices: account.devices.map((d) => ({
     ...d,
@@ -58,7 +55,7 @@ const migrateAccountStructure = (
     : [process.env.CHAIN_ID],
 });
 
-const getAccountsFromLocalStorage = (): SpireKeyAccount[] => {
+const getAccountsFromLocalStorage = (): Account[] => {
   if (typeof window === 'undefined') {
     return [];
   }
@@ -67,8 +64,8 @@ const getAccountsFromLocalStorage = (): SpireKeyAccount[] => {
 
   try {
     const parsedAccounts = JSON.parse(rawLocalAccounts) as
-      | SpireKeyAccount[]
-      | Record<string, SpireKeyAccount>;
+      | Account[]
+      | Record<string, Account>;
     const accounts = Array.isArray(parsedAccounts)
       ? parsedAccounts
       : Object.values(parsedAccounts);
@@ -84,10 +81,9 @@ const getAccountsFromLocalStorage = (): SpireKeyAccount[] => {
 const defaultState = {
   networks: ['mainnet01', 'testnet04', getDevnetNetworkId()],
   accounts: getAccountsFromLocalStorage(),
-  registerAccount: async (
-    data: AccountRegistration,
-  ): Promise<ITransactionDescriptor | undefined> => undefined,
-  setAccount: (account: SpireKeyAccount): void => undefined,
+  registerAccount: async (data: AccountRegistration): Promise<Account> =>
+    JSON.parse('{}'),
+  setAccount: (account: Account): void => undefined,
 };
 
 export type RegisterAccountFn = typeof defaultState.registerAccount;
@@ -103,7 +99,7 @@ type Props = {
 const AccountsProvider = ({ children }: Props) => {
   const { host } = useReturnUrl();
 
-  const [accounts, setAccounts] = useState<SpireKeyAccount[]>(
+  const [accounts, setAccounts] = useState<Account[]>(
     getAccountsFromLocalStorage(),
   );
 
@@ -134,9 +130,13 @@ const AccountsProvider = ({ children }: Props) => {
     };
 
     checkPendingTxs();
-  }, [accounts]);
+  }, accounts);
 
-  const fetchAccountsFromChain = async (localAccounts: SpireKeyAccount[]) => {
+  const onAccountsUpdated = (updatedAccounts: Account[]) =>
+    setAccounts(updatedAccounts);
+  useTxQueue(accounts, onAccountsUpdated);
+
+  const fetchAccountsFromChain = async (localAccounts: Account[]) => {
     return Promise.all(
       localAccounts.map(async (localAccount) => {
         const { accountName, networkId, alias, devices, chainIds } =
@@ -164,6 +164,7 @@ const AccountsProvider = ({ children }: Props) => {
             balance: remoteAccount.balance || '0',
             devices: remoteAccount.devices,
             chainIds: remoteAccount.chainIds,
+            txQueue: localAccount.txQueue,
           });
         } catch (e: unknown) {
           try {
@@ -210,7 +211,7 @@ const AccountsProvider = ({ children }: Props) => {
     );
   };
 
-  const setAccount = (account: SpireKeyAccount): void => {
+  const setAccount = (account: Account): void => {
     if (accounts.every((a) => a.accountName !== account.accountName))
       return addAccount(account);
     const updatedAccounts = accounts.map((acc) => {
@@ -220,7 +221,7 @@ const AccountsProvider = ({ children }: Props) => {
     setAccounts(updatedAccounts);
   };
 
-  const addAccount = (account: SpireKeyAccount): void => {
+  const addAccount = (account: Account): void => {
     if (accounts.some((a) => a.accountName === account.accountName)) return;
     setAccounts([account, ...accounts]);
   };
@@ -235,8 +236,8 @@ const AccountsProvider = ({ children }: Props) => {
     credentialPubkey,
     networkId,
     chainId: cid,
-  }: AccountRegistration): Promise<ITransactionDescriptor> => {
-    const tx = await getRegisterCommand({
+  }: AccountRegistration): Promise<Account> => {
+    const cmd = await getRegisterCommand({
       accountName,
       color,
       deviceType,
@@ -246,8 +247,8 @@ const AccountsProvider = ({ children }: Props) => {
       networkId,
       chainId: cid,
     });
-    const txDescriptor = await l1Client.submit(tx);
-    const { chainId } = txDescriptor;
+    const tx = await l1Client.submit(cmd);
+    const { chainId } = tx;
     const devices: Device[] = [
       {
         domain,
@@ -258,7 +259,7 @@ const AccountsProvider = ({ children }: Props) => {
           keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
           pred: 'keys-any',
         },
-        pendingRegistrationTxs: [txDescriptor],
+        pendingRegistrationTxs: [tx],
       },
     ];
     const account = {
@@ -270,7 +271,7 @@ const AccountsProvider = ({ children }: Props) => {
       minApprovals: 1,
       minRegistrationApprovals: 1,
       chainIds: [chainId],
-      txQueue: [{ tx: txDescriptor, cmd: tx }],
+      txQueue: [tx],
     };
     addAccount(account);
 
@@ -279,13 +280,13 @@ const AccountsProvider = ({ children }: Props) => {
       process.env.INSTA_FUND === 'true' &&
       networkId === getDevnetNetworkId()
     ) {
-      const accountResponse = await l1Client.listen(txDescriptor);
+      const accountResponse = await l1Client.listen(tx);
       if (accountResponse.result.status === 'success') {
         await fundAccount(account);
       }
     }
 
-    return txDescriptor;
+    return account;
   };
 
   const recoverAccount = async ({
@@ -306,7 +307,7 @@ const AccountsProvider = ({ children }: Props) => {
 
     if (!accountName) throw new Error('Wallet smart contract not found.');
 
-    const { requestKey, chainId } = await registerAccount({
+    const acc = await registerAccount({
       accountName,
       alias,
       color,
@@ -318,11 +319,7 @@ const AccountsProvider = ({ children }: Props) => {
       chainId: cid,
     });
 
-    return {
-      requestKey,
-      chainId,
-      networkId,
-    };
+    return acc.txQueue[0];
   };
 
   const removePendingTransaction = (requestKey: string) => {
