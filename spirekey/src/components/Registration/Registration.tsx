@@ -1,7 +1,7 @@
 'use client';
 
 import type { ChainId } from '@kadena/client';
-import { Button, PressEvent, Stack, Text } from '@kadena/kode-ui';
+import { Button, Stack } from '@kadena/kode-ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -9,7 +9,6 @@ import { LayoutSurface } from '@/components/LayoutSurface/LayoutSurface';
 import {
   AccountRegistration,
   RegisterAccountFn,
-  SpireKeyAccount,
   useAccounts,
 } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
@@ -19,13 +18,10 @@ import { countWithPrefixOnDomain } from '@/utils/countAccounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import {
   getAccountName,
-  getRegisterCommand,
-  getWebAuthnPubkeyFormat,
 } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 
 import { getUser } from '@/utils/connect';
-import { l1Client } from '@/utils/shared/client';
 import { Account } from '@kadena/spirekey-types';
 import AccountNetwork from '../Card/AccountNetwork';
 import Alias from '../Card/Alias';
@@ -39,14 +35,14 @@ interface Props {
   redirectUrl?: string;
   networkId?: string;
   chainId?: ChainId;
-  onComplete?: (account: SpireKeyAccount) => void;
+  onComplete?: (account: Account) => void;
   onCancel?: () => void;
 }
 
 export const registerNewDevice =
   (
     registerAccount: RegisterAccountFn,
-    onPasskeyRetrieved: (account: SpireKeyAccount) => void,
+    onPasskeyRetrieved: (account: Account) => void,
   ) =>
   async ({
     alias,
@@ -86,7 +82,7 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
   const [currentAccountName, setCurrentAccountName] = useState<string>('');
   const [succesfulAuthentication, setSuccesfulAuthentication] =
     useState<boolean>(false);
-  const [account, setAccount] = useState<SpireKeyAccount>();
+  const [account, setAccount] = useState<Account>();
 
   const { registerAccount, accounts } = useAccounts();
   const { host } = useReturnUrl();

@@ -1,9 +1,9 @@
-import type { SpireKeyAccount } from './account';
+import type { Account } from './account';
 
 export type SpireKeyEvents = {
-  connected: SpireKeyAccount;
+  connected: Account;
   signed: Record<string, { sig: string; pubKey: string }[]>;
-  isReady: SpireKeyAccount[];
+  isReady: Account[];
 
   'canceled:connect': void;
   'canceled:sign': void;

@@ -1,7 +1,7 @@
 'use client';
 
 import type { ChainId, ITransactionDescriptor } from '@kadena/client';
-import type { Device, QueuedTx, SpireKeyAccount } from '@kadena/spirekey-types';
+import type { Account, Device, QueuedTx } from '@kadena/spirekey-types';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
@@ -37,11 +37,11 @@ export type AccountRegistration = {
 export type AccountRecovery = Omit<AccountRegistration, 'accountName'>;
 
 const migrateAccountStructure = (
-  account: Omit<SpireKeyAccount, 'network' | 'txQueue'> & {
+  account: Omit<Account, 'network' | 'txQueue'> & {
     network?: string;
     txQueue?: QueuedTx[];
   },
-): SpireKeyAccount => ({
+): Account => ({
   ...account,
   devices: account.devices.map((d) => ({
     ...d,
@@ -55,7 +55,7 @@ const migrateAccountStructure = (
     : [process.env.CHAIN_ID],
 });
 
-const getAccountsFromLocalStorage = (): SpireKeyAccount[] => {
+const getAccountsFromLocalStorage = (): Account[] => {
   if (typeof window === 'undefined') {
     return [];
   }
@@ -64,8 +64,8 @@ const getAccountsFromLocalStorage = (): SpireKeyAccount[] => {
 
   try {
     const parsedAccounts = JSON.parse(rawLocalAccounts) as
-      | SpireKeyAccount[]
-      | Record<string, SpireKeyAccount>;
+      | Account[]
+      | Record<string, Account>;
     const accounts = Array.isArray(parsedAccounts)
       ? parsedAccounts
       : Object.values(parsedAccounts);
@@ -81,10 +81,9 @@ const getAccountsFromLocalStorage = (): SpireKeyAccount[] => {
 const defaultState = {
   networks: ['mainnet01', 'testnet04', getDevnetNetworkId()],
   accounts: getAccountsFromLocalStorage(),
-  registerAccount: async (
-    data: AccountRegistration,
-  ): Promise<SpireKeyAccount> => JSON.parse('{}'),
-  setAccount: (account: SpireKeyAccount): void => undefined,
+  registerAccount: async (data: AccountRegistration): Promise<Account> =>
+    JSON.parse('{}'),
+  setAccount: (account: Account): void => undefined,
 };
 
 export type RegisterAccountFn = typeof defaultState.registerAccount;
@@ -100,7 +99,7 @@ type Props = {
 const AccountsProvider = ({ children }: Props) => {
   const { host } = useReturnUrl();
 
-  const [accounts, setAccounts] = useState<SpireKeyAccount[]>(
+  const [accounts, setAccounts] = useState<Account[]>(
     getAccountsFromLocalStorage(),
   );
 
@@ -133,11 +132,11 @@ const AccountsProvider = ({ children }: Props) => {
     checkPendingTxs();
   }, accounts);
 
-  const onAccountsUpdated = (updatedAccounts: SpireKeyAccount[]) =>
+  const onAccountsUpdated = (updatedAccounts: Account[]) =>
     setAccounts(updatedAccounts);
   useTxQueue(accounts, onAccountsUpdated);
 
-  const fetchAccountsFromChain = async (localAccounts: SpireKeyAccount[]) => {
+  const fetchAccountsFromChain = async (localAccounts: Account[]) => {
     return Promise.all(
       localAccounts.map(async (localAccount) => {
         const { accountName, networkId, alias, devices, chainIds } =
@@ -212,7 +211,7 @@ const AccountsProvider = ({ children }: Props) => {
     );
   };
 
-  const setAccount = (account: SpireKeyAccount): void => {
+  const setAccount = (account: Account): void => {
     if (accounts.every((a) => a.accountName !== account.accountName))
       return addAccount(account);
     const updatedAccounts = accounts.map((acc) => {
@@ -222,7 +221,7 @@ const AccountsProvider = ({ children }: Props) => {
     setAccounts(updatedAccounts);
   };
 
-  const addAccount = (account: SpireKeyAccount): void => {
+  const addAccount = (account: Account): void => {
     if (accounts.some((a) => a.accountName === account.accountName)) return;
     setAccounts([account, ...accounts]);
   };
@@ -237,7 +236,7 @@ const AccountsProvider = ({ children }: Props) => {
     credentialPubkey,
     networkId,
     chainId: cid,
-  }: AccountRegistration): Promise<SpireKeyAccount> => {
+  }: AccountRegistration): Promise<Account> => {
     const cmd = await getRegisterCommand({
       accountName,
       color,
@@ -308,7 +307,7 @@ const AccountsProvider = ({ children }: Props) => {
 
     if (!accountName) throw new Error('Wallet smart contract not found.');
 
-    const { requestKey, chainId } = await registerAccount({
+    const acc = await registerAccount({
       accountName,
       alias,
       color,
@@ -320,11 +319,7 @@ const AccountsProvider = ({ children }: Props) => {
       chainId: cid,
     });
 
-    return {
-      requestKey,
-      chainId,
-      networkId,
-    };
+    return acc.txQueue[0];
   };
 
   const removePendingTransaction = (requestKey: string) => {

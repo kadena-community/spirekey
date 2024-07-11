@@ -1,10 +1,10 @@
 import { l1Client } from '@/utils/shared/client';
-import { SpireKeyAccount } from '@kadena/spirekey-types';
+import { Account } from '@kadena/spirekey-types';
 import useSWR from 'swr';
 
 export const useTxQueue = (
-  accounts: SpireKeyAccount[],
-  onAccountsReady: (updatedAccounts: SpireKeyAccount[]) => void,
+  accounts: Account[],
+  onAccountsReady: (updatedAccounts: Account[]) => void,
 ) => {
   useSWR(
     accounts

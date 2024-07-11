@@ -1,9 +1,10 @@
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
-import { SpireKeyAccount, useAccounts } from '@/context/AccountsContext';
+import { useAccounts } from '@/context/AccountsContext';
 import { getRegisterCommand } from '@/utils/register';
 import { l1Client } from '@/utils/shared/client';
 import { ChainId } from '@kadena/client';
 import { Button, Link, Stack, Text } from '@kadena/kode-ui';
+import { Account } from '@kadena/spirekey-types';
 import { useState } from 'react';
 import { Heading } from 'react-aria-components';
 import DeviceCircle from '../Device/DeviceCircle';
@@ -13,7 +14,7 @@ import Registration from '../Registration/Registration';
 type ConnectComponentProps = {
   chainId: ChainId;
   networkId: string;
-  onConnect: (account: SpireKeyAccount) => void;
+  onConnect: (account: Account) => void;
   onCancel: () => void;
 };
 
@@ -34,7 +35,7 @@ export default function ConnectComponent({
     setIsRegister(!candidateAccounts.length);
   };
 
-  const connectAndPrime = async (account: SpireKeyAccount) => {
+  const connectAndPrime = async (account: Account) => {
     const { devices, txQueue, chainIds, accountName } = account;
     if (chainIds.includes(chainId)) return onConnect(account);
 

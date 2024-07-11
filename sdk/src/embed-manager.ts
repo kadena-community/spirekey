@@ -1,4 +1,4 @@
-import { SpireKeyAccount } from '@kadena/spirekey-types';
+import { Account } from '@kadena/spirekey-types';
 import { onSpireKeyEvent } from './functions/events';
 import * as styles from './styles.css';
 
@@ -66,7 +66,7 @@ export class EmbedManager {
     this.popup?.close();
   }
 
-  public areAccountsReady(accounts: SpireKeyAccount[]) {
+  public areAccountsReady(accounts: Account[]) {
     const params = new URLSearchParams({ accounts: JSON.stringify(accounts) });
     this.notification.src =
       this.getNotificationUrl(this.baseUrl) + '#' + params.toString();

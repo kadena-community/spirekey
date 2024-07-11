@@ -4,7 +4,7 @@ import {
   type IUnsignedCommand,
 } from '@kadena/client';
 
-import { Account, SpireKeyAccount } from '@kadena/spirekey-types';
+import { Account } from '@kadena/spirekey-types';
 import { EmbedManager } from '../embed-manager';
 import { onSignCanceled, onTransactionsSigned } from './events';
 import { areAccountsReady } from './ready';
@@ -20,7 +20,7 @@ export type SignedTransactions = {
 
 export const sign = (
   transactionList: IUnsignedCommand[],
-  accounts: SpireKeyAccount[] = [],
+  accounts: Account[] = [],
 ): Promise<SignedTransactions> =>
   signFactory({ embedManager: EmbedManager.getInstance() })(
     transactionList,
@@ -31,7 +31,7 @@ export const signFactory =
   ({ embedManager, timeout = 5 * 60 * 1000 }: SignParams) =>
   async (
     transactionList: IUnsignedCommand[],
-    accounts: SpireKeyAccount[] = [],
+    accounts: Account[] = [],
   ): Promise<SignedTransactions> => {
     const isList = Array.isArray(transactionList);
     const transactions = isList ? transactionList : [transactionList];

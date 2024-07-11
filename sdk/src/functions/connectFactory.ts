@@ -1,4 +1,4 @@
-import type { Account, SpireKeyAccount } from '@kadena/spirekey-types';
+import type { Account } from '@kadena/spirekey-types';
 
 import { type ChainId } from '@kadena/client';
 import { EmbedManager } from '../embed-manager';

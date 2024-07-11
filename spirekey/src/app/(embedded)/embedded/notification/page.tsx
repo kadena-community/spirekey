@@ -11,13 +11,13 @@ import { publishEvent } from '@/utils/publishEvent';
 import { useTxQueue } from '@/hooks/useTxQueue';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { hexadecimalToRGB } from '@/utils/color';
-import type { SpireKeyAccount } from '@kadena/spirekey-types';
+import type { Account } from '@kadena/spirekey-types';
 import * as styles from './notification.css';
 
 export default function SidebarSign() {
   const [title, setTitle] = useState<string | null>('In Progress');
   const [isMinimized, setIsMinimized] = useState(false);
-  const [accounts, setAccounts] = useState<SpireKeyAccount[]>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
 
   const { r, g, b } = hexadecimalToRGB(deviceColors.blue);
 

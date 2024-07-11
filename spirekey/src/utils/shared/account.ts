@@ -1,4 +1,3 @@
-import type { Account } from '@kadena/spirekey-types';
 import { ChainId, createTransaction } from '@kadena/client';
 import {
   composePactCommand,
@@ -6,6 +5,7 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
+import type { Account } from '@kadena/spirekey-types';
 
 import { assertFulfilled } from '@/utils/assertFulfilled';
 
@@ -145,6 +145,7 @@ export const getAccountFromChains = async ({
       devices: [],
       minApprovals: 1,
       minRegistrationApprovals: 1,
+      txQueue: [],
     },
   );
 };
