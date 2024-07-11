@@ -8,14 +8,13 @@ import { getSignature } from '@/utils/getSignature';
 
 import { getAccountsForTx } from '@/utils/consent';
 import { publishEvent } from '@/utils/publishEvent';
-import {
-  Button,
-  Stack,
-} from '@kadena/kode-ui';
-import {  ICommandPayload, } from '@kadena/types';
+import { Button, Stack } from '@kadena/kode-ui';
+import { ICommandPayload, IUnsignedCommand } from '@kadena/types';
 import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
 
 import { Permissions } from '@/components/Permissions/Permissions';
+import { l1Client } from '@/utils/shared/client';
+import useSWR from 'swr';
 
 interface Props {
   transaction?: string;
@@ -44,11 +43,42 @@ export default function Sign(props: Props) {
   const data = transaction
     ? Buffer.from(transaction, 'base64').toString()
     : null;
-  const tx = JSON.parse(data ?? '{}');
+  const tx: IUnsignedCommand = JSON.parse(data ?? '{}');
+
+  const { data: x } = useSWR(tx.hash, async () => {
+    const res = await l1Client.local(tx, {
+      signatureVerification: false,
+      preflight: true,
+    });
+
+    return res.events
+      ?.filter(
+        (e) =>
+          e.module.name === 'coin' &&
+          !e.module.namespace &&
+          e.name === 'TRANSFER',
+      )
+      .reduce((total, m) => {
+        const cost = m.params[2];
+        if (typeof cost !== 'number') return total;
+        return total + cost;
+      }, 0);
+  });
+
+  console.warn('DEBUGPRINT[15]: Sign.tsx:67: x=', x);
 
   const txAccounts = getAccountsForTx(accounts)(tx);
 
+  const onSignPlumbing = async () => {
+    // TODO: create crosschain tx
+    // find a suitable source chain, or multiple if not enough on one chain
+    // determine correct target chain, i.e. chain of tx requested for signing
+    // now all info is present and prep the first step of the defpact
+    // add the plumbing tx's to the accounts
+  }
+
   const onSign = async () => {
+    // TODO: get credential id by pubkey
     const credentialId = accounts[0]?.devices[0]['credential-id'];
 
     const res = await startAuthentication({
@@ -60,6 +90,7 @@ export default function Sign(props: Props) {
     });
 
     publishEvent('signed', {
+      // TODO: add accounts with the additional txs
       [tx.hash]: [
         {
           ...getSignature(res.response),
