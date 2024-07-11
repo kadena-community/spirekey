@@ -9,11 +9,22 @@ import { getSignature } from '@/utils/getSignature';
 import { getAccountsForTx } from '@/utils/consent';
 import { publishEvent } from '@/utils/publishEvent';
 import { Button, Stack } from '@kadena/kode-ui';
-import { ICommandPayload, IUnsignedCommand } from '@kadena/types';
+import {
+  ChainId,
+  ICommand,
+  ICommandPayload,
+  IUnsignedCommand,
+} from '@kadena/types';
 import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
 
 import { Permissions } from '@/components/Permissions/Permissions';
+import { getAccountFromChain } from '@/utils/shared/account';
 import { l1Client } from '@/utils/shared/client';
+import {
+  addSignatures,
+  createTransactionBuilder,
+  ITransactionDescriptor,
+} from '@kadena/client';
 import useSWR from 'swr';
 
 interface Props {
@@ -34,7 +45,76 @@ const getPubkey = (
   }
   throw new Error('No public key found');
 };
+type Reserves = {
+  current: number;
+  reserves: { chainId: string; balance: number }[];
+};
+type PlumbingTxBuilder = {
+  required: number;
+  txs: Promise<ITransactionDescriptor>[];
+};
+const submitPlumbingTransfer = async ({
+  account,
+  source,
+  target,
+  amount,
+  pubKey,
+  credentialId,
+}: {
+  account: Account;
+  source: ChainId;
+  target: ChainId;
+  amount: number;
+  pubKey: string;
+  credentialId: string;
+}) => {
+  const module = `${process.env.NAMESPACE}.webauthn-wallet`;
+  const tx = createTransactionBuilder({
+    meta: {
+      sender: account.accountName,
+      chainId: source,
+      gasLimit: 1500,
+      gasPrice: 1e-8,
+    },
+  })
+    .execution(
+      `(${module}.transfer-crosschain
+    "${account.accountName}"
+    "${account.accountName}"
+    (${module}.get-wallet-guard 
+      "${account.accountName}"
+    )
+    "${target}"
+    ${amount.toFixed(8)}
+  )`,
+    )
+    .addSigner({ pubKey, scheme: 'WebAuthn' }, (withCap) => [
+      withCap(
+        `${module}.TRANSFER-XCHAIN`,
+        account.accountName,
+        account.accountName,
+        { decimal: amount.toFixed(8) },
+        target,
+      ),
+    ])
+    .setNetworkId(account.networkId)
+    .createTransaction();
 
+  const res = await startAuthentication({
+    challenge: tx.hash,
+    rpId: window.location.hostname,
+    allowCredentials: [{ id: credentialId, type: 'public-key' }],
+  });
+
+  const cmd = addSignatures(tx, {
+    pubKey,
+    sig: JSON.stringify(getSignature(res.response)),
+  });
+
+  // perform check if all sigs are collected
+
+  return l1Client.submit(cmd as ICommand);
+};
 export default function Sign(props: Props) {
   const { transaction } = props;
   const { accounts } = useAccounts();
@@ -69,13 +149,62 @@ export default function Sign(props: Props) {
 
   const txAccounts = getAccountsForTx(accounts)(tx);
 
-  const onSignPlumbing = async () => {
+  const onSignPlumbing = async (
+    account: Account,
+    cost: number,
+    requestChainId: ChainId,
+  ) => {
     // TODO: create crosschain tx
     // find a suitable source chain, or multiple if not enough on one chain
     // determine correct target chain, i.e. chain of tx requested for signing
     // now all info is present and prep the first step of the defpact
     // add the plumbing tx's to the accounts
-  }
+    const { reserves, current = 0 } = (
+      await Promise.all(
+        account.chainIds.map(async (chainId) => {
+          const acc = await getAccountFromChain({
+            chainId,
+            accountName: account.accountName,
+            networkId: account.networkId,
+          });
+          if (!acc) return null;
+          const { balance } = acc;
+          return { balance: parseFloat(balance), chainId };
+        }),
+      )
+    )
+      .filter((x) => !!x)
+      .reduce(
+        (m: Reserves, { chainId, balance }) => {
+          if (chainId === requestChainId) return { ...m, current: balance };
+          return { ...m, reserves: [...m.reserves, { chainId, balance }] };
+        },
+        { reserves: [], current: 0 },
+      );
+    const required = cost - current;
+    if (required <= 0) return;
+    reserves
+      .sort((a, b) => a.balance - b.balance)
+      .reduce(
+        (r: PlumbingTxBuilder, { chainId, balance }) => {
+          if (r.required <= 0) return r;
+          const tx = submitPlumbingTransfer({
+            account,
+            source: chainId as ChainId,
+            target: requestChainId,
+            // determine min required transfer
+            amount: balance,
+            pubKey: 'get the pubkey',
+            credentialId: 'get the credential id',
+          });
+          return {
+            required: r.required - balance,
+            txs: [...r.txs, tx],
+          };
+        },
+        { txs: [], required },
+      );
+  };
 
   const onSign = async () => {
     // TODO: get credential id by pubkey
