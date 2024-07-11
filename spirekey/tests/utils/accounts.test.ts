@@ -102,6 +102,7 @@ describe('account', () => {
         balance: '13.37',
         chainIds,
         networkId,
+        txQueue: [],
       });
     });
 
@@ -145,6 +146,7 @@ describe('account', () => {
         balance: '13.37',
         chainIds: ['1'],
         networkId,
+        txQueue: [],
       });
     });
 
@@ -225,6 +227,7 @@ describe('account', () => {
         minApprovals: 4, // the maximum minApprovals across chains
         minRegistrationApprovals: 5, // the maximum minRegistrationApprovals across chains
         networkId: 'development',
+        txQueue: [],
       });
     });
   });
