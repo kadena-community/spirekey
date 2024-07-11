@@ -53,7 +53,7 @@ export default function ConnectComponent({
     const tx = await l1Client.submit(cmd);
     const updatedAccount = {
       ...account,
-      txQueue: [...txQueue, { tx, cmd }],
+      txQueue: [...txQueue, tx],
       chainIds: [...chainIds, chainId],
     };
     setAccount(updatedAccount);

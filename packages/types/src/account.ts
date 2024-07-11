@@ -1,11 +1,8 @@
-import type { ChainId, ICommand, ITransactionDescriptor } from '@kadena/client';
+import type { ChainId, ITransactionDescriptor } from '@kadena/client';
 
 export type SpireKeyAccount = Account & { txQueue: QueuedTx[] };
 
-export type QueuedTx = {
-  cmd: ICommand;
-  tx: ITransactionDescriptor;
-};
+export type QueuedTx = ITransactionDescriptor;
 
 export type Account = {
   alias: string;

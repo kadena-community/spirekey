@@ -272,7 +272,7 @@ const AccountsProvider = ({ children }: Props) => {
       minApprovals: 1,
       minRegistrationApprovals: 1,
       chainIds: [chainId],
-      txQueue: [{ tx, cmd }],
+      txQueue: [tx],
     };
     addAccount(account);
 

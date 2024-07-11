@@ -14,14 +14,14 @@ export const useTxQueue = (
       const updatedAccounts = await Promise.all(
         accounts.map(async (account) => {
           const txQueue = await Promise.all(
-            account.txQueue.map(async ({ tx, cmd }) => {
+            account.txQueue.map(async (tx) => {
               const res = await l1Client.listen(tx);
               if (!res.continuation) return null;
               // get spv proof
               // create continuation tx
               // submit
               // return tx of continuation
-              return { tx, cmd };
+              return tx;
             }),
           );
           return {
