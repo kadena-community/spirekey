@@ -5,6 +5,7 @@ import type { Device, QueuedTx, SpireKeyAccount } from '@kadena/spirekey-types';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
+import { useTxQueue } from '@/hooks/useTxQueue';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { fundAccount } from '@/utils/fund';
 import {
@@ -132,34 +133,9 @@ const AccountsProvider = ({ children }: Props) => {
     checkPendingTxs();
   }, accounts);
 
-  useSWR(
-    accounts
-      ?.flatMap((account) => account.txQueue.map((tx) => JSON.stringify(tx)))
-      .join(','),
-    async () => {
-      const updatedAccounts = await Promise.all(
-        accounts.map(async (account) => {
-          const txQueue = await Promise.all(
-            account.txQueue.map(async ({ tx, cmd }) => {
-              const res = await l1Client.listen(tx);
-              if (!res.continuation) return null;
-              // get spv proof
-              // create continuation tx
-              // submit
-              // return tx of continuation
-              return { tx, cmd };
-            }),
-          );
-          return {
-            ...account,
-            txQueue: txQueue.filter((tx) => !!tx),
-          };
-        }),
-      );
-
-      setAccounts(updatedAccounts);
-    },
-  );
+  const onAccountsUpdated = (updatedAccounts: SpireKeyAccount[]) =>
+    setAccounts(updatedAccounts);
+  useTxQueue(accounts, onAccountsUpdated);
 
   const fetchAccountsFromChain = async (localAccounts: SpireKeyAccount[]) => {
     return Promise.all(
