@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  createClient,
   createTransactionBuilder,
   ICommand,
   IUnsignedCommand,
@@ -39,6 +40,67 @@ const useLocalState = (
   return [value, setLocalValue];
 };
 
+const getTransferTx = ({
+  account,
+  receiver,
+  amount,
+  chainId,
+}: {
+  account: Account;
+  receiver: string;
+  amount: number;
+  chainId: ChainId;
+}) => {
+  const tx = createTransactionBuilder()
+    .execution(
+      `(${ns}.webauthn-wallet.transfer
+        "${account.accountName}"
+        "${receiver}"
+        ${amount.toFixed(8)}
+      )`,
+    )
+    .setMeta({
+      senderAccount: account.accountName,
+      chainId,
+    });
+
+  // Note: tx is an instance that is being mutated
+  account.devices.flatMap((d) =>
+    d.guard.keys.map((k) =>
+      tx.addSigner(
+        {
+          pubKey: k,
+          scheme: /^WEBAUTHN-/.test(k) ? 'WebAuthn' : 'ED25519',
+        },
+        (withCap) => [
+          withCap(
+            `${ns}.webauthn-wallet.TRANSFER`,
+            account.accountName,
+            receiver,
+            { decimal: amount.toFixed(8) },
+          ),
+          withCap(
+            `${ns}.webauthn-wallet.GAS_PAYER`,
+            account.accountName,
+            { int: '1' },
+            { decimal: '1.0' },
+          ),
+          withCap(`${ns}.webauthn-wallet.GAS`, account.accountName),
+        ],
+      ),
+    ),
+  );
+  return tx;
+};
+
+const client = createClient(({ chainId, networkId }) => {
+  if (networkId === 'mainnet01')
+    return `https://api.chainweb.com/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
+  if (networkId === 'testnet04')
+    return `https://api.testnet.chainweb.com/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
+  return `http://localhost:8080/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
+});
+
 export default function Home() {
   const [account, setAccount] = useState<Account>();
   const [receiver, setReceiver] = useState<string>('');
@@ -63,50 +125,29 @@ export default function Home() {
     if (!account) throw new Error('No account connected');
     if (!receiver) throw new Error('No receiver defined');
     try {
-      const tx = createTransactionBuilder()
-        .execution(
-          `(${ns}.webauthn-wallet.transfer
-        "${account.accountName}"
-        "${receiver}"
-      )`,
-        )
-        .setMeta({
-          senderAccount: account.accountName,
-          chainId: account.chainIds[0],
-        });
-
-      // Note: tx is an instance that is being mutated
-      account.devices.flatMap((d) =>
-        d.guard.keys.map((k) =>
-          tx.addSigner(
-            {
-              pubKey: k,
-              scheme: /^WEBAUTHN-/.test(k) ? 'WebAuthn' : 'ED25519',
-            },
-            (withCap) => [
-              withCap(
-                `${ns}.webauthn-wallet.TRANSFER`,
-                account.accountName,
-                receiver,
-                { decimal: amount.toFixed(8) },
-              ),
-              withCap(
-                `${ns}.webauthn-wallet.GAS_PAYER`,
-                account.accountName,
-                { int: '1' },
-                { decimal: '1.0' },
-              ),
-              withCap(`${ns}.webauthn-wallet.GAS`, account.accountName),
-            ],
-          ),
-        ),
-      );
+      const tx = getTransferTx({
+        amount,
+        receiver,
+        account,
+        chainId: chainId as ChainId,
+      });
       tx.setNetworkId(networkId);
-      const { transactions, isReady } = await sign([tx.createTransaction()]);
+      const { transactions, isReady } = await sign(
+        [tx.createTransaction()],
+        [account],
+      );
       setTxs(transactions);
       setIsReady(false);
       await isReady();
       setIsReady(true);
+      console.warn('DEBUGPRINT[9]: page.tsx:139: transactions=', transactions);
+      transactions.map(async (tx) => {
+        const res = await client.local(tx);
+        console.warn('DEBUGPRINT[8]: page.tsx:140: res=', res);
+
+        // const res = await client.submit(tx as ICommand);
+        // return await client.listen(res);
+      });
     } catch (e) {
       console.warn('User canceled signin', e);
     }

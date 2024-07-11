@@ -68,9 +68,9 @@ export const signFactory =
 
           resolve({
             transactions: signedTransactions,
-            isReady: async (...args) => {
+            isReady: async () => {
               embedManager.showNotification();
-              await areAccountsReady(accounts)(...args);
+              await areAccountsReady(transactions, accounts);
               embedManager.hideNotification();
               return signedTransactions;
             },

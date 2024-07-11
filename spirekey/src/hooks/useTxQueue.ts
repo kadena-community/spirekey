@@ -8,7 +8,10 @@ export const useTxQueue = (
 ) => {
   useSWR(
     accounts
-      ?.flatMap((account) => account.txQueue.map((tx) => JSON.stringify(tx)))
+      ?.flatMap(
+        (account) =>
+          account.accountName + account.txQueue.map((tx) => JSON.stringify(tx)),
+      )
       .join(','),
     async () => {
       const updatedAccounts = await Promise.all(
