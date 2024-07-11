@@ -9,6 +9,7 @@ import { LayoutSurface } from '@/components/LayoutSurface/LayoutSurface';
 import {
   AccountRegistration,
   RegisterAccountFn,
+  SpireKeyAccount,
   useAccounts,
 } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
@@ -16,10 +17,15 @@ import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
-import { getAccountName, getWebAuthnPubkeyFormat } from '@/utils/register';
+import {
+  getAccountName,
+  getRegisterCommand,
+  getWebAuthnPubkeyFormat,
+} from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 
 import { getUser } from '@/utils/connect';
+import { l1Client } from '@/utils/shared/client';
 import { Account } from '@kadena/spirekey-types';
 import AccountNetwork from '../Card/AccountNetwork';
 import Alias from '../Card/Alias';
@@ -33,14 +39,14 @@ interface Props {
   redirectUrl?: string;
   networkId?: string;
   chainId?: ChainId;
-  onComplete?: (account: Account) => void;
+  onComplete?: (account: SpireKeyAccount) => void;
   onCancel?: () => void;
 }
 
 export const registerNewDevice =
   (
     registerAccount: RegisterAccountFn,
-    onPasskeyRetrieved: (account: Account) => void,
+    onPasskeyRetrieved: (account: SpireKeyAccount) => void,
   ) =>
   async ({
     alias,
@@ -67,28 +73,7 @@ export const registerNewDevice =
       domain,
       credentialPubkey: publicKey,
     };
-    onPasskeyRetrieved({
-      accountName,
-      networkId,
-      alias,
-      balance: '0.0',
-      chainIds: [chainId || process.env.CHAIN_ID],
-      minApprovals: 1,
-      minRegistrationApprovals: 1,
-      devices: [
-        {
-          color,
-          deviceType,
-          guard: {
-            keys: [getWebAuthnPubkeyFormat(publicKey)],
-            pred: 'keys-any',
-          },
-          domain,
-          'credential-id': credentialId,
-        },
-      ],
-    });
-    registerAccount(account);
+    onPasskeyRetrieved(await registerAccount(account));
   };
 
 type UseRegistration = {
@@ -101,7 +86,7 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
   const [currentAccountName, setCurrentAccountName] = useState<string>('');
   const [succesfulAuthentication, setSuccesfulAuthentication] =
     useState<boolean>(false);
-  const [account, setAccount] = useState<Account>();
+  const [account, setAccount] = useState<SpireKeyAccount>();
 
   const { registerAccount, accounts } = useAccounts();
   const { host } = useReturnUrl();

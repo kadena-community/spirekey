@@ -1,8 +1,8 @@
-import type { Account } from './account';
+import type { SpireKeyAccount } from './account';
 
 export type SpireKeyEvents = {
-  connected: Account;
-  'connected:minted': Account;
+  connected: SpireKeyAccount;
+  'connected:minted': SpireKeyAccount;
   signed: Record<string, { sig: string; pubKey: string }[]>;
   'signed:submittable': Record<string, { sig: string; pubKey: string }[]>;
   'minimize-notification': void;

@@ -1,12 +1,10 @@
-import { Button, Link, Stack, Text } from '@kadena/kode-ui';
-import type { Account } from '@kadena/spirekey-types';
-import { useState } from 'react';
-
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { SpireKeyAccount, useAccounts } from '@/context/AccountsContext';
 import { getRegisterCommand } from '@/utils/register';
 import { l1Client } from '@/utils/shared/client';
 import { ChainId } from '@kadena/client';
+import { Button, Link, Stack, Text } from '@kadena/kode-ui';
+import { useState } from 'react';
 import { Heading } from 'react-aria-components';
 import DeviceCircle from '../Device/DeviceCircle';
 import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
@@ -15,7 +13,7 @@ import Registration from '../Registration/Registration';
 type ConnectComponentProps = {
   chainId: ChainId;
   networkId: string;
-  onConnect: (account: Account) => void;
+  onConnect: (account: SpireKeyAccount) => void;
   onCancel: () => void;
 };
 
@@ -36,18 +34,13 @@ export default function ConnectComponent({
     setIsRegister(!candidateAccounts.length);
   };
 
-  const connectAndPrime = async ({
-    devices,
-    txQueue,
-    chainIds,
-    ...account
-  }: SpireKeyAccount) => {
-    if (chainIds.includes(chainId))
-      return onConnect({ ...account, devices, chainIds });
+  const connectAndPrime = async (account: SpireKeyAccount) => {
+    const { devices, txQueue, chainIds, accountName } = account;
+    if (chainIds.includes(chainId)) return onConnect(account);
 
     const device = devices[0];
     const cmd = await getRegisterCommand({
-      accountName: account.accountName,
+      accountName,
       networkId,
       chainId,
       color: device.color,
@@ -60,12 +53,11 @@ export default function ConnectComponent({
     const tx = await l1Client.submit(cmd);
     const updatedAccount = {
       ...account,
-      devices,
       txQueue: [...txQueue, { tx, cmd }],
       chainIds: [...chainIds, chainId],
     };
     setAccount(updatedAccount);
-    onConnect({ ...account, devices, chainIds });
+    onConnect(updatedAccount);
   };
 
   if (isRegister)
