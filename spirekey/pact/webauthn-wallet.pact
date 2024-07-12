@@ -95,6 +95,13 @@
     )
   )
 
+  (defun get-guard-name(account:string)
+    (with-read guard-lookup-table account
+      { 'webauthn-guard-name := guard-name }
+      guard-name
+    )
+  )
+
   (defun get-wallet-guard(account:string)
     (with-read guard-lookup-table account
       { 'webauthn-guard-name := guard-name }
@@ -209,7 +216,7 @@
     )
     (step 
       (with-capability (TRANSFER_XCHAIN sender receiver amount target-chain)
-        (install-capability (coin.TRANSFER sender receiver amount))
+        (install-capability (coin.TRANSFER_XCHAIN sender receiver amount target-chain))
         (coin.transfer-crosschain sender receiver receiver-guard target-chain amount)
       )
     )
