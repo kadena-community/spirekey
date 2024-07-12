@@ -1,8 +1,53 @@
-import { AccountBalance, sortAccountBalances } from '@/utils/auto-transfers';
+import { balance } from '@/components/Card/Card.css';
+import {
+  AccountBalance,
+  getOptimalTransfers,
+  sortAccountBalances,
+} from '@/utils/auto-transfers';
+import { ChainId } from '@kadena/types';
 import { describe, expect, it } from 'vitest';
 
 describe('auto transfers', () => {
   describe('when determining the optimal transfers', () => {
+    describe('when finding the optimal transfers', () => {
+      const accounts: AccountBalance[] = [
+        { balance: 40, chainId: '4' },
+        { balance: 50, chainId: '5' },
+        { balance: 10, chainId: '8' },
+        { balance: 5, chainId: '10' },
+      ].map((x) => ({
+        balance: x.balance,
+        chainId: x.chainId as ChainId,
+        accountName: 'c:account',
+        target: '8',
+        credentials: [{ pubKey: 'WEBAUTHN-pubkey', credentialId: 'XesUer' }],
+        networkId: 'development',
+        cost: 0,
+      }));
+      describe('and there is enough on the target chain', () => {
+        it('should prepare no tx', () => {
+          const result = getOptimalTransfers(accounts, '8', 9.5);
+          expect(result).toMatchObject([]);
+        });
+      });
+      describe('and there is enough on a different chain', () => {
+        it('should prepare one tx', () => {
+          const result = getOptimalTransfers(accounts, '8', 15);
+          expect(result).toMatchObject([
+            { balance: 50, chainId: '5', cost: 5 },
+          ]);
+        });
+      });
+      describe('and there is enough on a combination of different chains', () => {
+        it('should prepare multiple tx', () => {
+          const result = getOptimalTransfers(accounts, '8', 75);
+          expect(result).toMatchObject([
+            { balance: 50, chainId: '5', cost: 50 },
+            { balance: 40, chainId: '4', cost: 15 },
+          ]);
+        });
+      });
+    });
     describe('when sorting the accountBalances', () => {
       it('should sort the accountBalance of the target chain first', () => {
         const accounts: Pick<AccountBalance, 'balance' | 'chainId'>[] = [

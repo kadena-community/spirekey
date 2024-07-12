@@ -12,15 +12,10 @@ export type AccountBalance = {
   balance: number;
   chainId: ChainId;
   networkId: string;
-  target: ChainId;
   cost: number;
 };
-export const getOptimalTransfers = async (
-  account: Account,
-  amount: number,
-  target: ChainId,
-) => {
-  const details = await Promise.all(
+export const getAccountBalances = (account: Account) =>
+  Promise.all(
     account.chainIds.map(async (chainId) => {
       const details = await getAccountFromChain({
         accountName: account.accountName,
@@ -39,13 +34,41 @@ export const getOptimalTransfers = async (
           })),
         ),
         balance: details.balance,
-        target,
         cost: 0,
       };
     }),
   );
-  details.map((acc) => ({}));
+
+const getMinCost = (requested: number, available: number) => {
+  if (available > requested) return requested;
+  return available;
 };
+type OptimalTransfers = {
+  required: number;
+  balances: AccountBalance[];
+};
+export const getOptimalTransfers = (
+  accountBalances: AccountBalance[],
+  target: ChainId,
+  amount: number,
+) =>
+  accountBalances
+    .sort(sortAccountBalances(target))
+    .reduce(
+      (r: OptimalTransfers, { balance, chainId, ...accountBalance }) => {
+        if (r.required <= 0) return r;
+        const amount = getMinCost(r.required, balance);
+        return {
+          required: r.required - amount,
+          balances: [
+            ...r.balances,
+            { ...accountBalance, balance, chainId, cost: amount },
+          ],
+        };
+      },
+      { required: amount, balances: [] },
+    )
+    .balances.filter(({ chainId }) => chainId !== target);
 
 export const sortAccountBalances =
   (target: ChainId) =>
