@@ -1,14 +1,76 @@
-import { balance } from '@/components/Card/Card.css';
+import { deviceColors } from '@/styles/shared/tokens.css';
 import {
   AccountBalance,
+  getOptimalTransactions,
   getOptimalTransfers,
   sortAccountBalances,
 } from '@/utils/auto-transfers';
+import type { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('auto transfers', () => {
   describe('when determining the optimal transfers', () => {
+    describe('when finding the optimal transfers from chain', () => {
+      it('should prepare the txs', async () => {
+        vi.mock('@/utils/shared/account', () => {
+          return {
+            getAccountFromChain: ({
+              networkId,
+              accountName,
+              chainId,
+            }: {
+              accountName: string;
+              networkId: string;
+              chainId: ChainId;
+            }) => {
+              const mockedBalance: any = {
+                '4': '40',
+                '5': '50',
+                '8': '10',
+                '10': '5',
+              };
+              const accounts: Account = {
+                balance: mockedBalance[chainId] as string,
+                chainIds: [chainId],
+                accountName,
+                devices: [
+                  {
+                    color: deviceColors.red,
+                    domain: 'https://spirekey.kadena.io',
+                    deviceType: 'phone',
+                    guard: { keys: ['WEBAUTHN-pubkey'], pred: 'keys-any' },
+                    'credential-id': 'XesUer',
+                  },
+                ],
+                networkId: 'development',
+                alias: 'SpireKey Account 1',
+                txQueue: [],
+                minApprovals: 1,
+                minRegistrationApprovals: 1,
+              };
+              return Promise.resolve(accounts);
+            },
+          };
+        });
+        const account: Pick<Account, 'chainIds' | 'accountName' | 'networkId'> =
+          {
+            networkId: 'development',
+            accountName: 'c:account',
+            chainIds: ['4', '5', '8', '10'],
+          };
+        const res = await getOptimalTransactions(account, '8', 75);
+        const cmds = res?.map(({ cmd }) => JSON.parse(cmd));
+        expect(cmds).toMatchObject([
+          {
+            meta: { chainId: '5' },
+          },
+          {
+            meta: { chainId: '4' },
+          },
+        ]);
+      });
+    });
     describe('when finding the optimal transfers', () => {
       const accounts: AccountBalance[] = [
         { balance: 40, chainId: '4' },

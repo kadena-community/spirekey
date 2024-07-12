@@ -1,6 +1,6 @@
+import { getAccountFromChain } from '@/utils/shared/account';
 import { createTransactionBuilder, type ChainId } from '@kadena/client';
 import { Account } from '@kadena/spirekey-types';
-import { getAccountFromChain } from './shared/account';
 
 export type Credential = {
   pubKey: string;
@@ -14,7 +14,9 @@ export type AccountBalance = {
   networkId: string;
   cost: number;
 };
-export const getAccountBalances = (account: Account) =>
+export const getAccountBalances = (
+  account: Pick<Account, 'chainIds' | 'accountName' | 'networkId'>,
+) =>
   Promise.all(
     account.chainIds.map(async (chainId) => {
       const details = await getAccountFromChain({
@@ -33,7 +35,7 @@ export const getAccountBalances = (account: Account) =>
             credentialId: d['credential-id'],
           })),
         ),
-        balance: details.balance,
+        balance: parseFloat(details.balance),
         cost: 0,
       };
     }),
@@ -98,14 +100,14 @@ export const getTransferCommand = (
     },
   }).execution(
     `(${module}.transfer-crosschain
-    "${accountBalance.accountName}"
-    "${accountBalance.accountName}"
-    (${module}.get-wallet-guard 
       "${accountBalance.accountName}"
-    )
-    "${target}"
-    ${accountBalance.cost.toFixed(8)}
-  )`,
+      "${accountBalance.accountName}"
+      (${module}.get-wallet-guard 
+        "${accountBalance.accountName}"
+      )
+      "${target}"
+      ${accountBalance.cost.toFixed(8)}
+    )`,
   );
 export const getTransferCaps =
   (accountBalance: AccountBalance, target: ChainId) => (cmd: TransferCommand) =>
@@ -135,10 +137,24 @@ export const getTransferCaps =
       )
       .setNetworkId(accountBalance.networkId)
       .createTransaction();
-export const getTransferTransaction = (
-  accountBalance: AccountBalance,
+
+export const getTransferTransaction =
+  (target: ChainId) => (accountBalance: AccountBalance) => {
+    const cmd = getTransferCommand(accountBalance, target);
+    return getTransferCaps(accountBalance, target)(cmd);
+  };
+
+export const getOptimalTransactions = async (
+  account: Pick<Account, 'chainIds' | 'accountName' | 'networkId'>,
   target: ChainId,
+  amount: number,
 ) => {
-  const cmd = getTransferCommand(accountBalance, target);
-  return getTransferCaps(accountBalance, target)(cmd);
+  const accountBalances = await getAccountBalances(account);
+  const optimalTransfers = getOptimalTransfers(
+    accountBalances.filter((x) => !!x),
+    target,
+    amount,
+  );
+  if (!optimalTransfers) return null;
+  return optimalTransfers.map(getTransferTransaction(target));
 };
