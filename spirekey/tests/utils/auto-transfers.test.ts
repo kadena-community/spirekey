@@ -47,6 +47,12 @@ describe('auto transfers', () => {
           ]);
         });
       });
+      describe('and there is not enough funds from the combination of chains', () => {
+        it('should prepare multiple tx', () => {
+          const result = getOptimalTransfers(accounts, '8', 1000);
+          expect(result).toEqual(null);
+        });
+      });
     });
     describe('when sorting the accountBalances', () => {
       it('should sort the accountBalance of the target chain first', () => {

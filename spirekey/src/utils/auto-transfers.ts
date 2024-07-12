@@ -51,8 +51,8 @@ export const getOptimalTransfers = (
   accountBalances: AccountBalance[],
   target: ChainId,
   amount: number,
-) =>
-  accountBalances
+) => {
+  const { balances, required } = accountBalances
     .sort(sortAccountBalances(target))
     .reduce(
       (r: OptimalTransfers, { balance, chainId, ...accountBalance }) => {
@@ -67,8 +67,10 @@ export const getOptimalTransfers = (
         };
       },
       { required: amount, balances: [] },
-    )
-    .balances.filter(({ chainId }) => chainId !== target);
+    );
+  if (required > 0) return null;
+  return balances.filter(({ chainId }) => chainId !== target);
+};
 
 export const sortAccountBalances =
   (target: ChainId) =>
@@ -83,7 +85,10 @@ export const sortAccountBalances =
 
 const module = `${process.env.NAMESPACE}.webauthn-wallet`;
 type TransferCommand = ReturnType<typeof getTransferCommand>;
-export const getTransferCommand = (accountBalance: AccountBalance) =>
+export const getTransferCommand = (
+  accountBalance: AccountBalance,
+  target: ChainId,
+) =>
   createTransactionBuilder({
     meta: {
       sender: accountBalance.accountName,
@@ -98,12 +103,12 @@ export const getTransferCommand = (accountBalance: AccountBalance) =>
     (${module}.get-wallet-guard 
       "${accountBalance.accountName}"
     )
-    "${accountBalance.target}"
+    "${target}"
     ${accountBalance.cost.toFixed(8)}
   )`,
   );
 export const getTransferCaps =
-  (accountBalance: AccountBalance) => (cmd: TransferCommand) =>
+  (accountBalance: AccountBalance, target: ChainId) => (cmd: TransferCommand) =>
     accountBalance.credentials
       .reduce(
         (cmd, credential) =>
@@ -115,7 +120,7 @@ export const getTransferCaps =
                 accountBalance.accountName,
                 accountBalance.accountName,
                 { decimal: accountBalance.cost.toFixed(8) },
-                accountBalance.target,
+                target,
               ),
               withCap(`${module}.GAS`, accountBalance.accountName),
               withCap(
@@ -130,7 +135,10 @@ export const getTransferCaps =
       )
       .setNetworkId(accountBalance.networkId)
       .createTransaction();
-export const getTransferTransaction = (accountBalance: AccountBalance) => {
-  const cmd = getTransferCommand(accountBalance);
-  return getTransferCaps(accountBalance)(cmd);
+export const getTransferTransaction = (
+  accountBalance: AccountBalance,
+  target: ChainId,
+) => {
+  const cmd = getTransferCommand(accountBalance, target);
+  return getTransferCaps(accountBalance, target)(cmd);
 };
