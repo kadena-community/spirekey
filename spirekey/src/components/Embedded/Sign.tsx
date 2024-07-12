@@ -25,6 +25,7 @@ import {
   createTransactionBuilder,
   ITransactionDescriptor,
 } from '@kadena/client';
+import { useEffect } from 'react';
 import useSWR from 'swr';
 
 interface Props {
@@ -53,32 +54,36 @@ type PlumbingTxBuilder = {
   required: number;
   txs: Promise<ITransactionDescriptor>[];
 };
+const getMinCost = (requested: number, available: number) => {
+  if (available > requested) return requested;
+  return available;
+};
 const submitPlumbingTransfer = async ({
   account,
   source,
   target,
   amount,
-  pubKey,
-  credentialId,
+  credentials,
 }: {
   account: Account;
   source: ChainId;
   target: ChainId;
   amount: number;
-  pubKey: string;
-  credentialId: string;
+  credentials: {
+    pubKey: string;
+    credentialId: string;
+  }[];
 }) => {
   const module = `${process.env.NAMESPACE}.webauthn-wallet`;
-  const tx = createTransactionBuilder({
+  const cmd = createTransactionBuilder({
     meta: {
       sender: account.accountName,
       chainId: source,
       gasLimit: 1500,
       gasPrice: 1e-8,
     },
-  })
-    .execution(
-      `(${module}.transfer-crosschain
+  }).execution(
+    `(${module}.transfer-crosschain
     "${account.accountName}"
     "${account.accountName}"
     (${module}.get-wallet-guard 
@@ -87,34 +92,72 @@ const submitPlumbingTransfer = async ({
     "${target}"
     ${amount.toFixed(8)}
   )`,
-    )
-    .addSigner({ pubKey, scheme: 'WebAuthn' }, (withCap) => [
-      withCap(
-        `${module}.TRANSFER-XCHAIN`,
-        account.accountName,
-        account.accountName,
-        { decimal: amount.toFixed(8) },
-        target,
-      ),
-    ])
-    .setNetworkId(account.networkId)
-    .createTransaction();
+  );
+  // extract the caps for display
+  for (const credential of credentials) {
+    cmd.addSigner(
+      { pubKey: credential.pubKey, scheme: 'WebAuthn' },
+      (withCap) => [
+        withCap(
+          `${module}.TRANSFER`,
+          account.accountName,
+          account.accountName,
+          { decimal: amount.toFixed(8) },
+        ),
+        withCap(
+          `${module}.TRANSFER_XCHAIN`,
+          account.accountName,
+          account.accountName,
+          amount,
+          target,
+        ),
+        withCap(`${module}.GAS`, account.accountName),
+        withCap(`${module}.GAS_PAYER`, account.accountName, { int: 1 }, 1),
+      ],
+    );
+  }
 
-  const res = await startAuthentication({
-    challenge: tx.hash,
-    rpId: window.location.hostname,
-    allowCredentials: [{ id: credentialId, type: 'public-key' }],
+  const tx = cmd.setNetworkId(account.networkId).createTransaction();
+
+  const signedTx = await credentials.reduce(async (t, credential) => {
+    const tx = await t;
+    const res = await startAuthentication({
+      challenge: tx.hash,
+      rpId: window.location.hostname,
+      allowCredentials: [{ id: credential.credentialId, type: 'public-key' }],
+    });
+
+    return addSignatures(tx, {
+      pubKey: credential.pubKey,
+      sig: JSON.stringify(getSignature(res.response)),
+    });
+  }, Promise.resolve(tx));
+  await l1Client.local(signedTx, {
+    preflight: false,
+    signatureVerification: false,
   });
-
-  const cmd = addSignatures(tx, {
-    pubKey,
-    sig: JSON.stringify(getSignature(res.response)),
-  });
-
-  // perform check if all sigs are collected
-
-  return l1Client.submit(cmd as ICommand);
+  return l1Client.submit(signedTx as ICommand);
 };
+const getCapsWithCredentials = (
+  signers: ICommandPayload['signers'],
+  accounts: Account[],
+) =>
+  signers
+    .map((s) => {
+      const credentialId = accounts.reduce((foundCredential, a) => {
+        if (foundCredential) return foundCredential;
+        return a.devices.reduce((c, d) => {
+          if (d.guard.keys.includes(s.pubKey)) return d['credential-id'];
+          return c;
+        }, '');
+      }, '');
+      if (!credentialId) return null;
+      return {
+        ...s,
+        credentialId,
+      };
+    })
+    .filter((x) => !!x);
 export default function Sign(props: Props) {
   const { transaction } = props;
   const { accounts } = useAccounts();
@@ -125,30 +168,11 @@ export default function Sign(props: Props) {
     : null;
   const tx: IUnsignedCommand = JSON.parse(data ?? '{}');
 
-  const { data: x } = useSWR(tx.hash, async () => {
-    const res = await l1Client.local(tx, {
-      signatureVerification: false,
-      preflight: true,
-    });
-
-    return res.events
-      ?.filter(
-        (e) =>
-          e.module.name === 'coin' &&
-          !e.module.namespace &&
-          e.name === 'TRANSFER',
-      )
-      .reduce((total, m) => {
-        const cost = m.params[2];
-        if (typeof cost !== 'number') return total;
-        return total + cost;
-      }, 0);
-  });
-
-  console.warn('DEBUGPRINT[15]: Sign.tsx:67: x=', x);
-
+  const cost = 10.1;
   const txAccounts = getAccountsForTx(accounts)(tx);
+  const { signers, meta }: ICommandPayload = JSON.parse(tx.cmd);
 
+  const capsWithCredentials = getCapsWithCredentials(signers, accounts);
   const onSignPlumbing = async (
     account: Account,
     cost: number,
@@ -188,23 +212,29 @@ export default function Sign(props: Props) {
       .reduce(
         (r: PlumbingTxBuilder, { chainId, balance }) => {
           if (r.required <= 0) return r;
+          const amount = getMinCost(r.required, balance);
           const tx = submitPlumbingTransfer({
             account,
             source: chainId as ChainId,
             target: requestChainId,
             // determine min required transfer
-            amount: balance,
-            pubKey: 'get the pubkey',
-            credentialId: 'get the credential id',
+            amount,
+            credentials: capsWithCredentials.map(
+              ({ credentialId, pubKey }) => ({ credentialId, pubKey }),
+            ),
           });
           return {
-            required: r.required - balance,
+            required: r.required - amount,
             txs: [...r.txs, tx],
           };
         },
         { txs: [], required },
       );
   };
+
+  useEffect(() => {
+    txAccounts.accounts.map((a) => onSignPlumbing(a, cost, meta.chainId));
+  }, []);
 
   const onSign = async () => {
     // TODO: get credential id by pubkey
@@ -231,7 +261,6 @@ export default function Sign(props: Props) {
 
   const onCancel = () => publishEvent('canceled:sign');
 
-  const { signers }: ICommandPayload = JSON.parse(tx.cmd);
   const keys = txAccounts.accounts.flatMap((a) =>
     a.devices.flatMap((d) => d.guard.keys),
   );

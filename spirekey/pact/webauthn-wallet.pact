@@ -55,10 +55,21 @@
       amount:decimal
       target-chain:string
     )  
+    @managed amount TRANSFER_XCHAIN-mgr
     (with-read guard-lookup-table sender
       { 'webauthn-guard-name := guard-name }
       (compose-capability (DEBIT guard-name))
     )
+  )
+
+  (defun TRANSFER_XCHAIN-mgr:decimal(managed:decimal requested:decimal)
+    @doc " Manages TRANSFER AMOUNT linearly, \
+         \ such that a request for 1.0 amount on a 3.0 \
+         \ managed quantity emits updated amount 2.0."
+    (enforce (>= managed requested)
+      (format "TRANSFER exceeded for balance {}" [managed])
+    )
+    managed
   )
 
   (defcap TRANSFER(sender:string receiver:string amount:decimal)
