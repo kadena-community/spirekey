@@ -134,7 +134,15 @@ export default function Home() {
       tx.setNetworkId(networkId);
       const { transactions, isReady } = await sign(
         [tx.createTransaction()],
-        [account],
+        [
+          {
+            ...account,
+            requestedFungibles: [{
+              fungible: 'coin',
+              amount,
+            }],
+          },
+        ],
       );
       setTxs(transactions);
       setIsReady(false);

@@ -36,13 +36,16 @@ export const signFactory =
     const isList = Array.isArray(transactionList);
     const transactions = isList ? transactionList : [transactionList];
 
-    const transactionsParams = transactions.reduce((params, tx) => {
-      params.append(
-        'transaction',
-        Buffer.from(JSON.stringify(tx)).toString('base64'),
-      );
-      return params;
-    }, new URLSearchParams());
+    const transactionsParams = transactions.reduce(
+      (params, tx) => {
+        params.append(
+          'transaction',
+          Buffer.from(JSON.stringify(tx)).toString('base64'),
+        );
+        return params;
+      },
+      new URLSearchParams({ accounts: JSON.stringify(accounts) }),
+    );
 
     embedManager.showNotification();
     embedManager.openPopup(
@@ -62,6 +65,7 @@ export const signFactory =
     const eventListenerPromise = new Promise<SignedTransactions>(
       (resolve, reject) => {
         removeSignListener = onTransactionsSigned((signatures) => {
+          // TODO: add accounts
           const signedTransactions = transactions.flatMap((tx) =>
             signatures[tx.hash].map((sig) => addSignatures(tx, sig)),
           );

@@ -2,6 +2,7 @@
 
 import type { Account, Device } from '@kadena/spirekey-types';
 import { startAuthentication } from '@simplewebauthn/browser';
+import { useEffect } from 'react';
 
 import { useAccounts } from '@/context/AccountsContext';
 import { getSignature } from '@/utils/getSignature';
@@ -9,18 +10,15 @@ import { getSignature } from '@/utils/getSignature';
 import { getAccountsForTx } from '@/utils/consent';
 import { publishEvent } from '@/utils/publishEvent';
 import { Button, Stack } from '@kadena/kode-ui';
-import {
-  ICommandPayload,
-  IUnsignedCommand,
-} from '@kadena/types';
+import { ICommandPayload, IUnsignedCommand } from '@kadena/types';
 import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
 
 import { Permissions } from '@/components/Permissions/Permissions';
+import { getOptimalTransactions } from '@/utils/auto-transfers';
 
 interface Props {
   transaction?: string;
-  account?: string;
-  amount?: string;
+  accounts?: string;
 }
 
 // @TODO get from other package?
@@ -38,7 +36,7 @@ const getPubkey = (
   throw new Error('No public key found');
 };
 export default function Sign(props: Props) {
-  const { transaction } = props;
+  const { transaction, accounts: signAccountsString } = props;
   const { accounts } = useAccounts();
   if (!transaction) return;
 
@@ -49,6 +47,21 @@ export default function Sign(props: Props) {
 
   const txAccounts = getAccountsForTx(accounts)(tx);
   const { signers }: ICommandPayload = JSON.parse(tx.cmd);
+
+  const signAccounts: Account[] = JSON.parse(signAccountsString || '[]');
+  useEffect(() => {
+    signAccounts
+      .flatMap((account) =>
+        account.requestedFungibles?.map(({ amount }) =>
+          getOptimalTransactions(account, '2', amount),
+        ),
+      )
+      .map(async (p) => {
+        const txs = await p;
+        console.warn('DEBUGPRINT[1]: Sign.tsx:58: txs=', txs);
+        return txs;
+      });
+  }, []);
 
   const onSign = async () => {
     // TODO: get credential id by pubkey

@@ -85,7 +85,7 @@ export const sortAccountBalances =
     return b.balance - a.balance;
   };
 
-const module = `${process.env.NAMESPACE}.webauthn-wallet`;
+const moduleName = `${process.env.NAMESPACE}.webauthn-wallet`;
 type TransferCommand = ReturnType<typeof getTransferCommand>;
 export const getTransferCommand = (
   accountBalance: AccountBalance,
@@ -99,10 +99,10 @@ export const getTransferCommand = (
       gasPrice: 1e-8,
     },
   }).execution(
-    `(${module}.transfer-crosschain
+    `(${moduleName}.transfer-crosschain
       "${accountBalance.accountName}"
       "${accountBalance.accountName}"
-      (${module}.get-wallet-guard 
+      (${moduleName}.get-wallet-guard
         "${accountBalance.accountName}"
       )
       "${target}"
@@ -118,15 +118,15 @@ export const getTransferCaps =
             { pubKey: credential.pubKey, scheme: 'WebAuthn' },
             (withCap) => [
               withCap(
-                `${module}.TRANSFER_XCHAIN`,
+                `${moduleName}.TRANSFER_XCHAIN`,
                 accountBalance.accountName,
                 accountBalance.accountName,
                 { decimal: accountBalance.cost.toFixed(8) },
                 target,
               ),
-              withCap(`${module}.GAS`, accountBalance.accountName),
+              withCap(`${moduleName}.GAS`, accountBalance.accountName),
               withCap(
-                `${module}.GAS_PAYER`,
+                `${moduleName}.GAS_PAYER`,
                 accountBalance.accountName,
                 { int: 1 },
                 1,

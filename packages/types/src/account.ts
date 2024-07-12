@@ -2,6 +2,10 @@ import type { ChainId, ITransactionDescriptor } from '@kadena/client';
 
 export type QueuedTx = ITransactionDescriptor;
 
+export type RequestedFungible = {
+  fungible: string;
+  amount: number;
+};
 export type Account = {
   alias: string;
   accountName: string;
@@ -12,6 +16,7 @@ export type Account = {
   networkId: string;
   chainIds: ChainId[];
   txQueue: QueuedTx[];
+  requestedFungibles?: RequestedFungible[];
 };
 
 export type Device = {
