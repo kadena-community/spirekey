@@ -2,6 +2,10 @@ import type { ChainId, ITransactionDescriptor } from '@kadena/client';
 
 export type QueuedTx = ITransactionDescriptor;
 
+export type OptimalTransactionsAccount = Pick<
+  Account,
+  'chainIds' | 'accountName' | 'networkId' | 'requestedFungibles'
+>;
 export type RequestedFungible = {
   fungible: string;
   amount: number;

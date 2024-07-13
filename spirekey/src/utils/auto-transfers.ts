@@ -1,6 +1,6 @@
 import { getAccountFromChain } from '@/utils/shared/account';
 import { createTransactionBuilder, type ChainId } from '@kadena/client';
-import { Account } from '@kadena/spirekey-types';
+import { Account, OptimalTransactionsAccount } from '@kadena/spirekey-types';
 
 export type Credential = {
   pubKey: string;
@@ -145,7 +145,7 @@ export const getTransferTransaction =
   };
 
 export const getOptimalTransactions = async (
-  account: Pick<Account, 'chainIds' | 'accountName' | 'networkId'>,
+  account: OptimalTransactionsAccount,
   target: ChainId,
   amount: number,
 ) => {

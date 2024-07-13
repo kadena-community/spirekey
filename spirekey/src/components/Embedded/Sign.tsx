@@ -1,6 +1,10 @@
 'use client';
 
-import type { Account, Device } from '@kadena/spirekey-types';
+import type {
+  Account,
+  Device,
+  OptimalTransactionsAccount,
+} from '@kadena/spirekey-types';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useEffect } from 'react';
 
@@ -15,6 +19,7 @@ import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
 
 import { Permissions } from '@/components/Permissions/Permissions';
 import { getOptimalTransactions } from '@/utils/auto-transfers';
+import useSWR from 'swr';
 
 interface Props {
   transaction?: string;
@@ -48,20 +53,31 @@ export default function Sign(props: Props) {
   const txAccounts = getAccountsForTx(accounts)(tx);
   const { signers }: ICommandPayload = JSON.parse(tx.cmd);
 
-  const signAccounts: Account[] = JSON.parse(signAccountsString || '[]');
-  useEffect(() => {
-    signAccounts
-      .flatMap((account) =>
-        account.requestedFungibles?.map(({ amount }) =>
-          getOptimalTransactions(account, '2', amount),
-        ),
-      )
-      .map(async (p) => {
-        const txs = await p;
-        console.warn('DEBUGPRINT[1]: Sign.tsx:58: txs=', txs);
-        return txs;
-      });
-  }, []);
+  const signAccounts: OptimalTransactionsAccount[] = JSON.parse(
+    signAccountsString || '[]',
+  );
+  const { data: plumbingTxs } = useSWR(
+    signAccounts.map(
+      (account) =>
+        account.accountName +
+        account.chainIds.join(',') +
+        account.networkId +
+        account.requestedFungibles?.join(','),
+    ),
+    async () => {
+      const txs = (
+        await Promise.all(
+          signAccounts.flatMap((account) =>
+            account.requestedFungibles?.flatMap(({ amount }) =>
+              getOptimalTransactions(account, '2', amount),
+            ),
+          ),
+        )
+      ).flatMap((x) => x);
+
+      return txs;
+    },
+  );
 
   const onSign = async () => {
     // TODO: get credential id by pubkey
