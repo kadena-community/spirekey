@@ -1,6 +1,6 @@
-import { Account } from '@kadena/spirekey-types';
 import { IPactCommand } from '@kadena/client';
-import { IUnsignedCommand } from '@kadena/types';
+import { Account } from '@kadena/spirekey-types';
+import { ICommandPayload, IUnsignedCommand } from '@kadena/types';
 
 type Signees = {
   accounts: Account[];
@@ -32,3 +32,14 @@ export const getAccountsForTx =
       },
     );
   };
+
+export const getPermissions = (keys: string[], signers: ICommandPayload['signers']) =>
+  signers
+    .filter((s) => keys.includes(s.pubKey))
+    .flatMap((s) => s.clist)
+    .reduce((caps, cap) => {
+      const module = cap?.name.replace(/\.(?:.(?!\.))+$/, '') || '';
+      const moduleCaps = caps.get(module) || [];
+      caps.set(module, [...moduleCaps, cap]);
+      return caps;
+    }, new Map());

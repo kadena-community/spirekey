@@ -11,14 +11,22 @@ import { useEffect } from 'react';
 import { useAccounts } from '@/context/AccountsContext';
 import { getSignature } from '@/utils/getSignature';
 
-import { getAccountsForTx } from '@/utils/consent';
+import { getAccountsForTx, getPermissions } from '@/utils/consent';
 import { publishEvent } from '@/utils/publishEvent';
-import { Button, Stack } from '@kadena/kode-ui';
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  ContentHeader,
+  Stack,
+} from '@kadena/kode-ui';
 import { ICommandPayload, IUnsignedCommand } from '@kadena/types';
 import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
 
 import { Permissions } from '@/components/Permissions/Permissions';
 import { getOptimalTransactions } from '@/utils/auto-transfers';
+import { addSignatures } from '@kadena/client';
+import { MonoCAccount } from '@kadena/kode-icons/system';
 import useSWR from 'swr';
 
 interface Props {
@@ -107,15 +115,19 @@ export default function Sign(props: Props) {
   const keys = txAccounts.accounts.flatMap((a) =>
     a.devices.flatMap((d) => d.guard.keys),
   );
-  const caps = signers
-    .filter((s) => keys.includes(s.pubKey))
-    .flatMap((s) => s.clist)
-    .reduce((caps, cap) => {
-      const module = cap?.name.replace(/\.(?:.(?!\.))+$/, '') || '';
-      const moduleCaps = caps.get(module) || [];
-      caps.set(module, [...moduleCaps, cap]);
-      return caps;
-    }, new Map());
+  const plumbingSteps =
+    plumbingTxs
+      ?.map((tx, i) => {
+        if (!tx) return null;
+        const cmd: ICommandPayload = JSON.parse(tx.cmd);
+        return {
+          title: `Step ${i + 1}`,
+          caps: getPermissions(keys, cmd.signers),
+          tx,
+        };
+      })
+      .filter((x) => !!x) || [];
+  const caps = getPermissions(keys, signers);
 
   const getSubtitle = (size: number) => {
     if (size > 1) return `asked for the following ${caps.size} modules`;
@@ -124,6 +136,53 @@ export default function Sign(props: Props) {
 
   return (
     <LayoutSurface title="Permissions" subtitle={getSubtitle(caps.size)}>
+      {plumbingSteps.map(({ title, caps, tx }) => (
+        <Stack flexDirection="column" gap="sm">
+          <ContentHeader heading={title} icon={<MonoCAccount />} />
+          {[...caps.entries()].map(([module, capabilities]) => (
+            <Accordion>
+              <AccordionItem title={`Details: ${title}`}>
+                <Permissions
+                  module={module}
+                  capabilities={capabilities}
+                  key={module}
+                />
+              </AccordionItem>
+            </Accordion>
+          ))}
+          <Stack gap="md" justifyContent="space-between">
+            <Button variant="outlined" onPress={onCancel}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onPress={async () => {
+                // find a robust way to determine the key to use
+                // or pass it through during connect
+                const credentialId =
+                  txAccounts.accounts[0]?.devices[0]['credential-id'];
+                if (!credentialId)
+                  throw new Error('No credential found to sign with');
+                const res = await startAuthentication({
+                  challenge: tx.hash,
+                  rpId: window.location.hostname,
+                  allowCredentials: credentialId
+                    ? [{ id: credentialId, type: 'public-key' }]
+                    : undefined,
+                });
+                const signedTx = addSignatures(tx, getSignature(res.response));
+                console.warn(
+                  'DEBUGPRINT[17]: Sign.tsx:174: signedTx=',
+                  signedTx,
+                );
+              }}
+            >
+              Sign
+            </Button>
+          </Stack>
+        </Stack>
+      ))}
+
       {[...caps.entries()].map(([module, capabilities]) => (
         <Permissions module={module} capabilities={capabilities} key={module} />
       ))}
@@ -131,7 +190,7 @@ export default function Sign(props: Props) {
         <Button variant="outlined" onPress={onCancel}>
           Cancel
         </Button>
-        <Button variant="primary" onPress={onSign}>
+        <Button variant="primary" onPress={onSign} isDisabled>
           Sign
         </Button>
       </Stack>
