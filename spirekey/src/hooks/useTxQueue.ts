@@ -1,5 +1,9 @@
+import { genesisPrivateKey, genesisPubKey } from '@/utils/constants';
 import { l1Client } from '@/utils/shared/client';
+import { addSignatures, createTransactionBuilder } from '@kadena/client';
+import { sign } from '@kadena/cryptography-utils';
 import { Account } from '@kadena/spirekey-types';
+import { ChainId, ICommand } from '@kadena/types';
 import useSWR from 'swr';
 
 export const useTxQueue = (
@@ -20,11 +24,48 @@ export const useTxQueue = (
             account.txQueue.map(async (tx) => {
               const res = await l1Client.listen(tx);
               if (!res.continuation) return null;
-              // get spv proof
-              // create continuation tx
-              // submit
-              // return tx of continuation
-              return tx;
+              const target: ChainId = (
+                res.continuation.continuation.args as ChainId[]
+              )[3];
+              const { step, pactId } = res.continuation;
+              const proof = await l1Client.createSpv(tx, target);
+              const continuationTx = createTransactionBuilder()
+                .continuation({
+                  step: step + 1,
+                  proof,
+                  pactId,
+                  rollback: false,
+                })
+                .setMeta({
+                  chainId: target,
+                  senderAccount: process.env.GAS_STATION,
+                  gasPrice: 0.00000001,
+                })
+                .setNetworkId(tx.networkId)
+                .addSigner(genesisPubKey, (withCap) => [
+                  withCap(
+                    process.env.NAMESPACE + `.gas-station.GAS_PAYER`,
+                    account.accountName,
+                    { int: '0' },
+                    0,
+                  ),
+                ])
+                .createTransaction();
+              const { sig, pubKey } = sign(continuationTx.cmd, {
+                publicKey: genesisPubKey,
+                secretKey: genesisPrivateKey,
+              });
+              const preflight = await l1Client.local(continuationTx, {
+                preflight: true,
+                signatureVerification: false,
+              });
+              if (preflight.result.status !== 'success') throw preflight;
+              return await l1Client.submit(
+                addSignatures(continuationTx, {
+                  sig: sig!,
+                  pubKey,
+                }) as ICommand,
+              );
             }),
           );
           return {
