@@ -22,6 +22,7 @@ import {
 } from '@kadena/kode-ui';
 import {
   ICap,
+  ICommand,
   ICommandPayload,
   ISigner,
   IUnsignedCommand,
@@ -58,6 +59,7 @@ export default function Sign(props: Props) {
   const { accounts } = useAccounts();
   if (!transaction) return;
 
+  const [signedPlumbingTxs, setSignedPlumbingTxs] = useState<ICommand[]>();
   const data = transaction
     ? Buffer.from(transaction, 'base64').toString()
     : null;
@@ -138,6 +140,10 @@ export default function Sign(props: Props) {
     if (size > 1) return `asked for the following ${caps.size} modules`;
     return 'asked for the following module';
   };
+  const onCompletedPlumbingTxs = (txs: ICommand[]) => {
+    console.warn('DEBUGPRINT[19]: Sign.tsx:143: txs=', txs);
+    setSignedPlumbingTxs(txs);
+  };
 
   return (
     <LayoutSurface title="Permissions" subtitle={getSubtitle(caps.size)}>
@@ -145,6 +151,7 @@ export default function Sign(props: Props) {
         plumbingSteps={plumbingSteps}
         credentialId={txAccounts.accounts[0]?.devices[0]['credential-id']}
         onCancel={onCancel}
+        onCompleted={onCompletedPlumbingTxs}
       />
 
       {[...caps.entries()].map(([module, capabilities]) => (
@@ -154,7 +161,7 @@ export default function Sign(props: Props) {
         <Button variant="outlined" onPress={onCancel}>
           Cancel
         </Button>
-        <Button variant="primary" onPress={onSign} isDisabled>
+        <Button variant="primary" onPress={onSign} isDisabled={signedPlumbingTxs === undefined}>
           Sign
         </Button>
       </Stack>
@@ -172,10 +179,12 @@ type SignPlumbingTxsProps = {
   plumbingSteps: PlumbingTxStep[];
   credentialId?: string;
   onCancel: () => void;
+  onCompleted: (txs: ICommand[]) => void;
 };
 const SignPlumbingTxs = ({
   plumbingSteps,
   credentialId,
+  onCompleted,
   onCancel,
 }: SignPlumbingTxsProps) => {
   const [steps, setSteps] = useState(plumbingSteps);
@@ -217,16 +226,13 @@ const SignPlumbingTxs = ({
                     : undefined,
                 });
                 const signedTx = addSignatures(tx, getSignature(res.response));
-                console.warn(
-                  'DEBUGPRINT[17]: Sign.tsx:174: signedTx=',
-                  signedTx,
-                );
-                setSteps(
-                  steps.map((step) => {
-                    if (step.tx.hash !== tx.hash) return step;
-                    return { ...step, signed: true };
-                  }),
-                );
+                const newSteps = steps.map((step) => {
+                  if (step.tx.hash !== tx.hash) return step;
+                  return { ...step, tx: signedTx, signed: true };
+                });
+                setSteps(newSteps);
+                if (newSteps.every((step) => step.signed))
+                  onCompleted(newSteps.map(({ tx }) => tx) as ICommand[]);
               }}
               isDisabled={signed}
             >
