@@ -6,7 +6,7 @@ import type {
   OptimalTransactionsAccount,
 } from '@kadena/spirekey-types';
 import { startAuthentication } from '@simplewebauthn/browser';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useAccounts } from '@/context/AccountsContext';
 import { getSignature } from '@/utils/getSignature';
@@ -20,7 +20,12 @@ import {
   ContentHeader,
   Stack,
 } from '@kadena/kode-ui';
-import { ICommandPayload, IUnsignedCommand } from '@kadena/types';
+import {
+  ICap,
+  ICommandPayload,
+  ISigner,
+  IUnsignedCommand,
+} from '@kadena/types';
 import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
 
 import { Permissions } from '@/components/Permissions/Permissions';
@@ -136,11 +141,58 @@ export default function Sign(props: Props) {
 
   return (
     <LayoutSurface title="Permissions" subtitle={getSubtitle(caps.size)}>
-      {plumbingSteps.map(({ title, caps, tx }) => (
-        <Stack flexDirection="column" gap="sm">
+      <SignPlumbingTxs
+        plumbingSteps={plumbingSteps}
+        credentialId={txAccounts.accounts[0]?.devices[0]['credential-id']}
+        onCancel={onCancel}
+      />
+
+      {[...caps.entries()].map(([module, capabilities]) => (
+        <Permissions module={module} capabilities={capabilities} key={module} />
+      ))}
+      <Stack gap="md" justifyContent="space-between">
+        <Button variant="outlined" onPress={onCancel}>
+          Cancel
+        </Button>
+        <Button variant="primary" onPress={onSign} isDisabled>
+          Sign
+        </Button>
+      </Stack>
+    </LayoutSurface>
+  );
+}
+
+type PlumbingTxStep = {
+  title: string;
+  caps: Map<string, ICap[]>;
+  tx: IUnsignedCommand;
+  signed?: boolean;
+};
+type SignPlumbingTxsProps = {
+  plumbingSteps: PlumbingTxStep[];
+  credentialId?: string;
+  onCancel: () => void;
+};
+const SignPlumbingTxs = ({
+  plumbingSteps,
+  credentialId,
+  onCancel,
+}: SignPlumbingTxsProps) => {
+  const [steps, setSteps] = useState(plumbingSteps);
+
+  if (!credentialId)
+    return <div>No valid credentials found in this wallet to sign with</div>;
+  return (
+    <>
+      {steps.map(({ title, caps, tx, signed }) => (
+        <Stack flexDirection="column" gap="sm" key={tx.hash}>
           <ContentHeader heading={title} icon={<MonoCAccount />} />
           {[...caps.entries()].map(([module, capabilities]) => (
-            <Accordion>
+            <Accordion
+              key={
+                module + capabilities.map((c) => JSON.stringify(c)).join(',')
+              }
+            >
               <AccordionItem title={`Details: ${title}`}>
                 <Permissions
                   module={module}
@@ -157,12 +209,6 @@ export default function Sign(props: Props) {
             <Button
               variant="primary"
               onPress={async () => {
-                // find a robust way to determine the key to use
-                // or pass it through during connect
-                const credentialId =
-                  txAccounts.accounts[0]?.devices[0]['credential-id'];
-                if (!credentialId)
-                  throw new Error('No credential found to sign with');
                 const res = await startAuthentication({
                   challenge: tx.hash,
                   rpId: window.location.hostname,
@@ -175,25 +221,20 @@ export default function Sign(props: Props) {
                   'DEBUGPRINT[17]: Sign.tsx:174: signedTx=',
                   signedTx,
                 );
+                setSteps(
+                  steps.map((step) => {
+                    if (step.tx.hash !== tx.hash) return step;
+                    return { ...step, signed: true };
+                  }),
+                );
               }}
+              isDisabled={signed}
             >
               Sign
             </Button>
           </Stack>
         </Stack>
       ))}
-
-      {[...caps.entries()].map(([module, capabilities]) => (
-        <Permissions module={module} capabilities={capabilities} key={module} />
-      ))}
-      <Stack gap="md" justifyContent="space-between">
-        <Button variant="outlined" onPress={onCancel}>
-          Cancel
-        </Button>
-        <Button variant="primary" onPress={onSign} isDisabled>
-          Sign
-        </Button>
-      </Stack>
-    </LayoutSurface>
+    </>
   );
-}
+};
