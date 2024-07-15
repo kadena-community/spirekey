@@ -10,7 +10,7 @@ export const isAccountReady = (account: Account) => async () => {
   });
 };
 
-export const areAccountsReady = (accounts: Account[]) => async () => {
+export const areAccountsReady = async (accounts: Account[]) => {
   EmbedManager.getInstance().areAccountsReady(accounts);
   return new Promise((resolve) => {
     onIsReady((a) => resolve(a));

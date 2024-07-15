@@ -31,6 +31,7 @@ import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
 
 import { Permissions } from '@/components/Permissions/Permissions';
 import { getOptimalTransactions } from '@/utils/auto-transfers';
+import { l1Client } from '@/utils/shared/client';
 import { addSignatures } from '@kadena/client';
 import { MonoCAccount } from '@kadena/kode-icons/system';
 import useSWR from 'swr';
@@ -56,7 +57,7 @@ const getPubkey = (
 };
 export default function Sign(props: Props) {
   const { transaction, accounts: signAccountsString } = props;
-  const { accounts } = useAccounts();
+  const { accounts, setAccount } = useAccounts();
   if (!transaction) return;
 
   const [signedPlumbingTxs, setSignedPlumbingTxs] = useState<ICommand[]>();
@@ -106,14 +107,40 @@ export default function Sign(props: Props) {
         : undefined,
     });
 
+    if (!signedPlumbingTxs)
+      publishEvent('signed', {
+        // TODO: add accounts with the additional txs
+        [tx.hash]: [
+          {
+            ...getSignature(res.response),
+            pubKey: getPubkey(accounts, credentialId),
+          },
+        ],
+      });
+
+    const txs = await l1Client.submit(signedPlumbingTxs!);
+    const accs = signAccounts.map((sAcc) => {
+      const account = accounts.find(
+        (acc) =>
+          acc.accountName === sAcc.accountName &&
+          acc.networkId === sAcc.networkId,
+      );
+      if (!account) throw new Error('Account is not found');
+      const newAccount = { ...account, txQueue: [...account.txQueue, ...txs] };
+      setAccount(newAccount);
+      return newAccount;
+    });
+
     publishEvent('signed', {
-      // TODO: add accounts with the additional txs
-      [tx.hash]: [
-        {
-          ...getSignature(res.response),
-          pubKey: getPubkey(accounts, credentialId),
-        },
-      ],
+      accounts: accs,
+      tx: {
+        [tx.hash]: [
+          {
+            ...getSignature(res.response),
+            pubKey: getPubkey(accounts, credentialId),
+          },
+        ],
+      },
     });
   };
 
@@ -161,7 +188,11 @@ export default function Sign(props: Props) {
         <Button variant="outlined" onPress={onCancel}>
           Cancel
         </Button>
-        <Button variant="primary" onPress={onSign} isDisabled={signedPlumbingTxs === undefined}>
+        <Button
+          variant="primary"
+          onPress={onSign}
+          isDisabled={signedPlumbingTxs === undefined}
+        >
           Sign
         </Button>
       </Stack>

@@ -2,7 +2,10 @@ import type { Account } from './account';
 
 export type SpireKeyEvents = {
   connected: Account;
-  signed: Record<string, { sig: string; pubKey: string }[]>;
+  signed: {
+    accounts: Account[];
+    tx: Record<string, { sig: string; pubKey: string }[]>;
+  };
   isReady: Account[];
 
   'canceled:connect': void;

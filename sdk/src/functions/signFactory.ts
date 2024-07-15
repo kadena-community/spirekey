@@ -67,14 +67,14 @@ export const signFactory =
         removeSignListener = onTransactionsSigned((signatures) => {
           // TODO: add accounts
           const signedTransactions = transactions.flatMap((tx) =>
-            signatures[tx.hash].map((sig) => addSignatures(tx, sig)),
+            signatures.tx[tx.hash].map((sig) => addSignatures(tx, sig)),
           );
 
           resolve({
             transactions: signedTransactions,
             isReady: async () => {
               embedManager.showNotification();
-              await areAccountsReady(transactions, accounts);
+              await areAccountsReady(signatures.accounts);
               embedManager.hideNotification();
               return signedTransactions;
             },
