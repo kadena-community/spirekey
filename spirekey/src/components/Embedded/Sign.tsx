@@ -72,28 +72,29 @@ export default function Sign(props: Props) {
   const signAccounts: OptimalTransactionsAccount[] = JSON.parse(
     signAccountsString || '[]',
   );
-  const { data: plumbingTxs } = useSWR(
-    signAccounts.map(
-      (account) =>
-        account.accountName +
-        account.chainIds.join(',') +
-        account.networkId +
-        account.requestedFungibles?.join(','),
-    ),
-    async () => {
-      const txs = (
-        await Promise.all(
-          signAccounts.flatMap((account) =>
-            account.requestedFungibles?.flatMap(({ amount }) =>
-              getOptimalTransactions(account, meta.chainId, amount),
-            ),
-          ),
-        )
-      ).flatMap((x) => x);
 
-      return txs;
-    },
-    { keepPreviousData: false }
+  const key = signAccounts.map(
+    (account) =>
+      account.accountName +
+      account.chainIds.join(',') +
+      account.networkId +
+      account.requestedFungibles?.map((x) => JSON.stringify(x)).join(','),
+  );
+  const [plumbingTxs, setPlumbingTxs] = useState<IUnsignedCommand[]>();
+  useEffect(() => {
+    Promise.all(
+      signAccounts.flatMap((account) =>
+        account.requestedFungibles?.flatMap(({ amount }) =>
+          getOptimalTransactions(account, meta.chainId, amount),
+        ),
+      ),
+    ).then((allPlumbingTxs) => {
+      setPlumbingTxs(allPlumbingTxs.flatMap((txs) => txs).filter((x) => !!x));
+    });
+  }, []);
+  console.warn(
+    'DEBUGPRINT[50]: Sign.tsx:105: plumbingTxs=',
+    plumbingTxs?.map((x) => x?.hash),
   );
 
   const onSign = async () => {
@@ -172,7 +173,6 @@ export default function Sign(props: Props) {
     return 'asked for the following module';
   };
   const onCompletedPlumbingTxs = (txs: ICommand[]) => {
-    console.warn('DEBUGPRINT[19]: Sign.tsx:143: txs=', txs);
     setSignedPlumbingTxs(txs);
   };
 
@@ -223,6 +223,10 @@ const SignPlumbingTxs = ({
   onCancel,
 }: SignPlumbingTxsProps) => {
   const [steps, setSteps] = useState(plumbingSteps);
+
+  useEffect(() => {
+    setSteps(plumbingSteps);
+  }, [plumbingSteps.map((s) => s.tx.hash).join(',') || '']);
 
   if (!credentialId)
     return <div>No valid credentials found in this wallet to sign with</div>;

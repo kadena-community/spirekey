@@ -66,9 +66,11 @@ export const signFactory =
       (resolve, reject) => {
         removeSignListener = onTransactionsSigned((signatures) => {
           // TODO: add accounts
-          const signedTransactions = transactions.flatMap((tx) =>
-            signatures.tx[tx.hash].map((sig) => addSignatures(tx, sig)),
-          );
+          const signedTransactions = transactions
+            .flatMap((tx) =>
+              signatures.tx[tx.hash]?.map((sig) => addSignatures(tx, sig)),
+            )
+            .filter((tx) => !!tx);
 
           resolve({
             transactions: signedTransactions,

@@ -13,6 +13,7 @@ import {
   Select,
   SelectItem,
   Stack,
+  TextareaField,
   TextField,
 } from '@kadena/kode-ui';
 import {
@@ -107,6 +108,7 @@ export default function Home() {
   const [amount, setAmount] = useState<number>(0);
   const [isReady, setIsReady] = useState<boolean>(false);
   const [txs, setTxs] = useState<(IUnsignedCommand | ICommand)[]>([]);
+  const [result, setResult] = useState('');
 
   const [wallet, setWallet] = useLocalState(
     'wallet',
@@ -140,7 +142,7 @@ export default function Home() {
             requestedFungibles: [
               {
                 fungible: 'coin',
-                amount,
+                amount: amount + 0.1, // add 0.1 to account for gas fees
               },
             ],
           },
@@ -157,6 +159,7 @@ export default function Home() {
         const txDescriptor = await client.submit(tx as ICommand);
         const txRes = await client.listen(txDescriptor);
         console.warn('DEBUGPRINT[23]: page.tsx:156: txRes=', txRes);
+        setResult(JSON.stringify(txRes, null, 2));
       });
     } catch (e) {
       console.warn('User canceled signin', e);
@@ -226,7 +229,8 @@ export default function Home() {
           </Button>
         </Stack>
       )}
-      {!!txs?.length && JSON.stringify(txs)}
+      {!result && !!txs?.length && JSON.stringify(txs)}
+      {result && <TextareaField label="result" value={result} rows={20} />}
     </main>
   );
 }
