@@ -61,7 +61,7 @@ export const useTxQueue = (
               });
               if (
                 (preflight.result as any).error?.message.includes(
-                  'resume pact: pact completed',
+                  'resumePact: pact completed',
                 )
               )
                 return null;
