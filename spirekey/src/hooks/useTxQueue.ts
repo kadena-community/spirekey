@@ -28,7 +28,7 @@ export const useTxQueue = (
                 res.continuation.continuation.args as ChainId[]
               )[3];
               const { step, pactId } = res.continuation;
-              const proof = await l1Client.createSpv(tx, target);
+              const proof = await l1Client.pollCreateSpv(tx, target);
               const continuationTx = createTransactionBuilder()
                 .continuation({
                   step: step + 1,
@@ -59,6 +59,12 @@ export const useTxQueue = (
                 preflight: true,
                 signatureVerification: false,
               });
+              if (
+                (preflight.result as any).error?.message.includes(
+                  'resume pact: pact completed',
+                )
+              )
+                return null;
               if (preflight.result.status !== 'success') throw preflight;
               return await l1Client.submit(
                 addSignatures(continuationTx, {
@@ -68,6 +74,7 @@ export const useTxQueue = (
               );
             }),
           );
+
           return {
             ...account,
             txQueue: txQueue.filter((tx) => !!tx),
@@ -77,5 +84,6 @@ export const useTxQueue = (
 
       onAccountsReady(updatedAccounts);
     },
+    { keepPreviousData: false },
   );
 };

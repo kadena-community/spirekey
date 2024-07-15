@@ -137,10 +137,12 @@ export default function Home() {
         [
           {
             ...account,
-            requestedFungibles: [{
-              fungible: 'coin',
-              amount,
-            }],
+            requestedFungibles: [
+              {
+                fungible: 'coin',
+                amount,
+              },
+            ],
           },
         ],
       );
@@ -148,13 +150,13 @@ export default function Home() {
       setIsReady(false);
       await isReady();
       setIsReady(true);
-      console.warn('DEBUGPRINT[9]: page.tsx:139: transactions=', transactions);
       transactions.map(async (tx) => {
         const res = await client.local(tx);
         console.warn('DEBUGPRINT[8]: page.tsx:140: res=', res);
 
-        // const res = await client.submit(tx as ICommand);
-        // return await client.listen(res);
+        const txDescriptor = await client.submit(tx as ICommand);
+        const txRes = await client.listen(txDescriptor);
+        console.warn('DEBUGPRINT[23]: page.tsx:156: txRes=', txRes);
       });
     } catch (e) {
       console.warn('User canceled signin', e);

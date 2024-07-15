@@ -67,7 +67,7 @@ export default function Sign(props: Props) {
   const tx: IUnsignedCommand = JSON.parse(data ?? '{}');
 
   const txAccounts = getAccountsForTx(accounts)(tx);
-  const { signers }: ICommandPayload = JSON.parse(tx.cmd);
+  const { signers, meta }: ICommandPayload = JSON.parse(tx.cmd);
 
   const signAccounts: OptimalTransactionsAccount[] = JSON.parse(
     signAccountsString || '[]',
@@ -85,7 +85,7 @@ export default function Sign(props: Props) {
         await Promise.all(
           signAccounts.flatMap((account) =>
             account.requestedFungibles?.flatMap(({ amount }) =>
-              getOptimalTransactions(account, '2', amount),
+              getOptimalTransactions(account, meta.chainId, amount),
             ),
           ),
         )
@@ -93,6 +93,7 @@ export default function Sign(props: Props) {
 
       return txs;
     },
+    { keepPreviousData: false }
   );
 
   const onSign = async () => {
@@ -109,13 +110,16 @@ export default function Sign(props: Props) {
 
     if (!signedPlumbingTxs)
       publishEvent('signed', {
+        accounts: [],
         // TODO: add accounts with the additional txs
-        [tx.hash]: [
-          {
-            ...getSignature(res.response),
-            pubKey: getPubkey(accounts, credentialId),
-          },
-        ],
+        tx: {
+          [tx.hash]: [
+            {
+              ...getSignature(res.response),
+              pubKey: getPubkey(accounts, credentialId),
+            },
+          ],
+        },
       });
 
     const txs = await l1Client.submit(signedPlumbingTxs!);

@@ -1,4 +1,3 @@
-import { ICommand, IUnsignedCommand } from '@kadena/client';
 import type { Account } from '@kadena/spirekey-types';
 import { EmbedManager } from '../embed-manager';
 import { onIsReady } from './events';
