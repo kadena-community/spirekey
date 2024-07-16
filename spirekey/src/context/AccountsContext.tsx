@@ -216,13 +216,21 @@ const AccountsProvider = ({ children }: Props) => {
       return addAccount(account);
     const updatedAccounts = accounts.map((acc) => {
       if (account.accountName !== acc.accountName) return acc;
+      if (account.networkId !== acc.networkId) return acc;
       return account;
     });
     setAccounts(updatedAccounts);
   };
 
   const addAccount = (account: Account): void => {
-    if (accounts.some((a) => a.accountName === account.accountName)) return;
+    if (
+      accounts.some(
+        (a) =>
+          a.accountName === account.accountName &&
+          a.networkId === account.networkId,
+      )
+    )
+      return;
     setAccounts([account, ...accounts]);
   };
 
