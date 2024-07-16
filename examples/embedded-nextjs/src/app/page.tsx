@@ -154,11 +154,9 @@ export default function Home() {
       setIsReady(true);
       transactions.map(async (tx) => {
         const res = await client.local(tx);
-        console.warn('DEBUGPRINT[8]: page.tsx:140: res=', res);
 
         const txDescriptor = await client.submit(tx as ICommand);
         const txRes = await client.listen(txDescriptor);
-        console.warn('DEBUGPRINT[23]: page.tsx:156: txRes=', txRes);
         setResult(JSON.stringify(txRes, null, 2));
       });
     } catch (e) {

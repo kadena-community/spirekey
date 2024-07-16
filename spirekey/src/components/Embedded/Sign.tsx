@@ -35,7 +35,7 @@ import { addSignatures } from '@kadena/client';
 import { MonoCAccount } from '@kadena/kode-icons/system';
 
 interface Props {
-  transaction?: string;
+  transactions?: string;
   accounts?: string;
 }
 
@@ -54,15 +54,17 @@ const getPubkey = (
   throw new Error('No public key found');
 };
 export default function Sign(props: Props) {
-  const { transaction, accounts: signAccountsString } = props;
+  const { transactions, accounts: signAccountsString } = props;
   const { accounts, setAccount } = useAccounts();
-  if (!transaction) return;
+  if (!transactions) throw new Error('No transactions provided');
 
   const [signedPlumbingTxs, setSignedPlumbingTxs] = useState<ICommand[]>();
-  const data = transaction
-    ? Buffer.from(transaction, 'base64').toString()
-    : null;
-  const tx: IUnsignedCommand = JSON.parse(data ?? '{}');
+  const unsingedTxs: IUnsignedCommand[] = JSON.parse(transactions);
+  if (!unsingedTxs.length) throw new Error('No valid transactions provided');
+
+  // for now only support one tx provided
+  const [tx] = unsingedTxs;
+  if (!tx) throw new Error('No valid transaction provided');
 
   const txAccounts = getAccountsForTx(accounts)(tx);
   const { signers, meta }: ICommandPayload = JSON.parse(tx.cmd);

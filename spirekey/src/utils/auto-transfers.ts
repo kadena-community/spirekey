@@ -61,6 +61,12 @@ export const getOptimalTransfers = (
     .reduce(
       (r: OptimalTransfers, { balance, chainId, ...accountBalance }) => {
         if (r.required <= 0) return r;
+        if (chainId === target)
+          return {
+            required: BigNumber(r.required).minus(balance).toNumber(),
+            balances: [...r.balances],
+          };
+
         const amount = getMinCost(
           r.required,
           BigNumber(balance).minus(gasFeeMargins).toNumber(),

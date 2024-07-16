@@ -36,16 +36,10 @@ export const signFactory =
     const isList = Array.isArray(transactionList);
     const transactions = isList ? transactionList : [transactionList];
 
-    const transactionsParams = transactions.reduce(
-      (params, tx) => {
-        params.append(
-          'transaction',
-          Buffer.from(JSON.stringify(tx)).toString('base64'),
-        );
-        return params;
-      },
-      new URLSearchParams({ accounts: JSON.stringify(accounts) }),
-    );
+    const transactionsParams = new URLSearchParams({
+      accounts: JSON.stringify(accounts),
+      transactions: JSON.stringify(transactions),
+    });
 
     embedManager.showNotification();
     embedManager.openPopup(
