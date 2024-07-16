@@ -45,7 +45,22 @@ const someHandles = async () => {
   // if you have multiple tx's to sign, you can provide them all at once
   // provide the accounts in the optional array if you want to wait for
   // the account to be ready before submitting
-  const { transactions, isReady } = await sign([tx], [account]);
+  const { transactions, isReady } = await sign(
+    [tx],
+    [
+      {
+        accountName: account.accountName,
+        networkId: account.networkId,
+        chainIds: account.chainIds,
+        requestedFungibles: [
+          {
+            fungible: 'coin',
+            amount: amount, // The requested amount
+          },
+        ],
+      },
+    ],
+  );
   await isReady();
 
   // submit your tx with @kadena/client
@@ -110,7 +125,22 @@ const someHandles = async () => {
   // if you have multiple tx's to sign, you can provide them all at once
   // provide the accounts in the optional array if you want to wait for
   // the account to be ready before submitting
-  const { transactions, isReady } = await sign([tx], [account]);
+  const { transactions, isReady } = await sign(
+    [tx],
+    [
+      {
+        accountName: account.accountName,
+        networkId: account.networkId,
+        chainIds: account.chainIds,
+        requestedFungibles: [
+          {
+            fungible: 'coin',
+            amount: amount, // The requested amount
+          },
+        ],
+      },
+    ],
+  );
   await isReady();
 
   // submit your tx with @kadena/client

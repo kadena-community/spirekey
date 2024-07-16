@@ -69,7 +69,9 @@ export const getOptimalTransfers = (
 
         const amount = getMinCost(
           r.required,
-          BigNumber(balance).minus(gasFeeMargins).toNumber(),
+          balance > r.required
+            ? balance
+            : BigNumber(balance).minus(gasFeeMargins).toNumber(),
         );
         return {
           required: BigNumber(r.required).minus(amount).toNumber(),

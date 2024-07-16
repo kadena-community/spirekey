@@ -138,7 +138,9 @@ export default function Home() {
         [tx.createTransaction()],
         [
           {
-            ...account,
+            accountName: account.accountName,
+            networkId: account.networkId,
+            chainIds: account.chainIds,
             requestedFungibles: [
               {
                 fungible: 'coin',
@@ -154,7 +156,7 @@ export default function Home() {
       setIsReady(true);
       transactions.map(async (tx) => {
         const res = await client.local(tx);
-
+        console.log('Preflight result', res);
         const txDescriptor = await client.submit(tx as ICommand);
         const txRes = await client.listen(txDescriptor);
         setResult(JSON.stringify(txRes, null, 2));

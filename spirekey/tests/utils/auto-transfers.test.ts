@@ -96,7 +96,7 @@ describe('auto transfers', () => {
         it('should prepare one tx', () => {
           const result = getOptimalTransfers(accounts, '8', 15);
           expect(result).toMatchObject([
-            { balance: 50, chainId: '5', cost: 5.0001 },
+            { balance: 50, chainId: '5', cost: 5 },
           ]);
         });
       });
@@ -105,7 +105,7 @@ describe('auto transfers', () => {
           const result = getOptimalTransfers(accounts, '8', 75);
           expect(result).toMatchObject([
             { balance: 50, chainId: '5', cost: 49.9999 },
-            { balance: 40, chainId: '4', cost: 15.0002 },
+            { balance: 40, chainId: '4', cost: 15.0001 },
           ]);
         });
       });
