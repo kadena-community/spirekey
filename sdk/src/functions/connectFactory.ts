@@ -44,7 +44,7 @@ export const connectFactory =
     const eventListenerPromise = new Promise<ConnectedAccount>(
       (resolve, reject) => {
         removeConnectListener = onAccountConnected(
-          (account: SpireKeyAccount) => {
+          (account: Account) => {
             resolve({
               ...account,
               isReady: async () => {

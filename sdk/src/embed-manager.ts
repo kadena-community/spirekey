@@ -86,5 +86,6 @@ export class EmbedManager {
 
   public hideNotification() {
     this.notification.classList.add(styles.spirekeyNotificationHidden);
+    this.notification.src = this.getNotificationUrl(this.baseUrl);
   }
 }

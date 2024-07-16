@@ -16,9 +16,7 @@ import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
-import {
-  getAccountName,
-} from '@/utils/register';
+import { getAccountName } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 
 import { getUser } from '@/utils/connect';

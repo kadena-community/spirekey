@@ -51,6 +51,7 @@
     "@vanilla-extract/next-plugin": "^2.4.3",
     "@vanilla-extract/recipes": "^0.5.3",
     "base64url-universal": "^2.0.0",
+    "bignumber.js": "^9.1.2",
     "cbor": "^9.0.2",
     "classnames": "^2.5.1",
     "detect-gpu": "^5.0.38",
