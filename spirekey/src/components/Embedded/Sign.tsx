@@ -99,8 +99,15 @@ export default function Sign(props: Props) {
 
     if (!signedPlumbingTxs)
       publishEvent('signed', {
-        accounts: [],
-        // TODO: add accounts with the additional txs
+        accounts: signAccounts
+          .map((a) =>
+            accounts.find(
+              (acc) =>
+                acc.networkId === a.networkId &&
+                acc.accountName === a.accountName,
+            ),
+          )
+          .filter((x) => !!x),
         tx: {
           [tx.hash]: [
             {
