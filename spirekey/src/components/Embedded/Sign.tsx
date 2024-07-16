@@ -26,13 +26,20 @@ import {
   ICommandPayload,
   IUnsignedCommand,
 } from '@kadena/types';
-import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
 
 import { Permissions } from '@/components/Permissions/Permissions';
 import { getOptimalTransactions } from '@/utils/auto-transfers';
 import { l1Client } from '@/utils/shared/client';
 import { addSignatures } from '@kadena/client';
 import { MonoCAccount } from '@kadena/kode-icons/system';
+
+import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
+import { token } from '@kadena/kode-ui/styles';
+import {
+  CardContainer,
+  CardContent,
+  CardFooter,
+} from '../CardPattern/CardPattern';
 
 interface Props {
   transactions?: string;
@@ -173,18 +180,31 @@ export default function Sign(props: Props) {
     setSignedPlumbingTxs(txs);
   };
   return (
-    <LayoutSurface title="Permissions" subtitle={getSubtitle(caps.size)}>
-      <SignPlumbingTxs
-        plumbingSteps={plumbingSteps}
-        credentialId={txAccounts.accounts[0]?.devices[0]['credential-id']}
-        onCancel={onCancel}
-        onCompleted={onCompletedPlumbingTxs}
-      />
-
-      {[...caps.entries()].map(([module, capabilities]) => (
-        <Permissions module={module} capabilities={capabilities} key={module} />
-      ))}
-      <Stack gap="md" justifyContent="space-between">
+    <CardContainer>
+      <CardContent
+        logo={
+          <SpireKeyKdacolorLogoGreen
+            fontSize={token('typography.fontSize.9xl')}
+          />
+        }
+        title="Permissions"
+        description={getSubtitle(caps.size)}
+      >
+        <SignPlumbingTxs
+          plumbingSteps={plumbingSteps}
+          credentialId={txAccounts.accounts[0]?.devices[0]['credential-id']}
+          onCancel={onCancel}
+          onCompleted={onCompletedPlumbingTxs}
+        />
+        {[...caps.entries()].map(([module, capabilities]) => (
+          <Permissions
+            module={module}
+            capabilities={capabilities}
+            key={module}
+          />
+        ))}
+      </CardContent>
+      <CardFooter>
         <Button variant="outlined" onPress={onCancel}>
           Cancel
         </Button>
@@ -195,8 +215,8 @@ export default function Sign(props: Props) {
         >
           Sign
         </Button>
-      </Stack>
-    </LayoutSurface>
+      </CardFooter>
+    </CardContainer>
   );
 }
 

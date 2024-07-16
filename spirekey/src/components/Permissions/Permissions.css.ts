@@ -13,7 +13,6 @@ export const modulePermissionsGroup = atoms({
   borderRadius: 'sm',
   flexDirection: 'column',
   paddingBlock: 'sm',
-  marginBlock: 'md',
 });
 export const modulePermissionsHeader = atoms({
   marginInline: 'md',
