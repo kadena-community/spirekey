@@ -84,6 +84,5 @@ export const useTxQueue = (
 
       onAccountsReady(updatedAccounts);
     },
-    { keepPreviousData: false },
   );
 };
