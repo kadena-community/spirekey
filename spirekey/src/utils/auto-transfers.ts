@@ -1,6 +1,7 @@
 import { getAccountFromChain } from '@/utils/shared/account';
 import { createTransactionBuilder, type ChainId } from '@kadena/client';
 import { Account, OptimalTransactionsAccount } from '@kadena/spirekey-types';
+import BigNumber from 'bignumber.js';
 
 export type Credential = {
   pubKey: string;
@@ -49,6 +50,7 @@ type OptimalTransfers = {
   required: number;
   balances: AccountBalance[];
 };
+const gasFeeMargins = 1e-4;
 export const getOptimalTransfers = (
   accountBalances: AccountBalance[],
   target: ChainId,
@@ -59,9 +61,12 @@ export const getOptimalTransfers = (
     .reduce(
       (r: OptimalTransfers, { balance, chainId, ...accountBalance }) => {
         if (r.required <= 0) return r;
-        const amount = getMinCost(r.required, balance);
+        const amount = getMinCost(
+          r.required,
+          BigNumber(balance).minus(gasFeeMargins).toNumber(),
+        );
         return {
-          required: r.required - amount,
+          required: BigNumber(r.required).minus(amount).toNumber(),
           balances: [
             ...r.balances,
             { ...accountBalance, balance, chainId, cost: amount },

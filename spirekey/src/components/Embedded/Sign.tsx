@@ -24,7 +24,6 @@ import {
   ICap,
   ICommand,
   ICommandPayload,
-  ISigner,
   IUnsignedCommand,
 } from '@kadena/types';
 import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
@@ -34,7 +33,6 @@ import { getOptimalTransactions } from '@/utils/auto-transfers';
 import { l1Client } from '@/utils/shared/client';
 import { addSignatures } from '@kadena/client';
 import { MonoCAccount } from '@kadena/kode-icons/system';
-import useSWR from 'swr';
 
 interface Props {
   transaction?: string;
@@ -73,13 +71,6 @@ export default function Sign(props: Props) {
     signAccountsString || '[]',
   );
 
-  const key = signAccounts.map(
-    (account) =>
-      account.accountName +
-      account.chainIds.join(',') +
-      account.networkId +
-      account.requestedFungibles?.map((x) => JSON.stringify(x)).join(','),
-  );
   const [plumbingTxs, setPlumbingTxs] = useState<IUnsignedCommand[]>();
   useEffect(() => {
     Promise.all(
@@ -92,14 +83,9 @@ export default function Sign(props: Props) {
       setPlumbingTxs(allPlumbingTxs.flatMap((txs) => txs).filter((x) => !!x));
     });
   }, []);
-  console.warn(
-    'DEBUGPRINT[50]: Sign.tsx:105: plumbingTxs=',
-    plumbingTxs?.map((x) => x?.hash),
-  );
 
   const onSign = async () => {
-    // TODO: get credential id by pubkey
-    const credentialId = accounts[0]?.devices[0]['credential-id'];
+    const credentialId = txAccounts.accounts[0].devices[0]['credential-id'];
 
     const res = await startAuthentication({
       challenge: tx.hash,
@@ -123,7 +109,9 @@ export default function Sign(props: Props) {
         },
       });
 
-    const txs = await l1Client.submit(signedPlumbingTxs!);
+    const txs = await Promise.all(
+      signedPlumbingTxs!.map((tx) => l1Client.submit(tx)),
+    );
     const accs = signAccounts.map((sAcc) => {
       const account = accounts.find(
         (acc) =>
@@ -175,7 +163,6 @@ export default function Sign(props: Props) {
   const onCompletedPlumbingTxs = (txs: ICommand[]) => {
     setSignedPlumbingTxs(txs);
   };
-
   return (
     <LayoutSurface title="Permissions" subtitle={getSubtitle(caps.size)}>
       <SignPlumbingTxs
@@ -233,7 +220,7 @@ const SignPlumbingTxs = ({
   return (
     <>
       {steps.map(({ title, caps, tx, signed }) => (
-        <Stack flexDirection="column" gap="sm" key={tx.hash}>
+        <Stack flexDirection="column" gap="sm" marginBlock="md" key={tx.hash}>
           <ContentHeader heading={title} icon={<MonoCAccount />} />
           {[...caps.entries()].map(([module, capabilities]) => (
             <Accordion
