@@ -53,6 +53,7 @@ export const logoWithText = style({
   gridColumn: '1 / span 1',
   gridRow: '1 / span 1',
   fontSize: '64px',
+  marginInlineStart: '-.5rem'
 });
 
 export const text = style({
