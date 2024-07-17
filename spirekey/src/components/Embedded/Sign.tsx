@@ -191,7 +191,7 @@ export default function Sign(props: Props) {
         <Button
           variant="primary"
           onPress={onSign}
-          isDisabled={signedPlumbingTxs === undefined}
+          isDisabled={!!plumbingSteps.length && !!signedPlumbingTxs}
         >
           Sign
         </Button>
