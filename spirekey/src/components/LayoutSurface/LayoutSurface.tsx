@@ -1,4 +1,7 @@
-import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
+import {
+  SpireKeyKdacolorLogoGreen,
+  SpireKeyKdacolorLight,
+} from '@kadena/kode-icons/product';
 import { Grid, Heading, Stack, Text } from '@kadena/kode-ui';
 
 import * as styles from './LayoutSurface.css';
@@ -22,13 +25,8 @@ export const LayoutSurface = ({
       className={styles.logoWrapper}
       alignItems="flex-end"
     >
-      <SpireKeyKdacolorLogoGreen className={styles.logo} />
-      {useLogoTitle && (
-        <Stack flexDirection="column">
-          <Text transform="uppercase" variant="body">kadena</Text>
-          <Heading>SpireKey</Heading>
-        </Stack>
-      )}
+      {!useLogoTitle && <SpireKeyKdacolorLogoGreen className={styles.logo} />}
+      {useLogoTitle && <SpireKeyKdacolorLight className={styles.logoWithText} />}
     </Stack>
     <Stack
       flexDirection="column"

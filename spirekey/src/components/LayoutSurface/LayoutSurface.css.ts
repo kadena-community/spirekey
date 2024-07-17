@@ -33,8 +33,8 @@ export const logoWrapper = style({
     [breakpoints.md]: {
       marginBlockEnd: 0,
     },
-  }
-})
+  },
+});
 
 export const logo = style({
   gridColumn: '1 / span 1',
@@ -47,6 +47,12 @@ export const logo = style({
       fontSize: '64px',
     },
   },
+});
+
+export const logoWithText = style({
+  gridColumn: '1 / span 1',
+  gridRow: '1 / span 1',
+  fontSize: '64px',
 });
 
 export const text = style({
