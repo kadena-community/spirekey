@@ -182,7 +182,7 @@ export default function Sign(props: Props) {
   return (
     <CardContainer>
       <CardContent
-        logo={
+        visual={
           <SpireKeyKdacolorLogoGreen
             fontSize={token('typography.fontSize.9xl')}
           />

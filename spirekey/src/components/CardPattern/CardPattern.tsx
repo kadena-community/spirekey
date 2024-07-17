@@ -9,14 +9,14 @@ export const CardContainer = ({ children }: { children: React.ReactNode }) => {
 };
 
 interface CardContentProps {
-  logo: React.ReactNode;
+  visual: React.ReactNode;
   title: String;
   description?: String;
   children: React.ReactNode;
 }
 
 export const CardContent = ({
-  logo,
+  visual,
   title,
   description,
   children,
@@ -25,13 +25,13 @@ export const CardContent = ({
     <div>
       <Stack flexDirection={{ xs: 'column', md: 'row' }} gap="md">
         <Stack flexDirection="column" alignItems="flex-start" flex={1}>
-          <Box>{logo}</Box>
+          <Box>{visual}</Box>
           <Heading
             className={atoms({ marginBlockStart: 'sm', marginBlockEnd: 'md' })}
           >
             {title}
           </Heading>
-          {description && <Text>{description}</Text>}
+          {description && <Text as="p">{description}</Text>}
         </Stack>
         <Stack flexDirection="column" className={bodyContent}>
           {children}
