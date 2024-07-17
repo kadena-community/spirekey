@@ -1,3 +1,4 @@
+import { MonoKey } from '@kadena/kode-icons/system';
 import {
   Avatar,
   Badge,
@@ -64,6 +65,18 @@ const CapabilityValue = ({ value }: { value: any }) => {
   if (typeof value !== 'object') return <span>{value}</span>;
   if (value.int) return <span>{value.int}</span>;
   if (value.decimal) return <span>{value.decimal}</span>;
+  if (Array.isArray(value.keys) && value.pred)
+    return (
+      <>
+        {value.keys.map((key: string) => (
+          <Stack key={key} flexDirection="row" gap="sm">
+            <MonoKey />
+            {maskValue(key)}
+          </Stack>
+        ))}
+        <span>{value.pred}</span>
+      </>
+    );
   return <span>{JSON.stringify(value)}</span>;
 };
 
