@@ -87,7 +87,7 @@ export const Permissions = ({
   module: string;
   capabilities: ICap[];
 }) => (
-  <Stack className={styles.modulePermissionsGroup}>
+  <Stack className={styles.modulePermissionsGroup} marginBlock="xs">
     <Stack
       marginBlock="xs"
       flexDirection="row"
