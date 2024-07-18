@@ -18,6 +18,11 @@ import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { getAccountName } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 
+import {
+  CardContainer,
+  CardFooter,
+  SpireKeyCardContentBlock,
+} from '@/components/CardPattern/CardPattern';
 import { getUser } from '@/utils/connect';
 import { Account } from '@kadena/spirekey-types';
 import AccountNetwork from '../Card/AccountNetwork';
@@ -26,11 +31,6 @@ import Card from '../Card/Card';
 import CardBottom from '../Card/CardBottom';
 import DeviceIcons from '../Card/DeviceIcons';
 import PasskeyCard from '../Card/PasskeyCard';
-import {
-  CardContainer,
-  CardFooter,
-  SpireKeyCardContentBlock,
-} from '../CardPattern/CardPattern';
 import * as styles from './Registration.css';
 
 interface Props {

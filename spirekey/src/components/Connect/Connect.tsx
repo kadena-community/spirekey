@@ -1,3 +1,9 @@
+import {
+  CardContainer,
+  CardContentBlock,
+  CardFooter,
+  SpireKeyCardContentBlock,
+} from '@/components/CardPattern/CardPattern';
 import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { useAccounts } from '@/context/AccountsContext';
 import { getRegisterCommand } from '@/utils/register';
@@ -8,12 +14,6 @@ import { Button, Heading, Link, Stack, Text } from '@kadena/kode-ui';
 import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
 import { useState } from 'react';
-import {
-  CardContainer,
-  CardContentBlock,
-  CardFooter,
-  SpireKeyCardContentBlock,
-} from '../CardPattern/CardPattern';
 import DeviceCircle from '../Device/DeviceCircle';
 import Registration from '../Registration/Registration';
 

@@ -18,7 +18,7 @@ import {
   CardContainer,
   CardFooter,
   SpireKeyCardContentBlock,
-} from '../CardPattern/CardPattern';
+} from '@/components/CardPattern/CardPattern';
 
 interface Props {
   accountName: string;

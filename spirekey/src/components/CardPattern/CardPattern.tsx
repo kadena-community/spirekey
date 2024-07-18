@@ -2,11 +2,15 @@ import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { Box, Heading, Stack, Text } from '@kadena/kode-ui';
 import { atoms, token } from '@kadena/kode-ui/styles';
 import React from 'react';
-import { bodyContent, container } from './CardPattern.css';
+import { bodyContent, container, paddingContainer } from './CardPattern.css';
 
 export const CardContainer = ({ children }: { children: React.ReactNode }) => {
   // TODO: replace with card component when it accepts className
-  return <div className={container}>{children}</div>;
+  return (
+    <div className={paddingContainer}>
+      <div className={container}>{children}</div>
+    </div>
+  );
 };
 
 interface CardContentBlockProps {
@@ -23,31 +27,29 @@ export const CardContentBlock = ({
   children,
 }: CardContentBlockProps) => {
   return (
-    <div>
-      <Stack flexDirection={{ xs: 'column', md: 'row' }} gap="md">
-        <Stack flexDirection="column" alignItems="flex-start" flex={1}>
-          <Box>{visual}</Box>
-          {title && (
-            <Heading
-              className={atoms({
-                marginBlockStart: 'sm',
-                marginBlockEnd: 'md',
-              })}
-            >
-              {title}
-            </Heading>
-          )}
-          {description && <Text as="p">{description}</Text>}
-        </Stack>
-        <Stack
-          flexDirection="column"
-          className={bodyContent}
-          data-layout={!visual && 'no-visual'}
-        >
-          {children}
-        </Stack>
+    <Stack flexDirection={{ xs: 'column', md: 'row' }} gap="md">
+      <Stack flexDirection="column" alignItems="flex-start" flex={1}>
+        <Box>{visual}</Box>
+        {title && (
+          <Heading
+            className={atoms({
+              marginBlockStart: 'sm',
+              marginBlockEnd: 'md',
+            })}
+          >
+            {title}
+          </Heading>
+        )}
+        {description && <Text as="p">{description}</Text>}
       </Stack>
-    </div>
+      <Stack
+        flexDirection="column"
+        className={bodyContent}
+        data-layout={!visual && 'no-visual'}
+      >
+        {children}
+      </Stack>
+    </Stack>
   );
 };
 
