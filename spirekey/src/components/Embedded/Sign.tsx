@@ -179,6 +179,10 @@ export default function Sign(props: Props) {
   const onCompletedPlumbingTxs = (txs: ICommand[]) => {
     setSignedPlumbingTxs(txs);
   };
+  const isReadyForSigning = () => {
+    if (!plumbingTxs?.length) return true;
+    return signedPlumbingTxs;
+  };
   return (
     <CardContainer>
       <CardContent
@@ -211,7 +215,7 @@ export default function Sign(props: Props) {
         <Button
           variant="primary"
           onPress={onSign}
-          isDisabled={!!plumbingSteps.length && !!signedPlumbingTxs}
+          isDisabled={!isReadyForSigning()}
         >
           Sign
         </Button>
