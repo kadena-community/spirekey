@@ -1,5 +1,5 @@
 import { atoms, responsiveStyle, token } from '@kadena/kode-ui/styles';
-import { style } from '@vanilla-extract/css';
+import { style, styleVariants } from '@vanilla-extract/css';
 
 export const container = style([
   atoms({
@@ -22,9 +22,18 @@ export const container = style([
 
 export const bodyContent = style([
   { marginBlockStart: token('spacing.xl'), flex: 1.5 },
-  responsiveStyle({
-    md: {
-      marginBlockStart: token('size.n25'),
+  {
+    ...responsiveStyle({
+      md: {
+        marginBlockStart: token('size.n25'),
+      },
+    }),
+    selectors: {
+      "&[data-layout='no-visual']": responsiveStyle({
+        md: {
+          marginBlockStart: token('size.n10'),
+        },
+      }),
     },
-  }),
+  },
 ]);

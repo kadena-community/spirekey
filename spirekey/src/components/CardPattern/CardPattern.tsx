@@ -1,5 +1,6 @@
+import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { Box, Heading, Stack, Text } from '@kadena/kode-ui';
-import { atoms } from '@kadena/kode-ui/styles';
+import { atoms, token } from '@kadena/kode-ui/styles';
 import React from 'react';
 import { bodyContent, container } from './CardPattern.css';
 
@@ -8,32 +9,41 @@ export const CardContainer = ({ children }: { children: React.ReactNode }) => {
   return <div className={container}>{children}</div>;
 };
 
-interface CardContentProps {
-  visual: React.ReactNode;
+interface CardContentBlockProps {
   title: String;
+  visual?: React.ReactNode;
   description?: String;
   children: React.ReactNode;
 }
 
-export const CardContent = ({
-  visual,
+export const CardContentBlock = ({
   title,
+  visual,
   description,
   children,
-}: CardContentProps) => {
+}: CardContentBlockProps) => {
   return (
     <div>
       <Stack flexDirection={{ xs: 'column', md: 'row' }} gap="md">
         <Stack flexDirection="column" alignItems="flex-start" flex={1}>
           <Box>{visual}</Box>
-          <Heading
-            className={atoms({ marginBlockStart: 'sm', marginBlockEnd: 'md' })}
-          >
-            {title}
-          </Heading>
+          {title && (
+            <Heading
+              className={atoms({
+                marginBlockStart: 'sm',
+                marginBlockEnd: 'md',
+              })}
+            >
+              {title}
+            </Heading>
+          )}
           {description && <Text as="p">{description}</Text>}
         </Stack>
-        <Stack flexDirection="column" className={bodyContent}>
+        <Stack
+          flexDirection="column"
+          className={bodyContent}
+          data-layout={!visual && 'no-visual'}
+        >
           {children}
         </Stack>
       </Stack>
@@ -60,3 +70,17 @@ export const CardFooter = ({
     </Stack>
   );
 };
+
+export const SpireKeyCardContentBlock = (
+  props: Omit<CardContentBlockProps, 'visual'>,
+) => (
+  <CardContentBlock
+    {...props}
+    visual={
+      <SpireKeyKdacolorLogoGreen
+        aria-label="SpireKey"
+        fontSize={token('typography.fontSize.9xl')}
+      />
+    }
+  />
+);

@@ -1,11 +1,10 @@
 'use client';
 
 import type { ChainId } from '@kadena/client';
-import { Button, Stack } from '@kadena/kode-ui';
+import { Button } from '@kadena/kode-ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { LayoutSurface } from '@/components/LayoutSurface/LayoutSurface';
 import {
   AccountRegistration,
   RegisterAccountFn,
@@ -27,6 +26,11 @@ import Card from '../Card/Card';
 import CardBottom from '../Card/CardBottom';
 import DeviceIcons from '../Card/DeviceIcons';
 import PasskeyCard from '../Card/PasskeyCard';
+import {
+  CardContainer,
+  CardFooter,
+  SpireKeyCardContentBlock,
+} from '../CardPattern/CardPattern';
 import * as styles from './Registration.css';
 
 interface Props {
@@ -196,38 +200,49 @@ const RegisterComponent = ({
   const [isAnimationFinished, setAnimationFinished] = useState(false);
   if (account && isAnimationFinished)
     return (
-      <LayoutSurface title="Register" subtitle="your account with a passkey">
-        <div className={styles.card}>
-          <Card
-            color={deviceColors.purple}
-            balancePercentage={50}
-            title={<Alias title={account.alias.replace(/\(.*\)/, '')} />}
-            icons={<DeviceIcons account={account} />}
-            center={<AccountNetwork account={account} isLoading={true} />}
-            cardBottom={<CardBottom account={account} />}
-          />
-        </div>
-        <Stack className={styles.buttons}>
+      <CardContainer>
+        <SpireKeyCardContentBlock
+          title="Register"
+          description="your account with a passkey"
+        >
+          <div className={styles.card}>
+            <Card
+              color={deviceColors.purple}
+              balancePercentage={50}
+              title={<Alias title={account.alias.replace(/\(.*\)/, '')} />}
+              icons={<DeviceIcons account={account} />}
+              center={<AccountNetwork account={account} isLoading={true} />}
+              cardBottom={<CardBottom account={account} />}
+            />
+          </div>
+        </SpireKeyCardContentBlock>
+        <CardFooter>
           <Button variant="outlined" onPress={onCancel}>
             Cancel
           </Button>
           <Button variant="primary" onPress={onComplete}>
             Complete
           </Button>
-        </Stack>
-      </LayoutSurface>
+        </CardFooter>
+      </CardContainer>
     );
+
   return (
-    <LayoutSurface title="Register" subtitle="your account with a passkey">
-      <div className={styles.card}>
-        <PasskeyCard
-          isInProgress={!succesfulAuthentication && isSubmitting}
-          isSuccessful={succesfulAuthentication}
-          onSuccessfulAnimationEnd={() => setAnimationFinished(true)}
-          onSubmit={onSubmit}
-        />
-      </div>
-      <Stack className={styles.buttons}>
+    <CardContainer>
+      <SpireKeyCardContentBlock
+        title="Register"
+        description="your account with a passkey"
+      >
+        <div className={styles.card}>
+          <PasskeyCard
+            isInProgress={!succesfulAuthentication && isSubmitting}
+            isSuccessful={succesfulAuthentication}
+            onSuccessfulAnimationEnd={() => setAnimationFinished(true)}
+            onSubmit={onSubmit}
+          />
+        </div>
+      </SpireKeyCardContentBlock>
+      <CardFooter>
         <Button
           variant="outlined"
           onPress={onCancel}
@@ -242,7 +257,7 @@ const RegisterComponent = ({
         >
           Continue
         </Button>
-      </Stack>
-    </LayoutSurface>
+      </CardFooter>
+    </CardContainer>
   );
 };

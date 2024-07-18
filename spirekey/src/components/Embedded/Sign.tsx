@@ -33,12 +33,10 @@ import { l1Client } from '@/utils/shared/client';
 import { addSignatures } from '@kadena/client';
 import { MonoCAccount } from '@kadena/kode-icons/system';
 
-import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
-import { token } from '@kadena/kode-ui/styles';
 import {
   CardContainer,
-  CardContent,
   CardFooter,
+  SpireKeyCardContentBlock,
 } from '../CardPattern/CardPattern';
 
 interface Props {
@@ -185,12 +183,7 @@ export default function Sign(props: Props) {
   };
   return (
     <CardContainer>
-      <CardContent
-        visual={
-          <SpireKeyKdacolorLogoGreen
-            fontSize={token('typography.fontSize.9xl')}
-          />
-        }
+      <SpireKeyCardContentBlock
         title="Permissions"
         description={getSubtitle(caps.size)}
       >
@@ -207,7 +200,7 @@ export default function Sign(props: Props) {
             key={module}
           />
         ))}
-      </CardContent>
+      </SpireKeyCardContentBlock>
       <CardFooter>
         <Button variant="outlined" onPress={onCancel}>
           Cancel
