@@ -9,8 +9,7 @@ type Signees = {
 
 export const getAccountsForTx =
   (accounts: Account[]) => (tx: IUnsignedCommand) => {
-    const { meta, networkId, signers }: IPactCommand = JSON.parse(tx.cmd);
-    const { chainId } = meta;
+    const { networkId, signers }: IPactCommand = JSON.parse(tx.cmd);
     const pubKeysInTx = signers.map((s) => s.pubKey);
     return accounts.reduce(
       (acc: Signees, curr) => {
@@ -21,8 +20,6 @@ export const getAccountsForTx =
         )
           return acc;
         if (curr.networkId !== networkId)
-          return { ...acc, candidates: [...acc.candidates, curr] };
-        if (!curr.chainIds.includes(chainId))
           return { ...acc, candidates: [...acc.candidates, curr] };
         return { ...acc, accounts: [...acc.accounts, curr] };
       },

@@ -88,7 +88,7 @@ describe('consent', () => {
         });
       });
       describe('but the pubkey exists on a different chain', () => {
-        it('should add the account to the candidates list', () => {
+        it('should add the account to the accounts list', () => {
           const pubKeys = ['WEBAUTHN-alice'];
           const tx = getTxFixture({
             pubKeys,
@@ -101,8 +101,8 @@ describe('consent', () => {
             pubKeys,
           });
           const devices = getAccountsForTx(accounts)(tx);
-          expect(devices.accounts).toEqual([]);
-          expect(devices.candidates).toEqual(accounts);
+          expect(devices.accounts).toEqual(accounts);
+          expect(devices.candidates).toEqual([]);
         });
       });
       describe('and the pubkey does not exists on a different network', () => {
