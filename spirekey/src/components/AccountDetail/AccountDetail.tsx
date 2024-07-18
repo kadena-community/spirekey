@@ -14,8 +14,11 @@ import {
 } from '@/utils/searchParameters';
 import { updateAccount } from '@/utils/updateAccount';
 
-import { LayoutSurface } from '../LayoutSurface/LayoutSurface';
-import * as styles from './AccountDetail.css';
+import {
+  CardContainer,
+  CardFooter,
+  SpireKeyCardContentBlock,
+} from '@/components/CardPattern/CardPattern';
 
 interface Props {
   accountName: string;
@@ -104,9 +107,9 @@ export default function AccountDetail({ accountName }: Props) {
   }
 
   return (
-    <LayoutSurface title="Account" subtitle="details">
+    <CardContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack flexDirection="column" gap="md">
+        <SpireKeyCardContentBlock title="Account" description="details">
           <TextField
             info="Only stored locally"
             label="Account alias"
@@ -123,7 +126,7 @@ export default function AccountDetail({ accountName }: Props) {
             {...register('alias')}
           />
 
-          <Stack flexDirection="row" gap="md">
+          <Stack flexDirection="row" gap="md" marginBlockStart="md">
             <NumberField
               label="Approvals"
               description="Minimum"
@@ -143,17 +146,16 @@ export default function AccountDetail({ accountName }: Props) {
               })}
             />
           </Stack>
-
-          <Stack flexDirection="row" className={styles.buttons}>
-            <Button variant="outlined" onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary">
-              Update
-            </Button>
-          </Stack>
-        </Stack>
+        </SpireKeyCardContentBlock>
+        <CardFooter>
+          <Button variant="outlined" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="primary">
+            Update
+          </Button>
+        </CardFooter>
       </form>
-    </LayoutSurface>
+    </CardContainer>
   );
 }
