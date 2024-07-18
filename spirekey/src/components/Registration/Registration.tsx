@@ -80,9 +80,9 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
   const [currentAccountName, setCurrentAccountName] = useState<string>('');
   const [succesfulAuthentication, setSuccesfulAuthentication] =
     useState<boolean>(false);
-  const [account, setAccount] = useState<Account>();
+  const [account, setCurrentAccount] = useState<Account>();
 
-  const { registerAccount, accounts } = useAccounts();
+  const { registerAccount, accounts, setAccount } = useAccounts();
   const { host } = useReturnUrl();
   const { addNotification } = useNotifications();
 
@@ -108,6 +108,7 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
       await registerNewDevice(registerAccount, (account) => {
         setSuccesfulAuthentication(true);
         setAccount(account);
+        setCurrentAccount(account);
         setCurrentAccountName(account.accountName);
         setAllowRedirect(true);
       })({
