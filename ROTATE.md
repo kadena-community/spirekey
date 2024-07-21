@@ -105,18 +105,21 @@ experience. Therefore we came up with the a new idea to initiate this namespace:
   )
   (namespace ns-name)
   (define-keyset ks-ref-name
-    (read-keyset 'webauthn-keyset)
+    (read-keyset 'ns-keyset)
   )
   (coin.create-account
     (create-principal (keyset-ref-guard ks-ref-name))
     (keyset-ref-guard ks-ref-name)
   )
-  (n_eef68e581f767dd66c4d4c39ed922be944ede505.spirekey.add-credential
-    "ks-ref-name"
-    "credential-id"
-    "https://spirekey.kadena.io"
-    "device-type"
-    "#hexcolor"
+  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.spirekey.add-device-pair
+    (create-principal (keyset-ref-guard ks-ref-name))
+    coin
+    { 'guard : (read-keyset 'ns-keyset)
+    , 'credential-id : "credential-id"
+    , 'hostname : "https://spirekey.kadena.io"
+    , 'device-type : "device-type"
+    , 'color : "#hexcolor"
+    }
   )
 )
 ```
