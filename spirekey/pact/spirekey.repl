@@ -67,19 +67,23 @@
   (define-keyset ks-ref-name
     (read-keyset 'ns-keyset)
   )
-  (coin.create-account
-    (create-principal (keyset-ref-guard ks-ref-name))
-    (keyset-ref-guard ks-ref-name)
+  (let ( 
+    (account (create-principal (keyset-ref-guard ks-ref-name)))
   )
-  (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.spirekey.add-device-pair
-    (create-principal (keyset-ref-guard ks-ref-name))
-    coin
-    { 'guard : (read-keyset 'ns-keyset)
-    , 'credential-id : "credential-id"
-    , 'hostname : "https://spirekey.kadena.io"
-    , 'device-type : "device-type"
-    , 'color : "#hexcolor"
-    }
+    (coin.create-account
+      account
+      (keyset-ref-guard ks-ref-name)
+    )
+    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.spirekey.add-device-pair
+      account
+      coin
+      { 'guard : (read-keyset 'ns-keyset)
+      , 'credential-id : "credential-id"
+      , 'hostname : "https://spirekey.kadena.io"
+      , 'device-type : "device-type"
+      , 'color : "#hexcolor"
+      }
+    )
   )
 )
 (commit-tx)
