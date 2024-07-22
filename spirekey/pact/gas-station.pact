@@ -37,6 +37,15 @@
         (enforce
           (try
             false
+            (and
+              (contains (read-msg 'exec-code) "define-keyset")
+              (contains (read-msg 'exec-code) "NS_HASH.spirekey.add-device-pair")
+            )
+          )
+        )
+        (enforce
+          (try
+            false
             (= (read-msg 'tx-type) 'cont)
           )
           "only continuation transactions are paid for"
