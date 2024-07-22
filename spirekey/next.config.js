@@ -23,6 +23,7 @@ const nextConfig = {
     ACCOUNT_OPERATIONS: process.env.ACCOUNT_OPERATIONS,
     CAPABILITY_TRANSLATIONS: process.env.CAPABILITY_TRANSLATIONS,
     E2E_TEST: process.env.E2E_TEST,
+    USE_RACCOUNT: process.env.USE_RACCOUNT,
   },
 };
 

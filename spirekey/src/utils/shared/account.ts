@@ -11,7 +11,6 @@ import { assertFulfilled } from '@/utils/assertFulfilled';
 
 import { useRAccount } from '@/flags/flags';
 import { createTransactionBuilder } from '@kadena/client';
-import { color } from 'framer-motion';
 import { asyncPipe } from './asyncPipe';
 import { l1Client } from './client';
 
@@ -39,13 +38,6 @@ export const getAccountFromChain = async ({
   namespace?: string;
   chainId?: ChainId;
 }) => {
-  if (await useRAccount())
-    return await getRAccountFromChain({
-      accountName,
-      networkId,
-      namespace,
-      chainId,
-    });
   return await getAccountFromChainLegacy({
     accountName,
     networkId,
@@ -65,7 +57,7 @@ export const getRAccountFromChain = async ({
   chainId?: ChainId;
 }): Promise<Omit<Account, 'alias'> | null> => {
   const tx = createTransactionBuilder()
-    .execution(`(${namespace}.spirekey.details "${accountName}")`)
+    .execution(`(${namespace}.spirekey.details "${accountName}" coin)`)
     .setMeta({
       chainId,
     })
@@ -160,14 +152,21 @@ export const getAccountFromChains = async ({
   namespace?: string;
 }): Promise<Omit<Account, 'alias'> | null> => {
   const results = await Promise.allSettled(
-    chainIds.map((chainId) =>
-      getAccountFromChain({
+    chainIds.map((chainId) => {
+      if (useRAccount())
+        return getRAccountFromChain({
+          accountName,
+          networkId,
+          namespace,
+          chainId,
+        });
+      return getAccountFromChain({
         accountName,
         networkId,
         namespace,
         chainId,
-      }),
-    ),
+      });
+    }),
   );
 
   const accounts = results

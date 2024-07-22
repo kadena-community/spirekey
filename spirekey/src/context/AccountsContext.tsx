@@ -4,6 +4,7 @@ import type { ChainId, ITransactionDescriptor } from '@kadena/client';
 import type { Account, Device, QueuedTx } from '@kadena/spirekey-types';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
+import { useRAccount } from '@/flags/flags';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { useTxQueue } from '@/hooks/useTxQueue';
 import { deviceColors } from '@/styles/shared/tokens.css';
@@ -131,7 +132,7 @@ const AccountsProvider = ({ children }: Props) => {
     };
 
     checkPendingTxs();
-  }, accounts);
+  }, [accounts.map((a) => a.accountName + a.networkId).join(',')]);
 
   const onAccountsUpdated = (updatedAccounts: Account[]) =>
     setAccounts(updatedAccounts);
@@ -170,35 +171,35 @@ const AccountsProvider = ({ children }: Props) => {
         } catch (e: unknown) {
           try {
             // @TODO: We should move the recovery to the retieval, so accounts can be recovered per chain
-
-            await Promise.all(
-              chainIds.map(async (chainId) => {
-                const acc = await getAccountFromChain({
-                  chainId,
-                  networkId,
-                  accountName,
-                });
-                if (acc?.devices?.length) return acc;
-                if (
-                  localAccount.devices.some(
-                    (d) => d.pendingRegistrationTxs?.length,
-                  )
-                )
-                  return localAccount;
-                return retryPromises<ITransactionDescriptor>(() =>
-                  recoverAccount({
-                    alias,
-                    networkId,
-                    credentialPubkey: devices[0].guard.keys[0],
-                    credentialId: devices[0]['credential-id'],
-                    color: devices[0].color,
-                    deviceType: devices[0].deviceType,
-                    domain: host,
+            if (!useRAccount())
+              await Promise.all(
+                chainIds.map(async (chainId) => {
+                  const acc = await getAccountFromChain({
                     chainId,
-                  }),
-                );
-              }),
-            );
+                    networkId,
+                    accountName,
+                  });
+                  if (acc?.devices?.length) return acc;
+                  if (
+                    localAccount.devices.some(
+                      (d) => d.pendingRegistrationTxs?.length,
+                    )
+                  )
+                    return localAccount;
+                  return retryPromises<ITransactionDescriptor>(() =>
+                    recoverAccount({
+                      alias,
+                      networkId,
+                      credentialPubkey: devices[0].guard.keys[0],
+                      credentialId: devices[0]['credential-id'],
+                      color: devices[0].color,
+                      deviceType: devices[0].deviceType,
+                      domain: host,
+                      chainId,
+                    }),
+                  );
+                }),
+              );
           } catch (e: unknown) {
             console.error(
               `Couldn't restore account ${accountName} on ${networkId}`,
@@ -290,7 +291,7 @@ const AccountsProvider = ({ children }: Props) => {
       const accountResponses = await Promise.all(
         pendingTxs.map((tx) => l1Client.listen(tx)),
       );
-      if (accountResponses.every(r => r.result.status === 'success')) {
+      if (accountResponses.every((r) => r.result.status === 'success')) {
         await fundAccount(account);
       }
     }

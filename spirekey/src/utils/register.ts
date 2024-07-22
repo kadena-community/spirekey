@@ -16,7 +16,6 @@ import {
 } from '@kadena/client/fp';
 
 import type { AccountRegistration } from '@/context/AccountsContext';
-import { useRAccount } from '@/flags/flags';
 import {
   gasStation,
   genesisPrivateKey,
@@ -25,15 +24,56 @@ import {
 import { asyncPipe } from '@/utils/shared/asyncPipe';
 import { l1Client } from '@/utils/shared/client';
 import { signWithKeyPair } from '@/utils/signSubmitListen';
-import { genKeyPair, sign } from '@kadena/cryptography-utils';
+import { sign } from '@kadena/cryptography-utils';
 
 export const getAccountName = async (
   publicKey: string,
   networkId: string,
 ): Promise<string> => {
-  const isActive = await useRAccount();
-  if (isActive) return '';
   return getAccountNameLegacy(publicKey, networkId);
+};
+
+export const getRAccountName = async (
+  publicKey: string,
+  tempPublicKey: string,
+  networkId: string,
+): Promise<string> => {
+  const tx = createTransactionBuilder()
+    .execution(
+      `
+    (let* (
+      (ns-name (ns.create-principal-namespace (read-keyset 'ns-keyset)))
+      (ks-ref-name (format "{}.{}" [ns-name 'spirekey-keyset]))
+    )
+      (define-namespace
+        ns-name
+        (read-keyset 'ns-keyset )
+        (read-keyset 'ns-keyset )
+      )
+      (namespace ns-name)
+      (define-keyset ks-ref-name
+        (read-keyset 'ns-keyset)
+      )
+      (create-principal (keyset-ref-guard ks-ref-name))
+    )`,
+    )
+    .setMeta({
+      chainId: process.env.CHAIN_ID,
+    })
+    .addData('ns-keyset', {
+      keys: [getWebAuthnPubkeyFormat(publicKey), tempPublicKey],
+      pred: 'keys-any',
+    })
+    .addSigner(tempPublicKey)
+    .setNetworkId(networkId)
+    .createTransaction();
+  const res = await l1Client.local(tx, {
+    preflight: false,
+    signatureVerification: false,
+  });
+  if (res.result.status !== 'success')
+    throw new Error('Cannot retrieve account name');
+  return res.result.data as string;
 };
 
 const getAccountNameLegacy = async (
@@ -78,8 +118,8 @@ export const registerAccountsOnChain = async ({
   networkId,
   chainId = process.env.CHAIN_ID,
 }: Omit<AccountRegistration, 'alias'>): Promise<ITransactionDescriptor[]> => {
-  if (await useRAccount())
-    return await registerRAccounts({
+  return [
+    await registerAccountOnChainLegacy({
       accountName,
       color,
       deviceType,
@@ -88,17 +128,8 @@ export const registerAccountsOnChain = async ({
       credentialPubkey,
       networkId,
       chainId,
-    });
-  return [await registerAccountOnChainLegacy({
-    accountName,
-    color,
-    deviceType,
-    domain,
-    credentialId,
-    credentialPubkey,
-    networkId,
-    chainId,
-  })];
+    }),
+  ];
 };
 export const registerRAccounts = async ({
   accountName,
@@ -108,9 +139,12 @@ export const registerRAccounts = async ({
   credentialId,
   credentialPubkey,
   networkId,
-  chainId = process.env.CHAIN_ID,
-}: Omit<AccountRegistration, 'alias'>) => {
-  const { publicKey, secretKey } = genKeyPair();
+  publicKey,
+  secretKey,
+}: Omit<AccountRegistration, 'alias'> & {
+  publicKey: string;
+  secretKey: string;
+}) => {
   const txDescriptions = await Promise.all(
     Array(20)
       .fill(1)
@@ -133,7 +167,6 @@ export const registerRAccounts = async ({
 };
 
 export const registerRAccountOnChain = async ({
-  accountName,
   color,
   deviceType,
   domain,
@@ -185,7 +218,7 @@ export const registerRAccountOnChain = async ({
   `,
     )
     .addData('ns-keyset', {
-      keys: [credentialPubkey, publicKey],
+      keys: [getWebAuthnPubkeyFormat(credentialPubkey), publicKey],
       pred: 'keys-any',
     })
     // Sign unrestricted with the temp pubkey
@@ -194,7 +227,7 @@ export const registerRAccountOnChain = async ({
       withCap('coin.GAS'),
       withCap(
         `${process.env.NAMESPACE}.gas-station.GAS_PAYER`,
-        accountName,
+        gasStation,
         { int: 1 },
         1,
       ),
