@@ -14,6 +14,7 @@ import {
 } from '@kadena/client/fp';
 
 import type { AccountRegistration } from '@/context/AccountsContext';
+import { useRAccount } from '@/flags/flags';
 import {
   gasStation,
   genesisPrivateKey,
@@ -24,6 +25,15 @@ import { l1Client } from '@/utils/shared/client';
 import { signWithKeyPair } from '@/utils/signSubmitListen';
 
 export const getAccountName = async (
+  publicKey: string,
+  networkId: string,
+): Promise<string> => {
+  const isActive = await useRAccount();
+  if (isActive) return '';
+  return getAccountNameLegacy(publicKey, networkId);
+};
+
+const getAccountNameLegacy = async (
   publicKey: string,
   networkId: string,
 ): Promise<string> =>
