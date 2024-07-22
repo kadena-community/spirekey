@@ -74,5 +74,28 @@
       )
     )
   )
+
+  (defun details(account:string fungible:module{fungible-v2})
+    (let (
+      (fungible-name (format "{}" [fungible]))
+      (account-id (format "{}-{}" [account fungible]))
+      (fungible-details (fungible::details account))
+    ) 
+      (with-read account-table account-id
+        { 'devices := devices }
+        (bind fungible-details 
+          { 'account  := account-name
+          , 'guard    := guard
+          , 'balance  := balance
+          }
+          { 'account : account-name
+          , 'guard   : guard
+          , 'balance : balance
+          , 'devices : devices
+          }
+        )
+      )
+    )
+  )
 )
 (create-table spirekey.account-table)
