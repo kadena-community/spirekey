@@ -37,11 +37,17 @@
         (enforce
           (try
             false
-            (and
-              (contains (read-msg 'exec-code) "define-keyset")
-              (contains (read-msg 'exec-code) "NS_HASH.spirekey.add-device-pair")
+            (let ((code (at 0 (read-msg 'exec-code))))
+              (or
+                (and
+                  (contains "define-keyset" code)
+                  (contains (format "{}.spirekey.add-device-pair" [NS_HASH]) code)
+                )
+                (contains (format "{}.spirekey.remove-device-pair" [NS_HASH]) code)
+              )
             )
           )
+          "Only creation and removal of keypairs allowed"
         )
         (enforce
           (try

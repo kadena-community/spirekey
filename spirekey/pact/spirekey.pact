@@ -98,4 +98,7 @@
     )
   )
 )
-(create-table spirekey.account-table)
+(if (read-msg 'upgrade)
+  true
+  (create-table spirekey.account-table)
+)
