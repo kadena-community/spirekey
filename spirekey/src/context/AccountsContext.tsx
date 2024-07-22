@@ -12,6 +12,7 @@ import {
   getAccountName,
   getRegisterCommand,
   getWebAuthnPubkeyFormat,
+  registerAccountsOnChain,
 } from '@/utils/register';
 import { retryPromises } from '@/utils/retryPromises';
 import {
@@ -245,7 +246,7 @@ const AccountsProvider = ({ children }: Props) => {
     networkId,
     chainId: cid,
   }: AccountRegistration): Promise<Account> => {
-    const cmd = await getRegisterCommand({
+    const pendingTxs = await registerAccountsOnChain({
       accountName,
       color,
       deviceType,
@@ -255,8 +256,6 @@ const AccountsProvider = ({ children }: Props) => {
       networkId,
       chainId: cid,
     });
-    const tx = await l1Client.submit(cmd);
-    const { chainId } = tx;
     const devices: Device[] = [
       {
         domain,
@@ -267,7 +266,7 @@ const AccountsProvider = ({ children }: Props) => {
           keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
           pred: 'keys-any',
         },
-        pendingRegistrationTxs: [tx],
+        pendingRegistrationTxs: pendingTxs,
       },
     ];
     const account = {
@@ -278,8 +277,8 @@ const AccountsProvider = ({ children }: Props) => {
       balance: '0',
       minApprovals: 1,
       minRegistrationApprovals: 1,
-      chainIds: [chainId],
-      txQueue: [tx],
+      chainIds: pendingTxs.map(({ chainId }) => chainId),
+      txQueue: pendingTxs,
     };
     addAccount(account);
 
@@ -288,8 +287,10 @@ const AccountsProvider = ({ children }: Props) => {
       process.env.INSTA_FUND === 'true' &&
       networkId === getDevnetNetworkId()
     ) {
-      const accountResponse = await l1Client.listen(tx);
-      if (accountResponse.result.status === 'success') {
+      const accountResponses = await Promise.all(
+        pendingTxs.map((tx) => l1Client.listen(tx)),
+      );
+      if (accountResponses.every(r => r.result.status === 'success')) {
         await fundAccount(account);
       }
     }

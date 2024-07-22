@@ -125,7 +125,7 @@ export const onConnectWith =
     /**
      * Register the account on the chain where it did not exist
      */
-    const pendingTransaction = await registerAccountOnChain({
+    const pendingTransactions = await registerAccountOnChain({
       accountName: account.accountName,
       color: device.color,
       deviceType: device.deviceType,
@@ -144,7 +144,7 @@ export const onConnectWith =
       Buffer.from(
         JSON.stringify({
           ...user,
-          pendingTxIds: [pendingTransaction],
+          pendingTxIds: pendingTransactions,
         }),
       ).toString('base64'),
     );

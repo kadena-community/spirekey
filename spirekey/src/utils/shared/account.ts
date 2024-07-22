@@ -5,10 +5,13 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
-import type { Account } from '@kadena/spirekey-types';
+import type { Account, Device } from '@kadena/spirekey-types';
 
 import { assertFulfilled } from '@/utils/assertFulfilled';
 
+import { useRAccount } from '@/flags/flags';
+import { createTransactionBuilder } from '@kadena/client';
+import { color } from 'framer-motion';
 import { asyncPipe } from './asyncPipe';
 import { l1Client } from './client';
 
@@ -26,6 +29,73 @@ import { l1Client } from './client';
  * @returns {Promise<Omit<Account, 'alias'> | null>} An object containing the account details without the alias, or null if the account is not found on any chain.
  */
 export const getAccountFromChain = async ({
+  accountName,
+  networkId,
+  namespace = process.env.NAMESPACE,
+  chainId = process.env.CHAIN_ID as ChainId,
+}: {
+  accountName: string;
+  networkId: string;
+  namespace?: string;
+  chainId?: ChainId;
+}) => {
+  if (await useRAccount())
+    return await getRAccountFromChain({
+      accountName,
+      networkId,
+      namespace,
+      chainId,
+    });
+  return await getAccountFromChainLegacy({
+    accountName,
+    networkId,
+    namespace,
+    chainId,
+  });
+};
+export const getRAccountFromChain = async ({
+  accountName,
+  networkId,
+  namespace = process.env.NAMESPACE,
+  chainId = process.env.CHAIN_ID as ChainId,
+}: {
+  accountName: string;
+  networkId: string;
+  namespace?: string;
+  chainId?: ChainId;
+}): Promise<Omit<Account, 'alias'> | null> => {
+  const tx = createTransactionBuilder()
+    .execution(`(${namespace}.spirekey.details "${accountName}")`)
+    .setMeta({
+      chainId,
+    })
+    .setNetworkId(networkId)
+    .createTransaction();
+  const res = await l1Client.local(tx, {
+    preflight: false,
+    signatureVerification: false,
+  });
+  if (res.result.status !== 'success')
+    throw new Error('Could not retrieve account information');
+  const account = res.result.data as {
+    account: string;
+    balance: string;
+    guard: any;
+    devices: Device[];
+  };
+  return {
+    accountName: account.account,
+    minApprovals: 1,
+    minRegistrationApprovals: 1,
+    devices: account.devices,
+    balance: account.balance,
+    chainIds: [chainId],
+    networkId,
+    txQueue: [],
+  };
+};
+
+export const getAccountFromChainLegacy = async ({
   accountName,
   networkId,
   namespace = process.env.NAMESPACE,
