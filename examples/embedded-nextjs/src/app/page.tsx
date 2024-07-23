@@ -41,7 +41,73 @@ const useLocalState = (
   return [value, setLocalValue];
 };
 
+const getRAccountTransfer = ({
+  account,
+  receiver,
+  amount,
+  chainId,
+}: {
+  account: Account;
+  receiver: string;
+  amount: number;
+  chainId: ChainId;
+}) => {
+  const tx = createTransactionBuilder()
+    .execution(
+      `
+    (coin.transfer "${account}" "${receiver}" ${amount})
+  `,
+    )
+    .setMeta({
+      senderAccount: account.accountName,
+      chainId,
+    });
+
+  account.devices.flatMap((d) =>
+    d.guard.keys.map((k) =>
+      tx.addSigner(
+        {
+          pubKey: k,
+          scheme: /^WEBAUTHN-/.test(k) ? 'WebAuthn' : 'ED25519',
+        },
+        (withCap) => [
+          withCap(`coin.TRANSFER`, account.accountName, receiver, {
+            decimal: amount.toFixed(8),
+          }),
+          withCap(`coin.GAS`),
+        ],
+      ),
+    ),
+  );
+  return tx;
+};
 const getTransferTx = ({
+  account,
+  receiver,
+  amount,
+  chainId,
+}: {
+  account: Account;
+  receiver: string;
+  amount: number;
+  chainId: ChainId;
+}) => {
+  if (account.accountName.startsWith('r:'))
+    return getRAccountTransfer({
+      account,
+      receiver,
+      amount,
+      chainId,
+    });
+  return getTransferTxLegacy({
+    account,
+    receiver,
+    amount,
+    chainId,
+  });
+};
+
+const getTransferTxLegacy = ({
   account,
   receiver,
   amount,
