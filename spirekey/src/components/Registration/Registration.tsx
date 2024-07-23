@@ -15,7 +15,12 @@ import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
-import { getAccountName } from '@/utils/register';
+import {
+  getAccountName,
+  getRAccountName,
+  getWebAuthnPubkeyFormat,
+  registerRAccounts,
+} from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 
 import {
@@ -23,7 +28,9 @@ import {
   CardFooter,
   SpireKeyCardContentBlock,
 } from '@/components/CardPattern/CardPattern';
+import { useRAccount } from '@/flags/flags';
 import { getUser } from '@/utils/connect';
+import { genKeyPair } from '@kadena/cryptography-utils';
 import { Account } from '@kadena/spirekey-types';
 import AccountNetwork from '../Card/AccountNetwork';
 import Alias from '../Card/Alias';
@@ -58,20 +65,56 @@ export const registerNewDevice =
   >): Promise<void> => {
     const { publicKey, deviceType, credentialId } =
       await getNewWebauthnKey(alias);
-
-    const accountName = await getAccountName(publicKey, networkId);
     const account = {
       networkId,
       credentialId,
       deviceType,
-      accountName,
       chainId,
       alias,
       color,
       domain,
       credentialPubkey: publicKey,
     };
-    onPasskeyRetrieved(await registerAccount(account));
+    if (useRAccount()) {
+      const keypair = genKeyPair();
+      const accountName = await getRAccountName(
+        publicKey,
+        keypair.publicKey,
+        networkId,
+      );
+      const pendingTxs = await registerRAccounts({
+        ...account,
+        accountName,
+        publicKey: keypair.publicKey,
+        secretKey: keypair.secretKey,
+      });
+      onPasskeyRetrieved({
+        accountName,
+        networkId,
+        balance: '0.0',
+        alias,
+        chainIds: Array(20).fill(1).map((_, i) => i.toString()) as ChainId[],
+        minApprovals: 1,
+        minRegistrationApprovals: 1,
+        devices: [
+          {
+            color,
+            deviceType,
+            domain,
+            guard: {
+              keys: [getWebAuthnPubkeyFormat(publicKey), keypair.publicKey],
+              pred: 'keys-any',
+            },
+            'credential-id': credentialId,
+          },
+        ],
+        txQueue: pendingTxs,
+      });
+      return;
+    }
+
+    const accountName = await getAccountName(publicKey, networkId);
+    onPasskeyRetrieved(await registerAccount({ ...account, accountName }));
   };
 
 type UseRegistration = {

@@ -37,6 +37,21 @@
         (enforce
           (try
             false
+            (let ((code (at 0 (read-msg 'exec-code))))
+              (or
+                (and
+                  (contains "define-keyset" code)
+                  (contains (format "{}.spirekey.add-device-pair" [NS_HASH]) code)
+                )
+                (contains (format "{}.spirekey.remove-device-pair" [NS_HASH]) code)
+              )
+            )
+          )
+          "Only creation and removal of keypairs allowed"
+        )
+        (enforce
+          (try
+            false
             (= (read-msg 'tx-type) 'cont)
           )
           "only continuation transactions are paid for"

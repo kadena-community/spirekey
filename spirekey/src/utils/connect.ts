@@ -4,7 +4,7 @@ import type { Account } from '@kadena/spirekey-types';
 import type { AddNotification } from '@/context/shared/NotificationsContext';
 
 import { getNetworkDisplayName } from './getNetworkDisplayName';
-import { registerAccountOnChain } from './register';
+import { registerAccountsOnChain } from './register';
 import { getAccountFromChain } from './shared/account';
 
 type Credential = {
@@ -125,7 +125,7 @@ export const onConnectWith =
     /**
      * Register the account on the chain where it did not exist
      */
-    const pendingTransaction = await registerAccountOnChain({
+    const pendingTransactions = await registerAccountsOnChain({
       accountName: account.accountName,
       color: device.color,
       deviceType: device.deviceType,
@@ -144,7 +144,7 @@ export const onConnectWith =
       Buffer.from(
         JSON.stringify({
           ...user,
-          pendingTxIds: [pendingTransaction],
+          pendingTxIds: pendingTransactions,
         }),
       ).toString('base64'),
     );
