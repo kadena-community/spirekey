@@ -11,7 +11,7 @@
   (defschema device-pair-schema
     guard         : guard
     credential-id : string
-    hostname      : string
+    domain        : string
     device-type   : string
     color         : string
   )

@@ -77,11 +77,11 @@
     (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.spirekey.add-device-pair
       account
       coin
-      { 'guard : (read-keyset 'ns-keyset)
-      , 'credential-id : "credential-id"
-      , 'hostname : "https://spirekey.kadena.io"
-      , 'device-type : "device-type"
-      , 'color : "#hexcolor"
+      { 'guard          :  (read-keyset 'ns-keyset)
+      , 'credential-id  :  "credential-id"
+      , 'domain         :  "https : //spirekey.kadena.io"
+      , 'device-type    :  "device-type"
+      , 'color          :  "#hexcolor"
       }
     )
   )

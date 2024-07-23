@@ -206,11 +206,11 @@ export const registerRAccountOnChain = async ({
         (${process.env.NAMESPACE}.spirekey.add-device-pair
           account
           coin
-          { 'guard : (read-keyset 'ns-keyset)
-          , 'credential-id : "${credentialId}"
-          , 'hostname : "${domain}"
-          , 'device-type : "${deviceType}"
-          , 'color : "${color}"
+          { 'guard          :  (read-keyset 'spirekey-keyset)
+          , 'credential-id  :  "${credentialId}"
+          , 'domain         :  "${domain}"
+          , 'device-type    :  "${deviceType}"
+          , 'color          :  "${color}"
           }
         )
       )
@@ -219,6 +219,10 @@ export const registerRAccountOnChain = async ({
     )
     .addData('ns-keyset', {
       keys: [getWebAuthnPubkeyFormat(credentialPubkey), publicKey],
+      pred: 'keys-any',
+    })
+    .addData('spirekey-keyset', {
+      keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
       pred: 'keys-any',
     })
     // Sign unrestricted with the temp pubkey
