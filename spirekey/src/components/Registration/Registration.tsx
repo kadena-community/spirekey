@@ -102,7 +102,7 @@ export const registerNewDevice =
             deviceType,
             domain,
             guard: {
-              keys: [getWebAuthnPubkeyFormat(publicKey), keypair.publicKey],
+              keys: [getWebAuthnPubkeyFormat(publicKey)],
               pred: 'keys-any',
             },
             'credential-id': credentialId,

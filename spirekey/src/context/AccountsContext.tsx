@@ -132,7 +132,16 @@ const AccountsProvider = ({ children }: Props) => {
     };
 
     checkPendingTxs();
-  }, [accounts.map((a) => a.accountName + a.networkId).join(',')]);
+  }, [
+    accounts
+      .map(
+        (a) =>
+          a.accountName +
+          a.networkId +
+          a.txQueue.map((tx) => tx.requestKey).join(','),
+      )
+      .join(','),
+  ]);
 
   const onAccountsUpdated = (updatedAccounts: Account[]) =>
     setAccounts(updatedAccounts);
