@@ -38,12 +38,29 @@ function localStorageProvider() {
 export default function Providers({
   children,
   displayDevMode = true,
-  enableColorScheme = true,
+  embedded = false,
 }: {
   children: ReactNode;
   displayDevMode?: boolean;
-  enableColorScheme?: boolean;
+  embedded?: boolean;
 }) {
+  if (embedded) {
+    return (
+      <SettingsProvider displayDevMode={displayDevMode}>
+        <ThemeProvider
+          attribute="class"
+          value={{
+            dark: darkThemeClass,
+          }}
+          enableSystem={true}
+          enableColorScheme={true} // When enabled, we can't make the background of the embedded iframe transparent
+        >
+          {children}
+        </ThemeProvider>
+      </SettingsProvider>
+    );
+  }
+
   return (
     <SettingsProvider displayDevMode={displayDevMode}>
       <SWRConfig value={{ provider: localStorageProvider }}>
