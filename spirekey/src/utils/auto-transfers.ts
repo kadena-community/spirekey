@@ -1,5 +1,12 @@
-import { getAccountFromChain } from '@/utils/shared/account';
-import { createTransactionBuilder, type ChainId } from '@kadena/client';
+import {
+  getAccountFromChain,
+  getRAccountFromChain,
+} from '@/utils/shared/account';
+import {
+  createTransaction,
+  createTransactionBuilder,
+  type ChainId,
+} from '@kadena/client';
 import { Account, OptimalTransactionsAccount } from '@kadena/spirekey-types';
 import BigNumber from 'bignumber.js';
 
@@ -20,11 +27,17 @@ export const getAccountBalances = (
 ) =>
   Promise.all(
     account.chainIds.map(async (chainId) => {
-      const details = await getAccountFromChain({
-        accountName: account.accountName,
-        networkId: account.networkId,
-        chainId,
-      });
+      const details = account.accountName.startsWith('r:')
+        ? await getRAccountFromChain({
+            accountName: account.accountName,
+            networkId: account.networkId,
+            chainId,
+          })
+        : await getAccountFromChain({
+            accountName: account.accountName,
+            networkId: account.networkId,
+            chainId,
+          });
       if (!details) return null;
       return {
         accountName: account.accountName,
@@ -99,8 +112,30 @@ export const sortAccountBalances =
   };
 
 const moduleName = `${process.env.NAMESPACE}.webauthn-wallet`;
-type TransferCommand = ReturnType<typeof getTransferCommand>;
-export const getTransferCommand = (
+type TransferCommand = ReturnType<typeof getLegacyTransferCommand>;
+export const getRAccountTransferCommand = (
+  accountBalance: AccountBalance,
+  target: ChainId,
+) =>
+  createTransactionBuilder({
+    meta: {
+      sender: accountBalance.accountName,
+      chainId: accountBalance.chainId,
+      gasLimit: 1500,
+      gasPrice: 1e-8,
+    },
+  }).execution(
+    `(coin.transfer-crosschain
+      "${accountBalance.accountName}"
+      "${accountBalance.accountName}"
+      (at 'guard (coin.details
+        "${accountBalance.accountName}"
+      ))
+      "${target}"
+      ${accountBalance.cost.toFixed(8)}
+    )`,
+  );
+export const getLegacyTransferCommand = (
   accountBalance: AccountBalance,
   target: ChainId,
 ) =>
@@ -122,7 +157,30 @@ export const getTransferCommand = (
       ${accountBalance.cost.toFixed(8)}
     )`,
   );
-export const getTransferCaps =
+export const getRAccountTransferCaps =
+  (accountBalance: AccountBalance, target: ChainId) => (cmd: TransferCommand) =>
+    accountBalance.credentials
+      .reduce(
+        (cmd, credential) =>
+          cmd.addSigner(
+            { pubKey: credential.pubKey, scheme: 'WebAuthn' },
+            (withCap) => [
+              withCap(
+                `coin.TRANSFER_XCHAIN`,
+                accountBalance.accountName,
+                accountBalance.accountName,
+                { decimal: accountBalance.cost.toFixed(8) },
+                target,
+              ),
+              withCap(`coin.GAS`),
+            ],
+          ),
+        cmd,
+      )
+      .setNetworkId(accountBalance.networkId)
+      .createTransaction();
+
+export const getLegacyTransferCaps =
   (accountBalance: AccountBalance, target: ChainId) => (cmd: TransferCommand) =>
     accountBalance.credentials
       .reduce(
@@ -153,8 +211,12 @@ export const getTransferCaps =
 
 export const getTransferTransaction =
   (target: ChainId) => (accountBalance: AccountBalance) => {
-    const cmd = getTransferCommand(accountBalance, target);
-    return getTransferCaps(accountBalance, target)(cmd);
+    if (accountBalance.accountName.startsWith('r:')) {
+      const cmd = getRAccountTransferCommand(accountBalance, target);
+      return getRAccountTransferCaps(accountBalance, target)(cmd);
+    }
+    const cmd = getLegacyTransferCommand(accountBalance, target);
+    return getLegacyTransferCaps(accountBalance, target)(cmd);
   };
 
 export const getOptimalTransactions = async (
