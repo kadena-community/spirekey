@@ -20,7 +20,7 @@ export const useTxQueue = (
     async () => {
       const updatedAccounts = await Promise.all(
         accounts.map(async (account) => {
-          const txQueue = await Promise.all(
+          await Promise.all(
             account.txQueue.map(async (tx) => {
               const res = await l1Client.listen(tx);
               if (!res.continuation) return null;
@@ -66,18 +66,20 @@ export const useTxQueue = (
               )
                 return null;
               if (preflight.result.status !== 'success') throw preflight;
-              return await l1Client.submit(
+              const continuationDescription = await l1Client.submit(
                 addSignatures(continuationTx, {
                   sig: sig!,
                   pubKey,
                 }) as ICommand,
               );
+              await l1Client.listen(continuationDescription);
+              return null;
             }),
           );
 
           return {
             ...account,
-            txQueue: txQueue.filter((tx) => !!tx),
+            txQueue: [],
           };
         }),
       );

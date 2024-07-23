@@ -56,7 +56,7 @@ const getRAccountTransfer = ({
   const tx = createTransactionBuilder()
     .execution(
       `
-    (coin.transfer "${account.accountName}" "${receiver}" ${amount})
+    (coin.transfer "${account.accountName}" "${receiver}" ${amount.toFixed(8)})
   `,
     )
     .setMeta({
