@@ -124,7 +124,7 @@ export default function ConnectComponent({
         title="Accounts"
         description="available for use"
       >
-        <Stack gap="xl">
+        <Stack gap="xl" flexDirection="column">
           {candidateAccounts.map((account) => (
             <Stack
               key={account.accountName}
