@@ -84,9 +84,13 @@ If you do want to use a different host, you can provide it via the config:
 
 ### InitConfig
 
-| key     | type   |
-| :------ | :----- |
-| hostUrl | string |
+| key         | type     |
+| :---------- | :------- |
+| hostUrl     | string   |
+| useRAccount | boolean? |
+
+> Note: `useRAccount` will soon be removed and is only added temporarily to
+> allow for testing within dapps
 
 ## `connect(networkId: string, chainId: ChainId)`
 
