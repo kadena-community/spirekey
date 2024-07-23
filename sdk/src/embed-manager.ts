@@ -4,16 +4,18 @@ import * as styles from './styles.css';
 
 export class EmbedManager {
   public baseUrl: string;
+  public useRAccount: boolean;
 
   public popup: WindowProxy | null = null;
   public notification: HTMLIFrameElement;
 
   static manager: EmbedManager;
 
-  static getInstance(baseUrl?: string): EmbedManager {
+  static getInstance(baseUrl?: string, useRaccount?: boolean): EmbedManager {
     if (!EmbedManager.manager)
       EmbedManager.manager = new EmbedManager(
         baseUrl || 'https://spirekey.kadena.io',
+        useRaccount || false,
       );
     if (baseUrl) EmbedManager.manager.updateBaseUrl(baseUrl);
     return EmbedManager.manager;
@@ -51,15 +53,16 @@ export class EmbedManager {
     return iframe;
   }
 
-  constructor(baseUrl: string) {
+  constructor(baseUrl: string, useRAccount: boolean) {
     this.baseUrl = baseUrl;
     this.notification = this.makeNotification(this.baseUrl);
+    this.useRAccount = useRAccount;
   }
 
   public openPopup(path: string) {
     const { width, height } = screen;
     const params = `width=500,height=${height},left=${width - 500},top=0,popup=1`;
-    this.popup = open(this.baseUrl + path, 'SpireKeyPopup', params);
+    this.popup = open(this.baseUrl + path + `&use-raccount=${this.useRAccount}`, 'SpireKeyPopup', params);
   }
 
   public closePopup() {

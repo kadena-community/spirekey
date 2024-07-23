@@ -186,6 +186,7 @@ export default function Home() {
   useEffect(() => {
     initSpireKey({
       hostUrl: wallet,
+      useRAccount: true
     });
   }, [wallet]);
 
