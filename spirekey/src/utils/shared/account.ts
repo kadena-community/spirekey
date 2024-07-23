@@ -153,7 +153,7 @@ export const getAccountFromChains = async ({
 }): Promise<Omit<Account, 'alias'> | null> => {
   const results = await Promise.allSettled(
     chainIds.map((chainId) => {
-      if (useRAccount())
+      if (accountName.startsWith('r:'))
         return getRAccountFromChain({
           accountName,
           networkId,

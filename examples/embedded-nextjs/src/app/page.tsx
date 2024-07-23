@@ -21,6 +21,7 @@ import {
   initSpireKey,
   sign,
   type Account,
+  type Device,
 } from '@kadena/spirekey-sdk';
 import { useEffect, useState } from 'react';
 const ns = 'n_eef68e581f767dd66c4d4c39ed922be944ede505';
@@ -55,7 +56,7 @@ const getRAccountTransfer = ({
   const tx = createTransactionBuilder()
     .execution(
       `
-    (coin.transfer "${account}" "${receiver}" ${amount})
+    (coin.transfer "${account.accountName}" "${receiver}" ${amount.toFixed(8)})
   `,
     )
     .setMeta({
@@ -63,7 +64,7 @@ const getRAccountTransfer = ({
       chainId,
     });
 
-  account.devices.flatMap((d) =>
+  account.devices.flatMap((d:Device) =>
     d.guard.keys.map((k) =>
       tx.addSigner(
         {
@@ -186,7 +187,7 @@ export default function Home() {
   useEffect(() => {
     initSpireKey({
       hostUrl: wallet,
-      useRAccount: true
+      useRAccount: true,
     });
   }, [wallet]);
 
@@ -245,59 +246,61 @@ export default function Home() {
 
   return (
     <main>
-      <Select
-        label="Wallet"
-        onSelectionChange={(w) => setWallet(w as string)}
-        selectedKey={wallet}
-      >
-        <SelectItem key="https://spirekey.kadena.io/">SpireKey</SelectItem>
-        <SelectItem key="http://localhost:1337/">Local</SelectItem>
-      </Select>
-      <Select
-        label="Network"
-        onSelectionChange={(n) => setNetworkId(n as string)}
-        selectedKey={networkId}
-      >
-        <SelectItem key="mainnet01">Mainnet</SelectItem>
-        <SelectItem key="testnet04">Testnet</SelectItem>
-        <SelectItem key="development">Devnet</SelectItem>
-      </Select>
-      <Select
-        label="Chain"
-        onSelectionChange={(c) => setChainId(c as ChainId)}
-        selectedKey={chainId}
-      >
-        {Array(20)
-          .fill(1)
-          .map((_, i) => (
-            <SelectItem key={i}>{i.toString()}</SelectItem>
-          ))}
-      </Select>
-      {!account && <button onClick={onConnect}>Connect</button>}
-      {account && (
-        <Stack flexDirection="column" gap="md" margin="md">
-          Connected as {account.alias} ({account.accountName}) (
-          {isReady ? 'Minted' : 'Mining...'})
-          <TextField
-            type="text"
-            value={receiver}
-            onValueChange={setReceiver}
-            label="receiver"
-          />
-          <NumberField
-            value={amount}
-            minValue={0}
-            step={0.1}
-            onValueChange={setAmount}
-            label="amount"
-          />
-          <Button variant="primary" onPress={signTransaction}>
-            Sign
-          </Button>
-        </Stack>
-      )}
-      {!result && !!txs?.length && JSON.stringify(txs)}
-      {result && <TextareaField label="result" value={result} rows={20} />}
+      <Stack margin="md" flexDirection="column" gap="md">
+        <Select
+          label="Wallet"
+          onSelectionChange={(w) => setWallet(w as string)}
+          selectedKey={wallet}
+        >
+          <SelectItem key="https://spirekey.kadena.io/">SpireKey</SelectItem>
+          <SelectItem key="http://localhost:1337/">Local</SelectItem>
+        </Select>
+        <Select
+          label="Network"
+          onSelectionChange={(n) => setNetworkId(n as string)}
+          selectedKey={networkId}
+        >
+          <SelectItem key="mainnet01">Mainnet</SelectItem>
+          <SelectItem key="testnet04">Testnet</SelectItem>
+          <SelectItem key="development">Devnet</SelectItem>
+        </Select>
+        <Select
+          label="Chain"
+          onSelectionChange={(c) => setChainId(c as ChainId)}
+          selectedKey={chainId}
+        >
+          {Array(20)
+            .fill(1)
+            .map((_, i) => (
+              <SelectItem key={i}>{i.toString()}</SelectItem>
+            ))}
+        </Select>
+        {!account && <Button onPress={onConnect}>Connect</Button>}
+        {account && (
+          <Stack flexDirection="column" gap="md">
+            Connected as {account.alias} ({account.accountName}) (
+            {isReady ? 'Minted' : 'Mining...'})
+            <TextField
+              type="text"
+              value={receiver}
+              onValueChange={setReceiver}
+              label="receiver"
+            />
+            <NumberField
+              value={amount}
+              minValue={0}
+              step={0.1}
+              onValueChange={setAmount}
+              label="amount"
+            />
+            <Button variant="primary" onPress={signTransaction}>
+              Sign
+            </Button>
+          </Stack>
+        )}
+        {!result && !!txs?.length && JSON.stringify(txs)}
+        {result && <TextareaField label="result" value={result} rows={20} />}
+      </Stack>
     </main>
   );
 }
