@@ -20,7 +20,7 @@ export default function RootLayout({
         <link rel="icon" href={favicon.src} sizes="any" />
       </head>
       <body>
-        <Providers displayDevMode={false} enableColorScheme={false}>
+        <Providers displayDevMode={false} embedded>
           {children}
         </Providers>
       </body>

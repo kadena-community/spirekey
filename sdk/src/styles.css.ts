@@ -1,3 +1,4 @@
+import { atoms, token } from '@kadena/kode-ui/styles';
 import { style } from '@vanilla-extract/css';
 
 export const spirekeySidebar = style({
@@ -26,13 +27,13 @@ export const spirekeySidebarOpen = style({
 });
 
 export const spirekeyNotification = style({
-  width: '460px',
-  height: '80px',
+  borderRadius: token('radius.lg'),
   position: 'fixed',
-  border: 0,
-  right: '20px',
-  top: '20px',
-  borderRadius: '1rem',
+  border: 'none',
+  width: '21.5rem',
+  height: '3rem',
+  right: token('spacing.md'),
+  top: token('spacing.md'),
   zIndex: 999999,
   transition:
     'transform 200ms cubic-bezier(0.33, 1, 0.68, 1), right 200ms cubic-bezier(0.33, 1, 0.68, 1)',
@@ -41,7 +42,7 @@ export const spirekeyNotification = style({
 
 export const spirekeyNotificationMinimized = style({
   right: '0',
-  transform: 'translateX(370px)',
+  transform: 'translateX(18.46rem)',
 });
 
 export const spirekeyNotificationHidden = style({
