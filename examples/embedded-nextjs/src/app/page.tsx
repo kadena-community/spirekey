@@ -253,9 +253,10 @@ export default function Home() {
       setAccount(account);
       setAccount(await account.isReady());
       setIsReady(true);
-      setIsLoading(false);
     } catch (e) {
       console.warn('User canceled', e);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (

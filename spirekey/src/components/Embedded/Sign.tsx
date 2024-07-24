@@ -91,6 +91,14 @@ export default function Sign(props: Props) {
     });
   }, []);
 
+  useEffect(() => {
+    const cancel = () => publishEvent('canceled:sign');
+    window.addEventListener('beforeunload', cancel);
+
+    return () => {
+      window.removeEventListener('beforeunload', cancel);
+    };
+  }, []);
   const onSign = async () => {
     const credentialId = txAccounts.accounts[0].devices[0]['credential-id'];
 
