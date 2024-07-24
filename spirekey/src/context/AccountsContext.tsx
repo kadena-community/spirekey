@@ -2,7 +2,7 @@
 
 import type { ChainId, ITransactionDescriptor } from '@kadena/client';
 import type { Account, Device, QueuedTx } from '@kadena/spirekey-types';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 import { useRAccount } from '@/flags/flags';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
@@ -11,7 +11,6 @@ import { deviceColors } from '@/styles/shared/tokens.css';
 import { fundAccount } from '@/utils/fund';
 import {
   getAccountName,
-  getRegisterCommand,
   getWebAuthnPubkeyFormat,
   registerAccountsOnChain,
 } from '@/utils/register';
@@ -22,7 +21,6 @@ import {
 } from '@/utils/shared/account';
 import { l1Client } from '@/utils/shared/client';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
-import useSWR from 'swr';
 
 export type AccountRegistration = {
   accountName: string;
