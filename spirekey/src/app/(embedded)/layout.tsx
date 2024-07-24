@@ -1,6 +1,5 @@
 import favicon from '@/assets/images/favicon.png';
 import type { Metadata } from 'next';
-import Providers from '../providers';
 
 import './global.embedded.css';
 
@@ -19,11 +18,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href={favicon.src} sizes="any" />
       </head>
-      <body>
-        <Providers displayDevMode={false} embedded>
-          {children}
-        </Providers>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
