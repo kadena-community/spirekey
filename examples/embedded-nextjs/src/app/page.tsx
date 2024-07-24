@@ -14,7 +14,10 @@ import {
   Button,
   Card,
   ContentHeader,
+  Heading,
+  maskValue,
   NumberField,
+  ProductIcon,
   Select,
   SelectItem,
   Stack,
@@ -180,6 +183,7 @@ export default function Home() {
   const [amount, setAmount] = useState<number>(0);
   const [isReady, setIsReady] = useState<boolean>(false);
   const [txs, setTxs] = useState<(IUnsignedCommand | ICommand)[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [result, setResult] = useState('');
 
   const [wallet, setWallet] = useLocalState(
@@ -196,10 +200,12 @@ export default function Home() {
     });
   }, [wallet]);
 
-  const signTransaction = async () => {
+  const signTransaction = async (event: React.FormEvent) => {
+    event.preventDefault();
     if (!account) throw new Error('No account connected');
     if (!receiver) throw new Error('No receiver defined');
     try {
+      setIsLoading(true);
       const tx = getTransferTx({
         amount,
         receiver,
@@ -236,14 +242,18 @@ export default function Home() {
       });
     } catch (e) {
       console.warn('User canceled signin', e);
+    } finally {
+      setIsLoading(false);
     }
   };
   const onConnect = async () => {
     try {
+      setIsLoading(true);
       const account = await connect(networkId, chainId as ChainId);
       setAccount(account);
       setAccount(await account.isReady());
       setIsReady(true);
+      setIsLoading(false);
     } catch (e) {
       console.warn('User canceled', e);
     }
@@ -257,58 +267,71 @@ export default function Home() {
       as="main"
       maxWidth="content.maxWidth"
     >
-      <Card fullWidth>
-        <ContentHeader
-          icon={<MonoContactless />}
-          heading="Connect your account"
-          description="SpireKey will connect your account or help you create a new account."
-        />
-        <Stack marginBlockStart="md" flexDirection="column" gap="md">
-          <Select
-            label="Chain"
-            onSelectionChange={(c) => setChainId(c as ChainId)}
-            selectedKey={chainId}
-          >
-            {Array(20)
-              .fill(1)
-              .map((_, i) => (
-                <SelectItem key={i}>{i.toString()}</SelectItem>
-              ))}
-          </Select>
-          <Accordion>
-            <AccordionItem title="Advanced settings">
-              <>
-                <Select
-                  label="Wallet"
-                  onSelectionChange={(w) => setWallet(w as string)}
-                  selectedKey={wallet}
-                >
-                  <SelectItem key="https://spirekey.kadena.io/">
-                    SpireKey
-                  </SelectItem>
-                  <SelectItem key="http://localhost:1337/">Local</SelectItem>
-                </Select>
-                <Select
-                  label="Network"
-                  onSelectionChange={(n) => setNetworkId(n as string)}
-                  selectedKey={networkId}
-                >
-                  <SelectItem key="mainnet01">Mainnet</SelectItem>
-                  <SelectItem key="testnet04">Testnet</SelectItem>
-                  <SelectItem key="development">Devnet</SelectItem>
-                </Select>
-              </>
-            </AccordionItem>
-          </Accordion>
-          {!account && <Button onPress={onConnect}>Connect</Button>}
-          {account && (
+      {!account && (
+        <Card fullWidth>
+          <ContentHeader
+            icon={<MonoContactless />}
+            heading="Connect your account"
+            description="SpireKey will connect your account or help you create a new account."
+          />
+          <Stack marginBlockStart="md" flexDirection="column" gap="md">
+            <Select
+              label="Chain"
+              onSelectionChange={(c) => setChainId(c as ChainId)}
+              selectedKey={chainId}
+            >
+              {Array(20)
+                .fill(1)
+                .map((_, i) => (
+                  <SelectItem key={i}>{i.toString()}</SelectItem>
+                ))}
+            </Select>
+            <Accordion>
+              <AccordionItem title="Advanced settings">
+                <>
+                  <Select
+                    label="Wallet"
+                    onSelectionChange={(w) => setWallet(w as string)}
+                    selectedKey={wallet}
+                  >
+                    <SelectItem key="https://spirekey.kadena.io/">
+                      SpireKey
+                    </SelectItem>
+                    <SelectItem key="http://localhost:1337/">Local</SelectItem>
+                  </Select>
+                  <Select
+                    label="Network"
+                    onSelectionChange={(n) => setNetworkId(n as string)}
+                    selectedKey={networkId}
+                  >
+                    <SelectItem key="mainnet01">Mainnet</SelectItem>
+                    <SelectItem key="testnet04">Testnet</SelectItem>
+                    <SelectItem key="development">Devnet</SelectItem>
+                  </Select>
+                </>
+              </AccordionItem>
+            </Accordion>
+            <Button isLoading={isLoading} onPress={onConnect}>
+              Connect
+            </Button>
+          </Stack>
+        </Card>
+      )}
+      {account && (
+        <Card fullWidth>
+          <form autoComplete="on" onSubmit={signTransaction}>
             <Stack flexDirection="column" gap="md">
-              Connected as {account.alias} ({account.accountName}) (
-              {isReady ? 'Minted' : 'Mining...'})
+              <ContentHeader
+                icon={<ProductIcon.QuickStart />}
+                heading={`Connected as ${maskValue(account.accountName)}`}
+                description={`You have ${account.balance}(KDA) available on your account.`}
+              />
+              <Heading variant="h3">Transfer to:</Heading>
               <TextField
                 type="text"
                 value={receiver}
                 onValueChange={setReceiver}
+                name="receiver"
                 label="receiver"
               />
               <NumberField
@@ -318,15 +341,14 @@ export default function Home() {
                 onValueChange={setAmount}
                 label="amount"
               />
-              <Button variant="primary" onPress={signTransaction}>
+              <Button isLoading={isLoading} variant="primary" type="submit">
                 Sign
               </Button>
             </Stack>
-          )}
-          {!result && !!txs?.length && JSON.stringify(txs)}
-          {result && <TextareaField label="result" value={result} rows={20} />}
-        </Stack>
-      </Card>
+          </form>
+        </Card>
+      )}
+      {result && <TextareaField label="result" value={result} rows={20} />}
     </Stack>
   );
 }
