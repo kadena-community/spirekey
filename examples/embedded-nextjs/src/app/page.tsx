@@ -7,8 +7,13 @@ import {
   IUnsignedCommand,
   type ChainId,
 } from '@kadena/client';
+import { MonoContactless } from '@kadena/kode-icons/system';
 import {
+  Accordion,
+  AccordionItem,
   Button,
+  Card,
+  ContentHeader,
   NumberField,
   Select,
   SelectItem,
@@ -64,7 +69,7 @@ const getRAccountTransfer = ({
       chainId,
     });
 
-  account.devices.flatMap((d:Device) =>
+  account.devices.flatMap((d: Device) =>
     d.guard.keys.map((k) =>
       tx.addSigner(
         {
@@ -243,64 +248,85 @@ export default function Home() {
       console.warn('User canceled', e);
     }
   };
-
   return (
-    <main>
-      <Stack margin="md" flexDirection="column" gap="md">
-        <Select
-          label="Wallet"
-          onSelectionChange={(w) => setWallet(w as string)}
-          selectedKey={wallet}
-        >
-          <SelectItem key="https://spirekey.kadena.io/">SpireKey</SelectItem>
-          <SelectItem key="http://localhost:1337/">Local</SelectItem>
-        </Select>
-        <Select
-          label="Network"
-          onSelectionChange={(n) => setNetworkId(n as string)}
-          selectedKey={networkId}
-        >
-          <SelectItem key="mainnet01">Mainnet</SelectItem>
-          <SelectItem key="testnet04">Testnet</SelectItem>
-          <SelectItem key="development">Devnet</SelectItem>
-        </Select>
-        <Select
-          label="Chain"
-          onSelectionChange={(c) => setChainId(c as ChainId)}
-          selectedKey={chainId}
-        >
-          {Array(20)
-            .fill(1)
-            .map((_, i) => (
-              <SelectItem key={i}>{i.toString()}</SelectItem>
-            ))}
-        </Select>
-        {!account && <Button onPress={onConnect}>Connect</Button>}
-        {account && (
-          <Stack flexDirection="column" gap="md">
-            Connected as {account.alias} ({account.accountName}) (
-            {isReady ? 'Minted' : 'Mining...'})
-            <TextField
-              type="text"
-              value={receiver}
-              onValueChange={setReceiver}
-              label="receiver"
-            />
-            <NumberField
-              value={amount}
-              minValue={0}
-              step={0.1}
-              onValueChange={setAmount}
-              label="amount"
-            />
-            <Button variant="primary" onPress={signTransaction}>
-              Sign
-            </Button>
-          </Stack>
-        )}
-        {!result && !!txs?.length && JSON.stringify(txs)}
-        {result && <TextareaField label="result" value={result} rows={20} />}
-      </Stack>
-    </main>
+    <Stack
+      padding="md"
+      marginInline="auto"
+      flexDirection="column"
+      gap="md"
+      as="main"
+      maxWidth="content.maxWidth"
+    >
+      <Card fullWidth>
+        <ContentHeader
+          icon={<MonoContactless />}
+          heading="Connect your account"
+          description="SpireKey will connect your account or help you create a new account."
+        />
+        <Stack marginBlockStart="md" flexDirection="column" gap="md">
+          <Select
+            label="Chain"
+            onSelectionChange={(c) => setChainId(c as ChainId)}
+            selectedKey={chainId}
+          >
+            {Array(20)
+              .fill(1)
+              .map((_, i) => (
+                <SelectItem key={i}>{i.toString()}</SelectItem>
+              ))}
+          </Select>
+          <Accordion>
+            <AccordionItem title="Advanced settings">
+              <>
+                <Select
+                  label="Wallet"
+                  onSelectionChange={(w) => setWallet(w as string)}
+                  selectedKey={wallet}
+                >
+                  <SelectItem key="https://spirekey.kadena.io/">
+                    SpireKey
+                  </SelectItem>
+                  <SelectItem key="http://localhost:1337/">Local</SelectItem>
+                </Select>
+                <Select
+                  label="Network"
+                  onSelectionChange={(n) => setNetworkId(n as string)}
+                  selectedKey={networkId}
+                >
+                  <SelectItem key="mainnet01">Mainnet</SelectItem>
+                  <SelectItem key="testnet04">Testnet</SelectItem>
+                  <SelectItem key="development">Devnet</SelectItem>
+                </Select>
+              </>
+            </AccordionItem>
+          </Accordion>
+          {!account && <Button onPress={onConnect}>Connect</Button>}
+          {account && (
+            <Stack flexDirection="column" gap="md">
+              Connected as {account.alias} ({account.accountName}) (
+              {isReady ? 'Minted' : 'Mining...'})
+              <TextField
+                type="text"
+                value={receiver}
+                onValueChange={setReceiver}
+                label="receiver"
+              />
+              <NumberField
+                value={amount}
+                minValue={0}
+                step={0.1}
+                onValueChange={setAmount}
+                label="amount"
+              />
+              <Button variant="primary" onPress={signTransaction}>
+                Sign
+              </Button>
+            </Stack>
+          )}
+          {!result && !!txs?.length && JSON.stringify(txs)}
+          {result && <TextareaField label="result" value={result} rows={20} />}
+        </Stack>
+      </Card>
+    </Stack>
   );
 }
