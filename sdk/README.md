@@ -26,7 +26,11 @@ To connect an account to your dApp:
 import { connect } from '@kadena/spirekey-sdk';
 
 const someHandler = async () => {
-  const account = await connect('testnet04', '5');
+  try {
+    const account = await connect('testnet04', '5');
+  } catch (error) {
+    console.warn('User canceled signin', error);
+  }
   // if you want to know if the account is ready for submitting transactions
   // NOTE: you can in general start constructing your transaction before an account is ready
   await account.isReady();
@@ -42,25 +46,30 @@ const someHandles = async () => {
   const account = yourConnectedAccount;
   const tx = yourTransaction;
 
-  // if you have multiple tx's to sign, you can provide them all at once
-  // provide the accounts in the optional array if you want to wait for
-  // the account to be ready before submitting
-  const { transactions, isReady } = await sign(
-    [tx],
-    [
-      {
-        accountName: account.accountName,
-        networkId: account.networkId,
-        chainIds: account.chainIds,
-        requestedFungibles: [
-          {
-            fungible: 'coin',
-            amount: amount, // The requested amount
-          },
-        ],
-      },
-    ],
-  );
+  try {
+    // if you have multiple tx's to sign, you can provide them all at once
+    // provide the accounts in the optional array if you want to wait for
+    // the account to be ready before submitting
+    const { transactions, isReady } = await sign(
+      [tx],
+      [
+        {
+          accountName: account.accountName,
+          networkId: account.networkId,
+          chainIds: account.chainIds,
+          requestedFungibles: [
+            {
+              fungible: 'coin',
+              amount: amount, // The requested amount
+            },
+          ],
+        },
+      ],
+    );
+  } catch (error) {
+    console.warn('User canceled signing');
+  }
+
   await isReady();
 
   // submit your tx with @kadena/client
@@ -105,7 +114,11 @@ combination, you can wait for the account to be ready before continuing.
 import { connect } from '@kadena/spirekey-sdk';
 
 const someHandler = async () => {
-  const account = await connect('testnet04', '5');
+  try {
+    const account = await connect('testnet04', '5');
+  } catch (error) {
+    console.warn('User canceled signin', error);
+  }
   // if you want to know if the account is ready for submitting transactions
   // NOTE: you can in general start constructing your transaction before an account is ready
   await account.isReady();
