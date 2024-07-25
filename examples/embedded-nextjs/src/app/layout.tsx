@@ -1,3 +1,4 @@
+import { atoms } from '@kadena/kode-ui/styles';
 import './globals.css';
 
 export default function RootLayout({
@@ -7,7 +8,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body style={{ backgroundColor: 'antiquewhite' }}>{children}</body>
+      <body
+        className={atoms({
+          backgroundColor: 'brand.secondary.default',
+        })}
+      >
+        {children}
+      </body>
     </html>
   );
 }
