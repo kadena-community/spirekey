@@ -4,7 +4,6 @@ import {
   createClient,
   createTransactionBuilder,
   ICommand,
-  IUnsignedCommand,
   type ChainId,
 } from '@kadena/client';
 import { MonoContactless } from '@kadena/kode-icons/system';
@@ -181,8 +180,6 @@ export default function Home() {
   const [account, setAccount] = useState<Account>();
   const [receiver, setReceiver] = useState<string>('');
   const [amount, setAmount] = useState<number>(0);
-  const [isReady, setIsReady] = useState<boolean>(false);
-  const [txs, setTxs] = useState<(IUnsignedCommand | ICommand)[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [result, setResult] = useState('');
 
@@ -229,10 +226,7 @@ export default function Home() {
           },
         ],
       );
-      setTxs(transactions);
-      setIsReady(false);
       await isReady();
-      setIsReady(true);
       transactions.map(async (tx) => {
         const res = await client.local(tx);
         console.log('Preflight result', res);
@@ -252,7 +246,6 @@ export default function Home() {
       const account = await connect(networkId, chainId as ChainId);
       setAccount(account);
       setAccount(await account.isReady());
-      setIsReady(true);
     } catch (e) {
       console.warn('User canceled', e);
     } finally {
@@ -349,7 +342,22 @@ export default function Home() {
           </form>
         </Card>
       )}
-      {result && <TextareaField label="result" value={result} rows={20} />}
+      {result && (
+        <Card fullWidth>
+          <Stack flexDirection="column" gap="md">
+            <ContentHeader
+              icon={<ProductIcon.Overview />}
+              heading="Result"
+              description={`You have succesfully transfered ${amount.toFixed(8)}KDA to ${receiver}`}
+            />
+            <Accordion>
+              <AccordionItem title="View details">
+                <TextareaField label="details" value={result} rows={20} />
+              </AccordionItem>
+            </Accordion>
+          </Stack>
+        </Card>
+      )}
     </Stack>
   );
 }
