@@ -318,7 +318,7 @@ export default function Home() {
               <ContentHeader
                 icon={<ProductIcon.QuickStart />}
                 heading={`Connected as ${maskValue(account.accountName)}`}
-                description={`You have ${account.balance}(KDA) available on your account.`}
+                description={`You have ${account.balance} (KDA) available on your account.`}
               />
               <Heading variant="h3">Transfer to:</Heading>
               <TextField

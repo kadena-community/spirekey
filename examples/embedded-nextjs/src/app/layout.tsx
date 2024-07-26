@@ -10,7 +10,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={atoms({
-          backgroundColor: 'brand.secondary.default',
+          backgroundColor: 'surface.default',
         })}
       >
         {children}
