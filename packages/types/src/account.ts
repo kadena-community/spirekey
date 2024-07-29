@@ -17,6 +17,9 @@ export type Account = {
   minRegistrationApprovals: number;
   balance: string;
   devices: Device[];
+  // The keyset refguard of the r:account, in the future,
+  // this will be a keyset, but this will only happen after coin v7
+  guard: string;
   networkId: string;
   chainIds: ChainId[];
   txQueue: QueuedTx[];
