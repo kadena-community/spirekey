@@ -77,7 +77,7 @@ export const registerNewDevice =
     };
     if (useRAccount()) {
       const keypair = genKeyPair();
-      const accountName = await getRAccountName(
+      const { name: accountName, guard } = await getRAccountName(
         publicKey,
         keypair.publicKey,
         networkId,
@@ -90,10 +90,13 @@ export const registerNewDevice =
       });
       onPasskeyRetrieved({
         accountName,
+        guard,
         networkId,
         balance: '0.0',
         alias,
-        chainIds: Array(20).fill(1).map((_, i) => i.toString()) as ChainId[],
+        chainIds: Array(20)
+          .fill(1)
+          .map((_, i) => i.toString()) as ChainId[],
         minApprovals: 1,
         minRegistrationApprovals: 1,
         devices: [
