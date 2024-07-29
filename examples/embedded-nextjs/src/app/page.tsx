@@ -10,6 +10,8 @@ import { MonoContactless } from '@kadena/kode-icons/system';
 import {
   Accordion,
   AccordionItem,
+  Avatar,
+  Badge,
   Button,
   Card,
   ContentHeader,
@@ -23,6 +25,7 @@ import {
   TextareaField,
   TextField,
 } from '@kadena/kode-ui';
+import { token } from '@kadena/kode-ui/styles';
 import {
   connect,
   initSpireKey,
@@ -31,6 +34,11 @@ import {
   type Device,
 } from '@kadena/spirekey-sdk';
 import { useEffect, useState } from 'react';
+import {
+  CardContainer,
+  CardContentBlock,
+  CardFooter,
+} from './CardPattern/CardPattern';
 const ns = 'n_eef68e581f767dd66c4d4c39ed922be944ede505';
 
 const useLocalState = (
@@ -262,13 +270,12 @@ export default function Home() {
       maxWidth="content.maxWidth"
     >
       {!account && (
-        <Card fullWidth>
-          <ContentHeader
-            icon={<MonoContactless />}
-            heading="Connect your account"
+        <CardContainer>
+          <CardContentBlock
+            visual={<ProductIcon.QuickStart size="xl" />}
+            title="Step 1: Connect your account"
             description="SpireKey will connect your account or help you create a new account."
-          />
-          <Stack marginBlockStart="md" flexDirection="column" gap="md">
+          >
             <Select
               label="Chain"
               onSelectionChange={(c) => setChainId(c as ChainId)}
@@ -308,19 +315,31 @@ export default function Home() {
             <Button isLoading={isLoading} onPress={onConnect}>
               Connect
             </Button>
-          </Stack>
-        </Card>
+          </CardContentBlock>
+        </CardContainer>
       )}
       {account && (
-        <Card fullWidth>
+        <CardContainer>
           <form autoComplete="on" onSubmit={signTransaction}>
-            <Stack flexDirection="column" gap="md">
-              <ContentHeader
-                icon={<ProductIcon.QuickStart />}
-                heading={`Connected as ${maskValue(account.accountName)}`}
-                description={`You have ${account.balance} (KDA) available on your account.`}
-              />
-              <Heading variant="h3">Transfer to:</Heading>
+            <CardContentBlock
+              visual={<ProductIcon.QuickStart size="xl" />}
+              title="Step 1: Connect your account"
+              description="SpireKey will connect your account or help you create a new account."
+            >
+              <Stack flexDirection="row" gap="sm" marginBlockEnd="md">
+                <Avatar
+                  size="lg"
+                  name={account.accountName}
+                  status="positive"
+                />
+                <Badge size="lg">{`${account.balance} (KDA)`}</Badge>
+              </Stack>
+            </CardContentBlock>
+            <CardContentBlock
+              title={`Step 2: Transfer`}
+              description={`Transfer KDA to another account. Your KDA might be spread across many chains on Kadena,
+              but SpireKey will take care of converging the funds to perform your desired transaction.`}
+            >
               <TextField
                 type="text"
                 value={receiver}
@@ -335,28 +354,30 @@ export default function Home() {
                 onValueChange={setAmount}
                 label="amount"
               />
-              <Button isLoading={isLoading} variant="primary" type="submit">
-                Sign
-              </Button>
-            </Stack>
+            </CardContentBlock>
+            {!result && (
+              <CardFooter>
+                <Button isLoading={isLoading} variant="primary" type="submit">
+                  Sign
+                </Button>
+              </CardFooter>
+            )}
           </form>
-        </Card>
-      )}
-      {result && (
-        <Card fullWidth>
-          <Stack flexDirection="column" gap="md">
-            <ContentHeader
-              icon={<ProductIcon.Overview />}
-              heading="Result"
-              description={`You have succesfully transfered ${amount.toFixed(8)}KDA to ${receiver}`}
-            />
-            <Accordion>
-              <AccordionItem title="View details">
-                <TextareaField label="details" value={result} rows={20} />
-              </AccordionItem>
-            </Accordion>
-          </Stack>
-        </Card>
+          {result && (
+            <CardContentBlock
+              title="Result"
+              description={`You have succesfully transfered ${amount.toFixed(8)}KDA to ${maskValue(receiver)}`}
+            >
+              <Stack flexDirection="column" gap="md">
+                <Accordion>
+                  <AccordionItem title="View details">
+                    <TextareaField label="details" value={result} rows={20} />
+                  </AccordionItem>
+                </Accordion>
+              </Stack>
+            </CardContentBlock>
+          )}
+        </CardContainer>
       )}
     </Stack>
   );
