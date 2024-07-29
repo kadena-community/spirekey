@@ -5,7 +5,7 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
-import type { Account, Device } from '@kadena/spirekey-types';
+import type { Account, Device, Guard } from '@kadena/spirekey-types';
 
 import { assertFulfilled } from '@/utils/assertFulfilled';
 
@@ -72,10 +72,11 @@ export const getRAccountFromChain = async ({
   const account = res.result.data as {
     account: string;
     balance: string;
-    guard: any;
+    guard: Guard;
     devices: Device[];
   };
   return {
+    guard: account.guard,
     accountName: account.account,
     minApprovals: 1,
     minRegistrationApprovals: 1,

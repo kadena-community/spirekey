@@ -165,6 +165,7 @@ const AccountsProvider = ({ children }: Props) => {
           }
 
           return migrateAccountStructure({
+            guard: remoteAccount.guard,
             accountName,
             networkId,
             alias,

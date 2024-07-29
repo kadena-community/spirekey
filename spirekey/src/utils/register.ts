@@ -25,6 +25,7 @@ import { asyncPipe } from '@/utils/shared/asyncPipe';
 import { l1Client } from '@/utils/shared/client';
 import { signWithKeyPair } from '@/utils/signSubmitListen';
 import { sign } from '@kadena/cryptography-utils';
+import { Guard } from '@kadena/spirekey-types';
 
 export const getAccountName = async (
   publicKey: string,
@@ -32,12 +33,12 @@ export const getAccountName = async (
 ): Promise<string> => {
   return getAccountNameLegacy(publicKey, networkId);
 };
-
+type RAccountInfo = { name: string; guard: Guard };
 export const getRAccountName = async (
   publicKey: string,
   tempPublicKey: string,
   networkId: string,
-): Promise<string> => {
+): Promise<RAccountInfo> => {
   const tx = createTransactionBuilder()
     .execution(
       `
@@ -54,7 +55,9 @@ export const getRAccountName = async (
       (define-keyset ks-ref-name
         (read-keyset 'ns-keyset)
       )
-      (create-principal (keyset-ref-guard ks-ref-name))
+      { 'name  : (create-principal (keyset-ref-guard ks-ref-name))
+      , 'guard : (keyset-ref-guard ks-ref-name)
+      }
     )`,
     )
     .setMeta({
@@ -73,7 +76,7 @@ export const getRAccountName = async (
   });
   if (res.result.status !== 'success')
     throw new Error('Cannot retrieve account name');
-  return res.result.data as string;
+  return res.result.data as RAccountInfo;
 };
 
 const getAccountNameLegacy = async (

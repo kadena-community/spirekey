@@ -2,6 +2,20 @@ import type { ChainId, ITransactionDescriptor } from '@kadena/client';
 
 export type QueuedTx = ITransactionDescriptor;
 
+type RefKeyset = {
+  keysetref: {
+    ns: string;
+    ksn: string;
+  };
+};
+type Keyset = {
+  'admin-keyset': {
+    keys: string[];
+    pred: string;
+  };
+};
+export type Guard = RefKeyset | Keyset;
+
 export type OptimalTransactionsAccount = Pick<
   Account,
   'chainIds' | 'accountName' | 'networkId' | 'requestedFungibles'
@@ -19,7 +33,7 @@ export type Account = {
   devices: Device[];
   // The keyset refguard of the r:account, in the future,
   // this will be a keyset, but this will only happen after coin v7
-  guard: string;
+  guard?: Guard;
   networkId: string;
   chainIds: ChainId[];
   txQueue: QueuedTx[];
