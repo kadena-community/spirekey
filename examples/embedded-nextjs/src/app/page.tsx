@@ -39,6 +39,7 @@ import {
   CardContentBlock,
   CardFooter,
 } from './CardPattern/CardPattern';
+import { Step, Stepper } from './Stepper/Stepper';
 const ns = 'n_eef68e581f767dd66c4d4c39ed922be944ede505';
 
 const useLocalState = (
@@ -269,6 +270,11 @@ export default function Home() {
       as="main"
       maxWidth="content.maxWidth"
     >
+      <Stepper>
+        <Step title="Step 1" status="positive" />
+        <Step title="Step 2" status="error" active />
+        <Step title="Step 3" status="positive" />
+      </Stepper>
       {!account && (
         <CardContainer>
           <CardContentBlock

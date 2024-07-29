@@ -27,7 +27,7 @@ export const CardContentBlock = ({
   children,
 }: CardContentBlockProps) => {
   return (
-    <Stack flexDirection={{ xs: 'column', md: 'row' }} gap="md" marginBlock="md">
+    <Stack flexDirection={{ xs: 'column', md: 'row' }} gap="md">
       <Stack flexDirection="column" alignItems="flex-start" flex={1}>
         <Box>{visual}</Box>
         {title && (
