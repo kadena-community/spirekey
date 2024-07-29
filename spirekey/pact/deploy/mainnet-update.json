@@ -9,22 +9,11 @@
   "steps": [
     {
       "profile": "default",
-      "codeFile": "./pact/webauthn-guard.pact",
+      "codeFile": "./pact/spirekey.pact",
       "data": {
         "webauthn-keyset-name": "n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-keyset",
         "webauthn-namespace": "n_eef68e581f767dd66c4d4c39ed922be944ede505",
         "upgrade": true
-      },
-      "sender": "w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any"
-    },
-    {
-      "profile": "default",
-      "codeFile": "./pact/webauthn-wallet.pact",
-      "data": {
-        "webauthn-keyset-name": "n_eef68e581f767dd66c4d4c39ed922be944ede505.webauthn-keyset",
-        "webauthn-namespace": "n_eef68e581f767dd66c4d4c39ed922be944ede505",
-        "upgrade": true,
-        "fungible-enabled": false
       },
       "sender": "w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any"
     },
