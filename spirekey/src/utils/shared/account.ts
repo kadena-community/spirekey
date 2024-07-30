@@ -75,6 +75,7 @@ export const getRAccountFromChain = async ({
     guard: Guard;
     devices: Device[];
   };
+
   return {
     guard: account.guard,
     accountName: account.account,
@@ -183,6 +184,7 @@ export const getAccountFromChains = async ({
       );
       return {
         ...account,
+        guard: account.guard || accountOnChain.guard,
         balance: (
           Number(parseFloat(account.balance).toPrecision(8)) +
           Number(parseFloat(accountOnChain.balance).toPrecision(8))
