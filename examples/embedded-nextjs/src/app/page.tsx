@@ -270,58 +270,65 @@ export default function Home() {
       as="main"
       maxWidth="content.maxWidth"
     >
-      <Stepper>
-        <Step title="Step 1" status="positive" />
-        <Step title="Step 2" status="error" active />
-        <Step title="Step 3" status="positive" />
-      </Stepper>
       {!account && (
         <CardContainer>
           <CardContentBlock
             visual={<ProductIcon.QuickStart size="xl" />}
             title="Step 1: Connect your account"
-            description="SpireKey will connect your account or help you create a new account."
+            description={
+              <Stepper>
+                <Step>Step 1</Step>
+                <Step active>Step 2</Step>
+                <Step>Step 3</Step>
+              </Stepper>
+            }
           >
-            <Select
-              label="Chain"
-              onSelectionChange={(c) => setChainId(c as ChainId)}
-              selectedKey={chainId}
-            >
-              {Array(20)
-                .fill(1)
-                .map((_, i) => (
-                  <SelectItem key={i}>{i.toString()}</SelectItem>
-                ))}
-            </Select>
-            <Accordion>
-              <AccordionItem title="Advanced settings">
-                <>
-                  <Select
-                    label="Wallet"
-                    onSelectionChange={(w) => setWallet(w as string)}
-                    selectedKey={wallet}
-                  >
-                    <SelectItem key="https://spirekey.kadena.io/">
-                      SpireKey
-                    </SelectItem>
-                    <SelectItem key="http://localhost:1337/">Local</SelectItem>
-                  </Select>
-                  <Select
-                    label="Network"
-                    onSelectionChange={(n) => setNetworkId(n as string)}
-                    selectedKey={networkId}
-                  >
-                    <SelectItem key="mainnet01">Mainnet</SelectItem>
-                    <SelectItem key="testnet04">Testnet</SelectItem>
-                    <SelectItem key="development">Devnet</SelectItem>
-                  </Select>
-                </>
-              </AccordionItem>
-            </Accordion>
+            <Stack flexDirection="column" gap="md">
+              <Select
+                label="Chain"
+                onSelectionChange={(c) => setChainId(c as ChainId)}
+                selectedKey={chainId}
+              >
+                {Array(20)
+                  .fill(1)
+                  .map((_, i) => (
+                    <SelectItem key={i}>{i.toString()}</SelectItem>
+                  ))}
+              </Select>
+              <Accordion>
+                <AccordionItem title="Advanced settings">
+                  <>
+                    <Select
+                      label="Wallet"
+                      onSelectionChange={(w) => setWallet(w as string)}
+                      selectedKey={wallet}
+                    >
+                      <SelectItem key="https://spirekey.kadena.io/">
+                        SpireKey
+                      </SelectItem>
+                      <SelectItem key="http://localhost:1337/">
+                        Local
+                      </SelectItem>
+                    </Select>
+                    <Select
+                      label="Network"
+                      onSelectionChange={(n) => setNetworkId(n as string)}
+                      selectedKey={networkId}
+                    >
+                      <SelectItem key="mainnet01">Mainnet</SelectItem>
+                      <SelectItem key="testnet04">Testnet</SelectItem>
+                      <SelectItem key="development">Devnet</SelectItem>
+                    </Select>
+                  </>
+                </AccordionItem>
+              </Accordion>
+            </Stack>
+          </CardContentBlock>
+          <CardFooter>
             <Button isLoading={isLoading} onPress={onConnect}>
               Connect
             </Button>
-          </CardContentBlock>
+          </CardFooter>
         </CardContainer>
       )}
       {account && (
@@ -329,37 +336,48 @@ export default function Home() {
           <form autoComplete="on" onSubmit={signTransaction}>
             <CardContentBlock
               visual={<ProductIcon.QuickStart size="xl" />}
-              title="Step 1: Connect your account"
-              description="SpireKey will connect your account or help you create a new account."
-            >
-              <Stack flexDirection="row" gap="sm" marginBlockEnd="md">
-                <Avatar
-                  size="lg"
-                  name={account.accountName}
-                  status="positive"
-                />
-                <Badge size="lg">{`${account.balance} (KDA)`}</Badge>
-              </Stack>
-            </CardContentBlock>
-            <CardContentBlock
               title={`Step 2: Transfer`}
-              description={`Transfer KDA to another account. Your KDA might be spread across many chains on Kadena,
-              but SpireKey will take care of converging the funds to perform your desired transaction.`}
+              description={
+                <>
+                  <p>
+                    Transfer KDA to another account. Your KDA might be spread
+                    across many chains on Kadena, but SpireKey will take care of
+                    converging the funds to perform your desired transaction.
+                  </p>
+                  <Stepper>
+                    <Step>Step 1: Connect</Step>
+                    <Step active>Step 2: Fund</Step>
+                    <Step>Step 3: Transfer</Step>
+                    <Step>Step 4: Sign</Step>
+                    <Step>Step 5: Confirm</Step>
+                  </Stepper>
+                </>
+              }
             >
-              <TextField
-                type="text"
-                value={receiver}
-                onValueChange={setReceiver}
-                name="receiver"
-                label="receiver"
-              />
-              <NumberField
-                value={amount}
-                minValue={0}
-                step={0.1}
-                onValueChange={setAmount}
-                label="amount"
-              />
+              <Stack flexDirection="column" gap="md">
+                <TextField
+                  value={account.accountName}
+                  name="sender"
+                  type="text"
+                  label={`Sender: ${account.balance} (KDA)`}
+                  isReadOnly
+                  disabled
+                />
+                <TextField
+                  type="text"
+                  value={receiver}
+                  onValueChange={setReceiver}
+                  name="receiver"
+                  label="receiver"
+                />
+                <NumberField
+                  value={amount}
+                  minValue={0}
+                  step={0.1}
+                  onValueChange={setAmount}
+                  label="amount"
+                />
+              </Stack>
             </CardContentBlock>
             {!result && (
               <CardFooter>

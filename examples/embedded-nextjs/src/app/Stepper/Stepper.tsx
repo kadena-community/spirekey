@@ -1,5 +1,6 @@
 import { MonoCheck } from '@kadena/kode-icons/system';
 import { Stack } from '@kadena/kode-ui';
+import { ReactNode } from 'react';
 import * as styles from './Stepper.css';
 
 type StepperProps = {
@@ -7,17 +8,21 @@ type StepperProps = {
 };
 export const Stepper = ({ children }: StepperProps) => {
   return (
-    <Stack className={styles.stepper} flexDirection="column">
+    <Stack
+      className={styles.stepper}
+      marginInlineStart="sm"
+      flexDirection="column"
+    >
       {children}
     </Stack>
   );
 };
 type StepProps = {
-  status: 'positive' | 'warning' | 'error' | 'todo';
-  title: string;
+  status?: 'positive' | 'warning' | 'error' | 'todo';
+  children: ReactNode;
   active?: boolean;
 };
-export const Step = ({ title, status, active }: StepProps) => {
+export const Step = ({ children, status, active }: StepProps) => {
   return (
     <Stack
       className={styles.step}
@@ -27,7 +32,7 @@ export const Step = ({ title, status, active }: StepProps) => {
       data-active={active}
     >
       <Stack marginInlineStart="lg" gap="sm">
-        {title}
+        {children}
         <MonoCheck fontSize="lg" />
       </Stack>
     </Stack>

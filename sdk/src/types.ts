@@ -1,1 +1,1 @@
-export type { Account, Device, OptimalTransactionsAccount } from '@kadena/spirekey-types';
+export type { Account, Device, Guard, OptimalTransactionsAccount } from '@kadena/spirekey-types';
