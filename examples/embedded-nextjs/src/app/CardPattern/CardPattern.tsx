@@ -16,7 +16,7 @@ export const CardContainer = ({ children }: { children: React.ReactNode }) => {
 interface CardContentBlockProps {
   title: String;
   visual?: React.ReactNode;
-  description?: String;
+  description?: React.ReactNode;
   children: React.ReactNode;
 }
 
@@ -40,10 +40,12 @@ export const CardContentBlock = ({
             {title}
           </Heading>
         )}
-        {description && <Text as="p">{description}</Text>}
+        {typeof description === 'string' && <Text as="p">{description}</Text>}
+        {typeof description !== 'string' && <div>{description}</div>}
       </Stack>
       <Stack
         flexDirection="column"
+        justifyContent="flex-start"
         className={bodyContent}
         data-layout={!visual && 'no-visual'}
       >

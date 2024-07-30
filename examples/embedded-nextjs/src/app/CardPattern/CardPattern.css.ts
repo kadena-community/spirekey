@@ -30,7 +30,10 @@ export const container = style([
 ]);
 
 export const bodyContent = style([
-  { marginBlockStart: token('spacing.xl'), flex: 1.5 },
+  {
+    marginBlockStart: token('spacing.xl'),
+    flex: 1.5,
+  },
   {
     ...responsiveStyle({
       md: {
