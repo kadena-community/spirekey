@@ -9,10 +9,8 @@ type RefKeyset = {
   };
 };
 type Keyset = {
-  'admin-keyset': {
-    keys: string[];
-    pred: string;
-  };
+  keys: string[];
+  pred: string;
 };
 export type Guard = RefKeyset | Keyset;
 
@@ -45,10 +43,7 @@ export type Device = {
   color: string;
   deviceType: string;
   ['credential-id']: string;
-  guard: {
-    keys: string[];
-    pred: 'keys-any';
-  };
+  guard: Keyset;
   pendingRegistrationTxs?: ITransactionDescriptor[];
   name?: string;
 };
