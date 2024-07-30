@@ -1,17 +1,29 @@
-import { atoms, style, styleVariants, token } from '@kadena/kode-ui/styles';
+import { style, styleVariants, token } from '@kadena/kode-ui/styles';
 
 export const stepper = style({});
 
 export const step = style({
+  display: 'flex',
   position: 'relative',
+  paddingBlock: token('spacing.md'),
+  color: token('color.text.brand.primary.default'),
   selectors: {
     '&:before': {
       content: '',
+      position: 'absolute',
       backgroundColor: token('color.background.accent.primary.inverse.default'),
       borderRadius: token('radius.round'),
       height: token('size.n2'),
       width: token('size.n2'),
       transform: 'translateX(-50%)',
+    },
+    '&:first-child:after': {
+      height: '50%',
+      transform: 'translateY(50%) translateX(-50%)',
+    },
+    '&:last-child:after': {
+      height: '50%',
+      transform: 'translateY(-50%) translateX(-50%)',
     },
     '&:after': {
       content: '',
@@ -24,7 +36,16 @@ export const step = style({
     '&[data-active]:before': {
       height: token('size.n4'),
       width: token('size.n4'),
-    }
+    },
+    '&[data-active] ~ &': {
+      color: token('color.text.gray.default')
+    },
+    '&[data-active] ~ &:before': {
+      backgroundColor: token('color.icon.brand.primary.@disabled'),
+    },
+    '&[data-active] ~ &:after': {
+      backgroundColor: token('color.icon.brand.primary.@disabled'),
+    },
   },
 });
 

@@ -1,3 +1,4 @@
+import { MonoCheck } from '@kadena/kode-icons/system';
 import { Stack } from '@kadena/kode-ui';
 import * as styles from './Stepper.css';
 
@@ -25,7 +26,10 @@ export const Step = ({ title, status, active }: StepProps) => {
       gap="md"
       data-active={active}
     >
-      {title}
+      <Stack marginInlineStart="lg" gap="sm">
+        {title}
+        <MonoCheck fontSize="lg" />
+      </Stack>
     </Stack>
   );
 };
