@@ -1,7 +1,17 @@
-import { CardContainer, CardContentBlock } from "@/steps/CardPattern/CardPattern";
-import { useLocalState } from "@/hooks/useLocalState";
-import { Accordion, AccordionItem, ProductIcon, Stack, TextareaField } from "@kadena/kode-ui";
-import { ExampleStepper } from "./ExampleStepper";
+import { useLocalState } from '@/hooks/useLocalState';
+import {
+  CardContainer,
+  CardContentBlock,
+} from '@/steps/CardPattern/CardPattern';
+import {
+  Accordion,
+  AccordionItem,
+  maskValue,
+  ProductIcon,
+  Stack,
+  TextareaField,
+} from '@kadena/kode-ui';
+import { ExampleStepper } from './ExampleStepper';
 
 export const ResultStep = ({ result }: { result: string }) => {
   const [amount] = useLocalState('amount', '0.0');
@@ -14,7 +24,8 @@ export const ResultStep = ({ result }: { result: string }) => {
         description={
           <>
             <p>
-              You have succesfully transfered {amount} KDA to {receiver}
+              You have succesfully transfered {amount} KDA to{' '}
+              {maskValue(receiver)}
             </p>
             <ExampleStepper step={4} />
           </>
@@ -31,5 +42,3 @@ export const ResultStep = ({ result }: { result: string }) => {
     </CardContainer>
   );
 };
-
-
