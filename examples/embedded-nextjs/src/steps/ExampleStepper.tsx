@@ -6,7 +6,6 @@ export const ExampleStepper = ({ step }: { step: number }) => {
     'Step 2: Fund',
     'Step 3: Transfer',
     'Step 4: Sign',
-    'Step 5: Confirm',
   ]
     .map((label, i) => ({ label, active: i === step }))
     .map(({ label, active }) => (

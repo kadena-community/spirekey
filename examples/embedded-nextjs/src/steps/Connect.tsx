@@ -71,7 +71,7 @@ export const ConnectStep = ({
             </Select>
             <Button
               variant="outlined"
-              onClick={() => setIsShownAdvancedOptions(!isShownAdvancedOptions)}
+              onPress={() => setIsShownAdvancedOptions(!isShownAdvancedOptions)}
               className={stackedButtonClass}
             >
               {isShownAdvancedOptions
