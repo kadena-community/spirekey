@@ -1,5 +1,5 @@
 import type { Account } from '@kadena/spirekey-types';
-import { createTransaction, type ChainId } from '@kadena/client';
+import { createTransaction, ICommandResult, type ChainId } from '@kadena/client';
 import {
   addSigner,
   composePactCommand,
@@ -14,7 +14,7 @@ import { l1Client } from '@/utils/shared/client';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { signWithKeyPair } from '@/utils/signSubmitListen';
 
-export const fundAccount = async (account: Account): Promise<string> =>
+export const fundAccount = async (account: Account): Promise<ICommandResult> =>
   asyncPipe(
     getCommand(account),
     createTransaction,
@@ -24,7 +24,6 @@ export const fundAccount = async (account: Account): Promise<string> =>
     }),
     l1Client.submit,
     l1Client.pollOne,
-    (tx) => JSON.stringify(tx),
   )({});
 
 const getCommand = (account: Account) => {
