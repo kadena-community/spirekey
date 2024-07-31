@@ -198,7 +198,6 @@ export default function Sign(props: Props) {
         <SignPlumbingTxs
           plumbingSteps={plumbingSteps}
           credentialId={txAccounts.accounts[0]?.devices[0]['credential-id']}
-          onCancel={onCancel}
           onCompleted={onCompletedPlumbingTxs}
         />
         {[...caps.entries()].map(([module, capabilities]) => (
@@ -234,14 +233,12 @@ type PlumbingTxStep = {
 type SignPlumbingTxsProps = {
   plumbingSteps: PlumbingTxStep[];
   credentialId?: string;
-  onCancel: () => void;
   onCompleted: (txs: ICommand[]) => void;
 };
 const SignPlumbingTxs = ({
   plumbingSteps,
   credentialId,
   onCompleted,
-  onCancel,
 }: SignPlumbingTxsProps) => {
   const [steps, setSteps] = useState(plumbingSteps);
 
@@ -271,10 +268,7 @@ const SignPlumbingTxs = ({
               </AccordionItem>
             </Accordion>
           ))}
-          <Stack gap="md" justifyContent="space-between">
-            <Button variant="outlined" onPress={onCancel}>
-              Cancel
-            </Button>
+          <Stack gap="md" justifyContent="flex-end">
             <Button
               variant="primary"
               onPress={async () => {
