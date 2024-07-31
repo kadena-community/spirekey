@@ -33,17 +33,17 @@ export const step = style({
       width: '1px',
       transform: 'translateX(-50%)',
     },
-    '&[data-active]:before': {
+    '&[data-active="true"]:before': {
       height: token('size.n4'),
       width: token('size.n4'),
     },
-    '&[data-active] ~ &': {
+    '&[data-active="true"] ~ &': {
       color: token('color.text.gray.default')
     },
-    '&[data-active] ~ &:before': {
+    '&[data-active="true"] ~ &:before': {
       backgroundColor: token('color.icon.brand.primary.@disabled'),
     },
-    '&[data-active] ~ &:after': {
+    '&[data-active="true"] ~ &:after': {
       backgroundColor: token('color.icon.brand.primary.@disabled'),
     },
   },

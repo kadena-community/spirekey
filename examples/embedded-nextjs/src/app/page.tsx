@@ -185,6 +185,23 @@ const client = createClient(({ chainId, networkId }) => {
   return `http://localhost:8080/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
 });
 
+const ExampleStepper = ({ step }: { step: number }) => {
+  const steps = [
+    'Step 1: Connect',
+    'Step 2: Fund',
+    'Step 3: Transfer',
+    'Step 4: Sign',
+    'Step 5: Confirm',
+  ]
+    .map((label, i) => ({ label, active: i === step }))
+    .map(({ label, active }) => (
+      <Step key={label} active={active}>
+        {label}
+      </Step>
+    ));
+  return <Stepper>{steps}</Stepper>;
+};
+
 export default function Home() {
   const [account, setAccount] = useState<Account>();
   const [receiver, setReceiver] = useState<string>('');
@@ -275,13 +292,7 @@ export default function Home() {
           <CardContentBlock
             visual={<ProductIcon.QuickStart size="xl" />}
             title="Step 1: Connect your account"
-            description={
-              <Stepper>
-                <Step>Step 1</Step>
-                <Step active>Step 2</Step>
-                <Step>Step 3</Step>
-              </Stepper>
-            }
+            description={<ExampleStepper step={0} />}
           >
             <Stack flexDirection="column" gap="md">
               <Select
@@ -344,13 +355,7 @@ export default function Home() {
                     across many chains on Kadena, but SpireKey will take care of
                     converging the funds to perform your desired transaction.
                   </p>
-                  <Stepper>
-                    <Step>Step 1: Connect</Step>
-                    <Step active>Step 2: Fund</Step>
-                    <Step>Step 3: Transfer</Step>
-                    <Step>Step 4: Sign</Step>
-                    <Step>Step 5: Confirm</Step>
-                  </Stepper>
+                  <ExampleStepper step={1} />
                 </>
               }
             >
