@@ -5,7 +5,7 @@ import { style } from '@vanilla-extract/css';
 export const paddingContainer = style(
   responsiveStyle({
     md: {
-      paddingBlock: token('size.n32'),
+      paddingBlockStart: token('size.n32'),
     },
   }),
 );
@@ -49,3 +49,12 @@ export const bodyContent = style([
     },
   },
 ]);
+
+export const newSectionStack = style({
+  marginBlockStart: token('size.n16'),
+});
+
+export const stackedButtonClass = style({
+  width: 'min-content',
+  alignSelf: 'flex-end',
+});
