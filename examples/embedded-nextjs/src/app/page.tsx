@@ -5,6 +5,7 @@ import {
   createClient,
   createTransactionBuilder,
   ICommand,
+  ICommandResult,
   type ChainId,
 } from '@kadena/client';
 import { MonoContactless } from '@kadena/kode-icons/system';
@@ -215,8 +216,16 @@ const ConnectStep = ({
   const [networkId, setNetworkId] = useLocalState('networkId', 'testnet04');
   const [chainId, setChainId] = useLocalState('chainId', '14');
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    initSpireKey({
+      hostUrl: wallet,
+      useRAccount: true,
+    });
+  }, [wallet]);
   const onConnect = async () => {
     try {
+      debugger;
       setIsLoading(true);
       const account = await connect(networkId, chainId as ChainId);
       setAccount(account);
@@ -339,27 +348,18 @@ const FundStep = ({
   );
 };
 
-export default function Home() {
-  const [account, setAccount] = useState<Account>();
-  const [receiver, setReceiver] = useState<string>('');
-  const [amount, setAmount] = useState<number>(0);
+const SignStep = ({
+  setResult,
+  account,
+}: {
+  setResult: (result: string) => void;
+  account: Account;
+}) => {
+  const [networkId] = useLocalState('networkId', 'testnet04');
+  const [chainId] = useLocalState('chainId', '14');
+  const [receiver, setReceiver] = useLocalState('receiver', '');
+  const [amount, setAmount] = useLocalState('amount', '0.0');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [result, setResult] = useState('');
-
-  const [wallet, setWallet] = useLocalState(
-    'wallet',
-    'https://spirekey.kadena.io/',
-  );
-  const [networkId, setNetworkId] = useLocalState('networkId', 'testnet04');
-  const [chainId, setChainId] = useLocalState('chainId', '14');
-
-  useEffect(() => {
-    initSpireKey({
-      hostUrl: wallet,
-      useRAccount: true,
-    });
-  }, [wallet]);
-
   const signTransaction = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!account) throw new Error('No account connected');
@@ -367,7 +367,7 @@ export default function Home() {
     try {
       setIsLoading(true);
       const tx = getTransferTx({
-        amount,
+        amount: parseFloat(amount),
         receiver,
         account,
         chainId: chainId as ChainId,
@@ -383,26 +383,122 @@ export default function Home() {
             requestedFungibles: [
               {
                 fungible: 'coin',
-                amount: amount + 0.1, // add 0.1 to account for gas fees
+                amount: parseFloat(amount) + 0.1, // add 0.1 to account for gas fees
               },
             ],
           },
         ],
       );
       await isReady();
-      transactions.map(async (tx) => {
-        const res = await client.local(tx);
-        console.log('Preflight result', res);
-        const txDescriptor = await client.submit(tx as ICommand);
-        const txRes = await client.listen(txDescriptor);
-        setResult(JSON.stringify(txRes, null, 2));
-      });
+      await Promise.all(
+        transactions.map(async (tx) => {
+          const res = await client.local(tx);
+          console.log('Preflight result', res);
+          const txDescriptor = await client.submit(tx as ICommand);
+          const txRes = await client.listen(txDescriptor);
+          setResult(JSON.stringify(txRes, null, 2));
+        }),
+      );
     } catch (e) {
       console.warn('User canceled signin', e);
     } finally {
       setIsLoading(false);
     }
   };
+  return (
+    <CardContainer>
+      <form autoComplete="on" onSubmit={signTransaction}>
+        <CardContentBlock
+          visual={<ProductIcon.QuickStart size="xl" />}
+          title={isLoading ? `Step 4: Sign` : `Step 3: Transfer`}
+          description={
+            <>
+              <p>
+                Transfer KDA to another account. Your KDA might be spread across
+                many chains on Kadena, but SpireKey will take care of converging
+                the funds to perform your desired transaction.
+              </p>
+              <ExampleStepper step={isLoading ? 3 : 2} />
+            </>
+          }
+        >
+          <Stack flexDirection="column" gap="md">
+            <TextField
+              value={account.accountName}
+              name="sender"
+              type="text"
+              label={`Sender: ${account.balance} (KDA)`}
+              isReadOnly
+              disabled
+            />
+            <TextField
+              type="text"
+              value={receiver}
+              onValueChange={setReceiver}
+              name="receiver"
+              label="receiver"
+            />
+            <NumberField
+              value={parseFloat(amount)}
+              minValue={0}
+              step={0.1}
+              onValueChange={(a) => setAmount(a.toFixed(8))}
+              label="amount"
+            />
+          </Stack>
+        </CardContentBlock>
+        <CardFooter>
+          <Button isLoading={isLoading} variant="primary" type="submit">
+            Sign
+          </Button>
+        </CardFooter>
+      </form>
+    </CardContainer>
+  );
+};
+
+const ResultStep = ({ result }: { result: string }) => {
+  const [amount] = useLocalState('amount', '0.0');
+  const [receiver] = useLocalState('receiver', '');
+  return (
+    <CardContainer>
+      <CardContentBlock
+        visual={<ProductIcon.QuickStart size="xl" />}
+        title="Step 5: Result"
+        description={
+          <>
+            <p>
+              You have succesfully transfered {amount} KDA to {receiver}
+            </p>
+            <ExampleStepper step={4} />
+          </>
+        }
+      >
+        <Stack flexDirection="column" gap="md">
+          <Accordion>
+            <AccordionItem title="View details">
+              <TextareaField label="details" value={result} rows={20} />
+            </AccordionItem>
+          </Accordion>
+        </Stack>
+      </CardContentBlock>
+    </CardContainer>
+  );
+};
+
+export default function Home() {
+  const [account, setAccount] = useState<Account>();
+  const [result, setResult] = useState('');
+
+  const getStep = () => {
+    if (!account) return <ConnectStep setAccount={setAccount} />;
+    if (result) return <ResultStep result={result} />;
+
+    if (parseFloat(account.balance) < 1)
+      return <FundStep setAccount={setAccount} account={account} />;
+    return <SignStep setResult={setResult} account={account} />;
+  };
+
   return (
     <Stack
       padding="md"
@@ -412,76 +508,7 @@ export default function Home() {
       as="main"
       maxWidth="content.maxWidth"
     >
-      {!account && <ConnectStep setAccount={setAccount} />}
-      {account && parseFloat(account.balance) < 1 && (
-        <FundStep setAccount={setAccount} account={account} />
-      )}
-      {account && parseFloat(account.balance) >= 1 && (
-        <CardContainer>
-          <form autoComplete="on" onSubmit={signTransaction}>
-            <CardContentBlock
-              visual={<ProductIcon.QuickStart size="xl" />}
-              title={`Step 2: Transfer`}
-              description={
-                <>
-                  <p>
-                    Transfer KDA to another account. Your KDA might be spread
-                    across many chains on Kadena, but SpireKey will take care of
-                    converging the funds to perform your desired transaction.
-                  </p>
-                  <ExampleStepper step={1} />
-                </>
-              }
-            >
-              <Stack flexDirection="column" gap="md">
-                <TextField
-                  value={account.accountName}
-                  name="sender"
-                  type="text"
-                  label={`Sender: ${account.balance} (KDA)`}
-                  isReadOnly
-                  disabled
-                />
-                <TextField
-                  type="text"
-                  value={receiver}
-                  onValueChange={setReceiver}
-                  name="receiver"
-                  label="receiver"
-                />
-                <NumberField
-                  value={amount}
-                  minValue={0}
-                  step={0.1}
-                  onValueChange={setAmount}
-                  label="amount"
-                />
-              </Stack>
-            </CardContentBlock>
-            {!result && (
-              <CardFooter>
-                <Button isLoading={isLoading} variant="primary" type="submit">
-                  Sign
-                </Button>
-              </CardFooter>
-            )}
-          </form>
-          {result && (
-            <CardContentBlock
-              title="Result"
-              description={`You have succesfully transfered ${amount.toFixed(8)}KDA to ${maskValue(receiver)}`}
-            >
-              <Stack flexDirection="column" gap="md">
-                <Accordion>
-                  <AccordionItem title="View details">
-                    <TextareaField label="details" value={result} rows={20} />
-                  </AccordionItem>
-                </Accordion>
-              </Stack>
-            </CardContentBlock>
-          )}
-        </CardContainer>
-      )}
+      {getStep()}
     </Stack>
   );
 }

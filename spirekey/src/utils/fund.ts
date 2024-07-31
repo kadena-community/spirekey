@@ -1,5 +1,8 @@
-import type { Account } from '@kadena/spirekey-types';
-import { createTransaction, ICommandResult, type ChainId } from '@kadena/client';
+import {
+  createTransaction,
+  ICommandResult,
+  type ChainId,
+} from '@kadena/client';
 import {
   addSigner,
   composePactCommand,
@@ -7,6 +10,7 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
+import type { Account } from '@kadena/spirekey-types';
 
 import { genesisPrivateKey, genesisPubKey } from '@/utils/constants';
 import { asyncPipe } from '@/utils/shared/asyncPipe';
@@ -46,7 +50,7 @@ const fundLocally = (accountName: string) =>
     `.trim(),
     ),
     setMeta({
-      chainId: process.env.CHAIN_ID as ChainId,
+      chainId: Math.floor(Math.random() * 20).toString() as ChainId,
       gasLimit: 10000,
       gasPrice: 0.0000001,
       ttl: 60000,
@@ -67,7 +71,7 @@ const fundViaFaucet = (accountName: string) =>
     `.trim(),
     ),
     setMeta({
-      chainId: process.env.CHAIN_ID as ChainId,
+      chainId: Math.floor(Math.random() * 20).toString() as ChainId,
       gasLimit: 10000,
       gasPrice: 0.0000001,
       ttl: 60000,
