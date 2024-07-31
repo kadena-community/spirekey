@@ -38,13 +38,24 @@ export const step = style({
       width: token('size.n4'),
     },
     '&[data-active="true"] ~ &': {
-      color: token('color.text.gray.default')
+      color: token('color.text.gray.default'),
     },
     '&[data-active="true"] ~ &:before': {
       backgroundColor: token('color.icon.brand.primary.@disabled'),
     },
     '&[data-active="true"] ~ &:after': {
       backgroundColor: token('color.icon.brand.primary.@disabled'),
+    },
+  },
+});
+
+export const check = style({
+  selectors: {
+    [`${step}[data-active="true"] &`]: {
+      display: 'none',
+    },
+    [`${step}[data-active="true"] ~ ${step} &`]: {
+      display: 'none',
     },
   },
 });

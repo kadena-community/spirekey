@@ -33,7 +33,7 @@ export const Step = ({ children, status, active }: StepProps) => {
     >
       <Stack marginInlineStart="lg" gap="sm">
         {children}
-        <MonoCheck fontSize="lg" />
+        <MonoCheck className={styles.check} fontSize="lg" />
       </Stack>
     </Stack>
   );
