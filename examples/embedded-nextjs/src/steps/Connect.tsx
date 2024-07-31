@@ -84,7 +84,7 @@ export const ConnectStep = ({
         </Stack>
       </CardContentBlock>
       <CardFooter>
-        <Button isLoading={isLoading} onPress={onConnect}>
+        <Button isLoading={isLoading} onPress={onConnect} isCompact={false}>
           Connect
         </Button>
       </CardFooter>

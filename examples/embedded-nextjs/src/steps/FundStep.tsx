@@ -54,7 +54,7 @@ export const FundStep = ({
         </Stack>
       </CardContentBlock>
       <CardFooter>
-        <Button isLoading={isLoading} onPress={onFund}>
+        <Button isLoading={isLoading} onPress={onFund} isCompact={false}>
           Fund
         </Button>
       </CardFooter>

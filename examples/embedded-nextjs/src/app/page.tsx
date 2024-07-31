@@ -1,8 +1,8 @@
 'use client';
 
-import { ConnectStep } from '@/steps/connect';
+import { ConnectStep } from '@/steps/Connect';
 import { ResultStep } from '@/steps/ResultStep';
-import { FundStep } from '@/steps/SignStep';
+import { FundStep } from '@/steps/FundStep';
 import { TransferStep } from '@/steps/TransferStep';
 import { Stack } from '@kadena/kode-ui';
 import { type Account } from '@kadena/spirekey-sdk';

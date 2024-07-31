@@ -214,19 +214,19 @@ export const TransferStep = ({
               value={receiver}
               onValueChange={setReceiver}
               name="receiver"
-              label="receiver"
+              label="Receiver"
             />
             <NumberField
               value={parseFloat(amount)}
               minValue={0}
               step={0.1}
               onValueChange={(a) => setAmount(a.toFixed(8))}
-              label="amount"
+              label="Amount"
             />
           </Stack>
         </CardContentBlock>
         <CardFooter>
-          <Button isLoading={isLoading} variant="primary" type="submit">
+          <Button isLoading={isLoading} variant="primary" isCompact={false} type="submit">
             Sign
           </Button>
         </CardFooter>
