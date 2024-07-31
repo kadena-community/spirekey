@@ -38,7 +38,7 @@ export default function ConnectComponent({
   );
 
   const startRegister = () => {
-    setIsRegister(!candidateAccounts.length);
+    setIsRegister(true);
   };
 
   const connectAndPrime = async (account: Account) => {
@@ -153,6 +153,7 @@ export default function ConnectComponent({
         <Button onPress={onCancel} variant="outlined">
           Cancel
         </Button>
+        <Button onPress={startRegister} variant="transparent">Register another account</Button>
       </CardFooter>
     </CardContainer>
   );
