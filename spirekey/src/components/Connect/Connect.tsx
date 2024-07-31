@@ -38,7 +38,7 @@ export default function ConnectComponent({
   );
 
   const startRegister = () => {
-    setIsRegister(!candidateAccounts.length);
+    setIsRegister(true);
   };
 
   const connectAndPrime = async (account: Account) => {
@@ -150,6 +150,9 @@ export default function ConnectComponent({
         </Stack>
       </SpireKeyCardContentBlock>
       <CardFooter>
+        <Button onPress={startRegister} variant="transparent">
+          Register another account
+        </Button>
         <Button onPress={onCancel} variant="outlined">
           Cancel
         </Button>

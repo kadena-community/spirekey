@@ -194,49 +194,47 @@ export const TransferStep = ({
     }
   };
   return (
-    <>
+    <form autoComplete="on" onSubmit={signTransaction}>
       <CardContainer hasPadding>
-        <form autoComplete="on" onSubmit={signTransaction}>
-          <CardContentBlock
-            visual={<ProductIcon.QuickStart size="xl" />}
-            title={isLoading ? `Step 4: Sign` : `Step 3: Transfer`}
-            description={
-              <>
-                <p>
-                  Transfer KDA to another account. Your KDA might be spread
-                  across many chains on Kadena, but SpireKey will take care of
-                  converging the funds to perform your desired transaction.
-                </p>
-                <ExampleStepper step={isLoading ? 3 : 2} />
-              </>
-            }
-          >
-            <Stack flexDirection="column" gap="md">
-              <TextField
-                value={account.accountName}
-                name="sender"
-                type="text"
-                label={`Sender: ${account.balance} (KDA)`}
-                isReadOnly
-                disabled
-              />
-              <TextField
-                type="text"
-                value={receiver}
-                onValueChange={setReceiver}
-                name="receiver"
-                label="Receiver"
-              />
-              <NumberField
-                value={parseFloat(amount)}
-                minValue={0}
-                step={0.1}
-                onValueChange={(a) => setAmount(a.toFixed(8))}
-                label="Amount"
-              />
-            </Stack>
-          </CardContentBlock>
-        </form>
+        <CardContentBlock
+          visual={<ProductIcon.QuickStart size="xl" />}
+          title={isLoading ? `Step 4: Sign` : `Step 3: Transfer`}
+          description={
+            <>
+              <p>
+                Transfer KDA to another account. Your KDA might be spread across
+                many chains on Kadena, but SpireKey will take care of converging
+                the funds to perform your desired transaction.
+              </p>
+              <ExampleStepper step={isLoading ? 3 : 2} />
+            </>
+          }
+        >
+          <Stack flexDirection="column" gap="md">
+            <TextField
+              value={account.accountName}
+              name="sender"
+              type="text"
+              label={`Sender: ${account.balance} (KDA)`}
+              isReadOnly
+              disabled
+            />
+            <TextField
+              type="text"
+              value={receiver}
+              onValueChange={setReceiver}
+              name="receiver"
+              label="Receiver"
+            />
+            <NumberField
+              value={parseFloat(amount)}
+              minValue={0}
+              step={0.1}
+              onValueChange={(a) => setAmount(a.toFixed(8))}
+              label="Amount"
+            />
+          </Stack>
+        </CardContentBlock>
       </CardContainer>
       <CardFooter>
         <Button
@@ -248,6 +246,6 @@ export const TransferStep = ({
           Sign
         </Button>
       </CardFooter>
-    </>
+    </form>
   );
 };
