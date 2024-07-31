@@ -10,7 +10,7 @@ export const l1Client = createClient(
       return `http://localhost:8080/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
     if (networkId === 'l2')
       return `http://localhost:8081/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
-    return `${process.env.DEVNET_HOST}/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
+    return `${process.env.DEVNET_HOST || 'http://localhost:8080'}/chainweb/0.0/${networkId}/chain/${chainId}/pact`;
   },
   { confirmationDepth: 4 }, // TODO: Should we make this a variable?
 );
