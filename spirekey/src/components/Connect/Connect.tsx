@@ -150,10 +150,12 @@ export default function ConnectComponent({
         </Stack>
       </SpireKeyCardContentBlock>
       <CardFooter>
+        <Button onPress={startRegister} variant="transparent">
+          Register another account
+        </Button>
         <Button onPress={onCancel} variant="outlined">
           Cancel
         </Button>
-        <Button onPress={startRegister} variant="transparent">Register another account</Button>
       </CardFooter>
     </CardContainer>
   );
