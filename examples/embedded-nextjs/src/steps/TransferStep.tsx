@@ -1,8 +1,18 @@
-import { CardContainer, CardContentBlock, CardFooter } from '@/steps/CardPattern/CardPattern';
 import { useLocalState } from '@/hooks/useLocalState';
+import {
+  CardContainer,
+  CardContentBlock,
+  CardFooter,
+} from '@/steps/CardPattern/CardPattern';
 import { l1Client } from '@/utils/shared/client';
 import { ChainId, createTransactionBuilder, ICommand } from '@kadena/client';
-import { Button, NumberField, ProductIcon, Stack, TextField } from '@kadena/kode-ui';
+import {
+  Button,
+  NumberField,
+  ProductIcon,
+  Stack,
+  TextField,
+} from '@kadena/kode-ui';
 import { Account, Device, sign } from '@kadena/spirekey-sdk';
 import { useState } from 'react';
 import { ExampleStepper } from './ExampleStepper';
@@ -184,53 +194,60 @@ export const TransferStep = ({
     }
   };
   return (
-    <CardContainer hasPadding>
-      <form autoComplete="on" onSubmit={signTransaction}>
-        <CardContentBlock
-          visual={<ProductIcon.QuickStart size="xl" />}
-          title={isLoading ? `Step 4: Sign` : `Step 3: Transfer`}
-          description={
-            <>
-              <p>
-                Transfer KDA to another account. Your KDA might be spread across
-                many chains on Kadena, but SpireKey will take care of converging
-                the funds to perform your desired transaction.
-              </p>
-              <ExampleStepper step={isLoading ? 3 : 2} />
-            </>
-          }
+    <>
+      <CardContainer hasPadding>
+        <form autoComplete="on" onSubmit={signTransaction}>
+          <CardContentBlock
+            visual={<ProductIcon.QuickStart size="xl" />}
+            title={isLoading ? `Step 4: Sign` : `Step 3: Transfer`}
+            description={
+              <>
+                <p>
+                  Transfer KDA to another account. Your KDA might be spread
+                  across many chains on Kadena, but SpireKey will take care of
+                  converging the funds to perform your desired transaction.
+                </p>
+                <ExampleStepper step={isLoading ? 3 : 2} />
+              </>
+            }
+          >
+            <Stack flexDirection="column" gap="md">
+              <TextField
+                value={account.accountName}
+                name="sender"
+                type="text"
+                label={`Sender: ${account.balance} (KDA)`}
+                isReadOnly
+                disabled
+              />
+              <TextField
+                type="text"
+                value={receiver}
+                onValueChange={setReceiver}
+                name="receiver"
+                label="Receiver"
+              />
+              <NumberField
+                value={parseFloat(amount)}
+                minValue={0}
+                step={0.1}
+                onValueChange={(a) => setAmount(a.toFixed(8))}
+                label="Amount"
+              />
+            </Stack>
+          </CardContentBlock>
+        </form>
+      </CardContainer>
+      <CardFooter>
+        <Button
+          isLoading={isLoading}
+          variant="primary"
+          isCompact={false}
+          type="submit"
         >
-          <Stack flexDirection="column" gap="md">
-            <TextField
-              value={account.accountName}
-              name="sender"
-              type="text"
-              label={`Sender: ${account.balance} (KDA)`}
-              isReadOnly
-              disabled
-            />
-            <TextField
-              type="text"
-              value={receiver}
-              onValueChange={setReceiver}
-              name="receiver"
-              label="Receiver"
-            />
-            <NumberField
-              value={parseFloat(amount)}
-              minValue={0}
-              step={0.1}
-              onValueChange={(a) => setAmount(a.toFixed(8))}
-              label="Amount"
-            />
-          </Stack>
-        </CardContentBlock>
-        <CardFooter>
-          <Button isLoading={isLoading} variant="primary" isCompact={false} type="submit">
-            Sign
-          </Button>
-        </CardFooter>
-      </form>
-    </CardContainer>
+          Sign
+        </Button>
+      </CardFooter>
+    </>
   );
 };
