@@ -27,7 +27,7 @@ export const FundStep = ({
     }
   };
   return (
-    <CardContainer>
+    <CardContainer hasPadding>
       <CardContentBlock
         visual={<ProductIcon.QuickStart size="xl" />}
         title="Step 2: Fund your account"

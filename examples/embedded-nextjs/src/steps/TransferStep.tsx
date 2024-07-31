@@ -184,7 +184,7 @@ export const TransferStep = ({
     }
   };
   return (
-    <CardContainer>
+    <CardContainer hasPadding>
       <form autoComplete="on" onSubmit={signTransaction}>
         <CardContentBlock
           visual={<ProductIcon.QuickStart size="xl" />}

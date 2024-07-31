@@ -1,27 +1,19 @@
-import { useLocalState } from '@/hooks/useLocalState';
 import {
   CardContainer,
   CardContentBlock,
 } from '@/steps/CardPattern/CardPattern';
 import { MonoCopyAll } from '@kadena/kode-icons/system';
 import {
-  Accordion,
-  AccordionItem,
   Button,
-  Heading,
   maskValue,
   ProductIcon,
   Stack,
-  TextareaField,
   TextField,
 } from '@kadena/kode-ui';
 import { useState } from 'react';
 import { stackedButtonClass } from './CardPattern/CardPattern.css';
-import { ExampleStepper } from './ExampleStepper';
 
 export const ResultStep = ({ result }: { result: string }) => {
-  const [amount] = useLocalState('amount', '0.0');
-  const [receiver] = useLocalState('receiver', '');
   const [showDetails, setShowDetails] = useState(false);
   const tx = JSON.parse(result);
   return (
