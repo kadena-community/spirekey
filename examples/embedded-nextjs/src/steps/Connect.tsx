@@ -1,10 +1,24 @@
-import { CardContainer, CardContentBlock, CardFooter } from "@/steps/CardPattern/CardPattern";
-import { useLocalState } from "@/hooks/useLocalState";
-import { ChainId } from "@kadena/client";
-import { Accordion, AccordionItem, Button, ProductIcon, Select, SelectItem, Stack } from "@kadena/kode-ui";
-import { Account, initSpireKey, connect } from "@kadena/spirekey-sdk";
-import { useEffect, useState } from "react";
-import { ExampleStepper } from "./ExampleStepper";
+import { useLocalState } from '@/hooks/useLocalState';
+import {
+  CardContainer,
+  CardContentBlock,
+  CardFooter,
+} from '@/steps/CardPattern/CardPattern';
+import { ChainId } from '@kadena/client';
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  ProductIcon,
+  Select,
+  SelectItem,
+  Stack,
+} from '@kadena/kode-ui';
+import { token } from '@kadena/kode-ui/styles';
+import { Account, connect, initSpireKey } from '@kadena/spirekey-sdk';
+import { style } from '@vanilla-extract/css';
+import { useEffect, useState } from 'react';
+import { ExampleStepper } from './ExampleStepper';
 
 export const ConnectStep = ({
   setAccount,
@@ -91,5 +105,3 @@ export const ConnectStep = ({
     </CardContainer>
   );
 };
-
-
