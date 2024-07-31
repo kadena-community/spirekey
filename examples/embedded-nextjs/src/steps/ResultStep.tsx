@@ -1,4 +1,4 @@
-import { CardContainer, CardContentBlock } from "@/app/CardPattern/CardPattern";
+import { CardContainer, CardContentBlock } from "@/steps/CardPattern/CardPattern";
 import { useLocalState } from "@/hooks/useLocalState";
 import { Accordion, AccordionItem, ProductIcon, Stack, TextareaField } from "@kadena/kode-ui";
 import { ExampleStepper } from "./ExampleStepper";

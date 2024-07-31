@@ -1,4 +1,4 @@
-import { CardContainer, CardContentBlock, CardFooter } from "@/app/CardPattern/CardPattern";
+import { CardContainer, CardContentBlock, CardFooter } from "@/steps/CardPattern/CardPattern";
 import { fundAccount } from "@/utils/fund";
 import { Button, NumberField, ProductIcon, Stack } from "@kadena/kode-ui";
 import { Account } from "@kadena/spirekey-sdk";

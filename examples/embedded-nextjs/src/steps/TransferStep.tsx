@@ -1,4 +1,4 @@
-import { CardContainer, CardContentBlock, CardFooter } from '@/app/CardPattern/CardPattern';
+import { CardContainer, CardContentBlock, CardFooter } from '@/steps/CardPattern/CardPattern';
 import { useLocalState } from '@/hooks/useLocalState';
 import { l1Client } from '@/utils/shared/client';
 import { ChainId, createTransactionBuilder, ICommand } from '@kadena/client';
