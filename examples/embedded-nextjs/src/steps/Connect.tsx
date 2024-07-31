@@ -14,8 +14,8 @@ import {
 } from '@kadena/kode-ui';
 import { Account, connect, initSpireKey } from '@kadena/spirekey-sdk';
 import { useEffect, useState } from 'react';
-import { ExampleStepper } from './ExampleStepper';
 import { stackedButtonClass } from './CardPattern/CardPattern.css';
+import { ExampleStepper } from './ExampleStepper';
 
 export const ConnectStep = ({
   setAccount,
@@ -71,15 +71,22 @@ export const ConnectStep = ({
             </Select>
             <Button
               variant="outlined"
-              onClick={() => setIsShownAdvancedOptions(
-                !isShownAdvancedOptions)
-              }
+              onClick={() => setIsShownAdvancedOptions(!isShownAdvancedOptions)}
               className={stackedButtonClass}
-            >{isShownAdvancedOptions ? "Hide Advanced Options" : "Show Advanced Options"}</Button>
+            >
+              {isShownAdvancedOptions
+                ? 'Hide Advanced Options'
+                : 'Show Advanced Options'}
+            </Button>
           </Stack>
         </CardContentBlock>
-        {isShownAdvancedOptions ?
-          <CardContentBlock isNewSection titleAs="h5" title="Advanced Options" description="Guide the user about why they would want to set these settings...">
+        {isShownAdvancedOptions ? (
+          <CardContentBlock
+            isNewSection
+            titleAs="h5"
+            title="Advanced Options"
+            description="These options allow you to test this dApp using your local SpireKey instance. Additionally you can opt to use a different network."
+          >
             <Stack flexDirection="column" gap="md">
               <Select
                 label="Wallet"
@@ -102,7 +109,7 @@ export const ConnectStep = ({
               </Select>
             </Stack>
           </CardContentBlock>
-        : null }
+        ) : null}
       </CardContainer>
       <CardFooter>
         <Button isLoading={isLoading} onPress={onConnect}>
