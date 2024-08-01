@@ -136,6 +136,27 @@ const getTransferTxLegacy = ({
   return tx;
 };
 
+const isCoinAccountExisting = async ({
+  accountName,
+  networkId,
+  chainId,
+}: {
+  accountName: string;
+  networkId: string;
+  chainId: ChainId;
+}) => {
+  const tx = createTransactionBuilder()
+    .execution(`(coin.details "${accountName}")`)
+    .setMeta({ chainId })
+    .setNetworkId(networkId)
+    .createTransaction();
+  const res = await l1Client.local(tx, {
+    preflight: false,
+    signatureVerification: false,
+  });
+  return res.result.status === 'success';
+};
+
 export const TransferStep = ({
   setResult,
   account,
@@ -148,12 +169,24 @@ export const TransferStep = ({
   const [receiver, setReceiver] = useLocalState('receiver', '');
   const [amount, setAmount] = useLocalState('amount', '0.0');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [receiverError, setReceiverError] = useState('');
   const signTransaction = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!account) throw new Error('No account connected');
     if (!receiver) throw new Error('No receiver defined');
     try {
       setIsLoading(true);
+      if (
+        !(await isCoinAccountExisting({
+          accountName: receiver,
+          networkId,
+          chainId: chainId as ChainId,
+        }))
+      ) {
+        setReceiverError('Account does not exist');
+        throw new Error('Account does not exist');
+      }
+      setReceiverError('');
       const tx = getTransferTx({
         amount: parseFloat(amount),
         receiver,
@@ -188,6 +221,7 @@ export const TransferStep = ({
         }),
       );
     } catch (e) {
+      if (e instanceof Error && e.message === 'Account does not exist') throw e;
       console.warn('User canceled signin', e);
     } finally {
       setIsLoading(false);
@@ -225,6 +259,8 @@ export const TransferStep = ({
               onValueChange={setReceiver}
               name="receiver"
               label="Receiver"
+              isInvalid={!!receiverError}
+              errorMessage={receiverError}
             />
             <NumberField
               value={parseFloat(amount)}
