@@ -2,7 +2,7 @@ type HashFunction = (value: string) => string;
 export const getRootHashWith =
   (hash: HashFunction) =>
   (hashes: string[]): string => {
-    const leaves = constructLeaves(hashes).map(([a, b]: string[]) =>
+    const leaves = constructLeaves(hashes).map(([a, b]: Leaf) =>
       hash(`${a},${b}`),
     );
     if (leaves.length > 1) return getRootHashWith(hash)(leaves);
@@ -10,7 +10,6 @@ export const getRootHashWith =
   };
 
 const fillEmptyLeaves = (hashes: string[]) => {
-  if (hashes.length % 2 === 0) return hashes;
   const missingLeaves = Array(
     Math.pow(2, Math.ceil(Math.log2(hashes.length))) - hashes.length,
   ).fill('0');
@@ -29,13 +28,17 @@ const constructLeaves = (hashes: string[]): Leaves => {
 };
 
 export const getMerkleProofWith =
-  (hash: HashFunction) => (targetHash: string, hashes: string[]) => {
+  (hash: HashFunction) =>
+  (targetHash: string, hashes: any[]): any => {
     const leaves = constructLeaves(hashes);
     const proofLeaves = leaves.map(([a, b]) => {
-      if (Array.isArray(a) || Array.isArray(b)) return [a, b];
-      if (a === targetHash) return b;
-      if (b === targetHash) return a;
+      if (Array.isArray(a) || Array.isArray(b)) return [a, b].flatMap((x) => x);
+      if (a === targetHash) return [b];
+      if (b === targetHash) return [a];
       return hash(`${a},${b}`);
     });
-    return proofLeaves;
+
+    if (proofLeaves.length > Math.ceil(Math.log2(hashes.length)))
+      return getMerkleProofWith(hash)(targetHash, proofLeaves);
+    return proofLeaves.flatMap((x) => x);
   };

@@ -54,5 +54,27 @@ describe('Merkle', () => {
         });
       });
     });
+    describe('And we have 5 entries', () => {
+      describe('And we want to have the proof for A', () => {
+        it('should get [B, H(C,D), H(H(E,0),H(0,0))]', () => {
+          const hashes = ['A', 'B', 'C', 'D', 'E'];
+          expect(getMerkleProof('A', hashes)).toEqual([
+            'B',
+            'H(C,D)',
+            'H(H(E,0),H(0,0))',
+          ]);
+        });
+      });
+      describe('And we want to have the proof for E', () => {
+        it('should get [H(H(A,B),H(C,D)), 0, H(0,0)]', () => {
+          const hashes = ['A', 'B', 'C', 'D', 'E'];
+          expect(getMerkleProof('E', hashes)).toEqual([
+            'H(H(A,B),H(C,D))',
+            '0',
+            'H(0,0)',
+          ]);
+        });
+      });
+    });
   });
 });
