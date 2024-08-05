@@ -19,7 +19,7 @@ const fillEmptyLeaves = (hashes: string[]) => {
 
 type Leaf = [string, string?];
 type Leaves = Leaf[];
-const constructLeaves = (hashes: string[]) => {
+const constructLeaves = (hashes: string[]): Leaves => {
   const startResult: Leaves = [];
   return fillEmptyLeaves(hashes).reduce((acc, curr: string, i, leaves) => {
     if (i % 2 !== 0) return acc;
@@ -27,3 +27,15 @@ const constructLeaves = (hashes: string[]) => {
     return [...acc, leaf];
   }, startResult);
 };
+
+export const getMerkleProofWith =
+  (hash: HashFunction) => (targetHash: string, hashes: string[]) => {
+    const leaves = constructLeaves(hashes);
+    const proofLeaves = leaves.map(([a, b]) => {
+      if (Array.isArray(a) || Array.isArray(b)) return [a, b];
+      if (a === targetHash) return b;
+      if (b === targetHash) return a;
+      return hash(`${a},${b}`);
+    });
+    return proofLeaves;
+  };
