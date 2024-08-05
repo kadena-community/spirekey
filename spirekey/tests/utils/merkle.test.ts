@@ -16,5 +16,11 @@ describe('Merkle', () => {
         expect(getRootHash(hashes)).toEqual('H(H(A,B),H(C,0))');
       });
     });
+    describe('And we have 5 entries', () => {
+      it('should get the hash based on `H(H(H(A,B),H(C,D)),H(H(E,0),H(0,0)))`', () => {
+        const hashes = ['A', 'B', 'C','D','E'];
+        expect(getRootHash(hashes)).toEqual('H(H(H(A,B),H(C,D)),H(H(E,0),H(0,0)))');
+      });
+    });
   });
 });
