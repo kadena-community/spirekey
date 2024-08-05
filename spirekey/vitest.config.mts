@@ -10,9 +10,6 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  server: {
-    watch: null,
-  },
   test: {
     reporters: ['default', 'hanging-process'],
     include: ['{src,tests}/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
