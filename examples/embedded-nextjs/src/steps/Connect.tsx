@@ -55,7 +55,18 @@ export const ConnectStep = ({
         <CardContentBlock
           visual={<ProductIcon.QuickStart size="xl" />}
           title="Step 1: Connect your account"
-          description={<ExampleStepper step={0} />}
+          description={
+            <>
+              <p>
+                This app serves as example for dApp developers on how the
+                SpireKey SDK assists your users on their journey through the
+                process of guiding funds from other chains to the correct chain
+                in order to interacting with your dApp. Give it a try in this
+                example.
+              </p>
+              <ExampleStepper step={0} />
+            </>
+          }
         >
           <Stack flexDirection="column" gap="md">
             <Select
