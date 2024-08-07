@@ -12,7 +12,7 @@ export interface Notification {
   timeout?: number;
 }
 
-export interface AddNotification extends Omit<Notification, 'id'> {}
+export type AddNotification = Omit<Notification, 'id'> & { id?: number };
 
 interface NotificationsContextType {
   notifications: Notification[];
@@ -43,10 +43,10 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
     title,
     message,
     timeout = 3000,
+    id = Date.now(),
   }: AddNotification) => {
-    const id = Date.now();
     setNotifications((prevNotifications) => [
-      ...prevNotifications,
+      ...prevNotifications.filter((n) => n.id !== id),
       { id, variant, title, message },
     ]);
     setTimeout(() => {
