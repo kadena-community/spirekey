@@ -1,8 +1,12 @@
 'use client';
 
+import { useAccounts } from '@/context/AccountsContext';
+import { getRAccountFromChain } from '@/utils/shared/account';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { Button, Stack } from '@kadena/kode-ui';
 import { token } from '@kadena/kode-ui/styles';
+import { ChainId } from '@kadena/types';
+import { startAuthentication } from '@simplewebauthn/browser';
 import { useRouter } from 'next/navigation';
 import {
   CardContainer,
@@ -14,22 +18,77 @@ import { NetworkMainnet } from '../icons/NetworkMainnet';
 import { NetworkTestnet } from '../icons/NetworkTestnet';
 import * as styles from './styles.css';
 
+const query = `query recover($filter: String) {
+  events(
+    qualifiedEventName: "${process.env.NAMESPACE}.spirekey.ADD_DEVICE"
+    parametersFilter: $filter
+    first: 1
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        chainId
+        parameters
+      }
+    }
+  }
+}`;
 export default function Recover() {
+  const { setAccount, accounts } = useAccounts();
   const router = useRouter();
   const onCancel = () => router.push('/');
-  const onSubmit = (event: React.FormEvent) => {
+  const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.warn('DEBUGPRINT[1]: Recover.tsx:22: event=', event);
     const data = new FormData(event.target as HTMLFormElement);
     const network = data.get('network');
-    console.warn("DEBUGPRINT[2]: Recover.tsx:24: network=", network)
+    if (!network) throw new Error('No network selected');
+    const { id } = await startAuthentication({
+      challenge: 'recoverchallenge',
+    });
+    const res = await fetch(`http://localhost:8080/graphql`, {
+      method: 'POST',
+      headers: {
+        accept:
+          'application/graphql-response+json, application/json, multipart/mixed',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        extensions: {},
+        operationName: 'recover',
+        query,
+        variables: {
+          filter: `{\"array_contains\":\"${id}\"}`,
+        },
+      }),
+    });
+    const info = (await res.json())?.data?.events?.edges?.[0]?.node?.parameters;
+    if (!info) throw new Error('No account found');
+
+    const params: string[] = JSON.parse(info);
+    const account = params.find((x) => x.startsWith('r:'));
+    const recoveredAccount = await getRAccountFromChain({
+      networkId: network as string,
+      chainId: Math.floor(Math.random() * 20).toString() as ChainId,
+      accountName: account!,
+    });
+    if (!recoveredAccount) throw new Error('Account not found');
+    const networkAccounts = accounts.filter((a) => a.networkId === network);
+
+    setAccount({
+      ...recoveredAccount,
+      alias: `SpireKey Account ${networkAccounts.length + 1} (${network})`,
+      chainIds: Array(20)
+        .fill(0)
+        .map((_, i) => i.toString()) as ChainId[],
+    });
   };
   return (
     <CardContainer>
       <form onSubmit={onSubmit}>
         <CardContentBlock
           title="Recover"
-          description="by selecting a network first"
+          description="by selecting a network irst"
           visual={
             <SpireKeyKdacolorLogoGreen
               aria-label="SpireKey"
