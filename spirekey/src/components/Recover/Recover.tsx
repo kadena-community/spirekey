@@ -5,6 +5,7 @@ import { getRAccountFromChain } from '@/utils/shared/account';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { Button, Stack } from '@kadena/kode-ui';
 import { token } from '@kadena/kode-ui/styles';
+import { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useRouter } from 'next/navigation';
@@ -34,10 +35,23 @@ const query = `query recover($filter: String) {
     }
   }
 }`;
-export default function Recover() {
+type RecoverProps = {
+  networkId?: string;
+  chainId?: ChainId;
+  onComplete?: (account: Account) => void;
+  onCancel?: () => void;
+};
+export default function Recover(props: RecoverProps) {
   const { setAccount, accounts } = useAccounts();
   const router = useRouter();
-  const onCancel = () => router.push('/');
+  const onConnect = (account: Account) => {
+    if (props.onComplete) return props.onComplete(account);
+    router.push('/');
+  };
+  const onCancel = () => {
+    if (props.onCancel) return props.onCancel();
+    router.push('/');
+  };
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const data = new FormData(event.target as HTMLFormElement);
@@ -45,6 +59,7 @@ export default function Recover() {
     if (!network) throw new Error('No network selected');
     const { id } = await startAuthentication({
       challenge: 'recoverchallenge',
+      rpId: window.location.hostname,
     });
     const res = await fetch(`http://localhost:8080/graphql`, {
       method: 'POST',
@@ -75,13 +90,16 @@ export default function Recover() {
     if (!recoveredAccount) throw new Error('Account not found');
     const networkAccounts = accounts.filter((a) => a.networkId === network);
 
-    setAccount({
+    const updatedAccount = {
       ...recoveredAccount,
       alias: `SpireKey Account ${networkAccounts.length + 1} (${network})`,
       chainIds: Array(20)
         .fill(0)
         .map((_, i) => i.toString()) as ChainId[],
-    });
+    };
+    setAccount(updatedAccount);
+    onConnect(updatedAccount);
+    // Redirect back to home screen, but publish the connect event first
   };
   return (
     <CardContainer>
@@ -104,7 +122,7 @@ export default function Recover() {
               name="network"
               value="mainnet01"
               id="network-mainnet"
-              defaultChecked
+              defaultChecked={!props.networkId || props.networkId === 'mainnet01'}
             />
             <label htmlFor="network-mainnet" className={styles.networkLabel}>
               <NetworkMainnet />
@@ -119,6 +137,7 @@ export default function Recover() {
               name="network"
               value="testnet04"
               id="network-testnet"
+              defaultChecked={props.networkId === 'testnet04'}
             />
             <label htmlFor="network-testnet" className={styles.networkLabel}>
               <NetworkTestnet />
@@ -132,6 +151,7 @@ export default function Recover() {
               type="radio"
               name="network"
               value="development"
+              defaultChecked={props.networkId === 'development'}
               id="network-devnet"
             />
             <label htmlFor="network-devnet" className={styles.networkLabel}>
