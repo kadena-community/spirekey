@@ -1,48 +1,34 @@
-import { customTokens } from '@/styles/shared/tokens.css';
-import { atoms } from '@kadena/kode-ui/styles';
-import { globalStyle, style } from '@vanilla-extract/css';
+import { atoms, token } from '@kadena/kode-ui/styles';
+import { style } from '@vanilla-extract/css';
 
-export const wrapper = style({
-  position: 'relative',
-  overflow: 'hidden',
-});
-
-export const container = style({
-  display: 'flex',
-});
-
-export const step = style([
-  atoms({
-    paddingInline: 'lg',
-  }),
-  {
-    width: '100%',
-    flexShrink: '0',
-  },
-]);
-
-export const descriptionEmphasis = style({
-  color: customTokens.color.accent,
-  fontWeight: '700',
-});
-
-export const itemContainer = style({
-  display: 'grid',
-  gridTemplateColumns: 'repeat(3, 1fr)',
-});
-
-globalStyle(`${itemContainer} input`, {
+export const networkInput = atoms({
   display: 'none',
 });
-
-export const item = style({
-  justifyContent: 'center',
-  alignItems: 'center',
+export const networkLabel = style({
+  borderColor: token('color.icon.base.@disabled'),
+  color: token('color.icon.base.@disabled'),
+  borderStyle: 'solid',
+  borderWidth: 'thin',
+  borderRadius: token('radius.sm'),
+  backgroundColor: token('color.background.layer.default'),
   display: 'flex',
   flexDirection: 'column',
-  gap: '0.5rem',
+  alignItems: 'center',
+  paddingInline: token('spacing.lg'),
+  paddingBlock: token('spacing.md'),
+  gap: token('spacing.sm'),
+  selectors: {
+    [`${networkInput}:checked + &`]: {
+      backgroundColor: token('color.brand.primary.n0'),
+      color: token('color.background.accent.primary.inverse.default'),
+    },
+  },
 });
-
-globalStyle(`input:checked + ${item}`, {
-  color: customTokens.color.accent,
+export const networkLabelText = style({
+  fontSize: token('typography.fontSize.sm'),
+  selectors: {
+    [`${networkInput}:checked + ${networkLabel} &`]: {
+      color: token('color.text.base.@focus'),
+    },
+  },
 });

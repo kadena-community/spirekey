@@ -1,120 +1,95 @@
 'use client';
 
-import { Button } from '@/components/shared/Button/Button';
-import { useSettings } from '@/context/SettingsContext';
-import { useRecoverForm } from '@/hooks/useRecoverForm';
-import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
-import { Box, Stack } from '@kadena/kode-ui';
-import { atoms } from '@kadena/kode-ui/styles';
-import { motion } from 'framer-motion';
+import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
+import { Button, Stack } from '@kadena/kode-ui';
+import { token } from '@kadena/kode-ui/styles';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { NetworkIdForm } from './NetworkIdForm';
-import { PasskeyForm } from './PasskeyForm';
+import {
+  CardContainer,
+  CardContentBlock,
+  CardFooter,
+} from '../CardPattern/CardPattern';
+import { NetworkDevnet } from '../icons/NetworkDevnet';
+import { NetworkMainnet } from '../icons/NetworkMainnet';
+import { NetworkTestnet } from '../icons/NetworkTestnet';
 import * as styles from './styles.css';
-
-export interface FormData {
-  networkId: string;
-}
-
-export interface StepProps {
-  stepIndex: number;
-  isVisible: boolean;
-  defaultValues: FormData;
-  updateFields: (fields: Partial<FormData>) => void;
-  formValues: FormData;
-  navigation: {
-    next: () => void;
-    previous: () => void;
-    goTo: (index: number) => void;
-  };
-}
 
 export default function Recover() {
   const router = useRouter();
-  const { devMode } = useSettings();
-
-  const skipNetworkId = process.env.WALLET_NETWORK_ID && devMode;
-
-  const defaultFormData = {
-    networkId: skipNetworkId
-      ? process.env.WALLET_NETWORK_ID!
-      : getDevnetNetworkId(),
+  const onCancel = () => router.push('/');
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    console.warn('DEBUGPRINT[1]: Recover.tsx:22: event=', event);
+    const data = new FormData(event.target as HTMLFormElement);
+    const network = data.get('network');
+    console.warn("DEBUGPRINT[2]: Recover.tsx:24: network=", network)
   };
-
-  const [data, setData] = useState<FormData>(defaultFormData);
-
-  const updateFields = (fields: Partial<FormData>) =>
-    setData((current) => ({ ...current, ...fields }));
-
-  const onSubmit = async () => {
-    router.push('/');
-  };
-
-  const formStepComponents = skipNetworkId
-    ? [PasskeyForm]
-    : [NetworkIdForm, PasskeyForm];
-
-  const {
-    steps,
-    currentStepIndex,
-    isFirstStep,
-    isLastStep,
-    next,
-    previous,
-    goTo,
-  } = useRecoverForm(formStepComponents, data, onSubmit);
-
-  const goBack = () => {
-    if (currentStepIndex === 0) {
-      router.push('/welcome');
-    }
-    previous();
-  };
-
   return (
-    <Stack flexDirection="column" gap="md">
-      <div className={styles.wrapper}>
-        <motion.div
-          animate={{ x: `-${currentStepIndex * 100}%` }}
-          transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
-          className={styles.container}
+    <CardContainer>
+      <form onSubmit={onSubmit}>
+        <CardContentBlock
+          title="Recover"
+          description="by selecting a network first"
+          visual={
+            <SpireKeyKdacolorLogoGreen
+              aria-label="SpireKey"
+              fontSize={token('typography.fontSize.9xl')}
+            />
+          }
         >
-          {steps.map((FormStep, stepIndex) => (
-            <Box className={styles.step}>
-              <FormStep
-                key={stepIndex}
-                stepIndex={stepIndex}
-                isVisible={currentStepIndex === stepIndex}
-                defaultValues={defaultFormData}
-                formValues={data}
-                updateFields={updateFields}
-                navigation={{ next, previous, goTo }}
-              />
-            </Box>
-          ))}
-        </motion.div>
-      </div>
-
-      <Stack flexDirection="row" gap="xl" marginBlock="lg" paddingInline="lg">
-        <Button
-          variant="secondary"
-          onPress={goBack}
-          className={atoms({ flex: 1 })}
-        >
-          {isFirstStep ? 'Cancel' : 'Previous'}
-        </Button>
-
-        <Button
-          form={`recover-form-${currentStepIndex}`}
-          variant="progress"
-          progress={((currentStepIndex + 1) / steps.length) * 100}
-          className={atoms({ flex: 1 })}
-          type="submit"
-        >
-          {isLastStep ? 'Complete' : 'Next'}
-        </Button>
-      </Stack>
-    </Stack>
+          <Stack flexDirection="row" gap="md">
+            <input
+              className={styles.networkInput}
+              aria-label="Mainnet"
+              type="radio"
+              name="network"
+              value="mainnet01"
+              id="network-mainnet"
+              defaultChecked
+            />
+            <label htmlFor="network-mainnet" className={styles.networkLabel}>
+              <NetworkMainnet />
+              <Stack as="span" className={styles.networkLabelText}>
+                Mainnet
+              </Stack>
+            </label>
+            <input
+              className={styles.networkInput}
+              aria-label="Testnet"
+              type="radio"
+              name="network"
+              value="testnet04"
+              id="network-testnet"
+            />
+            <label htmlFor="network-testnet" className={styles.networkLabel}>
+              <NetworkTestnet />
+              <Stack as="span" className={styles.networkLabelText}>
+                Testnet
+              </Stack>
+            </label>
+            <input
+              className={styles.networkInput}
+              aria-label="Devnet"
+              type="radio"
+              name="network"
+              value="development"
+              id="network-devnet"
+            />
+            <label htmlFor="network-devnet" className={styles.networkLabel}>
+              <NetworkDevnet />
+              <Stack as="span" className={styles.networkLabelText}>
+                Devnet
+              </Stack>
+            </label>
+          </Stack>
+        </CardContentBlock>
+        <CardFooter>
+          <Button variant="outlined" onPress={onCancel}>
+            Cancel
+          </Button>
+          <Button type="submit">Next</Button>
+        </CardFooter>
+      </form>
+    </CardContainer>
   );
 }
