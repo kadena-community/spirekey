@@ -15,6 +15,7 @@ import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
 import { useState } from 'react';
 import DeviceCircle from '../Device/DeviceCircle';
+import Recover from '../Recover/Recover';
 import Registration from '../Registration/Registration';
 
 type ConnectComponentProps = {
@@ -32,6 +33,7 @@ export default function ConnectComponent({
 }: ConnectComponentProps) {
   const { accounts, setAccount } = useAccounts();
   const [isRegister, setIsRegister] = useState(false);
+  const [isRecover, setIsRecover] = useState(false);
 
   const candidateAccounts = accounts.filter(
     (account) => account.networkId === networkId,
@@ -39,6 +41,10 @@ export default function ConnectComponent({
 
   const startRegister = () => {
     setIsRegister(true);
+  };
+
+  const startRecover = () => {
+    setIsRecover(true);
   };
 
   const connectAndPrime = async (account: Account) => {
@@ -70,6 +76,16 @@ export default function ConnectComponent({
   if (isRegister)
     return (
       <Registration
+        networkId={networkId}
+        chainId={chainId}
+        onComplete={onConnect}
+        onCancel={onCancel}
+      />
+    );
+
+  if (isRecover)
+    return (
+      <Recover
         networkId={networkId}
         chainId={chainId}
         onComplete={onConnect}
@@ -109,9 +125,9 @@ export default function ConnectComponent({
             </Stack>
           </CardContentBlock>
           <CardFooter>
-            <Link variant="outlined" href="/recover">
+            <Button variant="outlined" onPress={startRecover}>
               Recover
-            </Link>
+            </Button>
             <Button onPress={startRegister}>Register</Button>
           </CardFooter>
         </CardContainer>

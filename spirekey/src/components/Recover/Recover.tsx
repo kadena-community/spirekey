@@ -1,120 +1,152 @@
 'use client';
 
-import { Button } from '@/components/shared/Button/Button';
-import { useSettings } from '@/context/SettingsContext';
-import { useRecoverForm } from '@/hooks/useRecoverForm';
-import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
-import { Box, Stack } from '@kadena/kode-ui';
-import { atoms } from '@kadena/kode-ui/styles';
-import { motion } from 'framer-motion';
+import { useAccounts } from '@/context/AccountsContext';
+import { getAccountFromChains } from '@/utils/shared/account';
+import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
+import { Button, Stack } from '@kadena/kode-ui';
+import { token } from '@kadena/kode-ui/styles';
+import { Account } from '@kadena/spirekey-types';
+import { ChainId } from '@kadena/types';
+import { startAuthentication } from '@simplewebauthn/browser';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { NetworkIdForm } from './NetworkIdForm';
-import { PasskeyForm } from './PasskeyForm';
+import { Radio, RadioGroup } from 'react-aria-components';
+import {
+  CardContainer,
+  CardContentBlock,
+  CardFooter,
+} from '../CardPattern/CardPattern';
+import { NetworkDevnet } from '../icons/NetworkDevnet';
+import { NetworkMainnet } from '../icons/NetworkMainnet';
+import { NetworkTestnet } from '../icons/NetworkTestnet';
 import * as styles from './styles.css';
 
-export interface FormData {
-  networkId: string;
-}
-
-export interface StepProps {
-  stepIndex: number;
-  isVisible: boolean;
-  defaultValues: FormData;
-  updateFields: (fields: Partial<FormData>) => void;
-  formValues: FormData;
-  navigation: {
-    next: () => void;
-    previous: () => void;
-    goTo: (index: number) => void;
-  };
-}
-
-export default function Recover() {
+const query = `query recover($filter: String) {
+  events(
+    qualifiedEventName: "${process.env.NAMESPACE}.spirekey.ADD_DEVICE"
+    parametersFilter: $filter
+    first: 1
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        chainId
+        parameters
+      }
+    }
+  }
+}`;
+type RecoverProps = {
+  networkId?: string;
+  chainId?: ChainId;
+  onComplete?: (account: Account) => void;
+  onCancel?: () => void;
+};
+export default function Recover(props: RecoverProps) {
+  const { setAccount, accounts } = useAccounts();
   const router = useRouter();
-  const { devMode } = useSettings();
-
-  const skipNetworkId = process.env.WALLET_NETWORK_ID && devMode;
-
-  const defaultFormData = {
-    networkId: skipNetworkId
-      ? process.env.WALLET_NETWORK_ID!
-      : getDevnetNetworkId(),
-  };
-
-  const [data, setData] = useState<FormData>(defaultFormData);
-
-  const updateFields = (fields: Partial<FormData>) =>
-    setData((current) => ({ ...current, ...fields }));
-
-  const onSubmit = async () => {
+  const onConnect = (account: Account) => {
+    if (props.onComplete) return props.onComplete(account);
     router.push('/');
   };
-
-  const formStepComponents = skipNetworkId
-    ? [PasskeyForm]
-    : [NetworkIdForm, PasskeyForm];
-
-  const {
-    steps,
-    currentStepIndex,
-    isFirstStep,
-    isLastStep,
-    next,
-    previous,
-    goTo,
-  } = useRecoverForm(formStepComponents, data, onSubmit);
-
-  const goBack = () => {
-    if (currentStepIndex === 0) {
-      router.push('/welcome');
-    }
-    previous();
+  const onCancel = () => {
+    if (props.onCancel) return props.onCancel();
+    router.push('/');
   };
+  const onSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const data = new FormData(event.target as HTMLFormElement);
+    console.warn("DEBUGPRINT[2]: Recover.tsx:58: event=", event)
 
+    console.warn("DEBUGPRINT[1]: Recover.tsx:59: data=", data)
+    const network = data.get('network');
+    if (!network) throw new Error('No network selected');
+    const { id } = await startAuthentication({
+      challenge: 'recoverchallenge',
+      rpId: window.location.hostname,
+    });
+    const res = await fetch(`http://localhost:8080/graphql`, {
+      method: 'POST',
+      headers: {
+        accept:
+          'application/graphql-response+json, application/json, multipart/mixed',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        extensions: {},
+        operationName: 'recover',
+        query,
+        variables: {
+          filter: `{\"array_contains\":\"${id}\"}`,
+        },
+      }),
+    });
+    const info = (await res.json())?.data?.events?.edges?.[0]?.node?.parameters;
+    if (!info) throw new Error('No account found');
+
+    const params: string[] = JSON.parse(info);
+    const account = params.find((x) => x.startsWith('r:'));
+    const recoveredAccount = await getAccountFromChains({
+      networkId: network as string,
+      chainIds: Array(20)
+        .fill(0)
+        .map((_, i) => i.toString()) as ChainId[],
+      accountName: account!,
+    });
+    if (!recoveredAccount) throw new Error('Account not found');
+    const networkAccounts = accounts.filter((a) => a.networkId === network);
+
+    const updatedAccount = {
+      ...recoveredAccount,
+      alias: `SpireKey Account ${networkAccounts.length + 1} (${network})`,
+    };
+    setAccount(updatedAccount);
+    onConnect(updatedAccount);
+    // Redirect back to home screen, but publish the connect event first
+  };
   return (
-    <Stack flexDirection="column" gap="md">
-      <div className={styles.wrapper}>
-        <motion.div
-          animate={{ x: `-${currentStepIndex * 100}%` }}
-          transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
-          className={styles.container}
+    <CardContainer>
+      <form onSubmit={onSubmit}>
+        <CardContentBlock
+          title="Recover"
+          description="by selecting a network first"
+          visual={
+            <SpireKeyKdacolorLogoGreen
+              aria-label="SpireKey"
+              fontSize={token('typography.fontSize.9xl')}
+            />
+          }
         >
-          {steps.map((FormStep, stepIndex) => (
-            <Box className={styles.step}>
-              <FormStep
-                key={stepIndex}
-                stepIndex={stepIndex}
-                isVisible={currentStepIndex === stepIndex}
-                defaultValues={defaultFormData}
-                formValues={data}
-                updateFields={updateFields}
-                navigation={{ next, previous, goTo }}
-              />
-            </Box>
-          ))}
-        </motion.div>
-      </div>
-
-      <Stack flexDirection="row" gap="xl" marginBlock="lg" paddingInline="lg">
-        <Button
-          variant="secondary"
-          onPress={goBack}
-          className={atoms({ flex: 1 })}
-        >
-          {isFirstStep ? 'Cancel' : 'Previous'}
-        </Button>
-
-        <Button
-          form={`recover-form-${currentStepIndex}`}
-          variant="progress"
-          progress={((currentStepIndex + 1) / steps.length) * 100}
-          className={atoms({ flex: 1 })}
-          type="submit"
-        >
-          {isLastStep ? 'Complete' : 'Next'}
-        </Button>
-      </Stack>
-    </Stack>
+          <RadioGroup name="network">
+            <Stack flexDirection="row" gap="md">
+              <Radio value="mainnet01" className={styles.networkLabel}>
+                <NetworkMainnet />
+                <Stack as="span" className={styles.networkLabelText}>
+                  Mainnet
+                </Stack>
+              </Radio>
+              <Radio value="testnet04" className={styles.networkLabel}>
+                <NetworkMainnet />
+                <Stack as="span" className={styles.networkLabelText}>
+                  Testnet
+                </Stack>
+              </Radio>
+              <Radio value="development" className={styles.networkLabel}>
+                <NetworkMainnet />
+                <Stack as="span" className={styles.networkLabelText}>
+                  Devnet
+                </Stack>
+              </Radio>
+            </Stack>
+          </RadioGroup>
+        </CardContentBlock>
+        <CardFooter>
+          <Button variant="outlined" onPress={onCancel}>
+            Cancel
+          </Button>
+          <Button type="submit">Next</Button>
+        </CardFooter>
+      </form>
+    </CardContainer>
   );
 }
