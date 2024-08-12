@@ -1,7 +1,7 @@
 'use client';
 
 import { useAccounts } from '@/context/AccountsContext';
-import { getRAccountFromChain } from '@/utils/shared/account';
+import { getAccountFromChains, getRAccountFromChain } from '@/utils/shared/account';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { Button, Stack } from '@kadena/kode-ui';
 import { token } from '@kadena/kode-ui/styles';
@@ -82,9 +82,11 @@ export default function Recover(props: RecoverProps) {
 
     const params: string[] = JSON.parse(info);
     const account = params.find((x) => x.startsWith('r:'));
-    const recoveredAccount = await getRAccountFromChain({
+    const recoveredAccount = await getAccountFromChains({
       networkId: network as string,
-      chainId: Math.floor(Math.random() * 20).toString() as ChainId,
+      chainIds: Array(20)
+        .fill(0)
+        .map((_, i) => i.toString()) as ChainId[],
       accountName: account!,
     });
     if (!recoveredAccount) throw new Error('Account not found');
@@ -93,9 +95,6 @@ export default function Recover(props: RecoverProps) {
     const updatedAccount = {
       ...recoveredAccount,
       alias: `SpireKey Account ${networkAccounts.length + 1} (${network})`,
-      chainIds: Array(20)
-        .fill(0)
-        .map((_, i) => i.toString()) as ChainId[],
     };
     setAccount(updatedAccount);
     onConnect(updatedAccount);
