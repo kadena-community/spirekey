@@ -1,7 +1,7 @@
 'use client';
 
 import { useAccounts } from '@/context/AccountsContext';
-import { getAccountFromChains, getRAccountFromChain } from '@/utils/shared/account';
+import { getAccountFromChains } from '@/utils/shared/account';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { Button, Stack } from '@kadena/kode-ui';
 import { token } from '@kadena/kode-ui/styles';
@@ -9,6 +9,7 @@ import { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useRouter } from 'next/navigation';
+import { Radio, RadioGroup } from 'react-aria-components';
 import {
   CardContainer,
   CardContentBlock,
@@ -105,7 +106,7 @@ export default function Recover(props: RecoverProps) {
       <form onSubmit={onSubmit}>
         <CardContentBlock
           title="Recover"
-          description="by selecting a network irst"
+          description="by selecting a network first"
           visual={
             <SpireKeyKdacolorLogoGreen
               aria-label="SpireKey"
@@ -113,53 +114,28 @@ export default function Recover(props: RecoverProps) {
             />
           }
         >
-          <Stack flexDirection="row" gap="md">
-            <input
-              className={styles.networkInput}
-              aria-label="Mainnet"
-              type="radio"
-              name="network"
-              value="mainnet01"
-              id="network-mainnet"
-              defaultChecked={!props.networkId || props.networkId === 'mainnet01'}
-            />
-            <label htmlFor="network-mainnet" className={styles.networkLabel}>
-              <NetworkMainnet />
-              <Stack as="span" className={styles.networkLabelText}>
-                Mainnet
-              </Stack>
-            </label>
-            <input
-              className={styles.networkInput}
-              aria-label="Testnet"
-              type="radio"
-              name="network"
-              value="testnet04"
-              id="network-testnet"
-              defaultChecked={props.networkId === 'testnet04'}
-            />
-            <label htmlFor="network-testnet" className={styles.networkLabel}>
-              <NetworkTestnet />
-              <Stack as="span" className={styles.networkLabelText}>
-                Testnet
-              </Stack>
-            </label>
-            <input
-              className={styles.networkInput}
-              aria-label="Devnet"
-              type="radio"
-              name="network"
-              value="development"
-              defaultChecked={props.networkId === 'development'}
-              id="network-devnet"
-            />
-            <label htmlFor="network-devnet" className={styles.networkLabel}>
-              <NetworkDevnet />
-              <Stack as="span" className={styles.networkLabelText}>
-                Devnet
-              </Stack>
-            </label>
-          </Stack>
+          <RadioGroup>
+            <Stack flexDirection="row" gap="md">
+              <Radio value="mainnet01" className={styles.networkLabel}>
+                <NetworkMainnet />
+                <Stack as="span" className={styles.networkLabelText}>
+                  Mainnet
+                </Stack>
+              </Radio>
+              <Radio value="testnet04" className={styles.networkLabel}>
+                <NetworkMainnet />
+                <Stack as="span" className={styles.networkLabelText}>
+                  Testnet
+                </Stack>
+              </Radio>
+              <Radio value="development" className={styles.networkLabel}>
+                <NetworkMainnet />
+                <Stack as="span" className={styles.networkLabelText}>
+                  Devnet
+                </Stack>
+              </Radio>
+            </Stack>
+          </RadioGroup>
         </CardContentBlock>
         <CardFooter>
           <Button variant="outlined" onPress={onCancel}>

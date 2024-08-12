@@ -12,13 +12,14 @@ export const networkLabel = style({
   borderRadius: token('radius.sm'),
   backgroundColor: token('color.background.layer.default'),
   display: 'flex',
+  flex: 1,
   flexDirection: 'column',
   alignItems: 'center',
   paddingInline: token('spacing.lg'),
   paddingBlock: token('spacing.md'),
   gap: token('spacing.sm'),
   selectors: {
-    [`${networkInput}:checked + &`]: {
+    [`&[data-selected]&`]: {
       backgroundColor: token('color.brand.primary.n0'),
       color: token('color.background.accent.primary.inverse.default'),
     },
@@ -27,7 +28,7 @@ export const networkLabel = style({
 export const networkLabelText = style({
   fontSize: token('typography.fontSize.sm'),
   selectors: {
-    [`${networkInput}:checked + ${networkLabel} &`]: {
+    [`${networkLabel}[data-selected] &`]: {
       color: token('color.text.base.@focus'),
     },
   },
