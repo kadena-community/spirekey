@@ -31,7 +31,6 @@ test('Recover SpireKey Account', async ({
   await test.step('Recover Account', async () => {
     await welcomePage.startRecovery();
     await recoverPage.selectPassKey();
-    await recoverPage.completeRegistration();
     expect(alias).toBeTruthy();
     await expect(await accountsPage.getAccountCard(alias)).toBeVisible();
   });
