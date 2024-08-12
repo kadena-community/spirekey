@@ -1,9 +1,6 @@
-import { atoms, token } from '@kadena/kode-ui/styles';
+import { token } from '@kadena/kode-ui/styles';
 import { style } from '@vanilla-extract/css';
 
-export const networkInput = atoms({
-  display: 'none',
-});
 export const networkLabel = style({
   borderColor: token('color.icon.base.@disabled'),
   color: token('color.icon.base.@disabled'),

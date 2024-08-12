@@ -56,6 +56,9 @@ export default function Recover(props: RecoverProps) {
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const data = new FormData(event.target as HTMLFormElement);
+    console.warn("DEBUGPRINT[2]: Recover.tsx:58: event=", event)
+
+    console.warn("DEBUGPRINT[1]: Recover.tsx:59: data=", data)
     const network = data.get('network');
     if (!network) throw new Error('No network selected');
     const { id } = await startAuthentication({
@@ -114,7 +117,7 @@ export default function Recover(props: RecoverProps) {
             />
           }
         >
-          <RadioGroup>
+          <RadioGroup name="network">
             <Stack flexDirection="row" gap="md">
               <Radio value="mainnet01" className={styles.networkLabel}>
                 <NetworkMainnet />

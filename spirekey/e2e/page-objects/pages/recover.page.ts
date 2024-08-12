@@ -7,7 +7,7 @@ export class RecoverPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.devnetNetworkBtn = this.page.getByLabel('network-devnet');
+    this.devnetNetworkBtn = this.page.getByText('Devnet');
     this.nextBtn = this.page.getByRole('button', { name: 'Next' });
   }
 
