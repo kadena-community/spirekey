@@ -3,7 +3,7 @@ import {
   CardContainer,
   CardContentBlock,
   CardFooter,
-} from '@/steps/CardPattern/CardPattern';
+} from '@/components/CardPattern/CardPattern';
 import { l1Client } from '@/utils/shared/client';
 import { ChainId, createTransactionBuilder, ICommand } from '@kadena/client';
 import {

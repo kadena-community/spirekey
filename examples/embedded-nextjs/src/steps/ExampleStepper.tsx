@@ -1,4 +1,4 @@
-import { Step, Stepper } from "./Stepper/Stepper";
+import { Step, Stepper } from "@/components/Stepper/Stepper";
 
 export const ExampleStepper = ({ step }: { step: number }) => {
   const steps = [

@@ -1,7 +1,7 @@
 import {
   CardContainer,
   CardContentBlock,
-} from '@/steps/CardPattern/CardPattern';
+} from '@/components/CardPattern/CardPattern';
 import { MonoCopyAll } from '@kadena/kode-icons/system';
 import {
   Button,
@@ -11,7 +11,7 @@ import {
   TextField,
 } from '@kadena/kode-ui';
 import { useState } from 'react';
-import { stackedButtonClass } from './CardPattern/CardPattern.css';
+import { stackedButtonClass } from '@/components/CardPattern/CardPattern.css';
 
 export const ResultStep = ({ result }: { result: string }) => {
   const [showDetails, setShowDetails] = useState(false);

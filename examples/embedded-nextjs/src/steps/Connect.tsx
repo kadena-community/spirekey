@@ -3,7 +3,7 @@ import {
   CardContainer,
   CardContentBlock,
   CardFooter,
-} from '@/steps/CardPattern/CardPattern';
+} from '@/components/CardPattern/CardPattern';
 import { ChainId } from '@kadena/client';
 import {
   Button,
@@ -14,7 +14,7 @@ import {
 } from '@kadena/kode-ui';
 import { Account, connect, initSpireKey } from '@kadena/spirekey-sdk';
 import { useEffect, useState } from 'react';
-import { stackedButtonClass } from './CardPattern/CardPattern.css';
+import { stackedButtonClass } from '@/components/CardPattern/CardPattern.css';
 import { ExampleStepper } from './ExampleStepper';
 
 export const ConnectStep = ({

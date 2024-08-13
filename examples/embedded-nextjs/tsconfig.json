@@ -19,7 +19,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@/utils/*": ["../../spirekey/src/utils/*"]
+      "@/utils/*": ["../../spirekey/src/utils/*"],
+      "@/components/*": ["../../spirekey/src/components/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

@@ -5,7 +5,7 @@ import { style } from '@vanilla-extract/css';
 export const paddingContainer = style(
   responsiveStyle({
     md: {
-      paddingBlock: token('size.n32'),
+      paddingBlockStart: token('size.n32'),
     },
   }),
 );
@@ -15,6 +15,7 @@ export const container = style([
     borderRadius: 'md',
     padding: 'xl',
     backgroundColor: 'layer.default',
+    gap: 'md',
   }),
   {
     ...responsiveStyle({
@@ -29,7 +30,10 @@ export const container = style([
 ]);
 
 export const bodyContent = style([
-  { marginBlockStart: token('spacing.xl'), flex: 1.5 },
+  {
+    marginBlockStart: token('spacing.xl'),
+    flex: 1.5,
+  },
   {
     ...responsiveStyle({
       md: {
@@ -45,3 +49,12 @@ export const bodyContent = style([
     },
   },
 ]);
+
+export const newSectionStack = style({
+  marginBlockStart: token('size.n16'),
+});
+
+export const stackedButtonClass = style({
+  width: 'min-content',
+  alignSelf: 'flex-end',
+});
