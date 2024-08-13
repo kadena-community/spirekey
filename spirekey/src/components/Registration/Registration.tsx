@@ -6,7 +6,7 @@ import {
   kadenaEncrypt,
   kadenaGenKeypairFromSeed,
 } from '@kadena/hd-wallet';
-import { Button } from '@kadena/kode-ui';
+import { Button, Heading, Stack, Text } from '@kadena/kode-ui';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -30,12 +30,15 @@ import { getNewWebauthnKey } from '@/utils/webauthnKey';
 
 import {
   CardContainer,
+  CardContentBlock,
   CardFooter,
   SpireKeyCardContentBlock,
 } from '@/components/CardPattern/CardPattern';
 import { useRAccount } from '@/flags/flags';
 import { getUser } from '@/utils/connect';
 import { genKeyPair } from '@kadena/cryptography-utils';
+import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
+import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
 import AccountNetwork from '../Card/AccountNetwork';
 import Alias from '../Card/Alias';
@@ -43,6 +46,7 @@ import Card from '../Card/Card';
 import CardBottom from '../Card/CardBottom';
 import DeviceIcons from '../Card/DeviceIcons';
 import PasskeyCard from '../Card/PasskeyCard';
+import { Step, Stepper } from '../Stepper/Stepper';
 import * as styles from './Registration.css';
 
 interface Props {
@@ -52,6 +56,9 @@ interface Props {
   onComplete?: (account: Account) => void;
   onCancel?: () => void;
 }
+type KeyPair = { publicKey: string; secretKey: string };
+
+const rootkeyPasskeyName = `SpireKey Wallet Key (DO NOT USE FOR SIGNING)`;
 
 export const registerNewDevice =
   (
@@ -64,10 +71,11 @@ export const registerNewDevice =
     chainId,
     color,
     domain,
+    keypair,
   }: Omit<
     AccountRegistration,
     'accountName' | 'credentialPubkey' | 'deviceType' | 'credentialId'
-  >): Promise<void> => {
+  > & { keypair?: KeyPair }): Promise<void> => {
     const { publicKey, deviceType, credentialId } =
       await getNewWebauthnKey(alias);
     const account = {
@@ -81,7 +89,7 @@ export const registerNewDevice =
       credentialPubkey: publicKey,
     };
     if (useRAccount()) {
-      const keypair = genKeyPair();
+      if (!keypair) throw new Error('No keypair provided');
       const { name: accountName, guard } = await getRAccountName(
         publicKey,
         keypair.publicKey,
@@ -136,10 +144,7 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
   const [succesfulAuthentication, setSuccesfulAuthentication] =
     useState<boolean>(false);
   const [account, setCurrentAccount] = useState<Account>();
-  const [keypair, setKeypair] = useState<{
-    publicKey: string;
-    secretKey: string;
-  }>();
+  const [keypair, setKeypair] = useState<KeyPair>();
 
   const { registerAccount, accounts, setAccount } = useAccounts();
   const { host } = useReturnUrl();
@@ -163,9 +168,7 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
-      const { publicKey } = await getNewWebauthnKey(
-        'SpireKey Rootkey (DO NOT USE FOR SIGNING!)',
-      );
+      const { publicKey } = await getNewWebauthnKey(rootkeyPasskeyName);
       const tempPassword = crypto.getRandomValues(new Uint16Array(32));
       const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
         tempPassword,
@@ -204,6 +207,7 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
         color,
         chainId,
         networkId: currentNetwork,
+        keypair,
       });
     } catch (error: any) {
       addNotification({
@@ -223,6 +227,7 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     succesfulAuthentication,
     handleSubmit,
     handleRegisterWallet,
+    keypair,
     account,
   };
 };
@@ -242,11 +247,17 @@ export default function Registration({
     if (onCancel) return onCancel();
     router.push(cancelRedirectUrl);
   };
-  const { account, isSubmitting, succesfulAuthentication, handleSubmit } =
-    useRegistration({
-      networkId,
-      chainId,
-    });
+  const {
+    account,
+    keypair,
+    handleRegisterWallet,
+    isSubmitting,
+    succesfulAuthentication,
+    handleSubmit,
+  } = useRegistration({
+    networkId,
+    chainId,
+  });
   const handleComplete = () => {
     if (!account) throw new Error('No user registered');
     if (onComplete) return onComplete(account);
@@ -260,24 +271,30 @@ export default function Registration({
       account={account}
       isSubmitting={isSubmitting}
       succesfulAuthentication={succesfulAuthentication}
+      keypair={keypair}
       onCancel={handleCancel}
       onSubmit={handleSubmit}
       onComplete={handleComplete}
+      onHandleRegisterWallet={handleRegisterWallet}
     />
   );
 }
 const RegisterComponent = ({
   account,
+  keypair,
   isSubmitting,
   succesfulAuthentication,
   onCancel,
+  onHandleRegisterWallet,
   onSubmit,
   onComplete,
 }: {
   account?: Account;
+  keypair?: KeyPair;
   isSubmitting: boolean;
   succesfulAuthentication: boolean;
   onCancel: () => void;
+  onHandleRegisterWallet: () => void;
   onSubmit: () => void;
   onComplete: () => void;
 }) => {
@@ -312,36 +329,95 @@ const RegisterComponent = ({
       </CardContainer>
     );
 
+  if (keypair)
+    return (
+      <CardContainer>
+        <CardContentBlock
+          visual={
+            <SpireKeyKdacolorLogoGreen
+              aria-label="SpireKey"
+              fontSize={token('typography.fontSize.9xl')}
+            />
+          }
+          title="Register Account"
+          description={
+            <>
+              <Text>
+                Create your account to manage your web3 assets managed by your
+                SpireKey wallet.
+              </Text>
+              <Stepper>
+                <Step>Create Wallet</Step>
+                <Step active>Register Account</Step>
+              </Stepper>
+            </>
+          }
+        >
+          <div className={styles.card}>
+            <PasskeyCard
+              isInProgress={!succesfulAuthentication && isSubmitting}
+              isSuccessful={succesfulAuthentication}
+              onSuccessfulAnimationEnd={() => setAnimationFinished(true)}
+              onSubmit={onSubmit}
+            />
+          </div>
+        </CardContentBlock>
+        <CardFooter>
+          <Button
+            variant="outlined"
+            onPress={onCancel}
+            isDisabled={isSubmitting || succesfulAuthentication}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onPress={onSubmit}
+            isDisabled={isSubmitting || succesfulAuthentication}
+          >
+            Continue
+          </Button>
+        </CardFooter>
+      </CardContainer>
+    );
   return (
     <CardContainer>
-      <SpireKeyCardContentBlock
-        title="Register"
-        description="your account with a passkey"
-      >
-        <div className={styles.card}>
-          <PasskeyCard
-            isInProgress={!succesfulAuthentication && isSubmitting}
-            isSuccessful={succesfulAuthentication}
-            onSuccessfulAnimationEnd={() => setAnimationFinished(true)}
-            onSubmit={onSubmit}
+      <CardContentBlock
+        visual={
+          <SpireKeyKdacolorLogoGreen
+            aria-label="SpireKey"
+            fontSize={token('typography.fontSize.9xl')}
           />
-        </div>
-      </SpireKeyCardContentBlock>
+        }
+        title="Connect Wallet"
+        description={
+          <>
+            <Text>
+              Do you wish to manage your wallet here on SpireKey? This will
+              become your home of operation, your gateway into the a secure web
+              3 experience!
+            </Text>
+            <Stepper>
+              <Step active>Create Wallet</Step>
+              <Step>Register Account</Step>
+            </Stepper>
+          </>
+        }
+      >
+        <Stack flexDirection="column" gap="md">
+          <Heading as="h5">No wallet yet?</Heading>
+          <Text>
+            Create a new wallet using a passkey. This passkey will be stored on
+            your device as <Text bold>{rootkeyPasskeyName}</Text>.
+          </Text>
+          <Text>
+            This passkey will be used to perform maintenance operations as well
+            as recovery operations. SpireKey will not use this key for signing!
+          </Text>
+        </Stack>
+      </CardContentBlock>
       <CardFooter>
-        <Button
-          variant="outlined"
-          onPress={onCancel}
-          isDisabled={isSubmitting || succesfulAuthentication}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="primary"
-          onPress={onSubmit}
-          isDisabled={isSubmitting || succesfulAuthentication}
-        >
-          Continue
-        </Button>
+        <Button onPress={onHandleRegisterWallet}>Create</Button>
       </CardFooter>
     </CardContainer>
   );
