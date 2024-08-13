@@ -1,9 +1,14 @@
 'use client';
 
 import type { ChainId } from '@kadena/client';
+import {
+  kadenaDecrypt,
+  kadenaEncrypt,
+  kadenaGenKeypairFromSeed,
+} from '@kadena/hd-wallet';
 import { Button } from '@kadena/kode-ui';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   AccountRegistration,
@@ -131,6 +136,10 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
   const [succesfulAuthentication, setSuccesfulAuthentication] =
     useState<boolean>(false);
   const [account, setCurrentAccount] = useState<Account>();
+  const [keypair, setKeypair] = useState<{
+    publicKey: string;
+    secretKey: string;
+  }>();
 
   const { registerAccount, accounts, setAccount } = useAccounts();
   const { host } = useReturnUrl();
@@ -149,6 +158,34 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
 
   const alias = `${accountPrefix} ${numberOfSpireKeyAccounts + 1}`;
   const color = deviceColors.purple;
+
+  const handleRegisterWallet = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const { publicKey } = await getNewWebauthnKey(
+        'SpireKey Rootkey (DO NOT USE FOR SIGNING!)',
+      );
+      const tempPassword = crypto.getRandomValues(new Uint16Array(32));
+      const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
+        tempPassword,
+        await kadenaEncrypt(
+          tempPassword,
+          await crypto.subtle.digest('sha-512', Buffer.from(publicKey)),
+        ),
+        0,
+      );
+
+      const decrypted = await kadenaDecrypt(tempPassword, privateKey);
+      setKeypair({
+        publicKey: pubKey,
+        secretKey: Buffer.from(decrypted).toString('hex'),
+      });
+    } catch (e) {
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleSubmit = async () => {
     if (isSubmitting) return;
@@ -185,6 +222,7 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     isSubmitting,
     succesfulAuthentication,
     handleSubmit,
+    handleRegisterWallet,
     account,
   };
 };
@@ -244,6 +282,7 @@ const RegisterComponent = ({
   onComplete: () => void;
 }) => {
   const [isAnimationFinished, setAnimationFinished] = useState(false);
+
   if (account && isAnimationFinished)
     return (
       <CardContainer>
