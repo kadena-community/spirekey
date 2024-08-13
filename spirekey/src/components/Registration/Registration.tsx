@@ -303,9 +303,26 @@ const RegisterComponent = ({
   if (account && isAnimationFinished)
     return (
       <CardContainer>
-        <SpireKeyCardContentBlock
-          title="Register"
-          description="your account with a passkey"
+        <CardContentBlock
+          visual={
+            <SpireKeyKdacolorLogoGreen
+              aria-label="SpireKey"
+              fontSize={token('typography.fontSize.9xl')}
+            />
+          }
+          title="Register Account"
+          description={
+            <>
+              <Text>
+                Create your account to manage your web3 assets managed by your
+                SpireKey wallet.
+              </Text>
+              <Stepper>
+                <Step>Create Wallet</Step>
+                <Step>Register Account</Step>
+              </Stepper>
+            </>
+          }
         >
           <div className={styles.card}>
             <Card
@@ -317,7 +334,7 @@ const RegisterComponent = ({
               cardBottom={<CardBottom account={account} />}
             />
           </div>
-        </SpireKeyCardContentBlock>
+        </CardContentBlock>
         <CardFooter>
           <Button variant="outlined" onPress={onCancel}>
             Cancel
