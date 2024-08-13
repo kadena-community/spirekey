@@ -121,6 +121,9 @@ importers:
       '@kadena/fonts':
         specifier: ^0.0.1
         version: 0.0.1
+      '@kadena/hd-wallet':
+        specifier: ^0.4.2
+        version: 0.4.2
       '@kadena/kode-icons':
         specifier: ^0.1.0
         version: 0.1.0
@@ -941,6 +944,9 @@ packages:
   '@kadena/fonts@0.0.1':
     resolution: {integrity: sha512-epUOJbW96Yd827XQD2/6Ibow9qcevgPhVKsUhfzG9L26U4PLMMWZ0KXxIoFQ6DKpQa9xE4GK8DkPzn30pJb+3Q==}
 
+  '@kadena/hd-wallet@0.4.2':
+    resolution: {integrity: sha512-6qFO4wFovLgMkxCpe7MspMKy+XQyM6pcjT9c0q2qL1fjmz07yOia+qPIfGtK7lP+oFbojUasNWWnOqfkpY0rpg==}
+
   '@kadena/kode-icons@0.1.0':
     resolution: {integrity: sha512-DBHPg0ze/34FYR4BG+nTzR/jS9kxbjMtxgdVTN4HZIydmPLTs7CU15mWTkkFOaYRx0phK2rhH2TwVwhoqIujQw==}
 
@@ -1028,6 +1034,17 @@ packages:
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
+
+  '@noble/curves@1.2.0':
+    resolution: {integrity: sha512-oYclrNgRaM9SsBUBVbb8M6DTV7ZHRTKugureoYEncY5c65HOmRzvSiTE3y5CYaPYJA/GVkrhXEoF0M3Ya9PMnw==}
+
+  '@noble/hashes@1.3.2':
+    resolution: {integrity: sha512-MVC8EAQp7MvEcm30KWENFjgR+Mkmf+D189XJTkFIlwohU5hcBbn1ZkKq7KVTi2Hme3PMGF390DaL52beVrIihQ==}
+    engines: {node: '>= 16'}
+
+  '@noble/hashes@1.3.3':
+    resolution: {integrity: sha512-V7/fPHgl+jsVPXqqeOzT8egNj2iBIVt+ECeMMG8TdcnTikP3oaBtUVqpT/gYCR68aEBJSF+XbYUxStjbFMqIIA==}
+    engines: {node: '>= 16'}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -1801,6 +1818,12 @@ packages:
     resolution: {integrity: sha512-UOo5FdvOL0+eIVTgS4tIdbW+TtnBLWg1YBCcU2KWM7nuNwRz9bksDX1bekJJCpu25N1DVWaCwnT39dVQxzqS8g==}
     cpu: [x64]
     os: [win32]
+
+  '@scure/base@1.1.7':
+    resolution: {integrity: sha512-PPNYBslrLNNUQ/Yad37MHYsNQtK67EhWb6WtSvNLLPo7SdVZgkUjD6Dg+5On7zNwmskf8OX7I7Nx5oN+MIWE0g==}
+
+  '@scure/bip39@1.2.1':
+    resolution: {integrity: sha512-Z3/Fsz1yr904dduJD0NpiyRHhRYHdcnyh73FZWiV+/qhWi83wNJ3NWolYqCEN+ZWsUz2TWwajJggcRE9r1zUYg==}
 
   '@simplewebauthn/browser@9.0.1':
     resolution: {integrity: sha512-wD2WpbkaEP4170s13/HUxPcAV5y4ZXaKo1TfNklS5zDefPinIgXOpgz1kpEvobAsaLPa2KeH7AKKX/od1mrBJw==}
@@ -2833,6 +2856,10 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
+  ed25519-keygen@0.4.8:
+    resolution: {integrity: sha512-rsdNLL15/MmdGZ+I5f7/lVBk1+lZmd/Cw60QEuR5X6gebyBgBImCSLRk2J/REaoRvWwpWuaeOu5Y2Y9deyWNmA==}
+    deprecated: 'Switch to micro-key-producer: the package has been merged into it'
+
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
@@ -3580,6 +3607,9 @@ packages:
   methods@1.1.2:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
+
+  micro-packed@0.3.2:
+    resolution: {integrity: sha512-D1Bq0/lVOzdxhnX5vylCxZpdw5LylH7Vd81py0DfRsKUP36XYpwvy8ZIsECVo3UfnoROn8pdKqkOzL7Cd82sGA==}
 
   micromatch@4.0.7:
     resolution: {integrity: sha512-LPP/3KorzCwBxfeUuZmaR6bG2kdeHSbe0P2tY3FLRU4vYrjYz5hI4QZwV0njUx3jeuKe67YukQ1LSPZBKDqO/Q==}
@@ -5795,6 +5825,17 @@ snapshots:
     dependencies:
       lodash.kebabcase: 4.1.1
 
+  '@kadena/hd-wallet@0.4.2':
+    dependencies:
+      '@kadena/cryptography-utils': 0.4.4
+      '@scure/bip39': 1.2.1
+      buffer: 6.0.3
+      buffer-from: 1.1.2
+      debug: 4.3.4
+      ed25519-keygen: 0.4.8
+    transitivePeerDependencies:
+      - supports-color
+
   '@kadena/kode-icons@0.1.0':
     dependencies:
       react: 18.3.1
@@ -5903,6 +5944,14 @@ snapshots:
 
   '@next/swc-win32-x64-msvc@14.2.4':
     optional: true
+
+  '@noble/curves@1.2.0':
+    dependencies:
+      '@noble/hashes': 1.3.2
+
+  '@noble/hashes@1.3.2': {}
+
+  '@noble/hashes@1.3.3': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -7059,6 +7108,13 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.18.0':
     optional: true
+
+  '@scure/base@1.1.7': {}
+
+  '@scure/bip39@1.2.1':
+    dependencies:
+      '@noble/hashes': 1.3.3
+      '@scure/base': 1.1.7
 
   '@simplewebauthn/browser@9.0.1':
     dependencies:
@@ -8373,6 +8429,13 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
+  ed25519-keygen@0.4.8:
+    dependencies:
+      '@noble/curves': 1.2.0
+      '@noble/hashes': 1.3.3
+      '@scure/base': 1.1.7
+      micro-packed: 0.3.2
+
   ee-first@1.1.1: {}
 
   effect@3.0.3: {}
@@ -9186,6 +9249,10 @@ snapshots:
   meshoptimizer@0.18.1: {}
 
   methods@1.1.2: {}
+
+  micro-packed@0.3.2:
+    dependencies:
+      '@scure/base': 1.1.7
 
   micromatch@4.0.7:
     dependencies:
