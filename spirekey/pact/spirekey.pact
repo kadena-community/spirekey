@@ -27,6 +27,15 @@
     true
   )
 
+  (defcap REGISTER_CREDENTIAL(credential-id:string pubkey:string domain:string)
+    @event
+    true
+  )
+
+  (defun register-credential(credential-id:string pubkey:string domain:string)
+    (emit-event (REGISTER_CREDENTIAL credential-id pubkey domain))
+  )
+
   (defun add-device-pair(
     account       : string
     fungible      : module{fungible-v2}
