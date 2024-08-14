@@ -111,13 +111,13 @@ export default function Recover(props: RecoverProps) {
                 </Stack>
               </Radio>
               <Radio value="testnet04" className={styles.networkLabel}>
-                <NetworkMainnet />
+                <NetworkTestnet />
                 <Stack as="span" className={styles.networkLabelText}>
                   Testnet
                 </Stack>
               </Radio>
               <Radio value="development" className={styles.networkLabel}>
-                <NetworkMainnet />
+                <NetworkDevnet />
                 <Stack as="span" className={styles.networkLabelText}>
                   Devnet
                 </Stack>

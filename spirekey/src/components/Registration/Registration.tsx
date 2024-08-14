@@ -445,7 +445,7 @@ const RegisterComponent = ({
 
   if (account && isAnimationFinished)
     return (
-      <CardContainer>
+      <CardContainer hasPadding>
         <CardContentBlock
           visual={
             <SpireKeyKdacolorLogoGreen
@@ -541,7 +541,7 @@ const RegisterComponent = ({
       </CardContainer>
     );
   return (
-    <CardContainer>
+    <CardContainer hasPadding>
       <CardContentBlock
         visual={
           <SpireKeyKdacolorLogoGreen
