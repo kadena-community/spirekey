@@ -10,7 +10,7 @@ import { getRegisterCommand } from '@/utils/register';
 import { l1Client } from '@/utils/shared/client';
 import { ChainId } from '@kadena/client';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
-import { Button, Heading, Link, Stack, Text } from '@kadena/kode-ui';
+import { Button, Heading, Link, maskValue, Stack, Text } from '@kadena/kode-ui';
 import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
 import { useState } from 'react';
@@ -160,7 +160,9 @@ export default function ConnectComponent({
                 <DeviceCircle device={account.devices[0]} />
                 <Text>{account.alias}</Text>
               </Stack>
-              <MaskedValue value={account.accountName} />
+              <Text>
+                {maskValue(account.accountName)}
+              </Text>
             </Stack>
           ))}
         </Stack>
