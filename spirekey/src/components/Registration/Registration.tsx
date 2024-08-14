@@ -8,7 +8,7 @@ import {
 } from '@kadena/hd-wallet';
 import { Button, Heading, Stack, Text } from '@kadena/kode-ui';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import {
   AccountRegistration,
@@ -28,7 +28,6 @@ import {
   registerRAccounts,
 } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
-import cbor from 'cbor';
 import elliptic from 'elliptic';
 
 import {
@@ -53,6 +52,7 @@ import DeviceIcons from '../Card/DeviceIcons';
 import PasskeyCard from '../Card/PasskeyCard';
 import { Step, Stepper } from '../Stepper/Stepper';
 import * as styles from './Registration.css';
+import { getGraphClient } from '@/utils/graphql';
 
 interface Props {
   redirectUrl?: string;
@@ -82,25 +82,15 @@ query getCredentials($filter: String) {
   }
 }
 `;
-export const getCredentials = async (credentialId: string, domain: string) => {
-  const res = await fetch(`http://localhost:8080/graphql`, {
-    method: 'POST',
-    headers: {
-      accept:
-        'application/graphql-response+json, application/json, multipart/mixed',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      extensions: {},
-      operationName: 'getCredentials',
-      query: getCredentialQuery,
-      variables: {
-        filter: `{\"array_contains\": [\"${credentialId}\", \"${domain}\"]}`,
-      },
-    }),
+export const getCredentials = async (
+  networkId: string,
+  credentialId: string,
+  domain: string,
+) => {
+  const res = await getGraphClient(networkId, getCredentialQuery, {
+    filter: `{\"array_contains\": [\"${credentialId}\", \"${domain}\"]}`,
   });
-  // const infoString = (await res.json())?.data?.events?.edges?.[0]?.node
-  const edges = (await res.json())?.data?.events?.edges;
+  const edges = res?.events?.edges;
   if (!edges.length) throw new Error('No credentials found');
   return edges.map((e: any) => {
     const [, c] = JSON.parse(e?.node?.parameters);
@@ -264,7 +254,11 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
       );
       const messageHash = new Uint8Array(await sha256(concatenatedData));
 
-      const foundKeys = await getCredentials(id, window.location.hostname);
+      const foundKeys = await getCredentials(
+        networkId!,
+        id,
+        window.location.hostname,
+      );
       const recoveredKeys = await Promise.all(
         [
           ec.recoverPubKey(messageHash, sig, 0),

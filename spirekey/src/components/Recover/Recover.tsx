@@ -1,6 +1,7 @@
 'use client';
 
 import { useAccounts } from '@/context/AccountsContext';
+import { getGraphClient } from '@/utils/graphql';
 import { getAccountFromChains } from '@/utils/shared/account';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { Button, Stack } from '@kadena/kode-ui';
@@ -56,38 +57,22 @@ export default function Recover(props: RecoverProps) {
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const data = new FormData(event.target as HTMLFormElement);
-    console.warn("DEBUGPRINT[2]: Recover.tsx:58: event=", event)
-
-    console.warn("DEBUGPRINT[1]: Recover.tsx:59: data=", data)
-    const network = data.get('network');
+    const network = data.get('network') as string;
     if (!network) throw new Error('No network selected');
     const { id } = await startAuthentication({
       challenge: 'recoverchallenge',
       rpId: window.location.hostname,
     });
-    const res = await fetch(`http://localhost:8080/graphql`, {
-      method: 'POST',
-      headers: {
-        accept:
-          'application/graphql-response+json, application/json, multipart/mixed',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        extensions: {},
-        operationName: 'recover',
-        query,
-        variables: {
-          filter: `{\"array_contains\":\"${id}\"}`,
-        },
-      }),
+    const res = await getGraphClient(network, query, {
+      filter: `{\"array_contains\":\"${id}\"}`,
     });
-    const info = (await res.json())?.data?.events?.edges?.[0]?.node?.parameters;
+    const info = res?.events?.edges?.[0]?.node?.parameters;
     if (!info) throw new Error('No account found');
 
     const params: string[] = JSON.parse(info);
     const account = params.find((x) => x.startsWith('r:'));
     const recoveredAccount = await getAccountFromChains({
-      networkId: network as string,
+      networkId: network,
       chainIds: Array(20)
         .fill(0)
         .map((_, i) => i.toString()) as ChainId[],
