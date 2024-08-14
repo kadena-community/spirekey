@@ -24,6 +24,7 @@ import {
   getAccountName,
   getRAccountName,
   getWebAuthnPubkeyFormat,
+  registerCredentialOnChain,
   registerRAccounts,
 } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
@@ -63,6 +64,49 @@ interface Props {
 type KeyPair = { publicKey: string; secretKey: string };
 
 const rootkeyPasskeyName = `SpireKey Wallet Key (DO NOT USE FOR SIGNING)`;
+const getCredentialQuery = `
+query getCredentials($filter: String) {
+  events(
+    qualifiedEventName: "n_eef68e581f767dd66c4d4c39ed922be944ede505.spirekey.REGISTER_CREDENTIAL"
+    parametersFilter: $filter
+    first: 1
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        chainId
+        parameters
+      }
+    }
+  }
+}
+`;
+export const getCredentials = async (credentialId: string, domain: string) => {
+  const res = await fetch(`http://localhost:8080/graphql`, {
+    method: 'POST',
+    headers: {
+      accept:
+        'application/graphql-response+json, application/json, multipart/mixed',
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      extensions: {},
+      operationName: 'getCredentials',
+      query: getCredentialQuery,
+      variables: {
+        filter: `{\"array_contains\": [\"${credentialId}\", \"${domain}\"]}`,
+      },
+    }),
+  });
+  // const infoString = (await res.json())?.data?.events?.edges?.[0]?.node
+  const edges = (await res.json())?.data?.events?.edges;
+  if (!edges.length) throw new Error('No credentials found');
+  return edges.map((e: any) => {
+    const [, c] = JSON.parse(e?.node?.parameters);
+    return c;
+  });
+};
 
 export const registerNewDevice =
   (
@@ -194,11 +238,10 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
-      const { response } = await startAuthentication({
+      const { response, id } = await startAuthentication({
         rpId: window.location.hostname,
         challenge: 'reconnectwallet',
       });
-      console.warn('DEBUGPRINT[11]: Registration.tsx:196: response=', response);
       const usignature = new Uint8Array(
         base64URLStringToBuffer(response.signature),
       );
@@ -221,32 +264,37 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
       );
       const messageHash = new Uint8Array(await sha256(concatenatedData));
 
-      const key = [
-        ec.recoverPubKey(messageHash, sig, 0),
-        ec.recoverPubKey(messageHash, sig, 1),
-      ].map(async (p) => {
-        const key = ec.keyFromPublic(p);
-        const verified = await key.verify(messageHash, sig);
-        const tempPassword = crypto.getRandomValues(new Uint16Array(32));
-        const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
-          tempPassword,
-          await kadenaEncrypt(
+      const foundKeys = await getCredentials(id, window.location.hostname);
+      const recoveredKeys = await Promise.all(
+        [
+          ec.recoverPubKey(messageHash, sig, 0),
+          ec.recoverPubKey(messageHash, sig, 1),
+        ].map(async (p) => {
+          const key = ec.keyFromPublic(p);
+          // const verified = await key.verify(messageHash, sig);
+          const tempPassword = crypto.getRandomValues(new Uint16Array(32));
+          const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
             tempPassword,
-            await crypto.subtle.digest(
-              'sha-512',
-              Buffer.from(p.encode('hex', false)),
+            await kadenaEncrypt(
+              tempPassword,
+              await crypto.subtle.digest(
+                'sha-512',
+                Buffer.from(p.encode('hex', false)),
+              ),
             ),
-          ),
-          0,
-        );
-
-        //console.warn('DEBUGPRINT[18]: Registration.tsx:246: pubKey=', pubKey);
-        console.warn(
-          "DEBUGPRINT[34]: Registration.tsx:241: Buffer.from(p.encode('hex', false)),=",
-          p.encode('hex', false),
-        );
-        return p.encode('hex', false);
-      });
+            0,
+          );
+          const secretBin = await kadenaDecrypt(tempPassword, privateKey);
+          return {
+            publicKey: pubKey,
+            secretKey: Buffer.from(secretBin).toString('hex'),
+          };
+        }),
+      );
+      const recoveredKey = recoveredKeys.find(({ publicKey }) =>
+        foundKeys.includes(publicKey),
+      );
+      setKeypair(recoveredKey);
     } catch (e) {
       console.warn('DEBUGPRINT[12]: Registration.tsx:228: e=', e);
     } finally {
@@ -257,10 +305,7 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
-      const { publicKey, hex } = await getNewWebauthnKey(rootkeyPasskeyName);
-      // const publicKey =
-      // '04e90c1c14a753be4c1b8aa49a11549abae583353c47e85f543fe83d2d5a5fca527844e3fcac67ee423e08bda6555540380743aae6e837a763639f69d3c1f8917b';
-      console.warn('DEBUGPRINT[28]: Registration.tsx:266: publicKey=', hex);
+      const { credentialId, hex } = await getNewWebauthnKey(rootkeyPasskeyName);
       const tempPassword = crypto.getRandomValues(new Uint16Array(32));
       const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
         tempPassword,
@@ -271,7 +316,13 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
         0,
       );
 
-      console.warn('DEBUGPRINT[29]: Registration.tsx:274: pubKey=', pubKey);
+      await registerCredentialOnChain({
+        networkId: networkId!,
+        chainId: chainId!,
+        credentialId,
+        pubkey: pubKey,
+        domain: window.location.hostname,
+      });
       const decrypted = await kadenaDecrypt(tempPassword, privateKey);
       setKeypair({
         publicKey: pubKey,
@@ -341,18 +392,6 @@ export default function Registration({
     if (onCancel) return onCancel();
     router.push(cancelRedirectUrl);
   };
-  const wut =
-    'a50102032620012158204854b3ed7fe013b6c16fc18e8a31f8b99ac3648f472c31689633a15791e5c8b5225820a8e1a087189dc457b67531886c2bb56699cf54488d2e8a4e1af173ab07d2014f';
-  const buff = Buffer.from(wut, 'hex');
-  const obj = cbor.decode(buff);
-  [...obj.entries()].map(([i, v]) => {
-    if (i <= -2)
-      console.warn(
-        'DEBUGPRINT[32]: Registration.tsx:349: cbor.encode(buff)=',
-        Buffer.from(v).toString('hex'),
-        hex(v),
-      );
-  });
   const {
     account,
     keypair,
@@ -458,7 +497,7 @@ const RegisterComponent = ({
 
   if (keypair)
     return (
-      <CardContainer>
+      <CardContainer hasPadding>
         <CardContentBlock
           visual={
             <SpireKeyKdacolorLogoGreen

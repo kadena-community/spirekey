@@ -146,8 +146,7 @@ export const registerCredentialOnChain = async ({
       secretKey: genesisPrivateKey,
     }) as { sig: string },
   );
-  const submitRes = await l1Client.submit(signedTx as ICommand);
-  return l1Client.listen(submitRes);
+  return await l1Client.submit(signedTx as ICommand);
 };
 
 export const registerAccountsOnChain = async ({
