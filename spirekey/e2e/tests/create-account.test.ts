@@ -14,6 +14,10 @@ test('Create new account using SpireKey', async ({
     await welcomePage.startRegistration();
   });
 
+  await test.step('Create Wallet', async () => {
+    await registerPage.createWallet();
+  });
+
   await test.step('Set Passkey.', async () => {
     await registerPage.createPassKey();
   });
@@ -41,9 +45,9 @@ test('Create new account using SpireKey with dev mode enabled', async ({
     await welcomePage.startRegistration();
   });
 
-  // await test.step('Set Network.', async () => {
-  //   await registerPage.setNetworkTo('devnet');
-  // });
+  await test.step('Create Wallet', async () => {
+    await registerPage.createWallet();
+  });
 
   await test.step('Set Passkey.', async () => {
     await registerPage.createPassKey();

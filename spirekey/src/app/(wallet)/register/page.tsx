@@ -24,8 +24,8 @@ export default function Register({ searchParams }: Props) {
   return (
     <Registration
       redirectUrl={redirectUrl}
-      networkId={networkId}
-      chainId={chainId}
+      networkId={networkId || process.env.WALLET_NETWORK_ID}
+      chainId={chainId || process.env.CHAIN_ID}
     />
   );
 }

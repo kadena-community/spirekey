@@ -96,7 +96,7 @@ export default function ConnectComponent({
   if (!candidateAccounts.length)
     return (
       <>
-        <CardContainer>
+        <CardContainer hasPadding>
           <CardContentBlock
             title=""
             visual={
@@ -135,7 +135,7 @@ export default function ConnectComponent({
     );
 
   return (
-    <CardContainer>
+    <CardContainer hasPadding>
       <SpireKeyCardContentBlock
         title="Accounts"
         description="available for use"

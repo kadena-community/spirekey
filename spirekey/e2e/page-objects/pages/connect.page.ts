@@ -4,6 +4,7 @@ export class ConnectPage {
   private page: Page;
   private registerBtn: Locator;
   private createBtn: Locator;
+  private createWalletBtn: Locator;
   private connectBtn: Locator;
   private completeBtn: Locator;
 
@@ -11,12 +12,14 @@ export class ConnectPage {
     this.page = page;
     this.registerBtn = this.page.getByRole('button', { name: 'Register' });
     this.createBtn = this.page.getByRole('button', { name: 'Continue' });
+    this.createWalletBtn = this.page.getByRole('button', { name: 'Create' });
     this.connectBtn = this.page.getByRole('button', { name: 'Connect' });
     this.completeBtn = this.page.getByRole('button', { name: 'Complete' });
   }
 
   async createAccount(): Promise<void> {
     await this.registerBtn.click();
+    await this.createWalletBtn.click();
     await this.createBtn.click();
     await this.completeBtn.waitFor();
     await this.completeBtn.click();
