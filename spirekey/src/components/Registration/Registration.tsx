@@ -27,19 +27,23 @@ import {
   registerRAccounts,
 } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
+import cbor from 'cbor';
+import elliptic from 'elliptic';
 
 import {
   CardContainer,
   CardContentBlock,
   CardFooter,
-  SpireKeyCardContentBlock,
 } from '@/components/CardPattern/CardPattern';
 import { useRAccount } from '@/flags/flags';
 import { getUser } from '@/utils/connect';
-import { genKeyPair } from '@kadena/cryptography-utils';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
+import {
+  base64URLStringToBuffer,
+  startAuthentication,
+} from '@simplewebauthn/browser';
 import AccountNetwork from '../Card/AccountNetwork';
 import Alias from '../Card/Alias';
 import Card from '../Card/Card';
@@ -137,6 +141,28 @@ type UseRegistration = {
   chainId?: ChainId;
   networkId?: string;
 };
+function i2hex(i: number) {
+  return ('0' + i.toString(16)).slice(-2);
+}
+
+export const hex = (bytes: Uint8Array) => Array.from(bytes).map(i2hex).join('');
+async function sha256(clientDataJSON: ArrayBuffer) {
+  return await window.crypto.subtle.digest('SHA-256', clientDataJSON);
+}
+function concatenateData(
+  authenticatorData: ArrayBuffer,
+  clientDataHash: ArrayBuffer,
+) {
+  const concatenated = new Uint8Array(
+    authenticatorData.byteLength + clientDataHash.byteLength,
+  );
+  concatenated.set(new Uint8Array(authenticatorData), 0);
+  concatenated.set(
+    new Uint8Array(clientDataHash),
+    authenticatorData.byteLength,
+  );
+  return concatenated;
+}
 const useRegistration = ({ chainId, networkId }: UseRegistration) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [allowRedirect, setAllowRedirect] = useState<boolean>(false);
@@ -164,21 +190,88 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
   const alias = `${accountPrefix} ${numberOfSpireKeyAccounts + 1}`;
   const color = deviceColors.purple;
 
+  const handleConnectWallet = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const { response } = await startAuthentication({
+        rpId: window.location.hostname,
+        challenge: 'reconnectwallet',
+      });
+      console.warn('DEBUGPRINT[11]: Registration.tsx:196: response=', response);
+      const usignature = new Uint8Array(
+        base64URLStringToBuffer(response.signature),
+      );
+      const rStart = usignature[4] === 0 ? 5 : 4;
+      const rEnd = rStart + 32;
+      const sStart = usignature[rEnd + 2] === 0 ? rEnd + 3 : rEnd + 2;
+      const r = usignature.slice(rStart, rEnd);
+      const s = usignature.slice(sStart);
+
+      const ec = new elliptic.ec('p256');
+
+      const rBigInt = BigInt('0x' + hex(r));
+      const sBigInt = BigInt('0x' + hex(s));
+
+      const sig = { r: rBigInt.toString(16), s: sBigInt.toString(16) };
+
+      const concatenatedData = concatenateData(
+        base64URLStringToBuffer(response.authenticatorData),
+        await sha256(base64URLStringToBuffer(response.clientDataJSON)),
+      );
+      const messageHash = new Uint8Array(await sha256(concatenatedData));
+
+      const key = [
+        ec.recoverPubKey(messageHash, sig, 0),
+        ec.recoverPubKey(messageHash, sig, 1),
+      ].map(async (p) => {
+        const key = ec.keyFromPublic(p);
+        const verified = await key.verify(messageHash, sig);
+        const tempPassword = crypto.getRandomValues(new Uint16Array(32));
+        const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
+          tempPassword,
+          await kadenaEncrypt(
+            tempPassword,
+            await crypto.subtle.digest(
+              'sha-512',
+              Buffer.from(p.encode('hex', false)),
+            ),
+          ),
+          0,
+        );
+
+        //console.warn('DEBUGPRINT[18]: Registration.tsx:246: pubKey=', pubKey);
+        console.warn(
+          "DEBUGPRINT[34]: Registration.tsx:241: Buffer.from(p.encode('hex', false)),=",
+          p.encode('hex', false),
+        );
+        return p.encode('hex', false);
+      });
+    } catch (e) {
+      console.warn('DEBUGPRINT[12]: Registration.tsx:228: e=', e);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   const handleRegisterWallet = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
-      const { publicKey } = await getNewWebauthnKey(rootkeyPasskeyName);
+      const { publicKey, hex } = await getNewWebauthnKey(rootkeyPasskeyName);
+      // const publicKey =
+      // '04e90c1c14a753be4c1b8aa49a11549abae583353c47e85f543fe83d2d5a5fca527844e3fcac67ee423e08bda6555540380743aae6e837a763639f69d3c1f8917b';
+      console.warn('DEBUGPRINT[28]: Registration.tsx:266: publicKey=', hex);
       const tempPassword = crypto.getRandomValues(new Uint16Array(32));
       const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
         tempPassword,
         await kadenaEncrypt(
           tempPassword,
-          await crypto.subtle.digest('sha-512', Buffer.from(publicKey)),
+          await crypto.subtle.digest('sha-512', Buffer.from(hex)),
         ),
         0,
       );
 
+      console.warn('DEBUGPRINT[29]: Registration.tsx:274: pubKey=', pubKey);
       const decrypted = await kadenaDecrypt(tempPassword, privateKey);
       setKeypair({
         publicKey: pubKey,
@@ -227,6 +320,7 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     succesfulAuthentication,
     handleSubmit,
     handleRegisterWallet,
+    handleConnectWallet,
     keypair,
     account,
   };
@@ -247,10 +341,23 @@ export default function Registration({
     if (onCancel) return onCancel();
     router.push(cancelRedirectUrl);
   };
+  const wut =
+    'a50102032620012158204854b3ed7fe013b6c16fc18e8a31f8b99ac3648f472c31689633a15791e5c8b5225820a8e1a087189dc457b67531886c2bb56699cf54488d2e8a4e1af173ab07d2014f';
+  const buff = Buffer.from(wut, 'hex');
+  const obj = cbor.decode(buff);
+  [...obj.entries()].map(([i, v]) => {
+    if (i <= -2)
+      console.warn(
+        'DEBUGPRINT[32]: Registration.tsx:349: cbor.encode(buff)=',
+        Buffer.from(v).toString('hex'),
+        hex(v),
+      );
+  });
   const {
     account,
     keypair,
     handleRegisterWallet,
+    handleConnectWallet,
     isSubmitting,
     succesfulAuthentication,
     handleSubmit,
@@ -275,6 +382,7 @@ export default function Registration({
       onCancel={handleCancel}
       onSubmit={handleSubmit}
       onComplete={handleComplete}
+      onHandleConnectWallet={handleConnectWallet}
       onHandleRegisterWallet={handleRegisterWallet}
     />
   );
@@ -286,6 +394,7 @@ const RegisterComponent = ({
   succesfulAuthentication,
   onCancel,
   onHandleRegisterWallet,
+  onHandleConnectWallet,
   onSubmit,
   onComplete,
 }: {
@@ -294,6 +403,7 @@ const RegisterComponent = ({
   isSubmitting: boolean;
   succesfulAuthentication: boolean;
   onCancel: () => void;
+  onHandleConnectWallet: () => void;
   onHandleRegisterWallet: () => void;
   onSubmit: () => void;
   onComplete: () => void;
@@ -422,6 +532,14 @@ const RegisterComponent = ({
         }
       >
         <Stack flexDirection="column" gap="md">
+          <Heading as="h5">Already have a wallet?</Heading>
+          <Text>
+            Provide your passkey named <Text bold>{rootkeyPasskeyName}</Text> to
+            add another account to this wallet.
+          </Text>
+          <CardFooter>
+            <Button onPress={onHandleConnectWallet}>Connect</Button>
+          </CardFooter>
           <Heading as="h5">No wallet yet?</Heading>
           <Text>
             Create a new wallet using a passkey. This passkey will be stored on
