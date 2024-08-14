@@ -33,6 +33,7 @@
   ],
   "scripts": {
     "build": "crackle package",
+    "build:e2e": "crackle package",
     "dev": "crackle dev",
     "test": "vitest run",
     "test:watch": "vitest --no-coverage"

@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "build": "turbo build",
-    "build:e2e": "NODE_ENV=test turbo build",
+    "build:e2e": "NODE_ENV=test turbo build:e2e",
     "dev": "turbo dev",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",
