@@ -111,6 +111,45 @@ const getAccountNameLegacy = async (
     (tx) => tx.result.data,
   )({});
 
+export const registerCredentialOnChain = async ({
+  domain,
+  pubkey,
+  credentialId,
+  chainId,
+  networkId,
+}: {
+  domain: string;
+  pubkey: string;
+  credentialId: string;
+  chainId: ChainId;
+  networkId: string;
+}) => {
+  const tx = createTransactionBuilder()
+    .execution(
+      `(${process.env.NAMESPACE}.spirekey.register-credential "${credentialId}" "${pubkey}" "${domain}")`,
+    )
+    .setMeta({ chainId, senderAccount: gasStation })
+    .setNetworkId(networkId)
+    .addSigner(genesisPubKey, (withCap) => [
+      withCap(
+        `${process.env.NAMESPACE}.gas-station.GAS_PAYER`,
+        gasStation,
+        { int: 1 },
+        1,
+      ),
+    ])
+    .createTransaction();
+  const signedTx = addSignatures(
+    tx,
+    sign(tx.cmd, {
+      publicKey: genesisPubKey,
+      secretKey: genesisPrivateKey,
+    }) as { sig: string },
+  );
+  const submitRes = await l1Client.submit(signedTx as ICommand);
+  return l1Client.listen(submitRes);
+};
+
 export const registerAccountsOnChain = async ({
   accountName,
   color,
