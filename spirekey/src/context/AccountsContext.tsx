@@ -1,24 +1,13 @@
 'use client';
 
 import type { ChainId, ITransactionDescriptor } from '@kadena/client';
-import type { Account, Device, QueuedTx } from '@kadena/spirekey-types';
+import type { Account, QueuedTx } from '@kadena/spirekey-types';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-import { useRAccount } from '@/flags/flags';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { useTxQueue } from '@/hooks/useTxQueue';
 import { deviceColors } from '@/styles/shared/tokens.css';
-import { fundAccount } from '@/utils/fund';
-import {
-  getAccountName,
-  getWebAuthnPubkeyFormat,
-  registerAccountsOnChain,
-} from '@/utils/register';
-import { retryPromises } from '@/utils/retryPromises';
-import {
-  getAccountFromChain,
-  getAccountFromChains,
-} from '@/utils/shared/account';
+import { getAccountFromChains } from '@/utils/shared/account';
 import { l1Client } from '@/utils/shared/client';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 
@@ -81,12 +70,8 @@ const getAccountsFromLocalStorage = (): Account[] => {
 const defaultState = {
   networks: ['mainnet01', 'testnet04', getDevnetNetworkId()],
   accounts: getAccountsFromLocalStorage(),
-  registerAccount: async (data: AccountRegistration): Promise<Account> =>
-    JSON.parse('{}'),
   setAccount: (account: Account): void => undefined,
 };
-
-export type RegisterAccountFn = typeof defaultState.registerAccount;
 
 const networks = ['mainnet01', 'testnet04', getDevnetNetworkId()];
 
@@ -178,43 +163,6 @@ const AccountsProvider = ({ children }: Props) => {
             txQueue: localAccount.txQueue,
           });
         } catch (e: unknown) {
-          try {
-            // @TODO: We should move the recovery to the retieval, so accounts can be recovered per chain
-            if (!useRAccount())
-              await Promise.all(
-                chainIds.map(async (chainId) => {
-                  const acc = await getAccountFromChain({
-                    chainId,
-                    networkId,
-                    accountName,
-                  });
-                  if (acc?.devices?.length) return acc;
-                  if (
-                    localAccount.devices.some(
-                      (d) => d.pendingRegistrationTxs?.length,
-                    )
-                  )
-                    return localAccount;
-                  return retryPromises<ITransactionDescriptor>(() =>
-                    recoverAccount({
-                      alias,
-                      networkId,
-                      credentialPubkey: devices[0].guard.keys[0],
-                      credentialId: devices[0]['credential-id'],
-                      color: devices[0].color,
-                      deviceType: devices[0].deviceType,
-                      domain: host,
-                      chainId,
-                    }),
-                  );
-                }),
-              );
-          } catch (e: unknown) {
-            console.error(
-              `Couldn't restore account ${accountName} on ${networkId}`,
-            );
-          }
-
           // We've stored our local data on chain, so localAccount === remoteAccount
           return localAccount;
         }
@@ -245,102 +193,6 @@ const AccountsProvider = ({ children }: Props) => {
     setAccounts([account, ...accounts]);
   };
 
-  const registerAccount = async ({
-    accountName,
-    alias,
-    color,
-    deviceType,
-    domain,
-    credentialId,
-    credentialPubkey,
-    networkId,
-    chainId: cid,
-  }: AccountRegistration): Promise<Account> => {
-    const pendingTxs = await registerAccountsOnChain({
-      accountName,
-      color,
-      deviceType,
-      domain,
-      credentialId,
-      credentialPubkey,
-      networkId,
-      chainId: cid,
-    });
-    const devices: Device[] = [
-      {
-        domain,
-        color,
-        deviceType,
-        'credential-id': credentialId,
-        guard: {
-          keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
-          pred: 'keys-any',
-        },
-        pendingRegistrationTxs: pendingTxs,
-      },
-    ];
-    const account = {
-      accountName,
-      alias,
-      networkId,
-      devices,
-      balance: '0',
-      minApprovals: 1,
-      minRegistrationApprovals: 1,
-      chainIds: pendingTxs.map(({ chainId }) => chainId),
-      txQueue: pendingTxs,
-    };
-    addAccount(account);
-
-    // NOTE: Not polling for confirmation depth on devnet
-    if (
-      process.env.INSTA_FUND === 'true' &&
-      networkId === getDevnetNetworkId()
-    ) {
-      const accountResponses = await Promise.all(
-        pendingTxs.map((tx) => l1Client.listen(tx)),
-      );
-      if (accountResponses.every((r) => r.result.status === 'success')) {
-        await fundAccount(account);
-      }
-    }
-
-    return account;
-  };
-
-  const recoverAccount = async ({
-    alias,
-    color,
-    deviceType,
-    domain,
-    credentialId,
-    credentialPubkey,
-    networkId,
-    chainId: cid,
-  }: AccountRecovery): Promise<ITransactionDescriptor> => {
-    // TODO: remove this when we support mainnet
-    if (networkId === 'mainnet01')
-      throw new Error('We do not support mainnet yet');
-
-    const accountName = await getAccountName(credentialPubkey, networkId);
-
-    if (!accountName) throw new Error('Wallet smart contract not found.');
-
-    const acc = await registerAccount({
-      accountName,
-      alias,
-      color,
-      deviceType,
-      domain,
-      credentialId,
-      credentialPubkey,
-      networkId,
-      chainId: cid,
-    });
-
-    return acc.txQueue[0];
-  };
-
   const removePendingTransaction = (requestKey: string) => {
     setAccounts(
       accounts.map((account) => ({
@@ -367,7 +219,6 @@ const AccountsProvider = ({ children }: Props) => {
       value={{
         accounts,
         networks,
-        registerAccount,
         setAccount,
       }}
     >

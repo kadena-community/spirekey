@@ -75,7 +75,7 @@ export function continueCopy(options: IContinuationPayloadObject['cont']) {
       }),
       addSigner(genesisPubKey, (withCapabilities) => [
         withCapabilities(
-          `${process.env.NAMESPACE}.gas-station.GAS_PAYER`,
+          `${process.env.NAMESPACE}.spirekey.GAS_PAYER`,
           gasStation,
           { int: 1 },
           1,

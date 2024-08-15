@@ -1,8 +1,11 @@
 (namespace (read-string 'webauthn-namespace))
 
 (module spirekey GOVERNANCE
+  (implements gas-payer-v1)
+
   (use fungible-v2)
 
+  (defconst NS_NAME (read-string 'webauthn-namespace))
   (defconst GOVERNANCE_KEYSET (read-string 'webauthn-keyset-name))
   (defcap GOVERNANCE() (enforce-guard GOVERNANCE_KEYSET))
   (defschema account-schema
@@ -106,8 +109,86 @@
       )
     )
   )
+
+  ;;;;;;;;;;;;;;;
+  ; GAS STATION ;
+  ;;;;;;;;;;;;;;;
+
+  (defconst GAS_STATION 
+    (create-principal (create-capability-guard (ALLOW_GAS)))
+  )
+
+  ; UTIL FUNCTIONS extracted so no additional deploy is necessary
+  (defun enforce-below-or-at-gas-price:bool (gasPrice:decimal)
+    (enforce
+      (<= (chain-gas-price) gasPrice)
+      (format "Gas Price must be smaller than or equal to {}" [gasPrice])
+    )
+  )
+
+  (defun chain-gas-price ()
+    "Return gas price from chain-data"
+    (at 'gas-price (chain-data))
+  )
+
+  (defun chain-gas-limit ()
+    "Return gas limit from chain-data"
+    (at 'gas-limit (chain-data))
+  )
+
+  (defun enforce-below-gas-limit:bool (gasLimit:integer)
+    (enforce (< (chain-gas-limit) gasLimit)
+      (format "Gas Limit must be smaller than {}" [gasLimit])
+    )
+  )
+  ; END OF UTIL FUNCTIONS
+
+
+  (defcap GAS_PAYER:bool(user:string limit:integer price:decimal)
+    (enforce-one
+      "Only spirekey operations or continuations are allowed"
+      [
+        (enforce 
+          (try false 
+            (contains 
+              (format "({}.spirekey." [NS_NAME])
+              (at 0 (read-msg 'exec-code))
+            )
+          )
+          "Only spirekey operations are paid for"
+        )
+        (enforce
+          (try
+            false
+            (= (read-msg 'tx-type) 'cont)
+          )
+          "Only continuation transactions are paid for"
+        )
+      ]
+    )
+
+    (enforce-below-or-at-gas-price 0.0000001)
+    (enforce-below-gas-limit 2000)
+    (compose-capability (ALLOW_GAS))
+  )
+  (defcap ALLOW_GAS() true)
+
+  (defun create-gas-payer-guard:guard ()
+    (create-capability-guard (ALLOW_GAS))
+  )
+
+  (defun init() 
+    (coin.create-account
+      GAS_STATION
+      (create-gas-payer-guard)
+    )
+  )
 )
 (if (read-msg 'upgrade)
   true
-  (create-table spirekey.account-table)
+  [
+    (define-keyset spirekey.GOVERNANCE_KEYSET (read-keyset 'webauthn-keyset))
+    (create-table spirekey.account-table)
+    (spirekey.init)
+  ]
 )

@@ -25,11 +25,6 @@
         "18",
         "19"
       ]
-    },
-    "l2": {
-      "host": "localhost",
-      "networkId": "development",
-      "chains": ["14"]
     }
   },
   "signers": {
@@ -39,50 +34,15 @@
     }
   },
   "steps": [
-{
+    {
       "profile": "default",
       "codeFile": "./pact/spirekey.pact",
       "data": {
-        "webauthn-keyset-name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-keyset",
-        "webauthn-namespace": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
-        "upgrade": false
-      },
-      "sender": "sender00"
-    },
-    {
-      "profile": "default",
-      "codeFile": "./pact/coin-delivery.pact",
-      "data": {
-        "webauthn-keyset-name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-keyset",
-        "webauthn-namespace": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
+        "webauthn-keyset-name": "spirekey.webauthn-keyset",
+        "webauthn-namespace": "spirekey",
         "upgrade": true
       },
       "sender": "sender00"
-    },
-    {
-      "profile": "default",
-      "codeFile": "./pact/gas-station.pact",
-      "data": {
-        "ns": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
-        "ks-name": "webauthn-keyset",
-        "upgrade": true
-      },
-      "sender": "sender00"
-    },
-    {
-      "profile": "default",
-      "code": "(coin.transfer \"sender00\" \"u:n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.gas-station.enforce-guard-any:7AdJhJTZk-wJEAWGaoO36HADDU58EtRw5La0LGw1ErI\" 100.0)",
-      "data": {},
-      "sender": "sender00",
-      "caps": [
-        [
-          "coin.TRANSFER",
-          "sender00",
-          "u:n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.gas-station.enforce-guard-any:7AdJhJTZk-wJEAWGaoO36HADDU58EtRw5La0LGw1ErI",
-          "100.0"
-        ],
-        ["coin.GAS"]
-      ]
     }
   ]
 }

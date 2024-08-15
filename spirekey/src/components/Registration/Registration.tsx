@@ -12,7 +12,6 @@ import { useState } from 'react';
 
 import {
   AccountRegistration,
-  RegisterAccountFn,
   useAccounts,
 } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
@@ -21,7 +20,6 @@ import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import {
-  getAccountName,
   getRAccountName,
   getWebAuthnPubkeyFormat,
   registerCredentialOnChain,
@@ -35,8 +33,8 @@ import {
   CardContentBlock,
   CardFooter,
 } from '@/components/CardPattern/CardPattern';
-import { useRAccount } from '@/flags/flags';
 import { getUser } from '@/utils/connect';
+import { getGraphClient } from '@/utils/graphql';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
@@ -52,7 +50,6 @@ import DeviceIcons from '../Card/DeviceIcons';
 import PasskeyCard from '../Card/PasskeyCard';
 import { Step, Stepper } from '../Stepper/Stepper';
 import * as styles from './Registration.css';
-import { getGraphClient } from '@/utils/graphql';
 
 interface Props {
   redirectUrl?: string;
@@ -67,7 +64,7 @@ const rootkeyPasskeyName = `SpireKey Wallet Key (DO NOT USE FOR SIGNING)`;
 const getCredentialQuery = `
 query getCredentials($filter: String) {
   events(
-    qualifiedEventName: "n_eef68e581f767dd66c4d4c39ed922be944ede505.spirekey.REGISTER_CREDENTIAL"
+    qualifiedEventName: "${process.env.NAMESPACE}.spirekey.REGISTER_CREDENTIAL"
     parametersFilter: $filter
     first: 1
   ) {
@@ -100,7 +97,6 @@ export const getCredentials = async (
 
 export const registerNewDevice =
   (
-    registerAccount: RegisterAccountFn,
     onPasskeyRetrieved: (account: Account) => void,
   ) =>
   async ({
@@ -126,49 +122,43 @@ export const registerNewDevice =
       domain,
       credentialPubkey: publicKey,
     };
-    if (useRAccount()) {
-      if (!keypair) throw new Error('No keypair provided');
-      const { name: accountName, guard } = await getRAccountName(
-        publicKey,
-        keypair.publicKey,
-        networkId,
-      );
-      const pendingTxs = await registerRAccounts({
-        ...account,
-        accountName,
-        publicKey: keypair.publicKey,
-        secretKey: keypair.secretKey,
-      });
-      onPasskeyRetrieved({
-        accountName,
-        guard,
-        networkId,
-        balance: '0.0',
-        alias,
-        chainIds: Array(20)
-          .fill(1)
-          .map((_, i) => i.toString()) as ChainId[],
-        minApprovals: 1,
-        minRegistrationApprovals: 1,
-        devices: [
-          {
-            color,
-            deviceType,
-            domain,
-            guard: {
-              keys: [getWebAuthnPubkeyFormat(publicKey)],
-              pred: 'keys-any',
-            },
-            'credential-id': credentialId,
+    if (!keypair) throw new Error('No keypair provided');
+    const { name: accountName, guard } = await getRAccountName(
+      publicKey,
+      keypair.publicKey,
+      networkId,
+    );
+    const pendingTxs = await registerRAccounts({
+      ...account,
+      accountName,
+      publicKey: keypair.publicKey,
+      secretKey: keypair.secretKey,
+    });
+    onPasskeyRetrieved({
+      accountName,
+      guard,
+      networkId,
+      balance: '0.0',
+      alias,
+      chainIds: Array(20)
+        .fill(1)
+        .map((_, i) => i.toString()) as ChainId[],
+      minApprovals: 1,
+      minRegistrationApprovals: 1,
+      devices: [
+        {
+          color,
+          deviceType,
+          domain,
+          guard: {
+            keys: [getWebAuthnPubkeyFormat(publicKey)],
+            pred: 'keys-any',
           },
-        ],
-        txQueue: pendingTxs,
-      });
-      return;
-    }
-
-    const accountName = await getAccountName(publicKey, networkId);
-    onPasskeyRetrieved(await registerAccount({ ...account, accountName }));
+          'credential-id': credentialId,
+        },
+      ],
+      txQueue: pendingTxs,
+    });
   };
 
 type UseRegistration = {
@@ -206,7 +196,7 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
   const [account, setCurrentAccount] = useState<Account>();
   const [keypair, setKeypair] = useState<KeyPair>();
 
-  const { registerAccount, accounts, setAccount } = useAccounts();
+  const { accounts, setAccount } = useAccounts();
   const { host } = useReturnUrl();
   const { addNotification } = useNotifications();
 
@@ -333,7 +323,7 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     setIsSubmitting(true);
 
     try {
-      await registerNewDevice(registerAccount, (account) => {
+      await registerNewDevice((account) => {
         setSuccesfulAuthentication(true);
         setAccount(account);
         setCurrentAccount(account);

@@ -44,7 +44,7 @@ export const useTxQueue = (
                 .setNetworkId(tx.networkId)
                 .addSigner(genesisPubKey, (withCap) => [
                   withCap(
-                    process.env.NAMESPACE + `.gas-station.GAS_PAYER`,
+                    process.env.NAMESPACE + `.spirekey.GAS_PAYER`,
                     account.accountName,
                     { int: '0' },
                     0,

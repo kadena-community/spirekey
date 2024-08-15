@@ -9,7 +9,6 @@ import type { Account, Device, Guard } from '@kadena/spirekey-types';
 
 import { assertFulfilled } from '@/utils/assertFulfilled';
 
-import { useRAccount } from '@/flags/flags';
 import { createTransactionBuilder } from '@kadena/client';
 import { asyncPipe } from './asyncPipe';
 import { l1Client } from './client';

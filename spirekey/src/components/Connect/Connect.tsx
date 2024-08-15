@@ -4,9 +4,7 @@ import {
   CardFooter,
   SpireKeyCardContentBlock,
 } from '@/components/CardPattern/CardPattern';
-import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { useAccounts } from '@/context/AccountsContext';
-import { getRegisterCommand } from '@/utils/register';
 import { l1Client } from '@/utils/shared/client';
 import { ChainId } from '@kadena/client';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
@@ -48,29 +46,7 @@ export default function ConnectComponent({
   };
 
   const connectAndPrime = async (account: Account) => {
-    const { devices, txQueue, chainIds, accountName } = account;
-    if (chainIds.includes(chainId)) return onConnect(account);
-
-    const device = devices[0];
-    const cmd = await getRegisterCommand({
-      accountName,
-      networkId,
-      chainId,
-      color: device.color,
-      domain: device.domain,
-      deviceType: device.deviceType,
-      credentialId: device['credential-id'],
-      credentialPubkey: device.guard.keys[0],
-    });
-
-    const tx = await l1Client.submit(cmd);
-    const updatedAccount = {
-      ...account,
-      txQueue: [...txQueue, tx],
-      chainIds: [...chainIds, chainId],
-    };
-    setAccount(updatedAccount);
-    onConnect(updatedAccount);
+    return onConnect(account);
   };
 
   if (isRegister)
@@ -160,9 +136,7 @@ export default function ConnectComponent({
                 <DeviceCircle device={account.devices[0]} />
                 <Text>{account.alias}</Text>
               </Stack>
-              <Text>
-                {maskValue(account.accountName)}
-              </Text>
+              <Text>{maskValue(account.accountName)}</Text>
             </Stack>
           ))}
         </Stack>
