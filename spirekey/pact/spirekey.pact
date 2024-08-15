@@ -1,8 +1,12 @@
 (namespace (read-string 'webauthn-namespace))
 
 (module spirekey GOVERNANCE
-  (use fungible-v2)
+  (implements gas-payer-v1)
 
+  (use fungible-v2)
+  (use util.guards1)
+
+  (defconst NS_NAME (read-string 'webauthn-namespace))
   (defconst GOVERNANCE_KEYSET (read-string 'webauthn-keyset-name))
   (defcap GOVERNANCE() (enforce-guard GOVERNANCE_KEYSET))
   (defschema account-schema
@@ -106,8 +110,52 @@
       )
     )
   )
+
+  ;;;;;;;;;;;;;;;
+  ; GAS STATION ;
+  ;;;;;;;;;;;;;;;
+
+  (defconst GAS_STATION 
+    (create-principal (create-capability-guard (ALLOW_GAS)))
+  )
+
+  (defcap GAS_PAYER:bool(user:string limit:integer price:decimal)
+    (enforce-one [
+      (enforce 
+        (try false 
+          (contains 
+            (format "({}.spirekey." [NS_NAME])
+            (read-msg 'exec-code)
+          )
+        )
+        "Only spirekey operations are paid for"
+      )
+      (enforce
+        (try
+          false
+          (= (read-msg 'tx-type) 'cont)
+        )
+        "only continuation transactions are paid for"
+      )
+    ])
+
+    (enforce-below-or-at-gas-price 0.0000001)
+    (enforce-below-gas-limit 2000)
+    (compose-capability (ALLOW_GAS))
+  )
+  (defcap ALLOW_GAS() true)
+
+  (defun init() 
+    (coin.create-account
+      GAS_STATION
+      (create-capability-guard (ALLOW_GAS))
+    )
+  )
 )
 (if (read-msg 'upgrade)
   true
-  (create-table spirekey.account-table)
+  [
+    (create-table spirekey.account-table)
+    (spirekey.init)
+  ]
 )
