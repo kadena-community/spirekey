@@ -2,12 +2,12 @@
 
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { onConnectWith } from '@/utils/connect';
+import { urlCheck } from '@/utils/urlCheck';
 import type { ChainId } from '@kadena/client';
 import { Account } from '@kadena/spirekey-types';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import {urlCheck} from "@/utils/urlCheck";
 
 const ConnectComponent = dynamic(() => import('@/components/Connect/Connect'), {
   ssr: false,
@@ -36,7 +36,7 @@ export default function Connect({ searchParams }: ConnectProps) {
 
   const { addNotification } = useNotifications();
 
-  useEffect(urlCheck(returnUrl, addNotification),[]);
+  useEffect(urlCheck(returnUrl, addNotification), []);
 
   const connect = onConnectWith({ addNotification, redirect: router.push });
   const onConnect = (account: Account) => {

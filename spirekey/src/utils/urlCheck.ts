@@ -1,9 +1,12 @@
-import {useNotifications} from "@/context/shared/NotificationsContext";
+import { AddNotification } from '@/context/shared/NotificationsContext';
 
-export const urlCheck = (returnUrl, addNotification) => () => {
+export const urlCheck =
+  (
+    returnUrl: string,
+    addNotification: (notification: AddNotification) => void,
+  ) =>
+  () => {
     try {
-      debugger;
-      console.log('test1');
       const url = new URL(returnUrl);
       if (url.host !== new URL(document.referrer).host)
         throw new Error('return url does not match referrer');
@@ -25,4 +28,4 @@ export const urlCheck = (returnUrl, addNotification) => () => {
         timeout: 30000,
       });
     }
-}
+  };

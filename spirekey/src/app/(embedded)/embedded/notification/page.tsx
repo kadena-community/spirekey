@@ -88,7 +88,7 @@ export default function SidebarSign() {
         />
       </button>
       <Text bold color="emphasize" className={atoms({ flex: 1 })}>
-        {title ? title : ''}
+        {title || ''}
       </Text>
       <button
         aria-label="Hide Spirekey Notification"

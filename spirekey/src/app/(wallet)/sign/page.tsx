@@ -1,9 +1,9 @@
 'use client';
 
 import { useNotifications } from '@/context/shared/NotificationsContext';
+import { urlCheck } from '@/utils/urlCheck';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-import {urlCheck} from "@/utils/urlCheck";
 
 const Sign = dynamic(() => import('@/components/Sign/Sign'), { ssr: false });
 interface SignProps {
@@ -45,10 +45,9 @@ export default function SignPage(req: SignProps) {
     setUseHash(true);
   }, []);
 
-
   const { addNotification } = useNotifications();
 
-  useEffect(urlCheck(returnUrl, addNotification),[]);
+  useEffect(urlCheck(returnUrl, addNotification), []);
 
   return (
     <Sign
