@@ -20,7 +20,7 @@ describe('register', () => {
         JSON.parse(cmd);
       expect(signers.flatMap((s) => s.clist?.map((c) => c.name))).toEqual([
         'coin.GAS',
-        'n_eef68e581f767dd66c4d4c39ed922be944ede505.gas-station.GAS_PAYER',
+        'n_eef68e581f767dd66c4d4c39ed922be944ede505.spirekey.GAS_PAYER',
       ]);
       expect(meta).toMatchObject({ chainId: '4' });
       expect(networkId).toEqual('development');

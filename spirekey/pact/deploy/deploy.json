@@ -25,11 +25,6 @@
         "18",
         "19"
       ]
-    },
-    "l2": {
-      "host": "localhost",
-      "networkId": "development",
-      "chains": ["14"]
     }
   },
   "signers": {
@@ -41,12 +36,10 @@
   "steps": [
     {
       "profile": "default",
-      "codeFile": "./pact/deploy/webauthn-predeploy.pact",
+      "code": "(ns.write-registry \"spirekey\" (read-keyset 'ks) true)(define-namespace \"spirekey\" (read-keyset 'ks) (read-keyset 'ks))",
       "data": {
-        "webauthn-keyset": {
-          "keys": [
-            "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
-          ],
+        "ks": {
+          "keys": ["368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"],
           "pred": "keys-all"
         }
       },
@@ -56,42 +49,26 @@
       "profile": "default",
       "codeFile": "./pact/spirekey.pact",
       "data": {
-        "webauthn-keyset-name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-keyset",
-        "webauthn-namespace": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
+        "webauthn-keyset-name": "spirekey.webauthn-keyset",
+        "webauthn-namespace": "spirekey",
+        "webauthn-keyset": {
+          "keys": ["368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"],
+          "pred": "keys-all"
+        },
         "upgrade": false
       },
       "sender": "sender00"
     },
     {
       "profile": "default",
-      "codeFile": "./pact/coin-delivery.pact",
-      "data": {
-        "webauthn-keyset-name": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-keyset",
-        "webauthn-namespace": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
-        "upgrade": false
-      },
-      "sender": "sender00"
-    },
-    {
-      "profile": "default",
-      "codeFile": "./pact/gas-station.pact",
-      "data": {
-        "ns": "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
-        "ks-name": "webauthn-keyset",
-        "upgrade": false
-      },
-      "sender": "sender00"
-    },
-    {
-      "profile": "default",
-      "code": "(coin.transfer \"sender00\" \"u:n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.gas-station.enforce-guard-any:7AdJhJTZk-wJEAWGaoO36HADDU58EtRw5La0LGw1ErI\" 100.0)",
+      "code": "(coin.transfer \"sender00\" \"c:CGhv9VC5-1KYIM1EXxIpgdSSWxJF5iEQsmL4QlV5Yl0\" 100.0)",
       "data": {},
       "sender": "sender00",
       "caps": [
         [
           "coin.TRANSFER",
           "sender00",
-          "u:n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.gas-station.enforce-guard-any:7AdJhJTZk-wJEAWGaoO36HADDU58EtRw5La0LGw1ErI",
+          "c:CGhv9VC5-1KYIM1EXxIpgdSSWxJF5iEQsmL4QlV5Yl0",
           "100.0"
         ],
         ["coin.GAS"]

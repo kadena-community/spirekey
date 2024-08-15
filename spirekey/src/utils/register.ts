@@ -128,11 +128,11 @@ export const registerCredentialOnChain = async ({
     .execution(
       `(${process.env.NAMESPACE}.spirekey.register-credential "${credentialId}" "${pubkey}" "${domain}")`,
     )
-    .setMeta({ chainId, senderAccount: gasStation })
+    .setMeta({ chainId, senderAccount: gasStation, gasLimit: 1800 })
     .setNetworkId(networkId)
     .addSigner(genesisPubKey, (withCap) => [
       withCap(
-        `${process.env.NAMESPACE}.gas-station.GAS_PAYER`,
+        `${process.env.NAMESPACE}.spirekey.GAS_PAYER`,
         gasStation,
         { int: 1 },
         1,
@@ -271,7 +271,7 @@ export const registerRAccountOnChain = async ({
     .addSigner({ pubKey: genesisPubKey, scheme: 'ED25519' }, (withCap) => [
       withCap('coin.GAS'),
       withCap(
-        `${process.env.NAMESPACE}.gas-station.GAS_PAYER`,
+        `${process.env.NAMESPACE}.spirekey.GAS_PAYER`,
         gasStation,
         { int: 1 },
         1,
@@ -279,12 +279,14 @@ export const registerRAccountOnChain = async ({
     ])
     .setMeta({
       chainId,
-      gasLimit: 2000,
+      gasLimit: 1800,
       gasPrice: 0.0000001,
       senderAccount: gasStation,
     })
     .setNetworkId(networkId)
     .createTransaction();
+
+  console.warn("DEBUGPRINT[11]: register.ts:288: tx=", tx)
   const signedTx = [
     { publicKey, secretKey },
     { publicKey: genesisPubKey, secretKey: genesisPrivateKey },
@@ -386,7 +388,7 @@ const registerAccountCommand = ({
     addSigner(genesisPubKey, (withCap) => [
       withCap('coin.GAS'),
       withCap(
-        `${process.env.NAMESPACE}.gas-station.GAS_PAYER`,
+        `${process.env.NAMESPACE}.spirekey.GAS_PAYER`,
         accountName,
         { int: 1 },
         1,
