@@ -43,7 +43,7 @@ export const transfer = async ({
       ),
       setMeta({
         chainId: process.env.CHAIN_ID as ChainId,
-        gasLimit: 2000,
+        gasLimit: 1800,
         gasPrice: 0.0000001,
         ttl: 60000,
         senderAccount: gasPayer,
