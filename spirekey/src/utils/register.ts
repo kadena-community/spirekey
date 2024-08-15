@@ -31,7 +31,7 @@ export const getAccountName = async (
   publicKey: string,
   networkId: string,
 ): Promise<string> => {
-  return getAccountNameLegacy(publicKey, networkId);
+  return '';
 };
 type RAccountInfo = { name: string; guard: Guard };
 export const getRAccountName = async (
@@ -82,34 +82,7 @@ export const getRAccountName = async (
 const getAccountNameLegacy = async (
   publicKey: string,
   networkId: string,
-): Promise<string> =>
-  asyncPipe(
-    composePactCommand(
-      execution(`
-      (let* ((guard (read-keyset 'ks))
-       (account (create-principal guard))
-      )
-  (${process.env.NAMESPACE}.webauthn-wallet.get-account-name account)
-)
-`),
-      setMeta({
-        chainId: process.env.CHAIN_ID,
-        gasLimit: 1000,
-        gasPrice: 0.0000001,
-        ttl: 60000,
-      }),
-      addData('ks', {
-        keys: [getWebAuthnPubkeyFormat(publicKey)],
-        pred: 'keys-any',
-      }),
-      setNetworkId(networkId),
-    ),
-    createTransaction,
-    (tx) =>
-      // TODO: use preflight
-      l1Client.local(tx, { preflight: false, signatureVerification: false }),
-    (tx) => tx.result.data,
-  )({});
+): Promise<string> => '';
 
 export const registerCredentialOnChain = async ({
   domain,
@@ -149,28 +122,11 @@ export const registerCredentialOnChain = async ({
   return await l1Client.submit(signedTx as ICommand);
 };
 
-export const registerAccountsOnChain = async ({
-  accountName,
-  color,
-  deviceType,
-  domain,
-  credentialId,
-  credentialPubkey,
-  networkId,
-  chainId = process.env.CHAIN_ID,
-}: Omit<AccountRegistration, 'alias'>): Promise<ITransactionDescriptor[]> => {
-  return [
-    await registerAccountOnChainLegacy({
-      accountName,
-      color,
-      deviceType,
-      domain,
-      credentialId,
-      credentialPubkey,
-      networkId,
-      chainId,
-    }),
-  ];
+export const registerAccountsOnChain = async ({}: Omit<
+  AccountRegistration,
+  'alias'
+>): Promise<ITransactionDescriptor[]> => {
+  return [];
 };
 export const registerRAccounts = async ({
   accountName,
@@ -286,7 +242,6 @@ export const registerRAccountOnChain = async ({
     .setNetworkId(networkId)
     .createTransaction();
 
-  console.warn("DEBUGPRINT[11]: register.ts:288: tx=", tx)
   const signedTx = [
     { publicKey, secretKey },
     { publicKey: genesisPubKey, secretKey: genesisPrivateKey },
@@ -298,113 +253,8 @@ export const registerRAccountOnChain = async ({
   }, tx) as ICommand;
   return await l1Client.submit(signedTx);
 };
-export const registerAccountOnChainLegacy = async ({
-  accountName,
-  color,
-  deviceType,
-  domain,
-  credentialId,
-  credentialPubkey,
-  networkId,
-  chainId = process.env.CHAIN_ID,
-}: Omit<AccountRegistration, 'alias'>): Promise<ITransactionDescriptor> => {
-  return l1Client.submit(
-    await getRegisterCommand({
-      accountName,
-      color,
-      deviceType,
-      domain,
-      credentialId,
-      credentialPubkey,
-      networkId,
-      chainId,
-    }),
-  );
-};
-export const getRegisterCommand = async ({
-  accountName,
-  color,
-  deviceType,
-  domain,
-  credentialId,
-  credentialPubkey,
-  networkId,
-  chainId = process.env.CHAIN_ID,
-}: Omit<AccountRegistration, 'alias'>): Promise<ICommand> => {
-  return asyncPipe(
-    registerAccountCommand({
-      accountName,
-      color,
-      deviceType,
-      domain,
-      credentialId,
-      credentialPubkey,
-      networkId,
-      chainId,
-    }),
-    createTransaction,
-    signWithKeyPair({ publicKey: genesisPubKey, secretKey: genesisPrivateKey }),
-  )({});
-};
-
 export const getWebAuthnPubkeyFormat = (pubkey: string) => {
   if (/^WEBAUTHN-/.test(pubkey)) return pubkey;
   return `WEBAUTHN-${pubkey}`;
 };
 
-const registerAccountCommand = ({
-  accountName,
-  color,
-  deviceType,
-  credentialId,
-  credentialPubkey,
-  domain,
-  networkId,
-  chainId = process.env.CHAIN_ID,
-}: {
-  accountName: string;
-  color: string;
-  deviceType: string;
-  credentialId: string;
-  credentialPubkey: string;
-  domain: string;
-  networkId: string;
-  chainId?: ChainId;
-}) => {
-  const displayName = `${deviceType}_${color}`;
-  return composePactCommand(
-    execution(
-      `
-        (${process.env.NAMESPACE}.webauthn-wallet.create-wallet 
-          "${accountName}"
-          { 'name          : "${displayName}"
-          , 'credential-id : "${credentialId}"
-          , 'domain        : "${domain}"
-          , 'guard         : (read-keyset 'ks)
-          }
-        )
-      `.trim(),
-    ),
-    addSigner(genesisPubKey, (withCap) => [
-      withCap('coin.GAS'),
-      withCap(
-        `${process.env.NAMESPACE}.spirekey.GAS_PAYER`,
-        accountName,
-        { int: 1 },
-        1,
-      ),
-    ]),
-    addData('ks', {
-      keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
-      pred: 'keys-any',
-    }),
-    setMeta({
-      chainId,
-      gasLimit: 2000,
-      gasPrice: 0.0000001,
-      ttl: 60000,
-      senderAccount: gasStation,
-    }),
-    setNetworkId(networkId),
-  );
-};
