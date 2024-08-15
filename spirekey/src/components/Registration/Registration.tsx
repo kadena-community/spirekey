@@ -67,7 +67,7 @@ const rootkeyPasskeyName = `SpireKey Wallet Key (DO NOT USE FOR SIGNING)`;
 const getCredentialQuery = `
 query getCredentials($filter: String) {
   events(
-    qualifiedEventName: "n_eef68e581f767dd66c4d4c39ed922be944ede505.spirekey.REGISTER_CREDENTIAL"
+    qualifiedEventName: "${process.env.NAMESPACE}.spirekey.REGISTER_CREDENTIAL"
     parametersFilter: $filter
     first: 1
   ) {
