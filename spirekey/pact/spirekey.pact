@@ -145,28 +145,26 @@
 
 
   (defcap GAS_PAYER:bool(user:string limit:integer price:decimal)
-    (let ((code (at 0 (read-msg 'exec-code))))
-      (enforce-one
-        "Only spirekey operations or continuations are allowed"
-        [
-          (enforce 
-            (try false 
-              (contains 
-                (format "({}.spirekey." [NS_NAME])
-                code
-              )
+    (enforce-one
+      "Only spirekey operations or continuations are allowed"
+      [
+        (enforce 
+          (try false 
+            (contains 
+              (format "({}.spirekey." [NS_NAME])
+              (at 0 (read-msg 'exec-code))
             )
-            "Only spirekey operations are paid for"
           )
-          (enforce
-            (try
-              false
-              (= (read-msg 'tx-type) 'cont)
-            )
-            "Only continuation transactions are paid for"
+          "Only spirekey operations are paid for"
+        )
+        (enforce
+          (try
+            false
+            (= (read-msg 'tx-type) 'cont)
           )
-        ]
-      )
+          "Only continuation transactions are paid for"
+        )
+      ]
     )
 
     (enforce-below-or-at-gas-price 0.0000001)

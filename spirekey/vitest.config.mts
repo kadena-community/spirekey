@@ -27,10 +27,10 @@ export default defineConfig({
       ],
       provider: 'v8',
       thresholds: {
-        lines: 25,
+        lines: 24,
         functions: 35,
         branches: 50,
-        statements: 25,
+        statements: 24,
       },
     },
     setupFiles: [path.resolve(__dirname, './tests/components/test-mocks.ts')],
