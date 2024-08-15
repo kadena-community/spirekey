@@ -10,15 +10,15 @@ import { Button, Heading, Stack, Text } from '@kadena/kode-ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import {
-  AccountRegistration,
-  useAccounts,
-} from '@/context/AccountsContext';
+import { AccountRegistration, useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
-import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
+import {
+  getNetworkDisplayName,
+  getRootkeyPasskeyName,
+} from '@/utils/getNetworkDisplayName';
 import {
   getRAccountName,
   getWebAuthnPubkeyFormat,
@@ -60,7 +60,6 @@ interface Props {
 }
 type KeyPair = { publicKey: string; secretKey: string };
 
-const rootkeyPasskeyName = `SpireKey Wallet Key (DO NOT USE FOR SIGNING)`;
 const getCredentialQuery = `
 query getCredentials($filter: String) {
   events(
@@ -96,9 +95,7 @@ export const getCredentials = async (
 };
 
 export const registerNewDevice =
-  (
-    onPasskeyRetrieved: (account: Account) => void,
-  ) =>
+  (onPasskeyRetrieved: (account: Account) => void) =>
   async ({
     alias,
     networkId,
@@ -163,7 +160,7 @@ export const registerNewDevice =
 
 type UseRegistration = {
   chainId?: ChainId;
-  networkId?: string;
+  networkId: string;
 };
 function i2hex(i: number) {
   return ('0' + i.toString(16)).slice(-2);
@@ -201,8 +198,6 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
   const { addNotification } = useNotifications();
 
   const accountPrefix = 'SpireKey Account';
-
-  const currentNetwork = networkId || process.env.WALLET_NETWORK_ID!;
 
   const numberOfSpireKeyAccounts = countWithPrefixOnDomain(
     accounts,
@@ -289,7 +284,9 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
-      const { credentialId, hex } = await getNewWebauthnKey(rootkeyPasskeyName);
+      const { credentialId, hex } = await getNewWebauthnKey(
+        getRootkeyPasskeyName(networkId!),
+      );
       const tempPassword = crypto.getRandomValues(new Uint16Array(32));
       const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
         tempPassword,
@@ -330,11 +327,11 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
         setCurrentAccountName(account.accountName);
         setAllowRedirect(true);
       })({
-        alias: `${alias} (${getNetworkDisplayName(currentNetwork)})`,
+        alias: `${alias} (${getNetworkDisplayName(networkId)})`,
         domain: host,
         color,
         chainId,
-        networkId: currentNetwork,
+        networkId,
         keypair,
       });
     } catch (error: any) {
@@ -363,7 +360,7 @@ const useRegistration = ({ chainId, networkId }: UseRegistration) => {
 
 export default function Registration({
   redirectUrl,
-  networkId,
+  networkId = process.env.WALLET_NETWORK_ID,
   chainId,
   onComplete,
   onCancel,
@@ -402,6 +399,7 @@ export default function Registration({
       isSubmitting={isSubmitting}
       succesfulAuthentication={succesfulAuthentication}
       keypair={keypair}
+      networkId={networkId}
       onCancel={handleCancel}
       onSubmit={handleSubmit}
       onComplete={handleComplete}
@@ -415,6 +413,7 @@ const RegisterComponent = ({
   keypair,
   isSubmitting,
   succesfulAuthentication,
+  networkId,
   onCancel,
   onHandleRegisterWallet,
   onHandleConnectWallet,
@@ -425,6 +424,7 @@ const RegisterComponent = ({
   keypair?: KeyPair;
   isSubmitting: boolean;
   succesfulAuthentication: boolean;
+  networkId: string;
   onCancel: () => void;
   onHandleConnectWallet: () => void;
   onHandleRegisterWallet: () => void;
@@ -557,8 +557,9 @@ const RegisterComponent = ({
         <Stack flexDirection="column" gap="md">
           <Heading as="h5">Already have a wallet?</Heading>
           <Text>
-            Provide your passkey named <Text bold>{rootkeyPasskeyName}</Text> to
-            add another account to this wallet.
+            Provide your passkey named{' '}
+            <Text bold>{getRootkeyPasskeyName(networkId)}</Text> to add another
+            account to this wallet.
           </Text>
           <CardFooter>
             <Button onPress={onHandleConnectWallet}>Connect</Button>
@@ -566,7 +567,7 @@ const RegisterComponent = ({
           <Heading as="h5">No wallet yet?</Heading>
           <Text>
             Create a new wallet using a passkey. This passkey will be stored on
-            your device as <Text bold>{rootkeyPasskeyName}</Text>.
+            your device as <Text bold>{getRootkeyPasskeyName(networkId)}</Text>.
           </Text>
           <Text>
             This passkey will be used to perform maintenance operations as well
