@@ -4,6 +4,7 @@ import { Object3D, Shape } from 'three';
 import { BackgroundContext } from './Background.context';
 
 const tempBox = new Object3D();
+const isDarkScheme: boolean = document.documentElement.style.colorScheme === 'dark';
 
 interface InstancedTriangleProps {
   scale?: number;
@@ -101,7 +102,7 @@ export function InstancedTriangle({
       castShadow
     >
       <extrudeGeometry args={args} />
-      <meshStandardMaterial color="#0B1D2E" />
+      <meshStandardMaterial color={isDarkScheme? '#0B1D2E' : '#4A9079'} />
     </instancedMesh>
   );
 }
