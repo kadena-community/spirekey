@@ -79,8 +79,8 @@ export default function Sign(props: Props) {
   // for now only support one tx provided
   const [tx] = unsingedTxs;
   if (!tx) {
-    console.error({error: 'No valid transaction provided'})
     setErrorMessage('No valid transaction provided');
+    console.error({error: errorMessage})
   }
 
   const txAccounts = getAccountsForTx(accounts)(tx);
@@ -102,8 +102,8 @@ export default function Sign(props: Props) {
     ).then((allPlumbingTxs) => {
       setPlumbingTxs(allPlumbingTxs.flatMap((txs) => txs).filter((x) => !!x));
     }).catch((error) => {
-      console.error({error})
       setErrorMessage(error.message);
+      console.error({errorMessage: errorMessage, error});
     });
   }, []);
 
@@ -306,8 +306,8 @@ function SignPlumbingTxs({
                       : undefined,
                   });
                 } catch (error) {
-                  console.error({error})
                   setErrorMessage(error.message);
+                  console.error({errorMessage: errorMessage, error});
                 }
                 const signedTx = addSignatures(tx, getSignature(res.response));
                 const newSteps = steps.map((step) => {
