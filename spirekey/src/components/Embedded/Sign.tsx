@@ -117,21 +117,13 @@ export default function Sign(props: Props) {
   }, []);
   const onSign = async () => {
     const credentialId = txAccounts.accounts[0].devices[0]['credential-id'];
-    let res;
-
-    try {
-      res = await startAuthentication({
+    const res = await startAuthentication({
         challenge: tx.hash,
         rpId: window.location.hostname,
         allowCredentials: credentialId
           ? [{ id: credentialId, type: 'public-key' }]
           : undefined,
       });
-    } catch(error) {
-      setErrorMessage('Something went wrong with signing. Please try again.');
-      console.error({errorMessage: errorMessage, error});
-    }
-
 
     if (!signedPlumbingTxs)
 
@@ -312,10 +304,7 @@ function SignPlumbingTxs({
                       ? [{id: credentialId, type: 'public-key'}]
                       : undefined,
                   });
-                } catch (error) {
-                  setErrorMessage(error.message);
-                  console.error({errorMessage: errorMessage, error});
-                }
+
                 const signedTx = addSignatures(tx, getSignature(res.response));
                 const newSteps = steps.map((step) => {
                   if (step.tx.hash !== tx.hash) return step;
@@ -324,6 +313,10 @@ function SignPlumbingTxs({
                 setSteps(newSteps);
                 if (newSteps.every((step) => step.signed))
                   onCompleted(newSteps.map(({ tx }) => tx) as ICommand[]);
+                } catch (error: any) {
+                  setErrorMessage(error.message);
+                  console.error({errorMessage: errorMessage, error});
+                }
               }}
               isDisabled={signed}
             >
