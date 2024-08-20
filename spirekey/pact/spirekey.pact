@@ -1,12 +1,12 @@
-(namespace 'spirekey)
+(namespace 'kadena)
 
 (module spirekey GOVERNANCE
   (implements gas-payer-v1)
 
   (use fungible-v2)
 
-  (defconst NS_NAME 'spirekey)
-  (defconst GOVERNANCE_KEYSET "spirekey.spirekey-keyset")
+  (defconst NS_NAME 'kadena)
+  (defconst GOVERNANCE_KEYSET "ns-operate-keyset")
   (defcap GOVERNANCE() (enforce-guard GOVERNANCE_KEYSET))
   (defschema account-schema
     devices: [object{device-pair-schema}]
@@ -187,8 +187,8 @@
 (if (read-msg 'upgrade)
   true
   [
-    (define-keyset spirekey.GOVERNANCE_KEYSET (read-keyset 'spirekey-keyset))
     (create-table spirekey.account-table)
     (spirekey.init)
   ]
 )
+(enforce-guard spirekey.GOVERNANCE_KEYSET)

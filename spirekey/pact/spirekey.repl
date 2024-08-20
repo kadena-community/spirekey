@@ -4,16 +4,16 @@
   { 'spirekey-keyset :
     { 'pred          : "keys-all"
     , 'keys          :
-      [ "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca" ]
+      [ "operate" ]
     }
   })
 (env-sigs
-  [{ 'key  : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+  [{ 'key  : "operate"
    , 'caps : []
    }])
 (begin-tx "Create webauthn namespace and define webauthn keyset")
-(let* ((spirekey-namespace 'spirekey)
-       (spirekey-keyset "spirekey.spirekey-keyset")
+(let* ((spirekey-namespace 'kadena)
+       (spirekey-keyset "kadena.spirekey-keyset")
       )
   (define-namespace
     spirekey-namespace
@@ -31,14 +31,14 @@
 
 (env-data
   { 'spirekey-keyset      : 
-    { 'keys : ["368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"]
+    { 'keys : ["operate"]
     , 'pred : 'keys-all
     }
   , 'upgrade              : false
   }
 )
 (env-sigs
-  [{ 'key  : "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"
+  [{ 'key  : "operate"
    , 'caps : []
    }
   ]
@@ -76,12 +76,12 @@
       account
       (keyset-ref-guard ks-ref-name)
     )
-    (spirekey.spirekey.add-device-pair
+    (kadena.spirekey.add-device-pair
       account
       coin
       { 'guard          :  (read-keyset 'ns-keyset)
       , 'credential-id  :  "credential-id"
-      , 'domain         :  "https : //spirekey.kadena.io"
+      , 'domain         :  "https://spirekey.kadena.io"
       , 'device-type    :  "device-type"
       , 'color          :  "#hexcolor"
       }

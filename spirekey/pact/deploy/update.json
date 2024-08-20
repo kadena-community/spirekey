@@ -38,9 +38,9 @@
       "profile": "default",
       "codeFile": "./pact/spirekey.pact",
       "data": {
-        "upgrade": true
+        "upgrade": false
       },
-      "sender": "sender00"
+      "sender": "r:ns-operate-keyset"
     }
   ]
 }
