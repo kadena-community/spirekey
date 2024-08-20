@@ -1,7 +1,7 @@
 (load "util/guards.repl")
 
 (env-data
-  { 'webauthn-keyset :
+  { 'spirekey-keyset :
     { 'pred          : "keys-all"
     , 'keys          :
       [ "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca" ]
@@ -12,17 +12,17 @@
    , 'caps : []
    }])
 (begin-tx "Create webauthn namespace and define webauthn keyset")
-(let* ((webauthn-namespace (ns.create-principal-namespace (read-keyset 'webauthn-keyset)))
-       (webauthn-keyset (format "{}.{}" [ webauthn-namespace 'webauthn-keyset ]))
+(let* ((spirekey-namespace 'spirekey)
+       (spirekey-keyset "spirekey.spirekey-keyset")
       )
   (define-namespace
-    webauthn-namespace
-    (read-keyset 'webauthn-keyset)
-    (read-keyset 'webauthn-keyset))
-  (namespace webauthn-namespace)
+    spirekey-namespace
+    (read-keyset 'spirekey-keyset)
+    (read-keyset 'spirekey-keyset))
+  (namespace spirekey-namespace)
   (define-keyset
-    webauthn-keyset
-    (read-keyset 'webauthn-keyset)
+    spirekey-keyset
+    (read-keyset 'spirekey-keyset)
   )
 )
 (commit-tx)
@@ -30,9 +30,7 @@
 (env-sigs [])
 
 (env-data
-  { 'webauthn-keyset-name : "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.webauthn-keyset"
-  , 'webauthn-namespace   : "n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9"
-  , 'webauthn-keyset      : 
+  { 'spirekey-keyset      : 
     { 'keys : ["368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca"]
     , 'pred : 'keys-all
     }
@@ -78,7 +76,7 @@
       account
       (keyset-ref-guard ks-ref-name)
     )
-    (n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9.spirekey.add-device-pair
+    (spirekey.spirekey.add-device-pair
       account
       coin
       { 'guard          :  (read-keyset 'ns-keyset)

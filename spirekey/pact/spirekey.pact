@@ -1,12 +1,12 @@
-(namespace (read-string 'webauthn-namespace))
+(namespace 'spirekey)
 
 (module spirekey GOVERNANCE
   (implements gas-payer-v1)
 
   (use fungible-v2)
 
-  (defconst NS_NAME (read-string 'webauthn-namespace))
-  (defconst GOVERNANCE_KEYSET (read-string 'webauthn-keyset-name))
+  (defconst NS_NAME 'spirekey)
+  (defconst GOVERNANCE_KEYSET "spirekey.spirekey-keyset")
   (defcap GOVERNANCE() (enforce-guard GOVERNANCE_KEYSET))
   (defschema account-schema
     devices: [object{device-pair-schema}]
@@ -187,7 +187,7 @@
 (if (read-msg 'upgrade)
   true
   [
-    (define-keyset spirekey.GOVERNANCE_KEYSET (read-keyset 'webauthn-keyset))
+    (define-keyset spirekey.GOVERNANCE_KEYSET (read-keyset 'spirekey-keyset))
     (create-table spirekey.account-table)
     (spirekey.init)
   ]

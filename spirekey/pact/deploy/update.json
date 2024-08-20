@@ -38,8 +38,6 @@
       "profile": "default",
       "codeFile": "./pact/spirekey.pact",
       "data": {
-        "webauthn-keyset-name": "spirekey.webauthn-keyset",
-        "webauthn-namespace": "spirekey",
         "upgrade": true
       },
       "sender": "sender00"
