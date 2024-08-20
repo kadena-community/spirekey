@@ -117,14 +117,21 @@ export default function Sign(props: Props) {
   }, []);
   const onSign = async () => {
     const credentialId = txAccounts.accounts[0].devices[0]['credential-id'];
+    let res;
 
-    const res = await startAuthentication({
-      challenge: tx.hash,
-      rpId: window.location.hostname,
-      allowCredentials: credentialId
-        ? [{ id: credentialId, type: 'public-key' }]
-        : undefined,
-    });
+    try {
+      res = await startAuthentication({
+        challenge: tx.hash,
+        rpId: window.location.hostname,
+        allowCredentials: credentialId
+          ? [{ id: credentialId, type: 'public-key' }]
+          : undefined,
+      });
+    } catch(error) {
+      setErrorMessage('Something went wrong with signing. Please try again.');
+      console.error({errorMessage: errorMessage, error});
+    }
+
 
     if (!signedPlumbingTxs)
 
