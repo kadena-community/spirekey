@@ -2,9 +2,20 @@ import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { Box, Heading, IHeadingProps, Stack, Text } from '@kadena/kode-ui';
 import { atoms, token } from '@kadena/kode-ui/styles';
 import React from 'react';
-import { bodyContent, container, newSectionStack, paddingContainer } from './CardPattern.css';
+import {
+  bodyContent,
+  container,
+  newSectionStack,
+  paddingContainer,
+} from './CardPattern.css';
 
-export const CardContainer = ({ children, hasPadding }: { children: React.ReactNode, hasPadding?: boolean }) => {
+export const CardContainer = ({
+  children,
+  hasPadding,
+}: {
+  children: React.ReactNode;
+  hasPadding?: boolean;
+}) => {
   // TODO: replace with card component when it accepts className
   return (
     <div className={hasPadding ? paddingContainer : ''}>
@@ -31,7 +42,11 @@ export const CardContentBlock = ({
   children,
 }: CardContentBlockProps) => {
   return (
-    <Stack flexDirection={{ xs: 'column', md: 'row' }} gap="md" className={isNewSection ? newSectionStack : ''}>
+    <Stack
+      flexDirection={{ xs: 'column', md: 'row' }}
+      gap="md"
+      className={isNewSection ? newSectionStack : ''}
+    >
       <Stack flexDirection="column" alignItems="flex-start" flex={1}>
         <Box>{visual}</Box>
         {title && (

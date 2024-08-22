@@ -23,7 +23,7 @@ export class RegisterPage {
       .locator(`[for=network-${networkId}] > span:has-text("${networkId}")`)
       .click();
   }
-  
+
   async createWallet(): Promise<void> {
     await this.createWalletButton.click();
   }

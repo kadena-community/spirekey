@@ -30,7 +30,10 @@ export const getAccountsForTx =
     );
   };
 
-export const getPermissions = (keys: string[], signers: ICommandPayload['signers']) =>
+export const getPermissions = (
+  keys: string[],
+  signers: ICommandPayload['signers'],
+) =>
   signers
     .filter((s) => keys.includes(s.pubKey))
     .flatMap((s) => s.clist)

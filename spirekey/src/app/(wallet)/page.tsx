@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-import * as styles from './main.css'
+import * as styles from './main.css';
 
 const CardCollection = dynamic(
   () => import('@/components/CardCollection/CardCollection'),

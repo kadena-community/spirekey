@@ -6,7 +6,7 @@ import type {
   OptimalTransactionsAccount,
 } from '@kadena/spirekey-types';
 import { startAuthentication } from '@simplewebauthn/browser';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { useAccounts } from '@/context/AccountsContext';
 import { getSignature } from '@/utils/getSignature';
@@ -32,6 +32,8 @@ import { getOptimalTransactions } from '@/utils/auto-transfers';
 import { l1Client } from '@/utils/shared/client';
 import { addSignatures } from '@kadena/client';
 import { MonoCAccount } from '@kadena/kode-icons/system';
+
+import { ErrorContext } from '@/components/ErrorNotification/ErrorNotification';
 
 import {
   CardContainer,
@@ -61,15 +63,25 @@ const getPubkey = (
 export default function Sign(props: Props) {
   const { transactions, accounts: signAccountsString } = props;
   const { accounts, setAccount } = useAccounts();
+
+  const { errorMessage, setErrorMessage } = useContext(ErrorContext);
+
   if (!transactions) throw new Error('No transactions provided');
 
   const [signedPlumbingTxs, setSignedPlumbingTxs] = useState<ICommand[]>();
   const unsingedTxs: IUnsignedCommand[] = JSON.parse(transactions);
-  if (!unsingedTxs.length) throw new Error('No valid transactions provided');
+
+  if (!unsingedTxs.length) {
+    console.error({ error: 'No valid transactions provided' });
+    setErrorMessage('No valid transactions provided');
+  }
 
   // for now only support one tx provided
   const [tx] = unsingedTxs;
-  if (!tx) throw new Error('No valid transaction provided');
+  if (!tx) {
+    setErrorMessage('No valid transaction provided');
+    console.error({ error: errorMessage });
+  }
 
   const txAccounts = getAccountsForTx(accounts)(tx);
   const { signers, meta }: ICommandPayload = JSON.parse(tx.cmd);
@@ -79,6 +91,7 @@ export default function Sign(props: Props) {
   );
 
   const [plumbingTxs, setPlumbingTxs] = useState<IUnsignedCommand[]>();
+
   useEffect(() => {
     Promise.all(
       signAccounts.flatMap((account) =>
@@ -86,9 +99,14 @@ export default function Sign(props: Props) {
           getOptimalTransactions(account, meta.chainId, amount),
         ),
       ),
-    ).then((allPlumbingTxs) => {
-      setPlumbingTxs(allPlumbingTxs.flatMap((txs) => txs).filter((x) => !!x));
-    });
+    )
+      .then((allPlumbingTxs) => {
+        setPlumbingTxs(allPlumbingTxs.flatMap((txs) => txs).filter((x) => !!x));
+      })
+      .catch((error) => {
+        setErrorMessage(error.message);
+        console.error({ errorMessage: errorMessage, error });
+      });
   }, []);
 
   useEffect(() => {
@@ -101,7 +119,6 @@ export default function Sign(props: Props) {
   }, []);
   const onSign = async () => {
     const credentialId = txAccounts.accounts[0].devices[0]['credential-id'];
-
     const res = await startAuthentication({
       challenge: tx.hash,
       rpId: window.location.hostname,
@@ -111,6 +128,7 @@ export default function Sign(props: Props) {
     });
 
     if (!signedPlumbingTxs)
+      //TODO should be in try catch Error handling
       publishEvent('signed', {
         accounts: signAccounts
           .map((a) =>
@@ -146,6 +164,7 @@ export default function Sign(props: Props) {
       return newAccount;
     });
 
+    //TODO should be in try catch Error handling
     publishEvent('signed', {
       accounts: accs,
       tx: {
@@ -235,19 +254,23 @@ type SignPlumbingTxsProps = {
   credentialId?: string;
   onCompleted: (txs: ICommand[]) => void;
 };
-const SignPlumbingTxs = ({
+
+function SignPlumbingTxs({
   plumbingSteps,
   credentialId,
   onCompleted,
-}: SignPlumbingTxsProps) => {
+}: SignPlumbingTxsProps) {
   const [steps, setSteps] = useState(plumbingSteps);
+  const { errorMessage, setErrorMessage } = useContext(ErrorContext);
 
   useEffect(() => {
     setSteps(plumbingSteps);
   }, [plumbingSteps.map((s) => s.tx.hash).join(',') || '']);
 
-  if (!credentialId)
+  if (!credentialId) {
     return <div>No valid credentials found in this wallet to sign with</div>;
+  }
+
   return (
     <>
       {steps.map(({ title, caps, tx, signed }) => (
@@ -272,21 +295,30 @@ const SignPlumbingTxs = ({
             <Button
               variant="primary"
               onPress={async () => {
-                const res = await startAuthentication({
-                  challenge: tx.hash,
-                  rpId: window.location.hostname,
-                  allowCredentials: credentialId
-                    ? [{ id: credentialId, type: 'public-key' }]
-                    : undefined,
-                });
-                const signedTx = addSignatures(tx, getSignature(res.response));
-                const newSteps = steps.map((step) => {
-                  if (step.tx.hash !== tx.hash) return step;
-                  return { ...step, tx: signedTx, signed: true };
-                });
-                setSteps(newSteps);
-                if (newSteps.every((step) => step.signed))
-                  onCompleted(newSteps.map(({ tx }) => tx) as ICommand[]);
+                try {
+                  const res = await startAuthentication({
+                    challenge: tx.hash,
+                    rpId: window.location.hostname,
+                    allowCredentials: credentialId
+                      ? [{ id: credentialId, type: 'public-key' }]
+                      : undefined,
+                  });
+
+                  const signedTx = addSignatures(
+                    tx,
+                    getSignature(res.response),
+                  );
+                  const newSteps = steps.map((step) => {
+                    if (step.tx.hash !== tx.hash) return step;
+                    return { ...step, tx: signedTx, signed: true };
+                  });
+                  setSteps(newSteps);
+                  if (newSteps.every((step) => step.signed))
+                    onCompleted(newSteps.map(({ tx }) => tx) as ICommand[]);
+                } catch (error: any) {
+                  setErrorMessage(error.message);
+                  console.error({ errorMessage: errorMessage, error });
+                }
               }}
               isDisabled={signed}
             >
@@ -297,4 +329,4 @@ const SignPlumbingTxs = ({
       ))}
     </>
   );
-};
+}
