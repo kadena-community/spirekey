@@ -1,5 +1,5 @@
-import type { Account } from '@kadena/spirekey-types';
 import type { ICap } from '@kadena/client';
+import type { Account } from '@kadena/spirekey-types';
 
 export type CapabilityMeta = {
   name: string;

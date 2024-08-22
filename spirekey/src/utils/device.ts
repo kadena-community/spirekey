@@ -1,4 +1,3 @@
-import type { Account, Device } from '@kadena/spirekey-types';
 import { ChainId, createTransaction } from '@kadena/client';
 import {
   addData,
@@ -8,6 +7,7 @@ import {
   setMeta,
   setNetworkId,
 } from '@kadena/client/fp';
+import type { Account, Device } from '@kadena/spirekey-types';
 
 import { asyncPipe } from '@/utils/shared/asyncPipe';
 

@@ -1,19 +1,10 @@
 import {
   addSignatures,
-  createTransaction,
   createTransactionBuilder,
   ICommand,
   type ChainId,
   type ITransactionDescriptor,
 } from '@kadena/client';
-import {
-  addData,
-  addSigner,
-  composePactCommand,
-  execution,
-  setMeta,
-  setNetworkId,
-} from '@kadena/client/fp';
 
 import type { AccountRegistration } from '@/context/AccountsContext';
 import {
@@ -21,9 +12,7 @@ import {
   genesisPrivateKey,
   genesisPubKey,
 } from '@/utils/constants';
-import { asyncPipe } from '@/utils/shared/asyncPipe';
 import { l1Client } from '@/utils/shared/client';
-import { signWithKeyPair } from '@/utils/signSubmitListen';
 import { sign } from '@kadena/cryptography-utils';
 import { Guard } from '@kadena/spirekey-types';
 
@@ -78,11 +67,6 @@ export const getRAccountName = async (
     throw new Error('Cannot retrieve account name');
   return res.result.data as RAccountInfo;
 };
-
-const getAccountNameLegacy = async (
-  publicKey: string,
-  networkId: string,
-): Promise<string> => '';
 
 export const registerCredentialOnChain = async ({
   domain,
@@ -257,4 +241,3 @@ export const getWebAuthnPubkeyFormat = (pubkey: string) => {
   if (/^WEBAUTHN-/.test(pubkey)) return pubkey;
   return `WEBAUTHN-${pubkey}`;
 };
-

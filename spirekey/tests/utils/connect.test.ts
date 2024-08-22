@@ -24,7 +24,7 @@ describe('connect', () => {
           },
         },
       ],
-      chainIds: ["1"],
+      chainIds: ['1'],
       networkId: 'development',
       accountName: 'c:account',
       minApprovals: 1,

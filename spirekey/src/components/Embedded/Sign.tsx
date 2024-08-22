@@ -6,7 +6,7 @@ import type {
   OptimalTransactionsAccount,
 } from '@kadena/spirekey-types';
 import { startAuthentication } from '@simplewebauthn/browser';
-import { useEffect, useState, useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { useAccounts } from '@/context/AccountsContext';
 import { getSignature } from '@/utils/getSignature';
@@ -33,7 +33,7 @@ import { l1Client } from '@/utils/shared/client';
 import { addSignatures } from '@kadena/client';
 import { MonoCAccount } from '@kadena/kode-icons/system';
 
-import { ErrorContext } from "@/components/ErrorNotification/ErrorNotification";
+import { ErrorContext } from '@/components/ErrorNotification/ErrorNotification';
 
 import {
   CardContainer,
@@ -64,7 +64,7 @@ export default function Sign(props: Props) {
   const { transactions, accounts: signAccountsString } = props;
   const { accounts, setAccount } = useAccounts();
 
-  const {errorMessage, setErrorMessage} = useContext(ErrorContext);
+  const { errorMessage, setErrorMessage } = useContext(ErrorContext);
 
   if (!transactions) throw new Error('No transactions provided');
 
@@ -72,7 +72,7 @@ export default function Sign(props: Props) {
   const unsingedTxs: IUnsignedCommand[] = JSON.parse(transactions);
 
   if (!unsingedTxs.length) {
-    console.error({error: 'No valid transactions provided'})
+    console.error({ error: 'No valid transactions provided' });
     setErrorMessage('No valid transactions provided');
   }
 
@@ -80,7 +80,7 @@ export default function Sign(props: Props) {
   const [tx] = unsingedTxs;
   if (!tx) {
     setErrorMessage('No valid transaction provided');
-    console.error({error: errorMessage})
+    console.error({ error: errorMessage });
   }
 
   const txAccounts = getAccountsForTx(accounts)(tx);
@@ -99,12 +99,14 @@ export default function Sign(props: Props) {
           getOptimalTransactions(account, meta.chainId, amount),
         ),
       ),
-    ).then((allPlumbingTxs) => {
-      setPlumbingTxs(allPlumbingTxs.flatMap((txs) => txs).filter((x) => !!x));
-    }).catch((error) => {
-      setErrorMessage(error.message);
-      console.error({errorMessage: errorMessage, error});
-    });
+    )
+      .then((allPlumbingTxs) => {
+        setPlumbingTxs(allPlumbingTxs.flatMap((txs) => txs).filter((x) => !!x));
+      })
+      .catch((error) => {
+        setErrorMessage(error.message);
+        console.error({ errorMessage: errorMessage, error });
+      });
   }, []);
 
   useEffect(() => {
@@ -118,15 +120,14 @@ export default function Sign(props: Props) {
   const onSign = async () => {
     const credentialId = txAccounts.accounts[0].devices[0]['credential-id'];
     const res = await startAuthentication({
-        challenge: tx.hash,
-        rpId: window.location.hostname,
-        allowCredentials: credentialId
-          ? [{ id: credentialId, type: 'public-key' }]
-          : undefined,
-      });
+      challenge: tx.hash,
+      rpId: window.location.hostname,
+      allowCredentials: credentialId
+        ? [{ id: credentialId, type: 'public-key' }]
+        : undefined,
+    });
 
     if (!signedPlumbingTxs)
-
       //TODO should be in try catch Error handling
       publishEvent('signed', {
         accounts: signAccounts
@@ -242,7 +243,6 @@ export default function Sign(props: Props) {
   );
 }
 
-
 type PlumbingTxStep = {
   title: string;
   caps: Map<string, ICap[]>;
@@ -256,13 +256,12 @@ type SignPlumbingTxsProps = {
 };
 
 function SignPlumbingTxs({
-                            plumbingSteps,
-                            credentialId,
-                            onCompleted,
-                          }: SignPlumbingTxsProps) {
-
+  plumbingSteps,
+  credentialId,
+  onCompleted,
+}: SignPlumbingTxsProps) {
   const [steps, setSteps] = useState(plumbingSteps);
-  const {errorMessage, setErrorMessage} = useContext(ErrorContext);
+  const { errorMessage, setErrorMessage } = useContext(ErrorContext);
 
   useEffect(() => {
     setSteps(plumbingSteps);
@@ -301,21 +300,24 @@ function SignPlumbingTxs({
                     challenge: tx.hash,
                     rpId: window.location.hostname,
                     allowCredentials: credentialId
-                      ? [{id: credentialId, type: 'public-key'}]
+                      ? [{ id: credentialId, type: 'public-key' }]
                       : undefined,
                   });
 
-                const signedTx = addSignatures(tx, getSignature(res.response));
-                const newSteps = steps.map((step) => {
-                  if (step.tx.hash !== tx.hash) return step;
-                  return { ...step, tx: signedTx, signed: true };
-                });
-                setSteps(newSteps);
-                if (newSteps.every((step) => step.signed))
-                  onCompleted(newSteps.map(({ tx }) => tx) as ICommand[]);
+                  const signedTx = addSignatures(
+                    tx,
+                    getSignature(res.response),
+                  );
+                  const newSteps = steps.map((step) => {
+                    if (step.tx.hash !== tx.hash) return step;
+                    return { ...step, tx: signedTx, signed: true };
+                  });
+                  setSteps(newSteps);
+                  if (newSteps.every((step) => step.signed))
+                    onCompleted(newSteps.map(({ tx }) => tx) as ICommand[]);
                 } catch (error: any) {
                   setErrorMessage(error.message);
-                  console.error({errorMessage: errorMessage, error});
+                  console.error({ errorMessage: errorMessage, error });
                 }
               }}
               isDisabled={signed}
@@ -327,4 +329,4 @@ function SignPlumbingTxs({
       ))}
     </>
   );
-};
+}

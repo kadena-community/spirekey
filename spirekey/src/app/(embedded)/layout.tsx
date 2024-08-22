@@ -1,8 +1,8 @@
 import favicon from '@/assets/images/favicon.png';
 import type { Metadata } from 'next';
 
+import dynamic from 'next/dynamic';
 import './global.embedded.css';
-import dynamic from "next/dynamic";
 
 export const metadata: Metadata = {
   title: 'Kadena SpireKey',
@@ -27,9 +27,7 @@ export default function RootLayout({
         <link rel="icon" href={favicon.src} sizes="any" />
       </head>
       <body>
-        <ErrorNotification>
-          {children}
-        </ErrorNotification>
+        <ErrorNotification>{children}</ErrorNotification>
       </body>
     </html>
   );

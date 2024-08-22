@@ -2,7 +2,11 @@
 
 import { SubmitResult } from '@/components/shared/SubmitResult';
 import { useSubmit } from '@/hooks/shared/useSubmit';
-import { MonoCheckCircle, MonoClose, MonoFlight } from '@kadena/kode-icons/system';
+import {
+  MonoCheckCircle,
+  MonoClose,
+  MonoFlight,
+} from '@kadena/kode-icons/system';
 import {
   Box,
   Button,

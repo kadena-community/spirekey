@@ -1,6 +1,10 @@
 'use client';
 
-import { MonoCheckCircle, MonoClose, MonoFlight } from '@kadena/kode-icons/system';
+import {
+  MonoCheckCircle,
+  MonoClose,
+  MonoFlight,
+} from '@kadena/kode-icons/system';
 import {
   Box,
   Button,
