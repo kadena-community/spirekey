@@ -38,15 +38,5 @@
       },
       "sender": "w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any"
     },
-    {
-      "profile": "default",
-      "codeFile": "./pact/gas-station.pact",
-      "data": {
-        "ns": "n_eef68e581f767dd66c4d4c39ed922be944ede505",
-        "ks-name": "webauthn-keyset",
-        "upgrade": true
-      },
-      "sender": "w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any"
-    }
   ]
 }
