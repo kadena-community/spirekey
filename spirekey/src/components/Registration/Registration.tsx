@@ -6,14 +6,12 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { deviceColors } from '@/styles/shared/tokens.css';
-import {
-    getRootkeyPasskeyName
-} from '@/utils/getNetworkDisplayName';
+import { getRootkeyPasskeyName } from '@/utils/getNetworkDisplayName';
 
 import {
-    CardContainer,
-    CardContentBlock,
-    CardFooter,
+  CardContainer,
+  CardContentBlock,
+  CardFooter,
 } from '@/components/CardPattern/CardPattern';
 import { KeyPair, useRegistration } from '@/hooks/useRegistration';
 import { getUser } from '@/utils/connect';

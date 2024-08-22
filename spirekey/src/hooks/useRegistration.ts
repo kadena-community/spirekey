@@ -136,6 +136,69 @@ function i2hex(i: number) {
   return ('0' + i.toString(16)).slice(-2);
 }
 
+const getPubkeyFromPasskey = async (networkId: string) => {
+  const { response, id } = await startAuthentication({
+    rpId: window.location.hostname,
+    challenge: 'reconnectwallet',
+  });
+  const usignature = new Uint8Array(
+    base64URLStringToBuffer(response.signature),
+  );
+  const rStart = usignature[4] === 0 ? 5 : 4;
+  const rEnd = rStart + 32;
+  const sStart = usignature[rEnd + 2] === 0 ? rEnd + 3 : rEnd + 2;
+  const r = usignature.slice(rStart, rEnd);
+  const s = usignature.slice(sStart);
+
+  const ec = new elliptic.ec('p256');
+
+  const rBigInt = BigInt('0x' + hex(r));
+  const sBigInt = BigInt('0x' + hex(s));
+
+  const sig = { r: rBigInt.toString(16), s: sBigInt.toString(16) };
+
+  const concatenatedData = concatenateData(
+    base64URLStringToBuffer(response.authenticatorData),
+    await sha256(base64URLStringToBuffer(response.clientDataJSON)),
+  );
+  const messageHash = new Uint8Array(await sha256(concatenatedData));
+
+  const foundKeys = await getCredentials(
+    networkId,
+    id,
+    window.location.hostname,
+  );
+  const recoveredKeys = await Promise.all(
+    [
+      ec.recoverPubKey(messageHash, sig, 0),
+      ec.recoverPubKey(messageHash, sig, 1),
+    ].map(async (p) => {
+      const tempPassword = crypto.getRandomValues(new Uint16Array(32));
+      const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
+        tempPassword,
+        await kadenaEncrypt(
+          tempPassword,
+          await crypto.subtle.digest(
+            'sha-512',
+            Buffer.from(p.encode('hex', false)),
+          ),
+        ),
+        0,
+      );
+      const secretBin = await kadenaDecrypt(tempPassword, privateKey);
+      return {
+        publicKey: pubKey,
+        secretKey: Buffer.from(secretBin).toString('hex'),
+      };
+    }),
+  );
+  const recoveredKey = recoveredKeys.find(({ publicKey }) =>
+    foundKeys.includes(publicKey),
+  );
+  if (!recoveredKey) throw new Error('No public key could be recovered');
+  return recoveredKey;
+};
+
 export const hex = (bytes: Uint8Array) => Array.from(bytes).map(i2hex).join('');
 async function sha256(clientDataJSON: ArrayBuffer) {
   return await window.crypto.subtle.digest('SHA-256', clientDataJSON);
@@ -183,69 +246,14 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
-      const { response, id } = await startAuthentication({
-        rpId: window.location.hostname,
-        challenge: 'reconnectwallet',
-      });
-      const usignature = new Uint8Array(
-        base64URLStringToBuffer(response.signature),
-      );
-      const rStart = usignature[4] === 0 ? 5 : 4;
-      const rEnd = rStart + 32;
-      const sStart = usignature[rEnd + 2] === 0 ? rEnd + 3 : rEnd + 2;
-      const r = usignature.slice(rStart, rEnd);
-      const s = usignature.slice(sStart);
-
-      const ec = new elliptic.ec('p256');
-
-      const rBigInt = BigInt('0x' + hex(r));
-      const sBigInt = BigInt('0x' + hex(s));
-
-      const sig = { r: rBigInt.toString(16), s: sBigInt.toString(16) };
-
-      const concatenatedData = concatenateData(
-        base64URLStringToBuffer(response.authenticatorData),
-        await sha256(base64URLStringToBuffer(response.clientDataJSON)),
-      );
-      const messageHash = new Uint8Array(await sha256(concatenatedData));
-
-      const foundKeys = await getCredentials(
-        networkId!,
-        id,
-        window.location.hostname,
-      );
-      const recoveredKeys = await Promise.all(
-        [
-          ec.recoverPubKey(messageHash, sig, 0),
-          ec.recoverPubKey(messageHash, sig, 1),
-        ].map(async (p) => {
-          const key = ec.keyFromPublic(p);
-          // const verified = await key.verify(messageHash, sig);
-          const tempPassword = crypto.getRandomValues(new Uint16Array(32));
-          const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
-            tempPassword,
-            await kadenaEncrypt(
-              tempPassword,
-              await crypto.subtle.digest(
-                'sha-512',
-                Buffer.from(p.encode('hex', false)),
-              ),
-            ),
-            0,
-          );
-          const secretBin = await kadenaDecrypt(tempPassword, privateKey);
-          return {
-            publicKey: pubKey,
-            secretKey: Buffer.from(secretBin).toString('hex'),
-          };
-        }),
-      );
-      const recoveredKey = recoveredKeys.find(({ publicKey }) =>
-        foundKeys.includes(publicKey),
-      );
+      const recoveredKey = await getPubkeyFromPasskey(networkId);
       setKeypair(recoveredKey);
     } catch (e) {
-      console.warn('DEBUGPRINT[12]: Registration.tsx:228: e=', e);
+      addNotification({
+        title: 'Error unlocking wallet',
+        message: 'Could not unlock Wallet using the provided Passkey',
+        variant: 'error',
+      });
     } finally {
       setIsSubmitting(false);
     }
