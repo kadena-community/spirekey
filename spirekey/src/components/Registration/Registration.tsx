@@ -221,7 +221,7 @@ const RegisterComponent = ({
           <>
             <Text>
               Do you wish to manage your wallet here on SpireKey? This will
-              become your home of operation, your gateway into the a secure web
+              become your home of operation, your gateway into a secure web
               3 experience!
             </Text>
             <Stepper>
