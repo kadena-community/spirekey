@@ -239,7 +239,7 @@ const RegisterComponent = ({
             account to this wallet.
           </Text>
           <CardFooter>
-            <Button onPress={onHandleConnectWallet}>Connect</Button>
+            <Button>Connect Coming soon</Button>
           </CardFooter>
           <Heading as="h5">No wallet yet?</Heading>
           <Text>
@@ -253,7 +253,7 @@ const RegisterComponent = ({
         </Stack>
       </CardContentBlock>
       <CardFooter>
-        <Button onPress={onHandleRegisterWallet}>Create</Button>
+        <Button>Create Coming soon</Button>
       </CardFooter>
     </CardContainer>
   );
