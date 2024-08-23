@@ -4,6 +4,7 @@ import { style } from '@vanilla-extract/css';
 export const networkLabel = style({
   borderColor: token('color.icon.base.@disabled'),
   color: token('color.icon.base.@disabled'),
+  cursor: 'pointer',
   borderStyle: 'solid',
   borderWidth: 'thin',
   borderRadius: token('radius.sm'),
