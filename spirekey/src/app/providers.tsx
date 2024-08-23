@@ -48,6 +48,7 @@ export default function Providers({
         <NotificationsProvider>
           <AccountsProvider>
             <ThemeProvider
+              forcedTheme="dark"
               attribute="class"
               value={{
                 light: darkThemeClass,
