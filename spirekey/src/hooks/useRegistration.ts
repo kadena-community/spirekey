@@ -6,7 +6,6 @@ import {
   getNetworkDisplayName,
   getRootkeyPasskeyName,
 } from '@/utils/getNetworkDisplayName';
-import { getGraphClient } from '@/utils/graphql';
 import {
   getRAccountName,
   getWebAuthnPubkeyFormat,
@@ -27,10 +26,12 @@ import {
 } from '@simplewebauthn/browser';
 import elliptic from 'elliptic';
 import { useState } from 'react';
+import { gql } from 'urql';
 import { useReturnUrl } from './shared/useReturnUrl';
+import { query } from './useQuery';
 
 export type KeyPair = { publicKey: string; secretKey: string };
-const getCredentialQuery = `
+const getCredentialsQuery = gql`
 query getCredentials($filter: String) {
   events(
     qualifiedEventName: "${process.env.NAMESPACE}.spirekey.REGISTER_CREDENTIAL"
@@ -53,10 +54,10 @@ export const getCredentials = async (
   credentialId: string,
   domain: string,
 ) => {
-  const res = await getGraphClient(networkId, getCredentialQuery, {
+  const res = await query(networkId, getCredentialsQuery, {
     filter: `{\"array_contains\": [\"${credentialId}\", \"${domain}\"]}`,
   });
-  const edges = res?.events?.edges;
+  const edges = res.data?.events?.edges;
   if (!edges.length) throw new Error('No credentials found');
   return edges.map((e: any) => {
     const [, c] = JSON.parse(e?.node?.parameters);

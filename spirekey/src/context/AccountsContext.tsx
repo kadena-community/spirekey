@@ -4,7 +4,6 @@ import type { ChainId, ITransactionDescriptor } from '@kadena/client';
 import type { Account, QueuedTx } from '@kadena/spirekey-types';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { useTxQueue } from '@/hooks/useTxQueue';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { getAccountFromChains } from '@/utils/shared/account';
@@ -80,8 +79,6 @@ type Props = {
 };
 
 const AccountsProvider = ({ children }: Props) => {
-  const { host } = useReturnUrl();
-
   const [accounts, setAccounts] = useState<Account[]>(
     getAccountsFromLocalStorage(),
   );

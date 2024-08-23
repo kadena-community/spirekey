@@ -17,6 +17,7 @@ import {
 } from '@kadena/kode-ui/patterns';
 import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
+import { gql } from 'urql';
 import AccountNetwork from '../Card/AccountNetwork';
 import Alias from '../Card/Alias';
 import Card from '../Card/Card';
@@ -110,6 +111,24 @@ const RegisterComponent = ({
 }) => {
   const [isAnimationFinished, setAnimationFinished] = useState(false);
 
+  query(
+    'development',
+    gql`
+      {
+        accounts(networkId: "development") {
+          accountName
+          balance
+          guard {
+            keysetref {
+              ksn
+              ns
+            }
+          }
+        }
+      }
+    `,
+    {},
+  ).then((x) => console.warn('DEBUGPRINT[3]: Registration.tsx:123: x=', x));
   if (account && isAnimationFinished)
     return (
       <CardFixedContainer>

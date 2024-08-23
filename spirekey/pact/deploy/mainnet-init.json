@@ -9,6 +9,24 @@
   "steps": [
     {
       "profile": "default",
+      "code": "(coin.transfer-crosschain \"w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any\" \"r:ns-operate-keyset\" (keyset-ref-guard 'ns-operate-keyset) \"0\" 4.0)",
+      "data": {},
+      "sender": "w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any"
+      "caps": [
+        ["coin.GAS"],
+        [
+          "coin.TRANSFER_XCHAIN",
+          "w:2CwogBdPy-ebjrXkSIZ5ehdalJv8iQX0VwJMwRtys0s:keys-any",
+          "r:ns-operate-keyset",
+          "4.0",
+
+        ]
+      ]
+    }
+  ],
+  "xsteps": [
+    {
+      "profile": "default",
       "codeFile": "./pact/deploy/webauthn-predeploy.pact",
       "data": {
         "webauthn-keyset": {
