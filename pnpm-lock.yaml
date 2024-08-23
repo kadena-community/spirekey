@@ -133,6 +133,9 @@ importers:
       '@kadena/pactjs':
         specifier: ^0.4.3
         version: 0.4.3
+      '@kadena/spirekey-sdk':
+        specifier: workspace:*
+        version: link:../sdk
       '@kadena/types':
         specifier: ^0.6.2
         version: 0.6.2
