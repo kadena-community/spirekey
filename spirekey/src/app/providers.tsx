@@ -50,6 +50,7 @@ export default function Providers({
             <ThemeProvider
               attribute="class"
               value={{
+                light: darkThemeClass,
                 dark: darkThemeClass,
               }}
               enableSystem={true}
