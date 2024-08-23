@@ -62,7 +62,7 @@ export const getNewWebauthnKey = async (displayName: string) => {
   const res = await startRegistration({
     challenge: bufferToBase64URLString(Buffer.from('some-random-string')),
     rp: {
-      name: 'Kadena WebAuthN Wallet',
+      name: 'Kadena Spirekey',
       id: window.location.hostname,
     },
     pubKeyCredParams: [
