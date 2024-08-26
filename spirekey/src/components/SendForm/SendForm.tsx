@@ -4,7 +4,14 @@ import { useAccounts } from '@/context/AccountsContext';
 import { l1Client } from '@/utils/shared/client';
 import { createTransactionBuilder } from '@kadena/client';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
-import { Button, NumberField, Stack, TextField } from '@kadena/kode-ui';
+import {
+  Button,
+  NumberField,
+  Select,
+  SelectItem,
+  Stack,
+  TextField,
+} from '@kadena/kode-ui';
 import { Account, Device, initSpireKey, sign } from '@kadena/spirekey-sdk';
 import { ChainId, ICommand } from '@kadena/types';
 import { useParams } from 'next/navigation';
@@ -214,6 +221,16 @@ export default function SendForm() {
                 label="Receiver"
                 {...register('receiver')}
               />
+              <Select
+                label="Chain"
+                onSelectionChange={(c) => setValue('chainId', c as ChainId)}
+              >
+                {Array(20)
+                  .fill(1)
+                  .map((_, i) => (
+                    <SelectItem key={i}>{i.toString()}</SelectItem>
+                  ))}
+              </Select>
               <NumberField
                 defaultValue={defaultValues.amount}
                 step={0.1}
