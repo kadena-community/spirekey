@@ -14,17 +14,17 @@ import {
   Stack,
   TextField,
 } from '@kadena/kode-ui';
+import {
+  CardContentBlock,
+  CardFixedContainer,
+  CardFooterGroup,
+} from '@kadena/kode-ui/patterns';
+import { atoms } from '@kadena/kode-ui/styles';
 import { Account, Device, initSpireKey, sign } from '@kadena/spirekey-sdk';
 import { ChainId, ICommand } from '@kadena/types';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  CardContainer,
-  CardContentBlock,
-  CardFooter,
-} from '../CardPattern/CardPattern';
-import { stackedButtonClass } from '../CardPattern/CardPattern.css';
 
 const isCAccount = (account: string | string[]): account is string =>
   typeof account === 'string';
@@ -195,11 +195,11 @@ export default function SendForm() {
 
   if (tx)
     return (
-      <CardContainer hasPadding>
+      <CardFixedContainer>
         <CardContentBlock
           visual={<SpireKeyKdacolorLogoGreen />}
-          title="Step 5: Result"
-          description="You have successfully transferred KDA to another account. All without burdened with the concept of chains."
+          title="Transfer Result"
+          description={`You have successfully transferred ${getValues('amount')}KDA to ${maskValue(getValues('receiver'))}`}
         >
           <Stack flexDirection="column" gap="md">
             <TextField
@@ -222,7 +222,7 @@ export default function SendForm() {
             <Button
               variant="outlined"
               onPress={() => setShowDetails(!showDetails)}
-              className={stackedButtonClass}
+              className={atoms({ marginInlineStart: 'auto' })}
             >
               {showDetails ? 'Hide Details' : 'Show Details'}
             </Button>
@@ -235,8 +235,6 @@ export default function SendForm() {
               const isGasEvent = params[2] < 0.1;
               return (
                 <CardContentBlock
-                  isNewSection
-                  titleAs="h5"
                   title={isGasEvent ? 'Gas Fees' : 'Transfer Amount'}
                   key={params[2]}
                   description={
@@ -252,7 +250,7 @@ export default function SendForm() {
                 </CardContentBlock>
               );
             })}
-      </CardContainer>
+      </CardFixedContainer>
     );
   return (
     <Stack
@@ -264,15 +262,11 @@ export default function SendForm() {
       maxWidth="content.maxWidth"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <CardContainer hasPadding>
+        <CardFixedContainer>
           <CardContentBlock
             visual={<SpireKeyKdacolorLogoGreen />}
             title="Transfer"
-            description={
-              <>
-                <p>your KDA to another account.</p>
-              </>
-            }
+            description="your KDA to another account."
           >
             <Stack flexDirection="column" gap="md">
               <TextField
@@ -309,8 +303,8 @@ export default function SendForm() {
               />
             </Stack>
           </CardContentBlock>
-        </CardContainer>
-        <CardFooter>
+        </CardFixedContainer>
+        <CardFooterGroup>
           <Button
             isLoading={isLoading}
             variant="primary"
@@ -319,7 +313,7 @@ export default function SendForm() {
           >
             Sign
           </Button>
-        </CardFooter>
+        </CardFooterGroup>
       </form>
     </Stack>
   );
