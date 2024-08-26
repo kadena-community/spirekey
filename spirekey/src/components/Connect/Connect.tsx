@@ -1,14 +1,13 @@
-import {
-  CardContainer,
-  CardContentBlock,
-  CardFooter,
-  SpireKeyCardContentBlock,
-} from '@/components/CardPattern/CardPattern';
+import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
 import { useAccounts } from '@/context/AccountsContext';
-import { l1Client } from '@/utils/shared/client';
 import { ChainId } from '@kadena/client';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
-import { Button, Heading, Link, maskValue, Stack, Text } from '@kadena/kode-ui';
+import { Button, Heading, maskValue, Stack, Text } from '@kadena/kode-ui';
+import {
+  CardContentBlock,
+  CardFixedContainer,
+  CardFooterGroup,
+} from '@kadena/kode-ui/patterns';
 import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
 import { useState } from 'react';
@@ -72,7 +71,7 @@ export default function ConnectComponent({
   if (!candidateAccounts.length)
     return (
       <>
-        <CardContainer hasPadding>
+        <CardFixedContainer>
           <CardContentBlock
             title=""
             visual={
@@ -100,18 +99,18 @@ export default function ConnectComponent({
               <Text>Recover your existing account with your passkey.</Text>
             </Stack>
           </CardContentBlock>
-          <CardFooter>
+          <CardFooterGroup>
             <Button variant="outlined" onPress={startRecover}>
               Recover
             </Button>
             <Button onPress={startRegister}>Register</Button>
-          </CardFooter>
-        </CardContainer>
+          </CardFooterGroup>
+        </CardFixedContainer>
       </>
     );
 
   return (
-    <CardContainer hasPadding>
+    <CardFixedContainer>
       <SpireKeyCardContentBlock
         title="Accounts"
         description="available for use"
@@ -141,14 +140,14 @@ export default function ConnectComponent({
           ))}
         </Stack>
       </SpireKeyCardContentBlock>
-      <CardFooter>
+      <CardFooterGroup>
         <Button onPress={startRegister} variant="transparent">
           Register another account
         </Button>
         <Button onPress={onCancel} variant="outlined">
           Cancel
         </Button>
-      </CardFooter>
-    </CardContainer>
+      </CardFooterGroup>
+    </CardFixedContainer>
   );
 }

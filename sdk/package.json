@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@kadena/client": "^1.12.0",
-    "@kadena/kode-ui": "^0.13.0",
+    "@kadena/kode-ui": "^0.14.1",
     "@vanilla-extract/css": "^1.15.3"
   },
   "devDependencies": {

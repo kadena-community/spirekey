@@ -1,7 +1,3 @@
-import {
-  CardContainer,
-  CardContentBlock,
-} from '@/components/CardPattern/CardPattern';
 import { MonoCopyAll } from '@kadena/kode-icons/system';
 import {
   Button,
@@ -10,14 +6,15 @@ import {
   Stack,
   TextField,
 } from '@kadena/kode-ui';
+import { CardContentBlock, CardFixedContainer } from '@kadena/kode-ui/patterns';
+import { atoms } from '@kadena/kode-ui/styles';
 import { useState } from 'react';
-import { stackedButtonClass } from '@/components/CardPattern/CardPattern.css';
 
 export const ResultStep = ({ result }: { result: string }) => {
   const [showDetails, setShowDetails] = useState(false);
   const tx = JSON.parse(result);
   return (
-    <CardContainer hasPadding>
+    <CardFixedContainer>
       <CardContentBlock
         visual={<ProductIcon.QuickStart size="xl" />}
         title="Step 5: Result"
@@ -44,7 +41,7 @@ export const ResultStep = ({ result }: { result: string }) => {
           <Button
             variant="outlined"
             onPress={() => setShowDetails(!showDetails)}
-            className={stackedButtonClass}
+            className={atoms({ marginInlineStart: 'auto' })}
           >
             {showDetails ? 'Hide Details' : 'Show Details'}
           </Button>
@@ -53,12 +50,10 @@ export const ResultStep = ({ result }: { result: string }) => {
       {showDetails &&
         tx.events
           .sort((a: any, b: any) => b.params[2] - a.params[2])
-          .map(({ name, params }: any) => {
+          .map(({ params }: any) => {
             const isGasEvent = params[2] < 0.1;
             return (
               <CardContentBlock
-                isNewSection
-                titleAs="h5"
                 title={isGasEvent ? 'Gas Fees' : 'Transfer Amount'}
                 key={params[2]}
                 description={
@@ -74,6 +69,6 @@ export const ResultStep = ({ result }: { result: string }) => {
               </CardContentBlock>
             );
           })}
-    </CardContainer>
+    </CardFixedContainer>
   );
 };

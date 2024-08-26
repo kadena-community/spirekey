@@ -5,17 +5,17 @@ import { getGraphClient } from '@/utils/graphql';
 import { getAccountFromChains } from '@/utils/shared/account';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { Button, Stack } from '@kadena/kode-ui';
+import {
+  CardContentBlock,
+  CardFixedContainer,
+  CardFooterGroup,
+} from '@kadena/kode-ui/patterns';
 import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useRouter } from 'next/navigation';
 import { Radio, RadioGroup } from 'react-aria-components';
-import {
-  CardContainer,
-  CardContentBlock,
-  CardFooter,
-} from '../CardPattern/CardPattern';
 import { NetworkDevnet } from '../icons/NetworkDevnet';
 import { NetworkMainnet } from '../icons/NetworkMainnet';
 import { NetworkTestnet } from '../icons/NetworkTestnet';
@@ -90,7 +90,7 @@ export default function Recover(props: RecoverProps) {
     // Redirect back to home screen, but publish the connect event first
   };
   return (
-    <CardContainer>
+    <CardFixedContainer>
       <form onSubmit={onSubmit}>
         <CardContentBlock
           title="Recover"
@@ -125,13 +125,13 @@ export default function Recover(props: RecoverProps) {
             </Stack>
           </RadioGroup>
         </CardContentBlock>
-        <CardFooter>
+        <CardFooterGroup>
           <Button variant="outlined" onPress={onCancel}>
             Cancel
           </Button>
           <Button type="submit">Next</Button>
-        </CardFooter>
+        </CardFooterGroup>
       </form>
-    </CardContainer>
+    </CardFixedContainer>
   );
 }

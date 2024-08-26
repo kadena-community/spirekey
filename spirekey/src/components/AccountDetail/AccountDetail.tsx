@@ -3,7 +3,7 @@
 import { MonoCheck } from '@kadena/kode-icons/system';
 import { Button, NumberField, Stack, TextField } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
 import { useAccounts } from '@/context/AccountsContext';
@@ -14,11 +14,8 @@ import {
 } from '@/utils/searchParameters';
 import { updateAccount } from '@/utils/updateAccount';
 
-import {
-  CardContainer,
-  CardFooter,
-  SpireKeyCardContentBlock,
-} from '@/components/CardPattern/CardPattern';
+import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
+import { CardFixedContainer, CardFooterGroup } from '@kadena/kode-ui/patterns';
 
 interface Props {
   accountName: string;
@@ -26,7 +23,6 @@ interface Props {
 
 export default function AccountDetail({ accountName }: Props) {
   const { accounts, setAccount } = useAccounts();
-  const params = useParams();
   const { addNotification } = useNotifications();
   const router = useRouter();
 
@@ -107,7 +103,7 @@ export default function AccountDetail({ accountName }: Props) {
   }
 
   return (
-    <CardContainer>
+    <CardFixedContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
         <SpireKeyCardContentBlock title="Account" description="details">
           <TextField
@@ -147,15 +143,15 @@ export default function AccountDetail({ accountName }: Props) {
             />
           </Stack>
         </SpireKeyCardContentBlock>
-        <CardFooter>
+        <CardFooterGroup>
           <Button variant="outlined" onClick={handleCancel}>
             Cancel
           </Button>
           <Button type="submit" variant="primary">
             Update
           </Button>
-        </CardFooter>
+        </CardFooterGroup>
       </form>
-    </CardContainer>
+    </CardFixedContainer>
   );
 }
