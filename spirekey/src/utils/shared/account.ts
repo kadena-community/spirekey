@@ -7,9 +7,8 @@ import {
 } from '@kadena/client/fp';
 import type { Account, Device, Guard } from '@kadena/spirekey-types';
 
-import { assertFulfilled } from '@/utils/assertFulfilled';
-
 import { createTransactionBuilder } from '@kadena/client';
+import { getGraphClient } from '../graphql';
 import { asyncPipe } from './asyncPipe';
 import { l1Client } from './client';
 
@@ -127,6 +126,60 @@ export const getAccountFromChainLegacy = async ({
     },
   )({});
 
+const getAccountQuery = `
+query getAccount($detailsCode: String!) {
+  ${Array(20)
+    .fill(1)
+    .map(
+      (_, i) => `chain${i}: pactQuery(pactQuery: {
+    code: $detailsCode
+    chainId: "${i}"
+  }) {
+    result
+  }`,
+    )}
+}
+`;
+const getAccountDetails = async ({
+  accountName,
+  networkId,
+}: {
+  accountName: string;
+  networkId: string;
+}) => {
+  const data = await getGraphClient(networkId, getAccountQuery, {
+    detailsCode: `(kadena.spirekey.details "${accountName}" coin)`,
+  });
+
+  return Object.values(data)
+    .map((res: any) => {
+      try {
+        return JSON.parse(res[0].result) as {
+          account: string;
+          balance: string;
+          guard: Guard;
+          devices: Device[];
+        };
+      } catch (e) {
+        console.warn('Could not retreive account info', e);
+        return null;
+      }
+    })
+    .filter((a) => !!a)
+    .map((account, i) => {
+      return {
+        guard: account.guard,
+        accountName: account.account,
+        minApprovals: 1,
+        minRegistrationApprovals: 1,
+        devices: account.devices,
+        balance: account.balance,
+        chainIds: [i.toString() as ChainId],
+        networkId,
+        txQueue: [],
+      };
+    });
+};
 /**
  * Fetches account details from all chains.
  *
@@ -152,29 +205,7 @@ export const getAccountFromChains = async ({
   chainIds: ChainId[];
   namespace?: string;
 }): Promise<Omit<Account, 'alias'> | null> => {
-  const results = await Promise.allSettled(
-    chainIds.map((chainId) => {
-      if (accountName.startsWith('r:'))
-        return getRAccountFromChain({
-          accountName,
-          networkId,
-          namespace,
-          chainId,
-        });
-      return getAccountFromChain({
-        accountName,
-        networkId,
-        namespace,
-        chainId,
-      });
-    }),
-  );
-
-  const accounts = results
-    .filter(assertFulfilled)
-    .filter((result) => assertFulfilled(result) && result.value !== null)
-    .map((result) => result.value)
-    .filter(Boolean) as Account[];
+  const accounts = await getAccountDetails({ accountName, networkId });
 
   return accounts.reduce<Omit<Account, 'alias'>>(
     (account, accountOnChain) => {

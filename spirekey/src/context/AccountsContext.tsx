@@ -122,6 +122,7 @@ const AccountsProvider = ({ children }: Props) => {
           a.accountName +
           a.alias +
           a.networkId +
+          a.balance +
           a.txQueue.map((tx) => tx.requestKey).join(','),
       )
       .join(','),
