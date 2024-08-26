@@ -2,10 +2,12 @@
 
 import { useAccounts } from '@/context/AccountsContext';
 import { l1Client } from '@/utils/shared/client';
-import { createTransactionBuilder } from '@kadena/client';
+import { createTransactionBuilder, ICommandResult } from '@kadena/client';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
+import { MonoCopyAll } from '@kadena/kode-icons/system';
 import {
   Button,
+  maskValue,
   NumberField,
   Select,
   SelectItem,
@@ -22,6 +24,7 @@ import {
   CardContentBlock,
   CardFooter,
 } from '../CardPattern/CardPattern';
+import { stackedButtonClass } from '../CardPattern/CardPattern.css';
 
 const isCAccount = (account: string | string[]): account is string =>
   typeof account === 'string';
@@ -89,8 +92,9 @@ export default function SendForm() {
   const { caccount, cid } = useParams();
   const { accounts } = useAccounts();
 
-  const [result, setResult] = useState('');
+  const [tx, setTx] = useState<ICommandResult>();
   const [receiverError, setReceiverError] = useState('');
+  const [showDetails, setShowDetails] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const account = accounts.find(
     (a) => a.accountName === decodeURIComponent(caccount as string),
@@ -116,7 +120,7 @@ export default function SendForm() {
 
   type FormValues = typeof defaultValues;
 
-  const { handleSubmit, register, setValue } = useForm<FormValues>({
+  const { handleSubmit, register, setValue, getValues } = useForm<FormValues>({
     defaultValues,
   });
 
@@ -144,7 +148,6 @@ export default function SendForm() {
         chainId: data.chainId as ChainId,
       });
       tx.setNetworkId(data.networkId);
-      console.warn('DEBUGPRINT[4]: SendForm.tsx:133: tx=', tx);
       const { transactions, isReady } = await sign(
         [tx.createTransaction()],
         [
@@ -164,11 +167,12 @@ export default function SendForm() {
       await isReady();
       await Promise.all(
         transactions.map(async (tx) => {
+          console.warn("DEBUGPRINT[5]: SendForm.tsx:170: tx=", tx)
           const res = await l1Client.local(tx);
           console.log('Preflight result', res);
           const txDescriptor = await l1Client.submit(tx as ICommand);
           const txRes = await l1Client.listen(txDescriptor);
-          setResult(JSON.stringify(txRes, null, 2));
+          setTx(txRes);
         }),
       );
     } catch (e) {
@@ -186,6 +190,67 @@ export default function SendForm() {
     max: parseFloat(account.balance),
   });
 
+  if (tx)
+    return (
+      <CardContainer hasPadding>
+        <CardContentBlock
+          visual={<SpireKeyKdacolorLogoGreen />}
+          title="Step 5: Result"
+          description="You have successfully transferred KDA to another account. All without burdened with the concept of chains."
+        >
+          <Stack flexDirection="column" gap="md">
+            <TextField
+              isReadOnly
+              value={tx.reqKey}
+              label="Request Key"
+              endAddon={
+                <Button
+                  variant="transparent"
+                  onPress={() => navigator.clipboard.writeText(tx.reqKey)}
+                >
+                  <Stack as="span" flexDirection="row" gap="xs">
+                    Copy
+                    <MonoCopyAll />
+                  </Stack>
+                </Button>
+              }
+            />
+            <TextField isReadOnly label="Status" value={tx.result.status} />
+            <Button
+              variant="outlined"
+              onPress={() => setShowDetails(!showDetails)}
+              className={stackedButtonClass}
+            >
+              {showDetails ? 'Hide Details' : 'Show Details'}
+            </Button>
+          </Stack>
+        </CardContentBlock>
+        {showDetails &&
+          tx
+            .events!.sort((a: any, b: any) => b.params[2] - a.params[2])
+            .map(({ params }: any) => {
+              const isGasEvent = params[2] < 0.1;
+              return (
+                <CardContentBlock
+                  isNewSection
+                  titleAs="h5"
+                  title={isGasEvent ? 'Gas Fees' : 'Transfer Amount'}
+                  key={params[2]}
+                  description={
+                    isGasEvent
+                      ? `You have paid ${params[2]} on gas fees for this transaction`
+                      : `You have successfully transferred ${params[2]} KDA to ${maskValue(params[1])}`
+                  }
+                >
+                  <Stack flexDirection="column" gap="md">
+                    <TextField label="Receiver" isReadOnly value={params[1]} />
+                    <TextField label="Amount" isReadOnly value={params[2]} />
+                  </Stack>
+                </CardContentBlock>
+              );
+            })}
+      </CardContainer>
+    );
   return (
     <Stack
       padding="md"
@@ -223,6 +288,7 @@ export default function SendForm() {
               />
               <Select
                 label="Chain"
+                defaultSelectedKey="0"
                 onSelectionChange={(c) => setValue('chainId', c as ChainId)}
               >
                 {Array(20)
