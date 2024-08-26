@@ -77,7 +77,7 @@ export const signFactory =
         });
 
         removeCancelListener = onSignCanceled(() => {
-          reject(new Error('Uses canceled signin'));
+          reject(new Error('User canceled signing'));
         });
       },
     );
