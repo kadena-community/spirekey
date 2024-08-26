@@ -82,10 +82,12 @@ export const signFactory =
       },
     );
 
-    return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
-      embedManager.closePopup();
-      embedManager.hideNotification();
-      removeSignListener();
-      removeCancelListener();
-    });
+    return await Promise.race([eventListenerPromise, timeoutPromise]).finally(
+      async () => {
+        embedManager.closePopup();
+        removeSignListener();
+        removeCancelListener();
+        await embedManager.hideNotification();
+      },
+    );
   };
