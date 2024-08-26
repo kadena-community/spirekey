@@ -11,8 +11,13 @@ import { useContext, useEffect, useState } from 'react';
 import { useAccounts } from '@/context/AccountsContext';
 import { getSignature } from '@/utils/getSignature';
 
+import { Permissions } from '@/components/Permissions/Permissions';
+import { getOptimalTransactions } from '@/utils/auto-transfers';
 import { getAccountsForTx, getPermissions } from '@/utils/consent';
 import { publishEvent } from '@/utils/publishEvent';
+import { l1Client } from '@/utils/shared/client';
+import { addSignatures } from '@kadena/client';
+import { MonoCAccount } from '@kadena/kode-icons/system';
 import {
   Accordion,
   AccordionItem,
@@ -20,6 +25,7 @@ import {
   ContentHeader,
   Stack,
 } from '@kadena/kode-ui';
+import { CardFixedContainer, CardFooterGroup } from '@kadena/kode-ui/patterns';
 import {
   ICap,
   ICommand,
@@ -27,19 +33,9 @@ import {
   IUnsignedCommand,
 } from '@kadena/types';
 
-import { Permissions } from '@/components/Permissions/Permissions';
-import { getOptimalTransactions } from '@/utils/auto-transfers';
-import { l1Client } from '@/utils/shared/client';
-import { addSignatures } from '@kadena/client';
-import { MonoCAccount } from '@kadena/kode-icons/system';
-
 import { ErrorContext } from '@/components/ErrorNotification/ErrorNotification';
 
-import {
-  CardContainer,
-  CardFooter,
-  SpireKeyCardContentBlock,
-} from '@/components/CardPattern/CardPattern';
+import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
 
 interface Props {
   transactions?: string;
@@ -209,7 +205,7 @@ export default function Sign(props: Props) {
     return signedPlumbingTxs;
   };
   return (
-    <CardContainer>
+    <CardFixedContainer>
       <SpireKeyCardContentBlock
         title="Permissions"
         description={getSubtitle(caps.size)}
@@ -227,7 +223,7 @@ export default function Sign(props: Props) {
           />
         ))}
       </SpireKeyCardContentBlock>
-      <CardFooter>
+      <CardFooterGroup>
         <Button variant="outlined" onPress={onCancel}>
           Cancel
         </Button>
@@ -238,8 +234,8 @@ export default function Sign(props: Props) {
         >
           Sign
         </Button>
-      </CardFooter>
-    </CardContainer>
+      </CardFooterGroup>
+    </CardFixedContainer>
   );
 }
 

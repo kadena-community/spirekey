@@ -38,7 +38,7 @@
     "@kadena/fonts": "^0.0.1",
     "@kadena/hd-wallet": "^0.4.2",
     "@kadena/kode-icons": "^0.1.0",
-    "@kadena/kode-ui": "^0.13.0",
+    "@kadena/kode-ui": "^0.14.1",
     "@kadena/pactjs": "^0.4.3",
     "@kadena/types": "^0.6.2",
     "@playwright/test": "^1.44.1",

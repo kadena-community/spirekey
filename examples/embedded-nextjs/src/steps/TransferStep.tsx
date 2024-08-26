@@ -1,9 +1,4 @@
 import { useLocalState } from '@/hooks/useLocalState';
-import {
-  CardContainer,
-  CardContentBlock,
-  CardFooter,
-} from '@/components/CardPattern/CardPattern';
 import { l1Client } from '@/utils/shared/client';
 import { ChainId, createTransactionBuilder, ICommand } from '@kadena/client';
 import {
@@ -16,6 +11,7 @@ import {
 import { Account, Device, sign } from '@kadena/spirekey-sdk';
 import { useState } from 'react';
 import { ExampleStepper } from './ExampleStepper';
+import { CardFixedContainer, CardFooterGroup, CardContentBlock } from '@kadena/kode-ui/patterns';
 
 const ns = 'n_eef68e581f767dd66c4d4c39ed922be944ede505';
 const getTransferTx = ({
@@ -229,20 +225,14 @@ export const TransferStep = ({
   };
   return (
     <form autoComplete="on" onSubmit={signTransaction}>
-      <CardContainer hasPadding>
+      <CardFixedContainer >
         <CardContentBlock
           visual={<ProductIcon.QuickStart size="xl" />}
           title={isLoading ? `Step 4: Sign` : `Step 3: Transfer`}
-          description={
-            <>
-              <p>
-                Transfer KDA to another account. Your KDA might be spread across
-                many chains on Kadena, but SpireKey will take care of converging
-                the funds to perform your desired transaction.
-              </p>
+          description= "Transfer KDA to another account. Your KDA might be spread across many chains on Kadena, but SpireKey will take care of converging the funds to perform your desired transaction."
+        supportingContent={
               <ExampleStepper step={isLoading ? 3 : 2} />
-            </>
-          }
+        }
         >
           <Stack flexDirection="column" gap="md">
             <TextField
@@ -271,9 +261,9 @@ export const TransferStep = ({
             />
           </Stack>
         </CardContentBlock>
-      </CardContainer>
-      <CardFooter>
-        <Button
+      </CardFixedContainer>
+        <CardFooterGroup>
+          <Button
           isLoading={isLoading}
           variant="primary"
           isCompact={false}
@@ -281,7 +271,7 @@ export const TransferStep = ({
         >
           Sign
         </Button>
-      </CardFooter>
+        </CardFooterGroup>
     </form>
   );
 };

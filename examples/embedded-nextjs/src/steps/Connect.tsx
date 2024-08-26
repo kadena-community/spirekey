@@ -1,9 +1,4 @@
 import { useLocalState } from '@/hooks/useLocalState';
-import {
-  CardContainer,
-  CardContentBlock,
-  CardFooter,
-} from '@/components/CardPattern/CardPattern';
 import { ChainId } from '@kadena/client';
 import {
   Button,
@@ -12,9 +7,14 @@ import {
   SelectItem,
   Stack,
 } from '@kadena/kode-ui';
+import {
+  CardContentBlock,
+  CardFixedContainer,
+  CardFooterGroup,
+} from '@kadena/kode-ui/patterns';
+import { atoms } from '@kadena/kode-ui/styles';
 import { Account, connect, initSpireKey } from '@kadena/spirekey-sdk';
 import { useEffect, useState } from 'react';
-import { stackedButtonClass } from '@/components/CardPattern/CardPattern.css';
 import { ExampleStepper } from './ExampleStepper';
 
 export const ConnectStep = ({
@@ -22,10 +22,7 @@ export const ConnectStep = ({
 }: {
   setAccount: (account: Account) => void;
 }) => {
-  const [wallet, setWallet] = useLocalState(
-    'wallet',
-    'https://spirekey.kadena.io/',
-  );
+  const [wallet, setWallet] = useLocalState('wallet', 'http://localhost:1337');
   const [networkId, setNetworkId] = useLocalState('networkId', 'testnet04');
   const [chainId, setChainId] = useLocalState('chainId', '14');
   const [isLoading, setIsLoading] = useState(false);
@@ -51,22 +48,12 @@ export const ConnectStep = ({
   };
   return (
     <>
-      <CardContainer hasPadding>
+      <CardFixedContainer>
         <CardContentBlock
           visual={<ProductIcon.QuickStart size="xl" />}
           title="Step 1: Connect your account"
-          description={
-            <>
-              <p>
-                This app serves as example for dApp developers on how the
-                SpireKey SDK assists your users on their journey through the
-                process of guiding funds from other chains to the correct chain
-                in order to interacting with your dApp. Give it a try in this
-                example.
-              </p>
-              <ExampleStepper step={0} />
-            </>
-          }
+          description="SpireKey SDK assists your users on their journey through the process of guiding funds from other chains to the correct chain in order to interacting with your dApp. Give it a try in this example."
+          supportingContent={<ExampleStepper step={0} />}
         >
           <Stack flexDirection="column" gap="md">
             <Select
@@ -83,7 +70,7 @@ export const ConnectStep = ({
             <Button
               variant="outlined"
               onPress={() => setIsShownAdvancedOptions(!isShownAdvancedOptions)}
-              className={stackedButtonClass}
+              className={atoms({ marginInlineStart: 'auto' })}
             >
               {isShownAdvancedOptions
                 ? 'Hide Advanced Options'
@@ -93,8 +80,6 @@ export const ConnectStep = ({
         </CardContentBlock>
         {isShownAdvancedOptions ? (
           <CardContentBlock
-            isNewSection
-            titleAs="h5"
             title="Advanced Options"
             description="These options allow you to test this dApp using your local SpireKey instance. Additionally you can opt to use a different network."
           >
@@ -121,12 +106,12 @@ export const ConnectStep = ({
             </Stack>
           </CardContentBlock>
         ) : null}
-      </CardContainer>
-      <CardFooter>
+      </CardFixedContainer>
+      <CardFooterGroup>
         <Button isLoading={isLoading} onPress={onConnect}>
           Connect
         </Button>
-      </CardFooter>
+      </CardFooterGroup>
     </>
   );
 };

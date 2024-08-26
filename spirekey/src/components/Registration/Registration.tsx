@@ -8,14 +8,16 @@ import { useState } from 'react';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { getRootkeyPasskeyName } from '@/utils/getNetworkDisplayName';
 
-import {
-  CardContainer,
-  CardContentBlock,
-  CardFooter,
-} from '@/components/CardPattern/CardPattern';
+import { useRAccount } from '@/flags/flags';
 import { KeyPair, useRegistration } from '@/hooks/useRegistration';
 import { getUser } from '@/utils/connect';
+import { getGraphClient } from '@/utils/graphql';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
+import {
+  CardContentBlock,
+  CardFixedContainer,
+  CardFooterGroup,
+} from '@kadena/kode-ui/patterns';
 import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
 import AccountNetwork from '../Card/AccountNetwork';
@@ -112,7 +114,7 @@ const RegisterComponent = ({
 
   if (account && isAnimationFinished)
     return (
-      <CardContainer hasPadding>
+      <CardFixedContainer>
         <CardContentBlock
           visual={
             <SpireKeyKdacolorLogoGreen
@@ -122,19 +124,15 @@ const RegisterComponent = ({
           }
           title="Register Account"
           description={
-            <>
-              <Text>
-                Create your account to manage your web3 assets managed by your
-                SpireKey wallet.
-              </Text>
-              <Stepper>
-                <Step>Create Wallet</Step>
-                <Step>Register Account</Step>
-              </Stepper>
-            </>
+            'Create your account to manage your web3 assets managed by your SpireKey wallet.'
           }
-        >
-          <div className={styles.card}>
+          supportingContent={
+            <Stepper>
+              <Step>Create Wallet</Step>
+              <Step>Register Account</Step>
+            </Stepper>
+          }
+          extendedContent={
             <Card
               color={deviceColors.purple}
               balancePercentage={50}
@@ -143,22 +141,22 @@ const RegisterComponent = ({
               center={<AccountNetwork account={account} isLoading={true} />}
               cardBottom={<CardBottom account={account} />}
             />
-          </div>
-        </CardContentBlock>
-        <CardFooter>
+          }
+        />
+        <CardFooterGroup>
           <Button variant="outlined" onPress={onCancel}>
             Cancel
           </Button>
           <Button variant="primary" onPress={onComplete}>
             Complete
           </Button>
-        </CardFooter>
-      </CardContainer>
+        </CardFooterGroup>
+      </CardFixedContainer>
     );
 
   if (keypair)
     return (
-      <CardContainer hasPadding>
+      <CardFixedContainer>
         <CardContentBlock
           visual={
             <SpireKeyKdacolorLogoGreen
@@ -168,28 +166,24 @@ const RegisterComponent = ({
           }
           title="Register Account"
           description={
-            <>
-              <Text>
-                Create your account to manage your web3 assets managed by your
-                SpireKey wallet.
-              </Text>
-              <Stepper>
-                <Step>Create Wallet</Step>
-                <Step active>Register Account</Step>
-              </Stepper>
-            </>
+            'Create your account to manage your web3 assets managed by your SpireKey wallet.'
           }
-        >
-          <div className={styles.card}>
+          supportingContent={
+            <Stepper>
+              <Step>Create Wallet</Step>
+              <Step active>Register Account</Step>
+            </Stepper>
+          }
+          extendedContent={
             <PasskeyCard
               isInProgress={!succesfulAuthentication && isSubmitting}
               isSuccessful={succesfulAuthentication}
               onSuccessfulAnimationEnd={() => setAnimationFinished(true)}
               onSubmit={onSubmit}
             />
-          </div>
-        </CardContentBlock>
-        <CardFooter>
+          }
+        />
+        <CardFooterGroup>
           <Button
             variant="outlined"
             onPress={onCancel}
@@ -204,11 +198,11 @@ const RegisterComponent = ({
           >
             Continue
           </Button>
-        </CardFooter>
-      </CardContainer>
+        </CardFooterGroup>
+      </CardFixedContainer>
     );
   return (
-    <CardContainer hasPadding>
+    <CardFixedContainer>
       <CardContentBlock
         visual={
           <SpireKeyKdacolorLogoGreen
@@ -218,17 +212,13 @@ const RegisterComponent = ({
         }
         title="Connect Wallet"
         description={
-          <>
-            <Text>
-              Do you wish to manage your wallet here on SpireKey? This will
-              become your home of operation, your gateway into a secure web 3
-              experience!
-            </Text>
-            <Stepper>
-              <Step active>Create Wallet</Step>
-              <Step>Register Account</Step>
-            </Stepper>
-          </>
+          'Do you wish to manage your wallet here on SpireKey? This will become your home of operation, your gateway into the a secure web 3 experience!'
+        }
+        supportingContent={
+          <Stepper>
+            <Step active>Create Wallet</Step>
+            <Step>Register Account</Step>
+          </Stepper>
         }
       >
         <Stack flexDirection="column" gap="md">
@@ -238,12 +228,12 @@ const RegisterComponent = ({
             <Text bold>{getRootkeyPasskeyName(networkId)}</Text> to add another
             account to this wallet.
           </Text>
-          <CardFooter>
+          <CardFooterGroup>
             {networkId === 'mainnet01' && <Button>Connect Coming soon</Button>}
             {networkId !== 'mainnet01' && (
               <Button onPress={onHandleConnectWallet}>Connect</Button>
             )}
-          </CardFooter>
+          </CardFooterGroup>
           <Heading as="h5">No wallet yet?</Heading>
           <Text>
             Create a new wallet using a passkey. This passkey will be stored on
@@ -255,12 +245,12 @@ const RegisterComponent = ({
           </Text>
         </Stack>
       </CardContentBlock>
-      <CardFooter>
+      <CardFooterGroup>
         {networkId === 'mainnet01' && <Button>Create Coming soon</Button>}
         {networkId !== 'mainnet01' && (
           <Button onPress={onHandleRegisterWallet}>Create</Button>
         )}
-      </CardFooter>
-    </CardContainer>
+      </CardFooterGroup>
+    </CardFixedContainer>
   );
 };

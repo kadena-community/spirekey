@@ -1,10 +1,10 @@
-import {
-  CardContainer,
-  CardContentBlock,
-  CardFooter,
-} from '@/components/CardPattern/CardPattern';
 import { fundAccount } from '@/utils/fund';
 import { Button, NumberField, ProductIcon, Stack } from '@kadena/kode-ui';
+import {
+  CardContentBlock,
+  CardFixedContainer,
+  CardFooterGroup,
+} from '@kadena/kode-ui/patterns';
 import { Account } from '@kadena/spirekey-sdk';
 import { useState } from 'react';
 import { ExampleStepper } from './ExampleStepper';
@@ -32,21 +32,15 @@ export const FundStep = ({
   };
   return (
     <>
-      <CardContainer hasPadding>
+      <CardFixedContainer>
         <CardContentBlock
           visual={<ProductIcon.QuickStart size="xl" />}
           title="Step 2: Fund your account"
-          description={
-            <>
-              <p>
-                Your account has no funds. In the real world you would be
-                funding your account through a dex or other providers. In this
-                example we will fund your account using a faucet simulating an
-                onramp.
-              </p>
-              <ExampleStepper step={1} />
-            </>
-          }
+          description="Your account has no funds. In the real world you would be funding your account through a dex or other providers. In this example we will fund your account using a faucet simulating an onramp."
+        supportingContent={
+          <ExampleStepper step={1} />
+
+        }
         >
           <Stack flexDirection="column" gap="md">
             <NumberField
@@ -59,12 +53,12 @@ export const FundStep = ({
             />
           </Stack>
         </CardContentBlock>
-      </CardContainer>
-      <CardFooter>
+      </CardFixedContainer>
+      <CardFooterGroup>
         <Button isLoading={isLoading} onPress={onFund} isCompact={false}>
           Fund
         </Button>
-      </CardFooter>
+      </CardFooterGroup>
     </>
   );
 };
