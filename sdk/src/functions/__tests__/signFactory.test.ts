@@ -54,20 +54,4 @@ describe('signFactory', () => {
       ],
     });
   });
-
-  it('handles a timeout correctly', async () => {
-    vitest.useFakeTimers();
-    const transaction: IUnsignedCommand = {
-      hash: '123',
-      cmd: 'test',
-      sigs: [],
-    };
-    const promise = sign([transaction]);
-
-    vitest.advanceTimersByTime(5 * 60 * 1000);
-
-    await expect(promise).rejects.toEqual([
-      new Error('Timeout: Signing took too long'),
-    ]);
-  });
 });

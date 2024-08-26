@@ -53,11 +53,13 @@ const getTransferTx = ({
   receiver,
   amount,
   chainId,
+  cids,
 }: {
   account: Account;
   receiver: string;
   amount: number;
   chainId: ChainId;
+  cids: string[];
 }) => {
   const tx = createTransactionBuilder()
     .execution(
@@ -70,22 +72,24 @@ const getTransferTx = ({
       chainId,
     });
 
-  account.devices.flatMap((d: Device) =>
-    d.guard.keys.map((k) =>
-      tx.addSigner(
-        {
-          pubKey: k,
-          scheme: /^WEBAUTHN-/.test(k) ? 'WebAuthn' : 'ED25519',
-        },
-        (withCap) => [
-          withCap(`coin.TRANSFER`, account.accountName, receiver, {
-            decimal: amount.toFixed(8),
-          }),
-          withCap(`coin.GAS`),
-        ],
+  account.devices
+    .filter((d) => cids.includes(d['credential-id']))
+    .flatMap((d) =>
+      d.guard.keys.map((k) =>
+        tx.addSigner(
+          {
+            pubKey: k,
+            scheme: /^WEBAUTHN-/.test(k) ? 'WebAuthn' : 'ED25519',
+          },
+          (withCap) => [
+            withCap(`coin.TRANSFER`, account.accountName, receiver, {
+              decimal: amount.toFixed(8),
+            }),
+            withCap(`coin.GAS`),
+          ],
+        ),
       ),
-    ),
-  );
+    );
   return tx;
 };
 export default function SendForm() {
@@ -146,6 +150,7 @@ export default function SendForm() {
         receiver: data.receiver,
         account,
         chainId: data.chainId as ChainId,
+        cids: Array.isArray(cid) ? cid : [cid],
       });
       tx.setNetworkId(data.networkId);
       const { transactions, isReady } = await sign(
@@ -167,9 +172,7 @@ export default function SendForm() {
       await isReady();
       await Promise.all(
         transactions.map(async (tx) => {
-          console.warn("DEBUGPRINT[5]: SendForm.tsx:170: tx=", tx)
           const res = await l1Client.local(tx);
-          console.log('Preflight result', res);
           const txDescriptor = await l1Client.submit(tx as ICommand);
           const txRes = await l1Client.listen(txDescriptor);
           setTx(txRes);
