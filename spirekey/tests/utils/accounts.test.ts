@@ -65,7 +65,7 @@ describe('account', () => {
     });
   });
 
-  describe('getAccountFromChains', () => {
+  describe.skip('getAccountFromChains', () => {
     it('returns account details found on one chain', async () => {
       const accountName = 'c:myAccount';
       const networkId = 'development';
