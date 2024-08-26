@@ -5,10 +5,10 @@ import { l1Client } from '@/utils/shared/client';
 import { createTransactionBuilder } from '@kadena/client';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { Button, NumberField, Stack, TextField } from '@kadena/kode-ui';
-import { sign } from '@kadena/spirekey-sdk';
-import { ChainId } from '@kadena/types';
+import { Account, Device, initSpireKey, sign } from '@kadena/spirekey-sdk';
+import { ChainId, ICommand } from '@kadena/types';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   CardContainer,
@@ -38,23 +38,59 @@ const isCoinAccountExisting = async ({
   });
   return res.result.status === 'success';
 };
+const getTransferTx = ({
+  account,
+  receiver,
+  amount,
+  chainId,
+}: {
+  account: Account;
+  receiver: string;
+  amount: number;
+  chainId: ChainId;
+}) => {
+  const tx = createTransactionBuilder()
+    .execution(
+      `
+    (coin.transfer "${account.accountName}" "${receiver}" ${amount.toFixed(8)})
+  `,
+    )
+    .setMeta({
+      senderAccount: account.accountName,
+      chainId,
+    });
+
+  account.devices.flatMap((d: Device) =>
+    d.guard.keys.map((k) =>
+      tx.addSigner(
+        {
+          pubKey: k,
+          scheme: /^WEBAUTHN-/.test(k) ? 'WebAuthn' : 'ED25519',
+        },
+        (withCap) => [
+          withCap(`coin.TRANSFER`, account.accountName, receiver, {
+            decimal: amount.toFixed(8),
+          }),
+          withCap(`coin.GAS`),
+        ],
+      ),
+    ),
+  );
+  return tx;
+};
 export default function SendForm() {
   const { caccount, cid } = useParams();
   const { accounts } = useAccounts();
 
+  const [result, setResult] = useState('');
+  const [receiverError, setReceiverError] = useState('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const account = accounts.find(
     (a) => a.accountName === decodeURIComponent(caccount as string),
   );
-  const device = account?.devices.find(
-    (d) => d['credential-id'] === decodeURIComponent(cid as string),
-  );
-  const pubkeys = device?.guard.keys || [];
-  const network = account?.networkId || '';
   const decodedAccount = Array.isArray(caccount)
     ? decodeURIComponent(caccount[0])
     : decodeURIComponent(caccount);
-  const publicKey = pubkeys[0] || '';
 
   const defaultValues = {
     sender: decodedAccount,
@@ -62,16 +98,20 @@ export default function SendForm() {
     amount: 0,
     gasPayer: decodedAccount,
     networkId: account?.networkId,
-    chainId: '14'
+    chainId: '14',
   };
+
+  useEffect(() => {
+    initSpireKey({
+      hostUrl: process.env.WALLET_URL,
+    });
+  }, []);
 
   type FormValues = typeof defaultValues;
 
-  const { handleSubmit, register, getValues, setValue, watch } =
-    useForm<FormValues>({
-      defaultValues,
-      reValidateMode: 'onChange',
-    });
+  const { handleSubmit, register, setValue } = useForm<FormValues>({
+    defaultValues,
+  });
 
   const onSubmit = async (data: FormValues) => {
     if (!account) throw new Error('No account connected');
@@ -91,12 +131,13 @@ export default function SendForm() {
       }
       setReceiverError('');
       const tx = getTransferTx({
-        amount: parseFloat(amount),
-        receiver,
+        amount: data.amount,
+        receiver: data.receiver,
         account,
-        chainId: chainId as ChainId,
+        chainId: data.chainId as ChainId,
       });
-      tx.setNetworkId(networkId);
+      tx.setNetworkId(data.networkId);
+      console.warn('DEBUGPRINT[4]: SendForm.tsx:133: tx=', tx);
       const { transactions, isReady } = await sign(
         [tx.createTransaction()],
         [
@@ -107,7 +148,7 @@ export default function SendForm() {
             requestedFungibles: [
               {
                 fungible: 'coin',
-                amount: parseFloat(amount) + 0.1, // add 0.1 to account for gas fees
+                amount: data.amount + 0.1, // add 0.1 to account for gas fees
               },
             ],
           },
@@ -131,6 +172,12 @@ export default function SendForm() {
     }
   };
   if (!account) return <div>Account not found</div>;
+
+  const amountProps = register('amount', {
+    valueAsNumber: true,
+    min: 0.000001,
+    max: parseFloat(account.balance),
+  });
 
   return (
     <Stack
@@ -169,14 +216,10 @@ export default function SendForm() {
               />
               <NumberField
                 defaultValue={defaultValues.amount}
-                minValue={0}
                 step={0.1}
                 label="Amount"
-                {...register('amount', {
-                  valueAsNumber: true,
-                  min: 0.000001,
-                  max: parseFloat(account.balance),
-                })}
+                {...amountProps}
+                onValueChange={(a) => setValue('amount', a)}
               />
             </Stack>
           </CardContentBlock>
