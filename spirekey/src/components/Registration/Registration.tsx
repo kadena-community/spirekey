@@ -221,8 +221,8 @@ const RegisterComponent = ({
           <>
             <Text>
               Do you wish to manage your wallet here on SpireKey? This will
-              become your home of operation, your gateway into a secure web
-              3 experience!
+              become your home of operation, your gateway into a secure web 3
+              experience!
             </Text>
             <Stepper>
               <Step active>Create Wallet</Step>
@@ -239,7 +239,10 @@ const RegisterComponent = ({
             account to this wallet.
           </Text>
           <CardFooter>
-            <Button>Connect Coming soon</Button>
+            {networkId === 'mainnet01' && <Button>Connect Coming soon</Button>}
+            {networkId !== 'mainnet01' && (
+              <Button onPress={onHandleConnectWallet}>Connect</Button>
+            )}
           </CardFooter>
           <Heading as="h5">No wallet yet?</Heading>
           <Text>
@@ -253,7 +256,10 @@ const RegisterComponent = ({
         </Stack>
       </CardContentBlock>
       <CardFooter>
-        <Button>Create Coming soon</Button>
+        {networkId === 'mainnet01' && <Button>Create Coming soon</Button>}
+        {networkId !== 'mainnet01' && (
+          <Button onPress={onHandleRegisterWallet}>Create</Button>
+        )}
       </CardFooter>
     </CardContainer>
   );
