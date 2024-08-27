@@ -77,15 +77,17 @@ export const signFactory =
         });
 
         removeCancelListener = onSignCanceled(() => {
-          reject(new Error('Uses canceled signin'));
+          reject(new Error('User canceled signing'));
         });
       },
     );
 
-    return Promise.race([eventListenerPromise, timeoutPromise]).finally(() => {
-      embedManager.closePopup();
-      embedManager.hideNotification();
-      removeSignListener();
-      removeCancelListener();
-    });
+    return await Promise.race([eventListenerPromise, timeoutPromise]).finally(
+      async () => {
+        embedManager.closePopup();
+        removeSignListener();
+        removeCancelListener();
+        await embedManager.hideNotification();
+      },
+    );
   };

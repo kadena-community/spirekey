@@ -41,6 +41,7 @@
     "@kadena/kode-ui": "^0.14.1",
     "@kadena/pactjs": "^0.4.3",
     "@kadena/types": "^0.6.2",
+    "@kadena/spirekey-sdk": "workspace:*",
     "@playwright/test": "^1.44.1",
     "@react-aria/utils": "^3.24.1",
     "@react-three/drei": "^9.106.0",

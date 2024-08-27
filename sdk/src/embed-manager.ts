@@ -62,7 +62,11 @@ export class EmbedManager {
   public openPopup(path: string) {
     const { width, height } = screen;
     const params = `width=500,height=${height},left=${width - 500},top=0,popup=1`;
-    this.popup = open(this.baseUrl + path + `&use-raccount=${this.useRAccount}`, 'SpireKeyPopup', params);
+    this.popup = open(
+      this.baseUrl + path + `&use-raccount=${this.useRAccount}`,
+      'SpireKeyPopup',
+      params,
+    );
   }
 
   public closePopup() {
@@ -87,8 +91,10 @@ export class EmbedManager {
     this.notification.classList.remove(styles.spirekeyNotificationMinimized);
   }
 
-  public hideNotification() {
+  public async hideNotification() {
     this.notification.classList.add(styles.spirekeyNotificationHidden);
     this.notification.src = this.getNotificationUrl(this.baseUrl);
+    // wait for notification animation to finish
+    return new Promise((resolve) => setTimeout(resolve, 200));
   }
 }

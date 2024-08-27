@@ -1,36 +1,111 @@
 'use client';
 
-import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { useAccounts } from '@/context/AccountsContext';
-import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
-import { transfer } from '@/utils/shared/transfer';
-import { Button, Stack, TextField } from '@kadena/kode-ui';
-import { useParams, useRouter } from 'next/navigation';
+import { l1Client } from '@/utils/shared/client';
+import { createTransactionBuilder, ICommandResult } from '@kadena/client';
+import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
+import { MonoCopyAll } from '@kadena/kode-icons/system';
+import {
+  Button,
+  maskValue,
+  NumberField,
+  Select,
+  SelectItem,
+  Stack,
+  TextField,
+} from '@kadena/kode-ui';
+import {
+  CardContentBlock,
+  CardFixedContainer,
+  CardFooterGroup,
+} from '@kadena/kode-ui/patterns';
+import { atoms } from '@kadena/kode-ui/styles';
+import { Account, Device, initSpireKey, sign } from '@kadena/spirekey-sdk';
+import { ChainId, ICommand } from '@kadena/types';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import * as style from './SendForm.css';
 
 const isCAccount = (account: string | string[]): account is string =>
   typeof account === 'string';
+const isCoinAccountExisting = async ({
+  accountName,
+  networkId,
+  chainId,
+}: {
+  accountName: string;
+  networkId: string;
+  chainId: ChainId;
+}) => {
+  const tx = createTransactionBuilder()
+    .execution(`(coin.details "${accountName}")`)
+    .setMeta({ chainId })
+    .setNetworkId(networkId)
+    .createTransaction();
+  const res = await l1Client.local(tx, {
+    preflight: false,
+    signatureVerification: false,
+  });
+  return res.result.status === 'success';
+};
+const getTransferTx = ({
+  account,
+  receiver,
+  amount,
+  chainId,
+  cids,
+}: {
+  account: Account;
+  receiver: string;
+  amount: number;
+  chainId: ChainId;
+  cids: string[];
+}) => {
+  const tx = createTransactionBuilder()
+    .execution(
+      `
+    (coin.transfer "${account.accountName}" "${receiver}" ${amount.toFixed(8)})
+  `,
+    )
+    .setMeta({
+      senderAccount: account.accountName,
+      chainId,
+    });
 
+  account.devices
+    .filter((d) => cids.includes(d['credential-id']))
+    .flatMap((d) =>
+      d.guard.keys.map((k) =>
+        tx.addSigner(
+          {
+            pubKey: k,
+            scheme: /^WEBAUTHN-/.test(k) ? 'WebAuthn' : 'ED25519',
+          },
+          (withCap) => [
+            withCap(`coin.TRANSFER`, account.accountName, receiver, {
+              decimal: amount.toFixed(8),
+            }),
+            withCap(`coin.GAS`),
+          ],
+        ),
+      ),
+    );
+  return tx;
+};
 export default function SendForm() {
-  const router = useRouter();
-  const params = useParams();
   const { caccount, cid } = useParams();
   const { accounts } = useAccounts();
-  const { getReturnUrl } = useReturnUrl();
 
+  const [tx, setTx] = useState<ICommandResult>();
+  const [receiverError, setReceiverError] = useState('');
+  const [showDetails, setShowDetails] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const account = accounts.find(
-    (a) => a.accountName === decodeURIComponent(params.caccount as string),
+    (a) => a.accountName === decodeURIComponent(caccount as string),
   );
-  const device = account?.devices.find(
-    (d) => d['credential-id'] === decodeURIComponent(cid as string),
-  );
-  const pubkeys = device?.guard.keys || [];
-  const network = account?.networkId || '';
   const decodedAccount = Array.isArray(caccount)
     ? decodeURIComponent(caccount[0])
     : decodeURIComponent(caccount);
-  const publicKey = pubkeys[0] || '';
 
   const defaultValues = {
     sender: decodedAccount,
@@ -38,113 +113,208 @@ export default function SendForm() {
     amount: 0,
     gasPayer: decodedAccount,
     networkId: account?.networkId,
-    namespace: process.env.NAMESPACE,
+    chainId: '14',
   };
+
+  useEffect(() => {
+    initSpireKey({
+      hostUrl: process.env.WALLET_URL,
+    });
+  }, []);
 
   type FormValues = typeof defaultValues;
 
-  const { handleSubmit, register, setValue, watch } = useForm<FormValues>({
+  const { handleSubmit, register, setValue, getValues } = useForm<FormValues>({
     defaultValues,
-    reValidateMode: 'onChange',
   });
 
   const onSubmit = async (data: FormValues) => {
-    if (!isCAccount(data.sender)) return;
-    if (!process.env.NAMESPACE) return;
-    if (!device) return;
-
-    const caccount = decodeURIComponent(data.sender);
-    const command = await transfer({
-      sender: caccount,
-      receiver: data.receiver,
-      amount: data.amount,
-      gasPayer: data.gasPayer,
-      namespace: process.env.NAMESPACE,
-      networkId: network,
-      publicKey,
-    });
-
-    router.push(
-      `${process.env.WALLET_URL}/sign?transaction=${Buffer.from(
-        JSON.stringify(command),
-      ).toString('base64')}&returnUrl=${getReturnUrl('/submit')}`,
-    );
+    if (!account) throw new Error('No account connected');
+    if (!data.receiver) throw new Error('No receiver defined');
+    if (!data.networkId) throw new Error('No network selected');
+    try {
+      setIsLoading(true);
+      if (
+        !(await isCoinAccountExisting({
+          accountName: data.receiver,
+          networkId: data.networkId,
+          chainId: data.chainId as ChainId,
+        }))
+      ) {
+        setReceiverError('Account does not exist');
+        throw new Error('Account does not exist');
+      }
+      setReceiverError('');
+      const tx = getTransferTx({
+        amount: data.amount,
+        receiver: data.receiver,
+        account,
+        chainId: data.chainId as ChainId,
+        cids: Array.isArray(cid) ? cid : [cid],
+      });
+      tx.setNetworkId(data.networkId);
+      const { transactions, isReady } = await sign(
+        [tx.createTransaction()],
+        [
+          {
+            accountName: account.accountName,
+            networkId: account.networkId,
+            chainIds: account.chainIds,
+            requestedFungibles: [
+              {
+                fungible: 'coin',
+                amount: data.amount + 0.1, // add 0.1 to account for gas fees
+              },
+            ],
+          },
+        ],
+      );
+      await isReady();
+      await Promise.all(
+        transactions.map(async (tx) => {
+          const res = await l1Client.local(tx);
+          const txDescriptor = await l1Client.submit(tx as ICommand);
+          const txRes = await l1Client.listen(txDescriptor);
+          setTx(txRes);
+        }),
+      );
+    } catch (e) {
+      if (e instanceof Error && e.message === 'Account does not exist') throw e;
+      console.warn('User canceled signin', e);
+    } finally {
+      setIsLoading(false);
+    }
   };
+  if (!account) return <div>Account not found</div>;
 
-  const amount = watch('amount');
-  const gasPayer = watch('gasPayer');
+  const amountProps = register('amount', {
+    valueAsNumber: true,
+    min: 0.000001,
+    max: parseFloat(account.balance),
+  });
 
-  if (!account)
+  if (tx)
     return (
-      <div>
-        Account not found <ButtonLink href="/">Go back home</ButtonLink>
-      </div>
+      <CardFixedContainer>
+        <CardContentBlock
+          visual={<SpireKeyKdacolorLogoGreen />}
+          title="Transfer Result"
+          description={`You have successfully transferred ${getValues('amount')}KDA to ${maskValue(getValues('receiver'))}`}
+        >
+          <Stack flexDirection="column" gap="md">
+            <TextField
+              isReadOnly
+              value={tx.reqKey}
+              label="Request Key"
+              endAddon={
+                <Button
+                  variant="transparent"
+                  onPress={() => navigator.clipboard.writeText(tx.reqKey)}
+                >
+                  <Stack as="span" flexDirection="row" gap="xs">
+                    Copy
+                    <MonoCopyAll />
+                  </Stack>
+                </Button>
+              }
+            />
+            <TextField isReadOnly label="Status" value={tx.result.status} />
+            <Button
+              variant="outlined"
+              onPress={() => setShowDetails(!showDetails)}
+              className={atoms({ marginInlineStart: 'auto' })}
+            >
+              {showDetails ? 'Hide Details' : 'Show Details'}
+            </Button>
+          </Stack>
+        </CardContentBlock>
+        {showDetails &&
+          tx
+            .events!.sort((a: any, b: any) => b.params[2] - a.params[2])
+            .map(({ params }: any) => {
+              const isGasEvent = params[2] < 0.1;
+              return (
+                <CardContentBlock
+                  title={isGasEvent ? 'Gas Fees' : 'Transfer Amount'}
+                  key={params[2]}
+                  description={
+                    isGasEvent
+                      ? `You have paid ${params[2]} on gas fees for this transaction`
+                      : `You have successfully transferred ${params[2]} KDA to ${maskValue(params[1])}`
+                  }
+                >
+                  <Stack flexDirection="column" gap="md">
+                    <TextField label="Receiver" isReadOnly value={params[1]} />
+                    <TextField label="Amount" isReadOnly value={params[2]} />
+                  </Stack>
+                </CardContentBlock>
+              );
+            })}
+      </CardFixedContainer>
     );
-
-  const amountInfo =
-    gasPayer === account.accountName || amount === parseFloat(account.balance)
-      ? 'Paying for gas will fail when you transfer your full balance'
-      : '';
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack flexDirection="column" gap="md">
-        <TextField
-          label="From"
-          disabled={true}
-          defaultValue={defaultValues.sender}
-          {...register('sender')}
-        />
-        <TextField
-          label="To"
-          validationBehavior="native"
-          isRequired
-          {...register('receiver')}
-        />
-        <TextField
-          type="number"
-          label="Amount"
-          info={amountInfo}
-          value={amount.toString()}
-          description={
-            <Stack gap="xs" alignItems="center">
-              <Button
-                className={style.button}
-                onClick={() =>
-                  setValue('amount', parseFloat(account.balance) / 2)
-                }
+    <Stack
+      padding="md"
+      marginInline="auto"
+      flexDirection="column"
+      gap="md"
+      as="main"
+      maxWidth="content.maxWidth"
+    >
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <CardFixedContainer>
+          <CardContentBlock
+            visual={<SpireKeyKdacolorLogoGreen />}
+            title="Transfer"
+            description="your KDA to another account."
+          >
+            <Stack flexDirection="column" gap="md">
+              <TextField
+                value={account.accountName}
+                name="sender"
+                type="text"
+                label={`Sender: ${account.balance} (KDA)`}
+                isReadOnly
+                disabled
+              />
+              <TextField
+                type="text"
+                defaultValue={defaultValues.receiver}
+                label="Receiver"
+                {...register('receiver')}
+              />
+              <Select
+                label="Chain"
+                defaultSelectedKey="0"
+                onSelectionChange={(c) => setValue('chainId', c as ChainId)}
               >
-                <span className={style.buttonText}>Half</span>
-              </Button>
-              <Button
-                className={style.button}
-                onClick={() => setValue('amount', parseFloat(account.balance))}
-              >
-                <span className={style.buttonText}>Max</span>
-              </Button>
-              <span className={style.balanceText}>
-                {account.balance} KDA account balance
-              </span>
+                {Array(20)
+                  .fill(1)
+                  .map((_, i) => (
+                    <SelectItem key={i}>{i.toString()}</SelectItem>
+                  ))}
+              </Select>
+              <NumberField
+                defaultValue={defaultValues.amount}
+                step={0.1}
+                label="Amount"
+                {...amountProps}
+                onValueChange={(a) => setValue('amount', a)}
+              />
             </Stack>
-          }
-          defaultValue={defaultValues.amount.toString()}
-          validationBehavior="native"
-          isRequired
-          {...register('amount', {
-            valueAsNumber: true,
-            min: 0.000001,
-            max: parseFloat(account.balance),
-          })}
-        />
-        <TextField
-          label="Gas payer"
-          defaultValue={defaultValues.gasPayer}
-          validationBehavior="native"
-          isRequired
-          {...register('gasPayer')}
-        />
-        <Button type="submit">Send</Button>
-      </Stack>
-    </form>
+          </CardContentBlock>
+        </CardFixedContainer>
+        <CardFooterGroup>
+          <Button
+            isLoading={isLoading}
+            variant="primary"
+            isCompact={false}
+            type="submit"
+          >
+            Sign
+          </Button>
+        </CardFooterGroup>
+      </form>
+    </Stack>
   );
 }
