@@ -36,6 +36,7 @@ import {
 import { ErrorContext } from '@/components/ErrorNotification/ErrorNotification';
 
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
+import { gql, useQuery } from '@apollo/client';
 
 interface Props {
   transactions?: string;

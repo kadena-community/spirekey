@@ -1,6 +1,5 @@
-import { rootValue, schema } from '@/resolvers/local-resolvers';
+import { accounts } from '@/resolvers/local-resolvers';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
-import { Account } from '@kadena/spirekey-types';
 
 const getGraphqlHost = (networkId: string) => {
   if (networkId === 'development') return 'http://localhost:8080/graphql';
@@ -8,9 +7,7 @@ const getGraphqlHost = (networkId: string) => {
     return 'https://graph.testnet.kadena.network/graphql';
   return 'https://graph.kadena.network/graphql';
 };
-const cache = new InMemoryCache({
-  typePolicies: {},
-});
+const cache = new InMemoryCache({});
 const httpLink = new HttpLink({
   includeUnusedVariables: true,
   fetch: (_, opts) => {
@@ -25,12 +22,7 @@ export const apolloClient = new ApolloClient({
   cache,
   resolvers: {
     Query: {
-      accounts(_, { networkId }) {
-        const accString = localStorage.getItem('localAccounts');
-        if (!accString) return [];
-        const accs = JSON.parse(accString);
-        return accs.filter((a: Account) => a.networkId === networkId);
-      },
+      accounts,
     },
     Mutation: {
       createPasskey(_, args) {

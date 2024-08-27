@@ -1,62 +1,75 @@
+import { type ApolloClient, gql } from '@apollo/client';
 import { Account } from '@kadena/spirekey-types';
-import { buildSchema } from 'graphql';
-import { gql } from 'urql';
 
-export const schema = buildSchema(`
-  type Query {
-    accounts(networkId: String!): [Account]
-  }
-  type Account {
-    accountName: String!
-    balance: String!
-    guard: Guard!
-  }
-  type Guard {
-    keysetref: KeysetRef
-  }
-  type KeysetRef {
-    ksn: String!
-    ns: String!
-  }
-`);
-
-type Params = {
-  networkId: string;
-};
-type RootContext = {
-  query: any;
-};
-type RootResolver = (params: Params, context: RootContext) => any;
-const getRAccount = gql`
-  query PactQuery($code: String!) {
-    pactQuery(pactQuery: { chainId: "0", code: $code }) {
+const getAccountQuery = gql`
+  query GetAccount($code: String!) {
+    ${Array(20)
+      .fill(1)
+      .map(
+        (_, i) => `
+    chain${i}: pactQuery(pactQuery: { chainId: "${i}", code: $code }) {
       result
     }
+   `,
+      )}
   }
 `;
-const accounts: RootResolver = async ({ networkId }, { query }) => {
+
+type AccountsVariable = {
+  networkId: string;
+};
+type ApolloContext = {
+  client: ApolloClient<any>;
+};
+export const accounts = async (
+  _: any,
+  { networkId }: AccountsVariable,
+  { client }: ApolloContext,
+) => {
   const accs = localAccounts(networkId);
   const resolvedAccs = await Promise.all(
     accs.map(async (acc) => {
-      const res = await query(networkId, getRAccount, {
-        code: `(kadena.spirekey.details "${acc.accountName}" coin)`,
+      const res = await client.query({
+        query: getAccountQuery,
+        variables: {
+          code: `(kadena.spirekey.details "${acc.accountName}" coin)`,
+          networkId,
+        },
       });
-      console.warn('DEBUGPRINT[8]: local-resolvers.ts:41: res=', res);
-
-      return res;
+      return Object.values(res.data)
+        .flatMap((r) => r)
+        .map((r: any) => ({ ...JSON.parse(r.result), txQueue: acc.txQueue }));
     }),
   );
-  console.warn(
-    'DEBUGPRINT[7]: local-resolvers.ts:44: resolvedAccs=',
-    resolvedAccs,
+  return resolvedAccs.map((r) =>
+    r.reduce(
+      (acc, info) => {
+        const account: Account = {
+          ...acc,
+          accountName: info.account,
+          guard: info.guard,
+          minApprovals: 1,
+          minRegistrationApprovals: 1,
+          devices: info.devices,
+          balance: acc.balance + info.balance,
+          networkId,
+          txQueue: [],
+        };
+        return account;
+      },
+      {
+        balance: 0,
+        chainIds: Array(20)
+          .fill(1)
+          .map((_, i) => i.toString()),
+      },
+    ),
   );
-  return resolvedAccs;
 };
 const localAccounts = (networkId: string) => {
   const accString = localStorage.getItem('localAccounts');
   if (!accString) return [];
-  const accs = JSON.parse(accString);
-  console.warn('DEBUGPRINT[2]: local-resolvers.ts:28: accs=', accs);
+  const accs: Account[] = JSON.parse(accString);
   return accs.filter((a: Account) => a.networkId === networkId);
 };
 export const rootValue = {
