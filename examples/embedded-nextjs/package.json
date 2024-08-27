@@ -12,7 +12,7 @@
     "@kadena/client": "^1.12.0",
     "@kadena/client-utils": "^0.7.0",
     "@kadena/kode-icons": "^0.1.0",
-    "@kadena/kode-ui": "^0.14.1",
+    "@kadena/kode-ui": "^0.14.2",
     "@kadena/spirekey-sdk": "workspace:*",
     "@vanilla-extract/css": "^1.15.3",
     "next": "14.2.4",
