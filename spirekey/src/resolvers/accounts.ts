@@ -58,6 +58,7 @@ export const accounts = async (
         return account;
       },
       {
+        __typename: 'Account',
         balance: 0,
         chainIds: Array(20)
           .fill(1)
@@ -71,7 +72,4 @@ const localAccounts = (networkId: string) => {
   if (!accString) return [];
   const accs: Account[] = JSON.parse(accString);
   return accs.filter((a: Account) => a.networkId === networkId);
-};
-export const rootValue = {
-  accounts,
 };

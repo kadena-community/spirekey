@@ -1,4 +1,5 @@
-import { accounts } from '@/resolvers/local-resolvers';
+import { accounts } from '@/resolvers/accounts';
+import { createWallet } from '@/resolvers/wallets';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
 const getGraphqlHost = (networkId: string) => {
@@ -25,10 +26,7 @@ export const apolloClient = new ApolloClient({
       accounts,
     },
     Mutation: {
-      createPasskey(_, args) {
-        console.warn('DEBUGPRINT[8]: useQuery.ts:24: args=', args);
-        return Promise.resolve('hello');
-      },
+      createWallet,
     },
   },
 });
