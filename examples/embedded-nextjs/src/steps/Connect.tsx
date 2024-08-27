@@ -22,7 +22,10 @@ export const ConnectStep = ({
 }: {
   setAccount: (account: Account) => void;
 }) => {
-  const [wallet, setWallet] = useLocalState('wallet', 'http://localhost:1337');
+  const [wallet, setWallet] = useLocalState(
+    'wallet',
+    'https://spirekey.kadena.io/',
+  );
   const [networkId, setNetworkId] = useLocalState('networkId', 'testnet04');
   const [chainId, setChainId] = useLocalState('chainId', '14');
   const [isLoading, setIsLoading] = useState(false);
