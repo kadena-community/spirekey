@@ -1,27 +1,20 @@
 import type { ChainId } from '@kadena/client';
-import { Grid, Stack } from '@kadena/kode-ui';
+import { Link as ButtonLink, Stack } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
 import { AnimatePresence, motion } from 'framer-motion';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
 
-import { AccountButton } from '@/components/AccountButton/AccountButton';
-import { FundButton } from '@/components/AccountButton/FundButton';
 import DeviceCard from '@/components/Card/DeviceCard';
 import { Carousel } from '@/components/Carousel/Carousel';
-import { Request } from '@/components/icons/Request';
-import { Send } from '@/components/icons/Send';
-import { Transactions } from '@/components/icons/Transactions';
 import { Button } from '@/components/shared/Button/Button';
-import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { calculateBalancePercentage } from '@/utils/balance';
 import { onConnectWith } from '@/utils/connect';
-import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 
-import * as styles from './Account.css';
+import { MonoArrowCircleUp, MonoList } from '@kadena/kode-icons/system';
+import { CardFooterGroup } from '@kadena/kode-ui/patterns';
 
 interface AccountProps {
   account: Account;
@@ -87,62 +80,22 @@ export function Account({
                   transition={{ duration: 0.3 }}
                 >
                   {process.env.ACCOUNT_OPERATIONS === 'true' && (
-                    <Grid
-                      justifyContent="center"
-                      gap="md"
-                      marginBlockStart="md"
-                      className={styles.accountButtonWrapper}
-                    >
-                      <AccountButton
+                    <CardFooterGroup>
+                      <ButtonLink
                         href={`/accounts/${caccount}/devices/${cid}/transactions`}
-                        icon={<Transactions />}
-                        title="Overview"
-                        description="Transfers"
-                      />
-                      <AccountButton
+                        startVisual={<MonoList />}
+                        variant="outlined"
+                      >
+                        Transactions
+                      </ButtonLink>
+                      <ButtonLink
                         href={`/accounts/${caccount}/devices/${cid}/send`}
-                        icon={<Send />}
-                        title="Send"
-                        description="Transfers"
-                      />
-                      <AccountButton
-                        href={`/accounts/${caccount}/devices/${cid}/receive`}
-                        icon={<Request />}
-                        title="Request"
-                        description="Transfers"
-                      />
-                      {[getDevnetNetworkId()].includes(account.networkId) && (
-                        <FundButton account={account} />
-                      )}
-                    </Grid>
-                  )}
-                  {process.env.ACCOUNT_OPERATIONS === 'true' && (
-                    <>
-                      <Stack
-                        marginBlock="lg"
-                        flexDirection="row"
-                        justifyContent="center"
+                        startVisual={<MonoArrowCircleUp />}
+                        variant="primary"
                       >
-                        <Link
-                          href={`/accounts/${caccount}`}
-                          className={styles.detailLink}
-                        >
-                          Account details
-                        </Link>
-                      </Stack>
-                      <Stack
-                        marginBlock="lg"
-                        flexDirection="row"
-                        justifyContent="center"
-                      >
-                        <Link
-                          href={`/accounts/${caccount}/devices/add`}
-                          className={styles.detailLink}
-                        >
-                          Add device
-                        </Link>
-                      </Stack>
-                    </>
+                        Transfers
+                      </ButtonLink>
+                    </CardFooterGroup>
                   )}
                 </motion.div>
               )}
@@ -161,7 +114,7 @@ export function Account({
                   paddingInline="lg"
                 >
                   <ButtonLink
-                    variant="secondary"
+                    variant="outlined"
                     href={new URL(returnUrl).toString()}
                   >
                     Cancel

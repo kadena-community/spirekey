@@ -7,6 +7,7 @@ import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { MonoCopyAll } from '@kadena/kode-icons/system';
 import {
   Button,
+  Link,
   maskValue,
   NumberField,
   Select,
@@ -19,15 +20,13 @@ import {
   CardFixedContainer,
   CardFooterGroup,
 } from '@kadena/kode-ui/patterns';
-import { atoms } from '@kadena/kode-ui/styles';
+import { atoms, token } from '@kadena/kode-ui/styles';
 import { Account, Device, initSpireKey, sign } from '@kadena/spirekey-sdk';
 import { ChainId, ICommand } from '@kadena/types';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-const isCAccount = (account: string | string[]): account is string =>
-  typeof account === 'string';
 const isCoinAccountExisting = async ({
   accountName,
   networkId,
@@ -197,7 +196,12 @@ export default function SendForm() {
     return (
       <CardFixedContainer>
         <CardContentBlock
-          visual={<SpireKeyKdacolorLogoGreen />}
+          visual={
+            <SpireKeyKdacolorLogoGreen
+              aria-label="SpireKey"
+              fontSize={token('typography.fontSize.9xl')}
+            />
+          }
           title="Transfer Result"
           description={`You have successfully transferred ${getValues('amount')}KDA to ${maskValue(getValues('receiver'))}`}
         >
@@ -264,7 +268,12 @@ export default function SendForm() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardFixedContainer>
           <CardContentBlock
-            visual={<SpireKeyKdacolorLogoGreen />}
+            visual={
+              <SpireKeyKdacolorLogoGreen
+                aria-label="SpireKey"
+                fontSize={token('typography.fontSize.9xl')}
+              />
+            }
             title="Transfer"
             description="your KDA to another account."
           >
@@ -305,6 +314,9 @@ export default function SendForm() {
           </CardContentBlock>
         </CardFixedContainer>
         <CardFooterGroup>
+          <Link variant="outlined" href="/">
+            Cancel
+          </Link>
           <Button
             isLoading={isLoading}
             variant="primary"

@@ -9,7 +9,6 @@ export const wrapper = style({
 
 export const inner = style({
   position: 'relative',
-  height: '100%',
   width: '100%',
 });
 

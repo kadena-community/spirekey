@@ -6,6 +6,9 @@ import { useResizeObserver } from 'usehooks-ts';
 
 import { useAccounts } from '@/context/AccountsContext';
 
+import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
+import { CardContentBlock, CardFixedContainer } from '@kadena/kode-ui/patterns';
+import { atoms, token } from '@kadena/kode-ui/styles';
 import { Account } from '../Account/Account';
 import { card, inner, wrapper } from './CardCollection.css';
 
@@ -67,54 +70,74 @@ export default function CardCollection({
   const hasActiveCard = activeCard !== null;
 
   return (
-    <Box className={wrapper}>
-      <Stack className={inner} flexDirection="column" ref={innerRef}>
-        {accounts
-          .filter(
-            (account) =>
-              networkId === undefined || account.networkId === networkId,
-          )
-          .map((account, i) => {
-            const marginBlockEnd =
-              collapsedCardSpacing * collapsedCardsVisible -
-              (hasActiveCard && activeCard < i ? i - 1 : i) *
-                collapsedCardSpacing;
+    <CardFixedContainer
+      className={atoms({ overflow: 'hidden', marginBlockStart: 'md' })}
+    >
+      <CardContentBlock
+        visual={
+          <SpireKeyKdacolorLogoGreen
+            aria-label="SpireKey"
+            fontSize={token('typography.fontSize.9xl')}
+          />
+        }
+        title="Accounts"
+        description="Your accounts registered in this wallet"
+      >
+        <Stack
+          className={inner}
+          style={{ height: `${totalCardHeight + 24 * accounts.length}px` }}
+          flexDirection="column"
+          ref={innerRef}
+        >
+          {accounts
+            .filter(
+              (account) =>
+                networkId === undefined || account.networkId === networkId,
+            )
+            .map((account, i) => {
+              const marginBlockEnd =
+                collapsedCardSpacing * collapsedCardsVisible -
+                (hasActiveCard && activeCard < i ? i - 1 : i) *
+                  collapsedCardSpacing;
 
-            return (
-              <motion.div
-                key={account.accountName + account.networkId}
-                layout
-                onClick={() => handleCardClick(i)}
-                transition={{
-                  type: 'spring',
-                  damping: 44,
-                  stiffness: 280,
-                }}
-                className={card({ variant: getCardVariant(i) })}
-                style={{
-                  zIndex: `${activeCard === i ? accounts.length : i}`,
-                  marginBlockEnd: `${
-                    hasActiveCard ? marginBlockEnd : cardOverlap
-                  }px`,
-                  bottom:
-                    hasActiveCard && activeCard !== i ? `-${cardHeight}px` : 0,
-                }}
-                ref={(ref) => {
-                  cardRefs.current[i] = ref;
-                }}
-              >
-                <Account
+              return (
+                <motion.div
                   key={account.accountName + account.networkId}
-                  account={account}
-                  returnUrl={returnUrl}
-                  optimistic={optimistic}
-                  isActive={activeCard === i}
-                  chainId={chainId}
-                />
-              </motion.div>
-            );
-          })}
-      </Stack>
-    </Box>
+                  layout
+                  onClick={() => handleCardClick(i)}
+                  transition={{
+                    type: 'spring',
+                    damping: 44,
+                    stiffness: 280,
+                  }}
+                  className={card({ variant: getCardVariant(i) })}
+                  style={{
+                    zIndex: `${activeCard === i ? accounts.length : i}`,
+                    marginBlockEnd: `${
+                      hasActiveCard ? marginBlockEnd : cardOverlap
+                    }px`,
+                    bottom:
+                      hasActiveCard && activeCard !== i
+                        ? `-${cardHeight}px`
+                        : 0,
+                  }}
+                  ref={(ref) => {
+                    cardRefs.current[i] = ref;
+                  }}
+                >
+                  <Account
+                    key={account.accountName + account.networkId}
+                    account={account}
+                    returnUrl={returnUrl}
+                    optimistic={optimistic}
+                    isActive={activeCard === i}
+                    chainId={chainId}
+                  />
+                </motion.div>
+              );
+            })}
+        </Stack>
+      </CardContentBlock>
+    </CardFixedContainer>
   );
 }
