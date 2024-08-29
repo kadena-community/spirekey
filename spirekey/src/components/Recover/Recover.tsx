@@ -4,7 +4,7 @@ import { useAccounts } from '@/context/AccountsContext';
 import { useSettings } from '@/context/SettingsContext';
 import { getGraphClient } from '@/utils/graphql';
 import { getAccountFromChains } from '@/utils/shared/account';
-import { Button, Stack } from '@kadena/kode-ui';
+import { Button, Heading, Stack, Text } from '@kadena/kode-ui';
 import {
   CardContentBlock,
   CardFixedContainer,
@@ -93,17 +93,17 @@ export default function Recover(props: RecoverProps) {
   return (
     <CardFixedContainer>
       <form onSubmit={onSubmit}>
-        <CardContentBlock
-          title="Recover"
-          description="by selecting a network first"
-          visual={
-            <SpireKeyKdacolorLogoGreen
-              aria-label="SpireKey"
-              fontSize={token('typography.fontSize.9xl')}
-            />
-          }
-        >
-          {devMode && (
+        {devMode && (
+          <CardContentBlock
+            title="Recover"
+            description="by selecting a network first"
+            visual={
+              <SpireKeyKdacolorLogoGreen
+                aria-label="SpireKey"
+                fontSize={token('typography.fontSize.9xl')}
+              />
+            }
+          >
             <RadioGroup name="network">
               <Stack flexDirection="row" gap="md">
                 <Radio value="mainnet01" className={styles.networkLabel}>
@@ -126,8 +126,25 @@ export default function Recover(props: RecoverProps) {
                 </Radio>
               </Stack>
             </RadioGroup>
-          )}
-        </CardContentBlock>
+          </CardContentBlock>
+        )}
+        {!devMode && (
+          <CardContentBlock
+            title="Recover"
+            description="by selecting a passkey"
+            visual={
+              <SpireKeyKdacolorLogoGreen
+                aria-label="SpireKey"
+                fontSize={token('typography.fontSize.9xl')}
+              />
+            }
+          >
+            <Heading>Select Account Passkey</Heading>
+            <Text>
+              Please select the passkey you used to create an account.
+            </Text>
+          </CardContentBlock>
+        )}
         <CardFooterGroup>
           <Button variant="outlined" onPress={onCancel}>
             Cancel
