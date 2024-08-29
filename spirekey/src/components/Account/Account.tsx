@@ -9,7 +9,7 @@ interface AccountProps {
   onClick: (account: Account) => void;
 }
 
-export function Account({ account, onClick }: AccountProps) {
+export function AccountComponent({ account, onClick }: AccountProps) {
   return (
     <Stack
       flexDirection="row"
@@ -26,7 +26,7 @@ export function Account({ account, onClick }: AccountProps) {
     >
       <Stack flexGrow={1} alignItems="center" gap="sm">
         <DeviceCircle device={account.devices[0]} />
-        <Text>{account.alias}</Text>
+        <Text>{account.alias.replace(/ \(.*\)/, '')}</Text>
       </Stack>
       <Stack
         flexDirection="column"
@@ -35,7 +35,7 @@ export function Account({ account, onClick }: AccountProps) {
         className={atoms({ textAlign: 'right' })}
       >
         <Text>{maskValue(account.accountName)}</Text>
-        <Text size="smallest">{account.balance} KDA</Text>
+        <Text bold size="smallest">{account.balance} KDA</Text>
       </Stack>
     </Stack>
   );
