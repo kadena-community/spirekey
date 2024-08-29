@@ -1,4 +1,5 @@
 {
+  "ignoreExportsUsedInFile": true,
   "workspaces": {
     ".": {
       "entry": "scripts/*.js",
@@ -17,13 +18,13 @@
         "./e2e/fixtures/*",
         "next.config.{js,ts,cjs,mjs}",
         "{instrumentation,middleware}.{js,ts}",
-        "src/{instrumentation,middleware}.{js,ts}",
-        "src/app/global-error.{js,jsx,ts,tsx}",
-        "src/app/**/{error,layout,loading,not-found,page,template,default}.{js,jsx,ts,tsx}",
-        "src/app/**/route.{js,jsx,ts,tsx}",
-        "src/app/{manifest,sitemap,robots}.{js,ts}",
-        "src/app/**/{icon,apple-icon}.{js,jsx,ts,tsx}",
-        "src/app/**/{opengraph,twitter}-image.{js,jsx,ts,tsx}",
+        "src/{instrumentation,middleware}.{js,ts}!",
+        "src/app/global-error.{js,jsx,ts,tsx}!",
+        "src/app/**/{error,layout,loading,not-found,page,template,default}.{js,jsx,ts,tsx}!",
+        "src/app/**/route.{js,jsx,ts,tsx}!",
+        "src/app/{manifest,sitemap,robots}.{js,ts}!",
+        "src/app/**/{icon,apple-icon}.{js,jsx,ts,tsx}!",
+        "src/app/**/{opengraph,twitter}-image.{js,jsx,ts,tsx}!",
         "**/*.{bench,test,test-d,spec}.?(c|m)[jt]s?(x)"
       ]
     }

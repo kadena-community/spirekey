@@ -87,7 +87,7 @@ export const getRAccountFromChain = async ({
   };
 };
 
-export const getAccountFromChainLegacy = async ({
+const getAccountFromChainLegacy = async ({
   accountName,
   networkId,
   namespace = process.env.NAMESPACE,

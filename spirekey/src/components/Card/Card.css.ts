@@ -98,10 +98,6 @@ export const accountIconInner = style({
   color: 'black',
 });
 
-export const devicesContainer = style({
-  flexGrow: 1,
-});
-
 export const device = style({
   marginInlineStart: 'clamp(0.1rem, 2vw, 1rem)',
   width: '1.5rem',
@@ -148,14 +144,6 @@ export const transactions = style([
     lineHeight: 1,
   },
 ]);
-
-export const plusIconContainer = style({
-  width: '100%',
-});
-
-export const cardLink = style({
-  textDecoration: 'none',
-});
 
 export const icon = style({
   padding: '32px',

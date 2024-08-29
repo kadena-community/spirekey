@@ -30,7 +30,7 @@ const defaultState = {
   orderTotalPrice: 0,
 };
 
-export const OrderContext = createContext(defaultState);
+const OrderContext = createContext(defaultState);
 
 type Props = {
   children: React.ReactNode;

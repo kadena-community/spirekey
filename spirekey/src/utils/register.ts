@@ -16,12 +16,6 @@ import { l1Client } from '@/utils/shared/client';
 import { sign } from '@kadena/cryptography-utils';
 import { Guard } from '@kadena/spirekey-types';
 
-export const getAccountName = async (
-  publicKey: string,
-  networkId: string,
-): Promise<string> => {
-  return '';
-};
 type RAccountInfo = { name: string; guard: Guard };
 export const getRAccountName = async (
   publicKey: string,
@@ -147,7 +141,7 @@ export const registerRAccounts = async ({
   return txDescriptions; // now can be registered on the account txQueue
 };
 
-export const registerRAccountOnChain = async ({
+const registerRAccountOnChain = async ({
   color,
   deviceType,
   domain,
