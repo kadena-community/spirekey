@@ -4,8 +4,8 @@ import { style } from '@vanilla-extract/css';
 export const codeFont = style([
   atoms({
     fontFamily: 'monospaceFont',
+    color: 'text.base.inverse.default',
   }),
-  { color: 'black', fontSize: 'clamp(.9rem, 5vw, 1.5rem)' },
 ]);
 
 export const account = style([
@@ -33,10 +33,7 @@ export const copyButton = style([
 
 export const network = style([
   atoms({
-    fontWeight: 'primaryFont.regular',
+    fontWeight: 'primaryFont.bold',
+    color: 'text.base.inverse.default',
   }),
-  {
-    fontSize: 'clamp(.75rem, 4vw, 1.125rem) !important', // doesn't work without important  ¯\_(ツ)_/¯
-    color: 'black',
-  },
 ]);
