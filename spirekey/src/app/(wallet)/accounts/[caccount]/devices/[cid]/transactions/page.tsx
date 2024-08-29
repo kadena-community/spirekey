@@ -12,22 +12,29 @@ export default function TransactionsPage() {
   const { accounts } = useAccounts();
   const { push } = useRouter();
   const caccount = decodeURIComponent(params.caccount.toString());
+  const cid = decodeURIComponent(params.cid.toString());
   const account = accounts?.find((a) => a.accountName === caccount);
 
   return (
     <CardFixedContainer>
       <SpireKeyCardContentBlock
-        title="Transactions"
-        description={`Overview of transactions for your account ${maskValue(caccount)}`}
+        title="Latest Transactions"
+        description={`Overview of the latest transactions for your account ${maskValue(caccount)}`}
       >
         {account && <AccountDetails account={account} />}
       </SpireKeyCardContentBlock>
-      <CardFooterGroup>
+      <CardFooterGroup separated>
         <Button
           variant="outlined"
           onPress={() => push(`/accounts/${caccount}`)}
         >
           Back
+        </Button>
+        <Button
+          variant="primary"
+          onPress={() => push(`/accounts/${caccount}/devices/${cid}/send`)}
+        >
+          Transfer
         </Button>
       </CardFooterGroup>
     </CardFixedContainer>

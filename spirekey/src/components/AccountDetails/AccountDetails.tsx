@@ -41,7 +41,7 @@ export function AccountDetails({ account }: AccountDetailsProps) {
     },
   );
 
-  if (!data) {
+  if (!data?.length) {
     return <Card fullWidth>No Transactions</Card>;
   }
 
