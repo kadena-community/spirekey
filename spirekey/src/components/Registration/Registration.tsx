@@ -24,7 +24,6 @@ import CardBottom from '../Card/CardBottom';
 import DeviceIcons from '../Card/DeviceIcons';
 import PasskeyCard from '../Card/PasskeyCard';
 import { Step, Stepper } from '../Stepper/Stepper';
-import * as styles from './Registration.css';
 
 interface Props {
   redirectUrl?: string;

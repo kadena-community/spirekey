@@ -13,7 +13,11 @@
       "entry": "bin/cli.js"
     },
     "sdk": {
-      "ignore": ["crackle.config.ts", "vitest.config.mts"]
+      "ignore": [
+        "crackle.config.ts",
+        "vitest.config.mts",
+        "./__mocks__/@kadena/client.ts"
+      ]
     },
     "spirekey": {
       "entry": [
@@ -30,9 +34,19 @@
         "src/app/**/{opengraph,twitter}-image.{js,jsx,ts,tsx}!",
         "**/*.{bench,test,test-d,spec}.?(c|m)[jt]s?(x)"
       ],
+      "ignoreDependencies": [
+        "prettier-plugin-organize-imports",
+        "prettier-plugin-packagejson"
+      ],
       "ignore": [
         "./src/utils/getAccountNameFromRegisterDeviceEvent.ts",
-        "./tsconfig.json"
+        "./tsconfig.json",
+        "./__mocks__/cbor.ts",
+        "./__mocks__/@simplewebauthn/browser.ts",
+        "./create-encrypted-signers.ts",
+        "./decrypt-signers.ts",
+        "./src/utils/constants.ts",
+        "./__mocks__/@kadena/client.ts"
       ]
     }
   }
