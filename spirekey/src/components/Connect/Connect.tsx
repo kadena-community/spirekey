@@ -1,8 +1,9 @@
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
 import { useAccounts } from '@/context/AccountsContext';
+import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { ChainId } from '@kadena/client';
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
-import { Button, Heading, maskValue, Stack, Text } from '@kadena/kode-ui';
+import { Button, Heading, Stack, Text } from '@kadena/kode-ui';
 import {
   CardContentBlock,
   CardFixedContainer,
@@ -11,7 +12,7 @@ import {
 import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
 import { useState } from 'react';
-import DeviceCircle from '../Device/DeviceCircle';
+import { AccountComponent } from '../Account/Account';
 import Recover from '../Recover/Recover';
 import Registration from '../Registration/Registration';
 
@@ -113,30 +114,15 @@ export default function ConnectComponent({
     <CardFixedContainer>
       <SpireKeyCardContentBlock
         title="Accounts"
-        description="available for use"
+        description={`available for network: ${getNetworkDisplayName(networkId)}`}
       >
         <Stack gap="xl" flexDirection="column">
           {candidateAccounts.map((account) => (
-            <Stack
+            <AccountComponent
               key={account.accountName}
-              flexDirection="row"
-              gap="xl"
-              borderColor="base.subtle"
-              borderWidth="normal"
-              borderStyle="solid"
-              borderRadius="sm"
-              paddingBlock="md"
-              paddingInline="lg"
-              alignItems="center"
-              onClick={() => connectAndPrime(account)}
-              cursor="pointer"
-            >
-              <Stack flexGrow={1} alignItems="center" gap="sm">
-                <DeviceCircle device={account.devices[0]} />
-                <Text>{account.alias}</Text>
-              </Stack>
-              <Text>{maskValue(account.accountName)}</Text>
-            </Stack>
+              account={account}
+              onClick={connectAndPrime}
+            />
           ))}
         </Stack>
       </SpireKeyCardContentBlock>
