@@ -1,0 +1,31 @@
+{
+  "workspaces": {
+    ".": {
+      "entry": "scripts/*.js",
+      "project": "scripts/**/*.js"
+    },
+    "packages/*": {
+      "entry": "{index,cli}.ts",
+      "project": "**/*.ts"
+    },
+    "packages/cli": {
+      "entry": "bin/cli.js"
+    },
+    "spirekey": {
+      "entry": [
+        "./e2e/setup/devnet.setup.ts",
+        "./e2e/fixtures/*",
+        "next.config.{js,ts,cjs,mjs}",
+        "{instrumentation,middleware}.{js,ts}",
+        "src/{instrumentation,middleware}.{js,ts}",
+        "src/app/global-error.{js,jsx,ts,tsx}",
+        "src/app/**/{error,layout,loading,not-found,page,template,default}.{js,jsx,ts,tsx}",
+        "src/app/**/route.{js,jsx,ts,tsx}",
+        "src/app/{manifest,sitemap,robots}.{js,ts}",
+        "src/app/**/{icon,apple-icon}.{js,jsx,ts,tsx}",
+        "src/app/**/{opengraph,twitter}-image.{js,jsx,ts,tsx}",
+        "**/*.{bench,test,test-d,spec}.?(c|m)[jt]s?(x)"
+      ]
+    }
+  }
+}

@@ -13,7 +13,7 @@ type ConnectionId = {
   publicKey: string;
 };
 
-export type Message = {
+type Message = {
   type: 'tx' | 'id' | 'confirm' | 'orders' | 'create';
   data: any;
   connectionId: ConnectionId;

@@ -23,8 +23,6 @@ export type AccountRegistration = {
   chainId?: ChainId;
 };
 
-export type AccountRecovery = Omit<AccountRegistration, 'accountName'>;
-
 const migrateAccountStructure = (
   account: Omit<Account, 'network' | 'txQueue'> & {
     network?: string;

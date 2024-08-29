@@ -16,6 +16,7 @@
     "generate": "npx pactjs contract-generate --file=\"./pact/webauthn.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
     "postinstall": "npx pactjs contract-generate --file=\"./pact/root/fungible-v2.pact\" --file=\"./pact/root/gas-payer-v1.pact\" --file=\"./pact/root/fungible-xchain-v1.pact\" --file=\"./pact/root/coin.pact\" --file=\"./pact/webauthn-guard.pact\" --file=\"./pact/webauthn-wallet.pact\" --file=\"./pact/l2-coin.pact\" --namespace=n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9",
     "install:chromium": "playwright install chromium",
+    "knip": "knip",
     "lint": "next lint",
     "prepare": "husky",
     "start": "next start --port 1337",
@@ -40,8 +41,8 @@
     "@kadena/kode-icons": "^0.1.0",
     "@kadena/kode-ui": "^0.14.2",
     "@kadena/pactjs": "^0.4.3",
-    "@kadena/types": "^0.6.2",
     "@kadena/spirekey-sdk": "workspace:*",
+    "@kadena/types": "^0.6.2",
     "@playwright/test": "^1.44.1",
     "@react-aria/utils": "^3.24.1",
     "@react-three/drei": "^9.106.0",
@@ -86,7 +87,7 @@
     "@testing-library/dom": "^10.2.0",
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",
-    "@types/node": "^20.14.9",
+    "@types/node": "^20.16.1",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -97,13 +98,17 @@
     "dotenv": "16.4.5",
     "husky": "^9.0.11",
     "jsdom": "^24.1.0",
+    "knip": "^5.27.4",
     "next-router-mock": "^0.9.13",
     "prettier": "^3.3.2",
     "prettier-plugin-organize-imports": "^4.0.0",
     "prettier-plugin-packagejson": "^2.5.0",
     "tsx": "^4.16.0",
-    "typescript": "^5.5.3",
+    "typescript": "^5.5.4",
     "vitest": "^1.6.0",
     "vitest-matchmedia-mock": "^1.0.5"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21.0.0"
   }
 }
