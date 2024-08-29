@@ -307,6 +307,7 @@ export default function SendForm() {
                 defaultValue={defaultValues.amount}
                 step={0.1}
                 label="Amount"
+                minValue={0.1}
                 {...amountProps}
                 onValueChange={(a) => setValue('amount', a)}
               />
