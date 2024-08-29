@@ -5,11 +5,11 @@ import { Button, Heading, Stack, Text } from '@kadena/kode-ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { KeyPair, useRegistration } from '@/hooks/useRegistration';
 import { deviceColors } from '@/styles/shared/tokens.css';
-import { getUser } from '@/utils/connect';
 import { getRootkeyPasskeyName } from '@/utils/getNetworkDisplayName';
-import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
+
+import { KeyPair, useRegistration } from '@/hooks/useRegistration';
+import { getUser } from '@/utils/connect';
 import {
   CardContentBlock,
   CardFixedContainer,
@@ -24,6 +24,7 @@ import CardBottom from '../Card/CardBottom';
 import DeviceIcons from '../Card/DeviceIcons';
 import PasskeyCard from '../Card/PasskeyCard';
 import { Step, Stepper } from '../Stepper/Stepper';
+import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
 
 interface Props {
   redirectUrl?: string;
@@ -83,6 +84,7 @@ export default function Registration({
     />
   );
 }
+
 const RegisterComponent = ({
   account,
   keypair,

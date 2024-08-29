@@ -30,10 +30,3 @@ export const copyButton = style([
     border: 'none',
   },
 ]);
-
-export const network = style([
-  atoms({
-    fontWeight: 'primaryFont.bold',
-    color: 'text.base.inverse.default',
-  }),
-]);

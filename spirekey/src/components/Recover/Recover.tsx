@@ -3,7 +3,6 @@
 import { useAccounts } from '@/context/AccountsContext';
 import { getGraphClient } from '@/utils/graphql';
 import { getAccountFromChains } from '@/utils/shared/account';
-import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { Button, Stack } from '@kadena/kode-ui';
 import {
   CardContentBlock,
@@ -16,6 +15,7 @@ import { ChainId } from '@kadena/types';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useRouter } from 'next/navigation';
 import { Radio, RadioGroup } from 'react-aria-components';
+import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
 import { NetworkDevnet } from '../icons/NetworkDevnet';
 import { NetworkMainnet } from '../icons/NetworkMainnet';
 import { NetworkTestnet } from '../icons/NetworkTestnet';

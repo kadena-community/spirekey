@@ -36,7 +36,8 @@
       ],
       "ignoreDependencies": [
         "prettier-plugin-organize-imports",
-        "prettier-plugin-packagejson"
+        "prettier-plugin-packagejson",
+        "react-intersection-observer"
       ],
       "ignore": [
         "./src/utils/getAccountNameFromRegisterDeviceEvent.ts",

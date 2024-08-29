@@ -3,13 +3,13 @@ import { Stack } from '@kadena/kode-ui';
 import { useAccounts } from '@/context/AccountsContext';
 
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
-import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { CardContentBlock, CardFixedContainer } from '@kadena/kode-ui/patterns';
 import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
 import { useRouter } from 'next/navigation';
 import { Heading } from 'react-aria-components';
 import { AccountComponent } from '../Account/Account';
+import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
 
 type SortedAccounts = {
   mainnet01: Account[];
