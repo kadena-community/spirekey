@@ -227,10 +227,7 @@ const RegisterComponent = ({
             account to this wallet.
           </Text>
           <CardFooterGroup>
-            {networkId === 'mainnet01' && <Button>Connect Coming soon</Button>}
-            {networkId !== 'mainnet01' && (
-              <Button onPress={onHandleConnectWallet}>Connect</Button>
-            )}
+            <Button onPress={onHandleConnectWallet}>Connect</Button>
           </CardFooterGroup>
           <Heading as="h5">No wallet yet?</Heading>
           <Text>
@@ -244,10 +241,7 @@ const RegisterComponent = ({
         </Stack>
       </CardContentBlock>
       <CardFooterGroup>
-        {networkId === 'mainnet01' && <Button>Create Coming soon</Button>}
-        {networkId !== 'mainnet01' && (
-          <Button onPress={onHandleRegisterWallet}>Create</Button>
-        )}
+        <Button onPress={onHandleRegisterWallet}>Create</Button>
       </CardFooterGroup>
     </CardFixedContainer>
   );
