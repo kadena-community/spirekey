@@ -1,6 +1,10 @@
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 
+export const fullscreenOverview = style({
+  overflow: 'hidden',
+  marginInline: 'auto',
+});
 export const wrapper = style({
   height: '100%',
   width: '100%',

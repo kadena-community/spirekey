@@ -1,5 +1,5 @@
 import type { ChainId } from '@kadena/client';
-import { Box, Stack } from '@kadena/kode-ui';
+import { Box, Card, Stack } from '@kadena/kode-ui';
 import { motion } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useResizeObserver } from 'usehooks-ts';
@@ -8,9 +8,9 @@ import { useAccounts } from '@/context/AccountsContext';
 
 import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { CardContentBlock, CardFixedContainer } from '@kadena/kode-ui/patterns';
-import { atoms, token } from '@kadena/kode-ui/styles';
+import {  token } from '@kadena/kode-ui/styles';
 import { Account } from '../Account/Account';
-import { card, inner, wrapper } from './CardCollection.css';
+import { card, fullscreenOverview, inner, wrapper } from './CardCollection.css';
 
 interface CardCollectionProps {
   returnUrl?: string;
@@ -70,9 +70,7 @@ export default function CardCollection({
   const hasActiveCard = activeCard !== null;
 
   return (
-    <CardFixedContainer
-      className={atoms({ overflow: 'hidden', marginBlockStart: 'md' })}
-    >
+    <Card className={fullscreenOverview}>
       <CardContentBlock
         visual={
           <SpireKeyKdacolorLogoGreen
@@ -138,6 +136,6 @@ export default function CardCollection({
             })}
         </Stack>
       </CardContentBlock>
-    </CardFixedContainer>
+    </Card>
   );
 }
