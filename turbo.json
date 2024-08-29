@@ -20,7 +20,7 @@
     },
     "build:e2e": {
       "dependsOn": ["^build:e2e"],
-      "outputs": [".next/**", "!.next/cache/**"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "inputs": [
         "src/**",
         "public/**",
