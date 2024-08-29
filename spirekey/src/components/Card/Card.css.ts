@@ -1,4 +1,4 @@
-import { atoms } from '@kadena/kode-ui/styles';
+import { atoms, token } from '@kadena/kode-ui/styles';
 import { globalStyle, style } from '@vanilla-extract/css';
 
 export const card = style({
@@ -63,22 +63,22 @@ export const cardContentContainer = style([
 export const cardLogo = style([
   {
     position: 'absolute',
-    bottom: '1.5em',
-    right: '1.5em',
+    bottom: '1.25em',
+    right: '1.25em',
     width: 'auto',
-    height: 'clamp(1rem, 5vw, 2rem)',
+    height: token('icon.size.sm'),
   },
 ]);
 
 export const accountAlias = style([
   atoms({
     whiteSpace: 'nowrap',
+    fontWeight: 'primaryFont.bold',
   }),
   {
-    color: 'black',
+    color: token('color.text.base.inverse.default'),
     textOverflow: 'ellipsis',
     overflow: 'hidden',
-    fontSize: 'clamp(.9rem, 5vw, 1.5rem)',
   },
 ]);
 
@@ -98,9 +98,14 @@ export const accountIconInner = style({
   color: 'black',
 });
 
-export const device = style({
-  marginInlineStart: 'clamp(0.1rem, 2vw, 1rem)',
-  width: '1.5rem',
+export const devicesContainer = style({
+  flexGrow: 1,
+});
+
+// Should update the getDeviceIcon component to return the component directly
+export const device = style({});
+globalStyle(`${device} > svg`, {
+  width: token('icon.size.sm'),
 });
 
 export const cardContentBottom = style({
@@ -111,39 +116,37 @@ export const txAndBalance = style({
   gap: 'clamp(0.3rem, 2vw, 0.9rem)',
 });
 
-export const balanceLabel = style({
-  fontSize: 'clamp(.75rem, 4vw, 1.125rem)',
-  lineHeight: 1,
-});
+export const balanceLabel = style([atoms({ fontSize: 'sm' })]);
 
 export const balance = style([
   atoms({
     fontFamily: 'monospaceFont',
     fontWeight: 'monospaceFont.bold',
+    fontSize: 'sm',
+    marginInlineStart: 'sm',
   }),
-  {
-    marginInlineStart: 'clamp(0.5rem, 2vw, 1rem)',
-    fontSize: 'clamp(.9rem, 4vw, 1.25rem)',
-    lineHeight: 1,
-  },
 ]);
 
 export const transactionsLabel = style({
-  fontSize: 'clamp(.75rem, 4vw, 1.125rem)',
-  lineHeight: 1,
+  fontSize: token('typography.fontSize.sm'),
 });
 
 export const transactions = style([
   atoms({
     fontFamily: 'monospaceFont',
     fontWeight: 'monospaceFont.bold',
+    fontSize: 'sm',
+    marginInlineStart: 'sm',
   }),
-  {
-    marginInlineStart: 'clamp(0.5rem, 2vw, 1rem)',
-    fontSize: 'clamp(.9rem, 4vw, 1.25rem)',
-    lineHeight: 1,
-  },
 ]);
+
+export const plusIconContainer = style({
+  width: '100%',
+});
+
+export const cardLink = style({
+  textDecoration: 'none',
+});
 
 export const icon = style({
   padding: '32px',

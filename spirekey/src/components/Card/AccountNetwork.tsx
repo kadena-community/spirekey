@@ -61,9 +61,6 @@ export default function AccountNetwork({
           </button>
         )}
       </Stack>
-      <Text className={styles.network}>
-        {getNetworkDisplayName(account.networkId)}
-      </Text>
     </Stack>
   );
 }

@@ -34,7 +34,7 @@ export default function CardBottom({ account }: CardBottomProps) {
   );
 
   return (
-    <>
+    <Stack flexDirection="column">
       <Stack alignItems="center">
         <span className={styles.transactionsLabel}># TX</span>
         <span className={styles.transactions}>{data?.length ?? 0}</span>
@@ -43,6 +43,6 @@ export default function CardBottom({ account }: CardBottomProps) {
         <span className={styles.balanceLabel}>Balance</span>
         <span className={styles.balance}>{account.balance} KDA</span>
       </Stack>
-    </>
+    </Stack>
   );
 }

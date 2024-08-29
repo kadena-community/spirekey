@@ -10,7 +10,7 @@ export default function Alias({ title = '' }: CardProps) {
   if (!title) return null;
   return (
     <>
-      <Heading as="h3" variant="h4" className={accountAlias}>
+      <Heading as="h3" variant="h5" className={accountAlias}>
         {title}
       </Heading>
       <Box className={accountIcon}>
