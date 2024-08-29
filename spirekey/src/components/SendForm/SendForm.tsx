@@ -21,7 +21,7 @@ import {
   CardFooterGroup,
 } from '@kadena/kode-ui/patterns';
 import { atoms, token } from '@kadena/kode-ui/styles';
-import { Account, Device, initSpireKey, sign } from '@kadena/spirekey-sdk';
+import { Account, initSpireKey, sign } from '@kadena/spirekey-sdk';
 import { ChainId, ICommand } from '@kadena/types';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';

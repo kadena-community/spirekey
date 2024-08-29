@@ -12,6 +12,9 @@
     "packages/cli": {
       "entry": "bin/cli.js"
     },
+    "sdk": {
+      "ignore": ["crackle.config.ts", "vitest.config.mts"]
+    },
     "spirekey": {
       "entry": [
         "./e2e/setup/devnet.setup.ts",
@@ -26,6 +29,10 @@
         "src/app/**/{icon,apple-icon}.{js,jsx,ts,tsx}!",
         "src/app/**/{opengraph,twitter}-image.{js,jsx,ts,tsx}!",
         "**/*.{bench,test,test-d,spec}.?(c|m)[jt]s?(x)"
+      ],
+      "ignore": [
+        "./src/utils/getAccountNameFromRegisterDeviceEvent.ts",
+        "./tsconfig.json"
       ]
     }
   }
