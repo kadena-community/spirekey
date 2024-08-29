@@ -1,6 +1,7 @@
 'use client';
 
 import { useAccounts } from '@/context/AccountsContext';
+import { useSettings } from '@/context/SettingsContext';
 import { getGraphClient } from '@/utils/graphql';
 import { getAccountFromChains } from '@/utils/shared/account';
 import { Button, Stack } from '@kadena/kode-ui';
@@ -57,8 +58,7 @@ export default function Recover(props: RecoverProps) {
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const data = new FormData(event.target as HTMLFormElement);
-    const network = data.get('network') as string;
-    if (!network) throw new Error('No network selected');
+    const network = (data.get('network') as string) || 'mainnet01';
     const { id } = await startAuthentication({
       challenge: 'recoverchallenge',
       rpId: window.location.hostname,
@@ -89,6 +89,7 @@ export default function Recover(props: RecoverProps) {
     onConnect(updatedAccount);
     // Redirect back to home screen, but publish the connect event first
   };
+  const { devMode } = useSettings();
   return (
     <CardFixedContainer>
       <form onSubmit={onSubmit}>
@@ -102,28 +103,30 @@ export default function Recover(props: RecoverProps) {
             />
           }
         >
-          <RadioGroup name="network">
-            <Stack flexDirection="row" gap="md">
-              <Radio value="mainnet01" className={styles.networkLabel}>
-                <NetworkMainnet />
-                <Stack as="span" className={styles.networkLabelText}>
-                  Mainnet
-                </Stack>
-              </Radio>
-              <Radio value="testnet04" className={styles.networkLabel}>
-                <NetworkTestnet />
-                <Stack as="span" className={styles.networkLabelText}>
-                  Testnet
-                </Stack>
-              </Radio>
-              <Radio value="development" className={styles.networkLabel}>
-                <NetworkDevnet />
-                <Stack as="span" className={styles.networkLabelText}>
-                  Devnet
-                </Stack>
-              </Radio>
-            </Stack>
-          </RadioGroup>
+          {devMode && (
+            <RadioGroup name="network">
+              <Stack flexDirection="row" gap="md">
+                <Radio value="mainnet01" className={styles.networkLabel}>
+                  <NetworkMainnet />
+                  <Stack as="span" className={styles.networkLabelText}>
+                    Mainnet
+                  </Stack>
+                </Radio>
+                <Radio value="testnet04" className={styles.networkLabel}>
+                  <NetworkTestnet />
+                  <Stack as="span" className={styles.networkLabelText}>
+                    Testnet
+                  </Stack>
+                </Radio>
+                <Radio value="development" className={styles.networkLabel}>
+                  <NetworkDevnet />
+                  <Stack as="span" className={styles.networkLabelText}>
+                    Devnet
+                  </Stack>
+                </Radio>
+              </Stack>
+            </RadioGroup>
+          )}
         </CardContentBlock>
         <CardFooterGroup>
           <Button variant="outlined" onPress={onCancel}>
