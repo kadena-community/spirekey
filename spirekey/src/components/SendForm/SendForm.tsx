@@ -3,7 +3,6 @@
 import { useAccounts } from '@/context/AccountsContext';
 import { l1Client } from '@/utils/shared/client';
 import { createTransactionBuilder, ICommandResult } from '@kadena/client';
-import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { MonoCopyAll } from '@kadena/kode-icons/system';
 import {
   Button,
@@ -26,6 +25,7 @@ import { ChainId, ICommand } from '@kadena/types';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
 
 const isCoinAccountExisting = async ({
   accountName,
