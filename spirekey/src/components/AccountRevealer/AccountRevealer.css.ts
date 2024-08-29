@@ -5,25 +5,20 @@ import { charArray } from './characters';
 export const codeFont = style([
   atoms({
     fontFamily: 'monospaceFont',
+    fontSize: 'md',
   }),
-  { fontSize: 'clamp(.9rem, 5vw, 1.5rem)', lineHeight: '2rem' },
 ]);
 
 export const wrapper = style([
   codeFont,
   {
     color: 'black',
-    fontSize: 'clamp(.9rem, 5vw, 1.5rem)',
     display: 'flex',
     justifyContent: 'center',
-    height: '2rem',
   },
 ]);
 
-export const character = style([
-  codeFont,
-  { display: 'inline-block', height: '2rem' },
-]);
+export const character = style([codeFont, { display: 'inline-block' }]);
 
 export const scrambler = style({ opacity: 0.3 });
 
