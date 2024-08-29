@@ -8,7 +8,7 @@ import { valueContainer } from './MaskedValue.css';
 
 KodeMono();
 
-export interface IMaskedValueProps {
+interface IMaskedValueProps {
   value: string;
   startUnmaskedValues?: number;
   endUnmaskedValues?: number;

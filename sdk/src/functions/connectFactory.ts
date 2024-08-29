@@ -5,7 +5,7 @@ import { EmbedManager } from '../embed-manager';
 import { onAccountConnected, onConnectCanceled } from './events';
 import { isAccountReady } from './ready';
 
-export interface ConnectParams {
+interface ConnectParams {
   embedManager: EmbedManager;
   timeout?: number;
 }
@@ -43,19 +43,17 @@ export const connectFactory =
 
     const eventListenerPromise = new Promise<ConnectedAccount>(
       (resolve, reject) => {
-        removeConnectListener = onAccountConnected(
-          (account: Account) => {
-            resolve({
-              ...account,
-              isReady: async () => {
-                embedManager.showNotification();
-                await isAccountReady(account)();
-                embedManager.hideNotification();
-                return account;
-              },
-            });
-          },
-        );
+        removeConnectListener = onAccountConnected((account: Account) => {
+          resolve({
+            ...account,
+            isReady: async () => {
+              embedManager.showNotification();
+              await isAccountReady(account)();
+              embedManager.hideNotification();
+              return account;
+            },
+          });
+        });
         removeCancelListener = onConnectCanceled(() => {
           reject(new Error('User canceled connection'));
         });

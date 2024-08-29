@@ -2,9 +2,9 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { Notification } from '../../components/shared/Notification/Notification';
 
-export type NotificationVariant = 'error' | 'warning' | 'notice' | 'success';
+type NotificationVariant = 'error' | 'warning' | 'notice' | 'success';
 
-export interface Notification {
+interface Notification {
   id: number;
   variant: NotificationVariant;
   title: string;

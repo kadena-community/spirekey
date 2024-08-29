@@ -2,15 +2,11 @@ import {
   getAccountFromChain,
   getRAccountFromChain,
 } from '@/utils/shared/account';
-import {
-  createTransaction,
-  createTransactionBuilder,
-  type ChainId,
-} from '@kadena/client';
+import { createTransactionBuilder, type ChainId } from '@kadena/client';
 import { Account, OptimalTransactionsAccount } from '@kadena/spirekey-types';
 import BigNumber from 'bignumber.js';
 
-export type Credential = {
+type Credential = {
   pubKey: string;
   credentialId: string;
 };

@@ -4,7 +4,7 @@ import pepperoniImg from '@/app/(examples)/v1/example/delivery/pepperoni.webp';
 import veggieImg from '@/app/(examples)/v1/example/delivery/veggie.webp';
 import { StaticImageData } from 'next/image';
 
-export interface Product {
+interface Product {
   name: string;
   price: number;
   image: StaticImageData;

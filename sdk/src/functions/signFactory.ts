@@ -9,7 +9,7 @@ import { EmbedManager } from '../embed-manager';
 import { onSignCanceled, onTransactionsSigned } from './events';
 import { areAccountsReady } from './ready';
 
-export interface SignParams {
+interface SignParams {
   embedManager: EmbedManager;
   timeout?: number;
 }
