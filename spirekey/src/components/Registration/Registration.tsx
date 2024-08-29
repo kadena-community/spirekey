@@ -8,11 +8,8 @@ import { useState } from 'react';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { getRootkeyPasskeyName } from '@/utils/getNetworkDisplayName';
 
-import { useRAccount } from '@/flags/flags';
 import { KeyPair, useRegistration } from '@/hooks/useRegistration';
 import { getUser } from '@/utils/connect';
-import { getGraphClient } from '@/utils/graphql';
-import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import {
   CardContentBlock,
   CardFixedContainer,
@@ -27,7 +24,7 @@ import CardBottom from '../Card/CardBottom';
 import DeviceIcons from '../Card/DeviceIcons';
 import PasskeyCard from '../Card/PasskeyCard';
 import { Step, Stepper } from '../Stepper/Stepper';
-import * as styles from './Registration.css';
+import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
 
 interface Props {
   redirectUrl?: string;
@@ -87,6 +84,7 @@ export default function Registration({
     />
   );
 }
+
 const RegisterComponent = ({
   account,
   keypair,
