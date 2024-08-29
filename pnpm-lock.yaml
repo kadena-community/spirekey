@@ -90,13 +90,10 @@ importers:
     devDependencies:
       '@crackle/cli':
         specifier: ^0.15.4
-        version: 0.15.5(@swc/helpers@0.5.12)(@types/node@22.5.1)(magicast@0.3.4)(terser@5.31.6)(typescript@5.5.4)(webpack@5.94.0(esbuild@0.23.1))
+        version: 0.15.5(@swc/helpers@0.5.12)(@types/node@22.5.1)(magicast@0.3.4)(terser@5.31.6)(typescript@5.5.4)(webpack@5.94.0)
       '@kadena/spirekey-types':
         specifier: workspace:*
         version: link:../packages/types
-      '@vanilla-extract/esbuild-plugin':
-        specifier: ^2.3.7
-        version: 2.3.10(@types/node@22.5.1)(esbuild@0.23.1)(terser@5.31.6)
       '@vanilla-extract/vite-plugin':
         specifier: ^4.0.11
         version: 4.0.15(@types/node@22.5.1)(terser@5.31.6)(vite@5.4.2(@types/node@22.5.1)(terser@5.31.6))
@@ -2034,14 +2031,6 @@ packages:
 
   '@vanilla-extract/css@1.15.5':
     resolution: {integrity: sha512-N1nQebRWnXvlcmu9fXKVUs145EVwmWtMD95bpiEKtvehHDpUhmO1l2bauS7FGYKbi3dU1IurJbGpQhBclTr1ng==}
-
-  '@vanilla-extract/esbuild-plugin@2.3.10':
-    resolution: {integrity: sha512-hjp5QWJdWmL5Up6exiucKZ44+EVlUESqK6LJgQkB2vY5LClbafy6tAGrkbeUapuAit3KSujRYrYHzgr0FT5aJw==}
-    peerDependencies:
-      esbuild: '>=0.17.6'
-    peerDependenciesMeta:
-      esbuild:
-        optional: true
 
   '@vanilla-extract/integration@7.1.9':
     resolution: {integrity: sha512-bkikYnUdEiUoUZGX3tErmkpU43M4Q0McZcSUHutP/pQCeuDB29t8brLOLzdkahwD+RteX2/R3ukmIm3lAYzUnA==}
@@ -5226,9 +5215,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@crackle/cli@0.15.5(@swc/helpers@0.5.12)(@types/node@22.5.1)(magicast@0.3.4)(terser@5.31.6)(typescript@5.5.4)(webpack@5.94.0(esbuild@0.23.1))':
+  '@crackle/cli@0.15.5(@swc/helpers@0.5.12)(@types/node@22.5.1)(magicast@0.3.4)(terser@5.31.6)(typescript@5.5.4)(webpack@5.94.0)':
     dependencies:
-      '@crackle/core': 0.33.4(@swc/helpers@0.5.12)(@types/node@22.5.1)(magicast@0.3.4)(terser@5.31.6)(typescript@5.5.4)(webpack@5.94.0(esbuild@0.23.1))
+      '@crackle/core': 0.33.4(@swc/helpers@0.5.12)(@types/node@22.5.1)(magicast@0.3.4)(terser@5.31.6)(typescript@5.5.4)(webpack@5.94.0)
       yargs: 17.7.2
     transitivePeerDependencies:
       - '@swc/helpers'
@@ -5246,7 +5235,7 @@ snapshots:
       - typescript
       - webpack
 
-  '@crackle/core@0.33.4(@swc/helpers@0.5.12)(@types/node@22.5.1)(magicast@0.3.4)(terser@5.31.6)(typescript@5.5.4)(webpack@5.94.0(esbuild@0.23.1))':
+  '@crackle/core@0.33.4(@swc/helpers@0.5.12)(@types/node@22.5.1)(magicast@0.3.4)(terser@5.31.6)(typescript@5.5.4)(webpack@5.94.0)':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-syntax-jsx': 7.24.7(@babel/core@7.25.2)
@@ -5258,7 +5247,7 @@ snapshots:
       '@vanilla-extract/integration': 7.1.9(@types/node@22.5.1)(terser@5.31.6)
       '@vanilla-extract/vite-plugin': 4.0.15(@types/node@22.5.1)(terser@5.31.6)(vite@5.4.2(@types/node@22.5.1)(terser@5.31.6))
       '@vitejs/plugin-react-swc': 3.7.0(@swc/helpers@0.5.12)(vite@5.4.2(@types/node@22.5.1)(terser@5.31.6))
-      '@vocab/webpack': 1.2.9(webpack@5.94.0(esbuild@0.23.1))
+      '@vocab/webpack': 1.2.9(webpack@5.94.0)
       builtin-modules: 3.3.0
       c12: 1.11.1(magicast@0.3.4)
       consola: 3.2.3
@@ -7239,23 +7228,6 @@ snapshots:
     transitivePeerDependencies:
       - babel-plugin-macros
 
-  '@vanilla-extract/esbuild-plugin@2.3.10(@types/node@22.5.1)(esbuild@0.23.1)(terser@5.31.6)':
-    dependencies:
-      '@vanilla-extract/integration': 7.1.9(@types/node@22.5.1)(terser@5.31.6)
-    optionalDependencies:
-      esbuild: 0.23.1
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - less
-      - lightningcss
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-
   '@vanilla-extract/integration@7.1.9(@types/node@20.16.1)(terser@5.31.6)':
     dependencies:
       '@babel/core': 7.25.2
@@ -7522,7 +7494,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vocab/webpack@1.2.9(webpack@5.94.0(esbuild@0.23.1))':
+  '@vocab/webpack@1.2.9(webpack@5.94.0)':
     dependencies:
       '@vocab/core': 1.6.2
       cjs-module-lexer: 1.4.0
@@ -7530,7 +7502,7 @@ snapshots:
       es-module-lexer: 1.5.4
       picocolors: 1.0.1
       virtual-resource-loader: 1.0.1
-      webpack: 5.94.0(esbuild@0.23.1)
+      webpack: 5.94.0
     transitivePeerDependencies:
       - supports-color
 
@@ -10070,17 +10042,6 @@ snapshots:
       mkdirp: 1.0.4
       yallist: 4.0.0
 
-  terser-webpack-plugin@5.3.10(esbuild@0.23.1)(webpack@5.94.0(esbuild@0.23.1)):
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
-      jest-worker: 27.5.1
-      schema-utils: 3.3.0
-      serialize-javascript: 6.0.2
-      terser: 5.31.6
-      webpack: 5.94.0(esbuild@0.23.1)
-    optionalDependencies:
-      esbuild: 0.23.1
-
   terser-webpack-plugin@5.3.10(webpack@5.94.0):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
@@ -10586,36 +10547,6 @@ snapshots:
       schema-utils: 3.3.0
       tapable: 2.2.1
       terser-webpack-plugin: 5.3.10(webpack@5.94.0)
-      watchpack: 2.4.2
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - '@swc/core'
-      - esbuild
-      - uglify-js
-
-  webpack@5.94.0(esbuild@0.23.1):
-    dependencies:
-      '@types/estree': 1.0.5
-      '@webassemblyjs/ast': 1.12.1
-      '@webassemblyjs/wasm-edit': 1.12.1
-      '@webassemblyjs/wasm-parser': 1.12.1
-      acorn: 8.12.1
-      acorn-import-attributes: 1.9.5(acorn@8.12.1)
-      browserslist: 4.23.3
-      chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.17.1
-      es-module-lexer: 1.5.4
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.3.0
-      mime-types: 2.1.35
-      neo-async: 2.6.2
-      schema-utils: 3.3.0
-      tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(esbuild@0.23.1)(webpack@5.94.0(esbuild@0.23.1))
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     transitivePeerDependencies:
