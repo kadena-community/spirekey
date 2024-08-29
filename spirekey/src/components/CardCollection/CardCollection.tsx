@@ -7,6 +7,7 @@ import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { CardContentBlock, CardFixedContainer } from '@kadena/kode-ui/patterns';
 import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
+import { useRouter } from 'next/navigation';
 import { Heading } from 'react-aria-components';
 import { AccountComponent } from '../Account/Account';
 
@@ -17,6 +18,7 @@ type SortedAccounts = {
 };
 export default function CardCollection() {
   const { accounts } = useAccounts();
+  const router = useRouter();
   const sortedAccounts = accounts.reduce(
     (sorted: SortedAccounts, account) => {
       if (account.networkId === 'mainnet01')
@@ -68,7 +70,11 @@ export default function CardCollection() {
                   <AccountComponent
                     key={account.accountName + account.networkId}
                     account={account}
-                    onClick={(account) => console.log(account)}
+                    onClick={(account) =>
+                      router.push(
+                        `/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}/transactions`,
+                      )
+                    }
                   />
                 );
               })}
