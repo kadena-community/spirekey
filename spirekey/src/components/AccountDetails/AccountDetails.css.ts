@@ -1,52 +1,18 @@
 import { customTokens } from '@/styles/shared/tokens.css';
-import { atoms } from '@kadena/kode-ui/styles';
+import { atoms, token } from '@kadena/kode-ui/styles';
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 
-export const details = style([
-  atoms({
-    marginBlockStart: 'md',
-    paddingInline: 'md',
-  }),
+export const amountCell = style([
+  atoms({ textAlign: 'right' }),
   {
-    width: '100%',
-  },
-]);
-
-export const transactionAddress = style({
-  color: customTokens.color.white,
-  fontWeight: 'bold',
-  whiteSpace: 'nowrap',
-});
-
-export const transactionAmount = atoms({
-  fontWeight: 'primaryFont.bold',
-  fontFamily: 'monospaceFont',
-});
-
-export const transactionDate = style([
-  atoms({
-    fontFamily: 'monospaceFont',
-    fontSize: 'xs',
-  }),
-  { alignItems: 'center', display: 'flex' },
-]);
-
-export const transactionAmountVariants = recipe({
-  base: {
-    textAlign: 'end',
-  },
-  variants: {
-    variant: {
-      credit: {
-        color: 'green',
+    selectors: {
+      '&[data-type="debit"]': {
+        color: token('color.accent.semantic.negative'),
       },
-      debet: {
-        color: 'red',
+      '&[data-type="credit"]': {
+        color: token('color.accent.semantic.positive'),
       },
     },
   },
-  defaultVariants: {
-    variant: 'credit',
-  },
-});
+]);

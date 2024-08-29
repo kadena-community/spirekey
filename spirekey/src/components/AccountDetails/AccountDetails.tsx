@@ -1,15 +1,23 @@
-import { Grid, GridItem } from '@kadena/kode-ui';
+import {
+  Box,
+  Card,
+  Cell,
+  Column,
+  Row,
+  Table,
+  TableBody,
+  TableHeader,
+  maskValue,
+} from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
-import classNames from 'classnames';
-import { Fragment } from 'react';
 import useSWR from 'swr';
 
-import { MaskedValue } from '@/components/MaskedValue/MaskedValue';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 
-import * as styles from './AccountDetails.css';
+import { atoms } from '@kadena/kode-ui/styles';
+import { amountCell } from './AccountDetails.css';
 
 interface AccountDetailsProps {
   account: Account;
@@ -33,47 +41,42 @@ export function AccountDetails({ account }: AccountDetailsProps) {
     },
   );
 
+  if (!data) {
+    return <Card fullWidth>No Transactions</Card>;
+  }
+
   return (
-    <Grid
-      className={styles.details}
-      gap="xs"
-      columns={{
-        lg: 5,
-        md: 5,
-        sm: 5,
-        xl: 5,
-        xs: 5,
-        xxl: 5,
-      }}
-    >
-      {data?.map((tx: any, index: number) => (
-        <Fragment key={index}>
-          <GridItem columnSpan={2}>
-            <MaskedValue
-              className={styles.transactionAddress}
-              value={
+    <Table className={atoms({ width: '100%' })}>
+      <TableHeader>
+        <Column>Account</Column>
+        <Column>Date</Column>
+        <Column>Amount</Column>
+      </TableHeader>
+      <TableBody>
+        {data?.map((tx: any) => (
+          <Row>
+            <Cell>
+              {maskValue(
                 tx.fromAccount === account.accountName
                   ? tx.toAccount
-                  : tx.fromAccount
-              }
-            />
-          </GridItem>
-          <GridItem columnSpan={2} className={styles.transactionDate}>
-            {new Date(tx.blockTime).toLocaleString()}
-          </GridItem>
-          <GridItem
-            className={classNames([
-              styles.transactionAmount,
-              styles.transactionAmountVariants({
-                variant:
-                  tx.fromAccount === account.accountName ? 'debet' : 'credit',
-              }),
-            ])}
-          >
-            {parseFloat(tx.amount)}
-          </GridItem>
-        </Fragment>
-      ))}
-    </Grid>
+                  : tx.fromAccount,
+              )}
+            </Cell>
+            <Cell>{new Date(tx.blockTime).toLocaleString()}</Cell>
+            <Cell>
+              <Box
+                className={amountCell}
+                data-type={
+                  tx.fromAccount === account.accountName ? 'debit' : 'credit'
+                }
+              >
+                {tx.fromAccount === account.accountName ? '-' : '+'}
+                {parseFloat(tx.amount)}
+              </Box>
+            </Cell>
+          </Row>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
