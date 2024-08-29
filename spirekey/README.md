@@ -44,8 +44,8 @@ future of SpireKey!
 To get started you need to have the following installed:
 
 - docker
-- pnpm > 8
-- node > 18
+- pnpm > 9
+- node > 20
 
 ## Installation
 
