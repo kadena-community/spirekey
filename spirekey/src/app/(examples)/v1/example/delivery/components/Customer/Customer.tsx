@@ -282,7 +282,7 @@ export default function Customer({ searchParams }: Props) {
             <h2>Delicious Pizzas Delivered Hot & Fresh</h2>
           </section>
           <section className={styles.deals}>
-            <h3>Today's Specials</h3>
+            <h3>Today&apos;s Specials</h3>
             <ul className={styles.list}>
               {products.map((product) => (
                 <li key={product.name}>

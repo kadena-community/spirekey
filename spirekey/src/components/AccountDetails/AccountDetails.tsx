@@ -19,6 +19,7 @@ import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { atoms } from '@kadena/kode-ui/styles';
 import { amountCell } from './AccountDetails.css';
 
+const t = 0;
 interface AccountDetailsProps {
   account: Account;
 }
@@ -53,8 +54,8 @@ export function AccountDetails({ account }: AccountDetailsProps) {
         <Column>Amount</Column>
       </TableHeader>
       <TableBody>
-        {data?.map((tx: any) => (
-          <Row>
+        {data?.map((tx: any, idx: number) => (
+          <Row key={idx}>
             <Cell>
               {maskValue(
                 tx.fromAccount === account.accountName
