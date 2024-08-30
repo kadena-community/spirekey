@@ -31,6 +31,7 @@ export default function ErrorNotification({
     <ErrorContext.Provider value={{ errorMessage, setErrorMessage }}>
       {errorMessage ? (
         <>
+          {children}
           <div className={styles.container}>
             <Notification
               intent="negative"
@@ -46,7 +47,6 @@ export default function ErrorNotification({
               <p>{errorMessage}</p>
             </Notification>
           </div>
-          {children}
         </>
       ) : (
         <>{children}</>
