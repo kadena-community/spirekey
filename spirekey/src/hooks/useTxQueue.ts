@@ -39,7 +39,7 @@ export const useTxQueue = (
                 .setMeta({
                   chainId: target,
                   senderAccount: process.env.GAS_STATION,
-                  gasLimit: 1800,
+                  gasLimit: 849,
                   gasPrice: 0.00000001,
                 })
                 .setNetworkId(tx.networkId)

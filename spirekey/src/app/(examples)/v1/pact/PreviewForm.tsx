@@ -6,7 +6,6 @@ import { useAccounts } from '@/context/AccountsContext';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
 import { asyncPipe } from '@/utils/shared/asyncPipe';
 import { l1Client } from '@/utils/shared/client';
-import { decodeAccount } from '@/utils/shared/decodeAccount';
 import { getDevnetNetworkId } from '@/utils/shared/getDevnetNetworkId';
 import { createTransaction } from '@kadena/client';
 import {
@@ -20,6 +19,7 @@ import {
 } from '@kadena/kode-ui';
 import { FC, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { ConnectAccount } from '../example/delivery/components/AccountButton';
 import {
   parseContractData,
   readFile,
@@ -27,6 +27,15 @@ import {
   validateJson,
 } from './pact.utils';
 
+const decodeAccount = (response: string): ConnectAccount | null => {
+  if (!response) return null;
+
+  const account: ConnectAccount = JSON.parse(
+    Buffer.from(response, 'base64').toString(),
+  );
+
+  return account;
+};
 const FORM_DEFAULT = {
   chainId: process.env.CHAIN_ID!,
   networkdId: getDevnetNetworkId(),

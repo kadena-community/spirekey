@@ -1,13 +1,14 @@
 'use client';
 
-import { darkThemeClass } from '@kadena/kode-ui/styles';
-import { ThemeProvider } from 'next-themes';
-import { ReactNode } from 'react';
-
 import { NotificationContainer } from '@/components/shared/NotificationsContainer/NotificationsContainer';
 import { AccountsProvider } from '@/context/AccountsContext';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { NotificationsProvider } from '@/context/shared/NotificationsContext';
+import { apolloClient } from '@/hooks/useQuery';
+import { ApolloProvider } from '@apollo/client';
+import { darkThemeClass } from '@kadena/kode-ui/styles';
+import { ThemeProvider } from 'next-themes';
+import { ReactNode } from 'react';
 import { SWRConfig } from 'swr';
 
 function localStorageProvider() {
@@ -45,25 +46,27 @@ export default function Providers({
   return (
     <SettingsProvider displayDevMode={displayDevMode}>
       <SWRConfig value={{ provider: localStorageProvider }}>
-        <NotificationsProvider>
-          <AccountsProvider>
-            <ThemeProvider
-              forcedTheme="dark"
-              attribute="class"
-              value={{
-                light: darkThemeClass,
-                dark: darkThemeClass,
-              }}
-              enableSystem={true}
-              enableColorScheme={true} // When enabled, we can't make the background of the embedded iframe transparent
-            >
-              <>
-                {children}
-                <NotificationContainer />
-              </>
-            </ThemeProvider>
-          </AccountsProvider>
-        </NotificationsProvider>
+        <ApolloProvider client={apolloClient}>
+          <NotificationsProvider>
+            <AccountsProvider>
+              <ThemeProvider
+                forcedTheme="dark"
+                attribute="class"
+                value={{
+                  light: darkThemeClass,
+                  dark: darkThemeClass,
+                }}
+                enableSystem={true}
+                enableColorScheme={true} // When enabled, we can't make the background of the embedded iframe transparent
+              >
+                <>
+                  {children}
+                  <NotificationContainer />
+                </>
+              </ThemeProvider>
+            </AccountsProvider>
+          </NotificationsProvider>
+        </ApolloProvider>
       </SWRConfig>
     </SettingsProvider>
   );

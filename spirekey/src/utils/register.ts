@@ -16,12 +16,6 @@ import { l1Client } from '@/utils/shared/client';
 import { sign } from '@kadena/cryptography-utils';
 import { Guard } from '@kadena/spirekey-types';
 
-export const getAccountName = async (
-  publicKey: string,
-  networkId: string,
-): Promise<string> => {
-  return '';
-};
 type RAccountInfo = { name: string; guard: Guard };
 export const getRAccountName = async (
   publicKey: string,
@@ -106,12 +100,6 @@ export const registerCredentialOnChain = async ({
   return await l1Client.submit(signedTx as ICommand);
 };
 
-export const registerAccountsOnChain = async ({}: Omit<
-  AccountRegistration,
-  'alias'
->): Promise<ITransactionDescriptor[]> => {
-  return [];
-};
 export const registerRAccounts = async ({
   accountName,
   color,
