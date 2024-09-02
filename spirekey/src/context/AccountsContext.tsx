@@ -72,7 +72,7 @@ const defaultState = {
 
 const networks = ['mainnet01', 'testnet04', getDevnetNetworkId()];
 
-export const AccountsContext = createContext(defaultState);
+const AccountsContext = createContext(defaultState);
 
 type Props = {
   children: React.ReactNode;

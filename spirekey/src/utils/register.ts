@@ -135,7 +135,7 @@ export const registerRAccounts = async ({
   return txDescriptions; // now can be registered on the account txQueue
 };
 
-export const registerRAccountOnChain = async ({
+const registerRAccountOnChain = async ({
   color,
   deviceType,
   domain,
