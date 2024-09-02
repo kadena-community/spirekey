@@ -1,4 +1,4 @@
-import { accounts } from '@/resolvers/accounts';
+import { accounts, createAccount } from '@/resolvers/accounts';
 import { connectWallet, createWallet } from '@/resolvers/wallets';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
@@ -28,6 +28,7 @@ export const apolloClient = new ApolloClient({
     },
     Mutation: {
       createWallet,
+      createAccount,
     },
   },
 });

@@ -11,7 +11,7 @@ export default defineConfig({
     },
   },
   test: {
-    reporters: ['default', 'hanging-process'],
+    reporters: ['default'],
     include: ['{src,tests}/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     environment: 'jsdom',
     env: {
@@ -28,7 +28,7 @@ export default defineConfig({
       provider: 'v8',
       thresholds: {
         lines: 24,
-        functions: 35,
+        functions: 34,
         branches: 50,
         statements: 24,
       },

@@ -1,93 +1,15 @@
-import { AccountRegistration, useAccounts } from '@/context/AccountsContext';
+import { useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
+import { useAccount } from '@/resolvers/accounts';
 import { useCredentials, useWallet } from '@/resolvers/wallets';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
-import {
-  getNetworkDisplayName,
-  getRootkeyPasskeyName,
-} from '@/utils/getNetworkDisplayName';
-import {
-  getRAccountName,
-  getWebAuthnPubkeyFormat,
-  registerCredentialOnChain,
-  registerRAccounts,
-} from '@/utils/register';
-import { getNewWebauthnKey } from '@/utils/webauthnKey';
-import {
-  kadenaDecrypt,
-  kadenaEncrypt,
-  kadenaGenKeypairFromSeed,
-} from '@kadena/hd-wallet';
 import { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
 import { useState } from 'react';
 import { useReturnUrl } from './shared/useReturnUrl';
 
 export type KeyPair = { publicKey: string; secretKey: string };
-export const registerNewDevice =
-  (onPasskeyRetrieved: (account: Account) => void) =>
-  async ({
-    alias,
-    networkId,
-    chainId,
-    color,
-    domain,
-    keypair,
-  }: Omit<
-    AccountRegistration,
-    'accountName' | 'credentialPubkey' | 'deviceType' | 'credentialId'
-  > & { keypair?: KeyPair }): Promise<void> => {
-    const { publicKey, deviceType, credentialId } =
-      await getNewWebauthnKey(alias);
-    const account = {
-      networkId,
-      credentialId,
-      deviceType,
-      chainId,
-      alias,
-      color,
-      domain,
-      credentialPubkey: publicKey,
-    };
-    if (!keypair) throw new Error('No keypair provided');
-    const { name: accountName, guard } = await getRAccountName(
-      publicKey,
-      keypair.publicKey,
-      networkId,
-    );
-    const pendingTxs = await registerRAccounts({
-      ...account,
-      accountName,
-      publicKey: keypair.publicKey,
-      secretKey: keypair.secretKey,
-    });
-    onPasskeyRetrieved({
-      accountName,
-      guard,
-      networkId,
-      balance: '0.0',
-      alias,
-      chainIds: Array(20)
-        .fill(1)
-        .map((_, i) => i.toString()) as ChainId[],
-      minApprovals: 1,
-      minRegistrationApprovals: 1,
-      devices: [
-        {
-          color,
-          deviceType,
-          domain,
-          guard: {
-            keys: [getWebAuthnPubkeyFormat(publicKey)],
-            pred: 'keys-any',
-          },
-          'credential-id': credentialId,
-        },
-      ],
-      txQueue: pendingTxs,
-    });
-  };
 
 type UseRegistration = {
   chainId?: ChainId;
@@ -109,6 +31,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
 
   const { getCredentials } = useCredentials();
   const { createWallet } = useWallet();
+  const { createAccount } = useAccount();
 
   const accountPrefix = 'SpireKey Account';
 
@@ -142,7 +65,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
-      const keypair = await createWallet(networkId, chainId!)
+      const keypair = await createWallet(networkId, chainId!);
       setKeypair(keypair);
     } catch (e) {
     } finally {
@@ -153,22 +76,21 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
   const handleSubmit = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
-
+    if (!keypair) throw new Error('No wallet available');
     try {
-      await registerNewDevice((account) => {
-        setSuccesfulAuthentication(true);
-        setAccount(account);
-        setCurrentAccount(account);
-        setCurrentAccountName(account.accountName);
-        setAllowRedirect(true);
-      })({
-        alias: `${alias} (${getNetworkDisplayName(networkId)})`,
+      const account = await createAccount({
         domain: host,
         color,
-        chainId,
+        alias,
         networkId,
-        keypair,
+        publicKey: keypair.publicKey,
+        secretKey: keypair.secretKey,
       });
+      setSuccesfulAuthentication(true);
+      setAccount(account);
+      setCurrentAccount(account);
+      setCurrentAccountName(account.accountName);
+      setAllowRedirect(true);
     } catch (error: any) {
       addNotification({
         variant: 'error',
