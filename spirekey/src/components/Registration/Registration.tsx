@@ -8,11 +8,8 @@ import { useState } from 'react';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { getRootkeyPasskeyName } from '@/utils/getNetworkDisplayName';
 
-import { useRAccount } from '@/flags/flags';
 import { KeyPair, useRegistration } from '@/hooks/useRegistration';
 import { getUser } from '@/utils/connect';
-import { getGraphClient } from '@/utils/graphql';
-import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import {
   CardContentBlock,
   CardFixedContainer,
@@ -27,7 +24,7 @@ import CardBottom from '../Card/CardBottom';
 import DeviceIcons from '../Card/DeviceIcons';
 import PasskeyCard from '../Card/PasskeyCard';
 import { Step, Stepper } from '../Stepper/Stepper';
-import * as styles from './Registration.css';
+import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
 
 interface Props {
   redirectUrl?: string;
@@ -87,6 +84,7 @@ export default function Registration({
     />
   );
 }
+
 const RegisterComponent = ({
   account,
   keypair,
@@ -229,10 +227,7 @@ const RegisterComponent = ({
             account to this wallet.
           </Text>
           <CardFooterGroup>
-            {networkId === 'mainnet01' && <Button>Connect Coming soon</Button>}
-            {networkId !== 'mainnet01' && (
-              <Button onPress={onHandleConnectWallet}>Connect</Button>
-            )}
+            <Button onPress={onHandleConnectWallet}>Connect</Button>
           </CardFooterGroup>
           <Heading as="h5">No wallet yet?</Heading>
           <Text>
@@ -246,10 +241,7 @@ const RegisterComponent = ({
         </Stack>
       </CardContentBlock>
       <CardFooterGroup>
-        {networkId === 'mainnet01' && <Button>Create Coming soon</Button>}
-        {networkId !== 'mainnet01' && (
-          <Button onPress={onHandleRegisterWallet}>Create</Button>
-        )}
+        <Button onPress={onHandleRegisterWallet}>Create</Button>
       </CardFooterGroup>
     </CardFixedContainer>
   );

@@ -3,7 +3,6 @@
 import { useAccounts } from '@/context/AccountsContext';
 import { l1Client } from '@/utils/shared/client';
 import { createTransactionBuilder, ICommandResult } from '@kadena/client';
-import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { MonoCopyAll } from '@kadena/kode-icons/system';
 import {
   Button,
@@ -21,11 +20,12 @@ import {
   CardFooterGroup,
 } from '@kadena/kode-ui/patterns';
 import { atoms, token } from '@kadena/kode-ui/styles';
-import { Account, Device, initSpireKey, sign } from '@kadena/spirekey-sdk';
+import { Account, initSpireKey, sign } from '@kadena/spirekey-sdk';
 import { ChainId, ICommand } from '@kadena/types';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
 
 const isCoinAccountExisting = async ({
   accountName,
@@ -307,6 +307,7 @@ export default function SendForm() {
                 defaultValue={defaultValues.amount}
                 step={0.1}
                 label="Amount"
+                minValue={0.1}
                 {...amountProps}
                 onValueChange={(a) => setValue('amount', a)}
               />

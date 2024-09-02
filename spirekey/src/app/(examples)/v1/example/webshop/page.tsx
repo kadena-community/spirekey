@@ -1,8 +1,10 @@
 'use client';
 
-import { AccountButton } from '@/app/(examples)/v1/example/delivery/components/AccountButton';
+import {
+  AccountButton,
+  ConnectAccount,
+} from '@/app/(examples)/v1/example/delivery/components/AccountButton';
 import { useReturnUrl } from '@/hooks/shared/useReturnUrl';
-import { decodeAccount } from '@/utils/shared/decodeAccount';
 import { MonoCookie } from '@kadena/kode-icons/system';
 import {
   Box,
@@ -27,6 +29,15 @@ type WebshopProps = {
   };
 };
 
+const decodeAccount = (response: string): ConnectAccount | null => {
+  if (!response) return null;
+
+  const account: ConnectAccount = JSON.parse(
+    Buffer.from(response, 'base64').toString(),
+  );
+
+  return account;
+};
 export default function Webshop({ searchParams }: WebshopProps) {
   const { user } = searchParams;
   const account = decodeAccount(user);

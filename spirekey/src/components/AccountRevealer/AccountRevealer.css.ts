@@ -20,7 +20,10 @@ export const wrapper = style([
 
 export const character = style([codeFont, { display: 'inline-block' }]);
 
-export const scrambler = style({ opacity: 0.3 });
+export const scrambler = style({
+  opacity: 0.3,
+  height: '1.8rem',
+});
 
 const moveIt = keyframes(
   charArray

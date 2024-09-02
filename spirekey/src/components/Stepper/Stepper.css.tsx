@@ -59,10 +59,3 @@ export const check = style({
     },
   },
 });
-
-export const stepVariants = styleVariants({
-  positive: [step, {}],
-  error: [step, {}],
-  warning: [step, {}],
-  pending: [step, {}],
-});

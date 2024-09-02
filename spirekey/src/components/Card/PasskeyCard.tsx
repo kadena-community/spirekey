@@ -1,9 +1,8 @@
-import { SpireKeyKdacolorLogoGreen } from '@kadena/kode-icons/product';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 
-import { PressEvent } from 'react-aria-components';
 import Fingerprint from '../icons/Fingerprint/Fingerprint';
+import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
 import Card from './Card';
 import * as styles from './Card.css';
 

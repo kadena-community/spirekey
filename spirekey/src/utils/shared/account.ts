@@ -55,7 +55,7 @@ export const getRAccountFromChain = async ({
   chainId?: ChainId;
 }): Promise<Omit<Account, 'alias'> | null> => {
   const tx = createTransactionBuilder()
-    .execution(`(${namespace}.spirekey.details "${accountName}" coin)`)
+    .execution(`(kadena.spirekey.details "${accountName}" coin)`)
     .setMeta({
       chainId,
     })
@@ -87,7 +87,7 @@ export const getRAccountFromChain = async ({
   };
 };
 
-export const getAccountFromChainLegacy = async ({
+const getAccountFromChainLegacy = async ({
   accountName,
   networkId,
   namespace = process.env.NAMESPACE,

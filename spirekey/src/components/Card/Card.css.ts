@@ -98,10 +98,6 @@ export const accountIconInner = style({
   color: 'black',
 });
 
-export const devicesContainer = style({
-  flexGrow: 1,
-});
-
 // Should update the getDeviceIcon component to return the component directly
 export const device = style({});
 globalStyle(`${device} > svg`, {
@@ -139,14 +135,6 @@ export const transactions = style([
     marginInlineStart: 'sm',
   }),
 ]);
-
-export const plusIconContainer = style({
-  width: '100%',
-});
-
-export const cardLink = style({
-  textDecoration: 'none',
-});
 
 export const icon = style({
   padding: '32px',

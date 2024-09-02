@@ -1,15 +1,5 @@
 import { style } from '@vanilla-extract/css';
 
-export const loadingWrapper = style({
-  width: 'auto',
-  height: 'auto',
-  margin: '20px',
-  padding: '20px',
-  position: 'relative',
-  background: 'rgba(0,0,0,.7)',
-  textAlign: 'center',
-});
-
 export const list = style({
   display: 'grid',
   gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
@@ -48,11 +38,6 @@ export const hero = style({
 
 export const logo = style({
   height: '100%',
-});
-
-export const dealImg = style({
-  width: '100%',
-  height: 'auto',
 });
 
 export const deals = style({

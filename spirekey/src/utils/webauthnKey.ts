@@ -33,7 +33,7 @@ export const getDeviceType = (transports?: AuthenticatorTransportFuture[]) => {
   return 'security-key';
 };
 
-export function extractPublicKeyHex(arrayBuffer: ArrayBuffer) {
+function extractPublicKeyHex(arrayBuffer: ArrayBuffer) {
   // Convert ArrayBuffer to Uint8Array
   const uint8Array = new Uint8Array(arrayBuffer);
 
