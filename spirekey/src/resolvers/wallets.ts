@@ -1,7 +1,7 @@
 import { getRootkeyPasskeyName } from '@/utils/getNetworkDisplayName';
 import { registerCredentialOnChain } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
-import { ApolloClient, gql } from '@apollo/client';
+import { ApolloClient, gql, useLazyQuery } from '@apollo/client';
 import {
   kadenaDecrypt,
   kadenaEncrypt,
@@ -12,6 +12,7 @@ import {
   base64URLStringToBuffer,
   startAuthentication,
 } from '@simplewebauthn/browser';
+import { PublicKeyCredentialDescriptorJSON } from '@simplewebauthn/types';
 import elliptic from 'elliptic';
 
 type WalletsVariable = {
@@ -53,22 +54,22 @@ export const createWallet = async (
   };
 };
 const getCredentialsQuery = gql`
-query getCredentials($filter: String) {
-  events(
-    qualifiedEventName: "${process.env.NAMESPACE}.spirekey.REGISTER_CREDENTIAL"
-    parametersFilter: $filter
-    first: 1
-  ) {
-    totalCount
-    edges {
-      cursor
-      node {
-        chainId
-        parameters
+  query getCredentials($filter: String) {
+    events(
+      qualifiedEventName: "kadena.spirekey.REGISTER_CREDENTIAL"
+      parametersFilter: $filter
+      first: 1
+    ) {
+      totalCount
+      edges {
+        cursor
+        node {
+          chainId
+          parameters
+        }
       }
     }
   }
-}
 `;
 type Query = InstanceType<typeof ApolloClient>['query'];
 const getCredentials = async (
@@ -91,24 +92,59 @@ const getCredentials = async (
     return c;
   });
 };
+const connectWalletQuery = gql`
+  query ConnectWallet($networkId: String!) {
+    connectWallet(networkId: $networkId) @client
+  }
+`;
+export const useCredentials = () => {
+  const [execute] = useLazyQuery(connectWalletQuery);
+  const getCredentials = async (networkId: string) => {
+    const { data } = await execute({
+      variables: {
+        networkId,
+      },
+    });
+
+    if (!data.connectWallet) throw new Error('No credentials found');
+    return data.connectWallet;
+  };
+  return {
+    getCredentials,
+  };
+};
 
 export const connectWallet = async (
   _: any,
   { networkId }: WalletsVariable,
   { client }: ApolloContext,
 ) => {
-  localStorage.getItem(`${networkId}:wallet:cid`);
+  const cid = localStorage.getItem(`${networkId}:wallet:cid`);
   const { publicKey, secretKey } = await getPubkeyFromPasskey(
     networkId,
     client.query,
+    cid,
   );
   return { publicKey, secretKey };
 };
 
-const getPubkeyFromPasskey = async (networkId: string, query: Query) => {
+const getAllowedCredentials = (cid: string | null) => {
+  if (!cid) return;
+  const allowedCredential: PublicKeyCredentialDescriptorJSON = {
+    type: 'public-key',
+    id: cid,
+  };
+  return [allowedCredential];
+};
+const getPubkeyFromPasskey = async (
+  networkId: string,
+  query: Query,
+  cid: string | null,
+) => {
   const { response, id } = await startAuthentication({
     rpId: window.location.hostname,
     challenge: 'reconnectwallet',
+    allowCredentials: getAllowedCredentials(cid),
   });
   const usignature = new Uint8Array(
     base64URLStringToBuffer(response.signature),
@@ -166,6 +202,7 @@ const getPubkeyFromPasskey = async (networkId: string, query: Query) => {
     foundKeys.includes(publicKey),
   );
   if (!recoveredKey) throw new Error('No public key could be recovered');
+  localStorage.setItem(`${networkId}:wallet:cid`, id);
   return recoveredKey;
 };
 const hex = (bytes: Uint8Array) => Array.from(bytes).map(i2hex).join('');

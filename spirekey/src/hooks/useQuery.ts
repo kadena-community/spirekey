@@ -1,5 +1,5 @@
 import { accounts } from '@/resolvers/accounts';
-import { createWallet } from '@/resolvers/wallets';
+import { connectWallet, createWallet } from '@/resolvers/wallets';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
 const getGraphqlHost = (networkId: string) => {
@@ -24,6 +24,7 @@ export const apolloClient = new ApolloClient({
   resolvers: {
     Query: {
       accounts,
+      connectWallet,
     },
     Mutation: {
       createWallet,
