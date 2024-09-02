@@ -100,12 +100,6 @@ export const registerCredentialOnChain = async ({
   return await l1Client.submit(signedTx as ICommand);
 };
 
-export const registerAccountsOnChain = async ({}: Omit<
-  AccountRegistration,
-  'alias'
->): Promise<ITransactionDescriptor[]> => {
-  return [];
-};
 export const registerRAccounts = async ({
   accountName,
   color,
