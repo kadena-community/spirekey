@@ -1,6 +1,6 @@
 import { AccountRegistration, useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
-import { useCredentials } from '@/resolvers/wallets';
+import { useCredentials, useWallet } from '@/resolvers/wallets';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
 import {
@@ -108,6 +108,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
   const { addNotification } = useNotifications();
 
   const { getCredentials } = useCredentials();
+  const { createWallet } = useWallet();
 
   const accountPrefix = 'SpireKey Account';
 
@@ -141,31 +142,8 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
-      const { credentialId, hex } = await getNewWebauthnKey(
-        getRootkeyPasskeyName(networkId!),
-      );
-      const tempPassword = crypto.getRandomValues(new Uint16Array(32));
-      const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
-        tempPassword,
-        await kadenaEncrypt(
-          tempPassword,
-          await crypto.subtle.digest('sha-512', Buffer.from(hex)),
-        ),
-        0,
-      );
-
-      await registerCredentialOnChain({
-        networkId: networkId!,
-        chainId: chainId!,
-        credentialId,
-        pubkey: pubKey,
-        domain: window.location.hostname,
-      });
-      const decrypted = await kadenaDecrypt(tempPassword, privateKey);
-      setKeypair({
-        publicKey: pubKey,
-        secretKey: Buffer.from(decrypted).toString('hex'),
-      });
+      const keypair = await createWallet(networkId, chainId!)
+      setKeypair(keypair);
     } catch (e) {
     } finally {
       setIsSubmitting(false);

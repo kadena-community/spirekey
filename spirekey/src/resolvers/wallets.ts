@@ -1,7 +1,7 @@
 import { getRootkeyPasskeyName } from '@/utils/getNetworkDisplayName';
 import { registerCredentialOnChain } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
-import { ApolloClient, gql, useLazyQuery } from '@apollo/client';
+import { ApolloClient, gql, useLazyQuery, useMutation } from '@apollo/client';
 import {
   kadenaDecrypt,
   kadenaEncrypt,
@@ -21,6 +21,25 @@ type WalletsVariable = {
 };
 type ApolloContext = {
   client: ApolloClient<any>;
+};
+const getCreateWalletMutation = gql`
+  mutation CreateWallet($networkId: String!, $chainId: String!) {
+    createWallet(networkId: $networkId, chainId: $chainId) @client
+  }
+`;
+export const useWallet = () => {
+  const [mutate] = useMutation(getCreateWalletMutation);
+  const createWallet = async (networkId: string, chainId: string) => {
+    const { data } = await mutate({
+      variables: {
+        networkId,
+        chainId,
+      },
+    });
+    if (!data?.createWallet) throw new Error('Could not create wallet');
+    return data.createWallet;
+  };
+  return { createWallet };
 };
 export const createWallet = async (
   _: any,
