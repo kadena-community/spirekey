@@ -1,10 +1,5 @@
 import { getRootkeyPasskeyName } from '@/utils/getNetworkDisplayName';
-import {
-  getRAccountName,
-  getWebAuthnPubkeyFormat,
-  registerCredentialOnChain,
-  registerRAccounts,
-} from '@/utils/register';
+import { registerCredentialOnChain } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { ApolloClient, gql, useLazyQuery, useMutation } from '@apollo/client';
 import {
