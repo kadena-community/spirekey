@@ -1,6 +1,6 @@
 import { useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
-import { useAccount } from '@/resolvers/accounts';
+import { useCreateAccount } from '@/resolvers/accounts';
 import { useCredentials, useWallet } from '@/resolvers/wallets';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
@@ -31,7 +31,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
 
   const { getCredentials } = useCredentials();
   const { createWallet } = useWallet();
-  const { createAccount } = useAccount();
+  const { createAccount } = useCreateAccount();
 
   const accountPrefix = 'SpireKey Account';
 

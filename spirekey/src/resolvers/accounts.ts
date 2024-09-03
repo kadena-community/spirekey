@@ -171,7 +171,7 @@ const createAccountMutation = gql`
     ) @client
   }
 `;
-export const useAccount = () => {
+export const useCreateAccount = () => {
   const [mutate] = useMutation(createAccountMutation);
   const createAccount = async (variables: CreateAccountVariables) => {
     const { data } = await mutate({ variables });
