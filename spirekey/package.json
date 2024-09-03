@@ -4,6 +4,7 @@
   "private": true,
   "main": "./src/lib.ts",
   "scripts": {
+    "prebuild": "pnpm lint",
     "build": "next build",
     "build:e2e": "NODE_ENV=test next build",
     "deploy": "tsx ./deploy.ts ./pact/deploy/deploy.json",

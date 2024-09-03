@@ -4,6 +4,7 @@ import type { Account } from '@kadena/spirekey-types';
 import { atoms } from '@kadena/kode-ui/styles';
 import DeviceCircle from '../Device/DeviceCircle';
 
+const test = 0;
 interface AccountProps {
   account: Account;
   onClick: (account: Account) => void;
@@ -35,7 +36,9 @@ export function AccountComponent({ account, onClick }: AccountProps) {
         className={atoms({ textAlign: 'right' })}
       >
         <Text>{maskValue(account.accountName)}</Text>
-        <Text bold size="smallest">{account.balance} KDA</Text>
+        <Text bold size="smallest">
+          {account.balance} KDA
+        </Text>
       </Stack>
     </Stack>
   );
