@@ -241,7 +241,10 @@ const RegisterComponent = ({
         </Stack>
       </CardContentBlock>
       <CardFooterGroup>
-        <Button>Create coming soon</Button>
+        {networkId === 'mainnet01' && <Button>Create coming soon</Button>}
+        {networkId !== 'mainnet01' && (
+          <Button onPress={onHandleRegisterWallet}>Create</Button>
+        )}
       </CardFooterGroup>
     </CardFixedContainer>
   );
