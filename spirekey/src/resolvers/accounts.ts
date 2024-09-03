@@ -32,47 +32,17 @@ export const accounts = async (
   const accs = networkIds.flatMap((networkId) => localAccounts(networkId));
   const resolvedAccs = await Promise.all(
     accs.map(async (acc) => {
-      const res = await client.query({
-        query: getAccountQuery,
+      const { data } = await client.query({
+        query: accountQuery,
         variables: {
-          code: `(kadena.spirekey.details "${acc.accountName}" coin)`,
+          accountName: acc.accountName,
           networkId: acc.networkId,
         },
       });
-      return Object.values(res.data)
-        .flatMap((r) => r)
-        .map((r: any) => ({
-          ...JSON.parse(r.result),
-          txQueue: acc.txQueue,
-          networkId: acc.networkId,
-        }));
+      return data.account;
     }),
   );
-  return resolvedAccs.map((r) =>
-    r.reduce(
-      (acc, info) => {
-        const account: Account = {
-          ...acc,
-          accountName: info.account,
-          guard: info.guard,
-          minApprovals: 1,
-          minRegistrationApprovals: 1,
-          devices: info.devices,
-          balance: acc.balance + info.balance,
-          txQueue: [],
-          networkId: info.networkId,
-        };
-        return account;
-      },
-      {
-        __typename: 'Account',
-        balance: 0,
-        chainIds: Array(20)
-          .fill(1)
-          .map((_, i) => i.toString()),
-      },
-    ),
-  );
+  return resolvedAccs;
 };
 const localAccounts = (networkId: string) => {
   const accString = localStorage.getItem('localAccounts');
