@@ -189,7 +189,7 @@ const registerAccountOnChain = async ({
       `
     (let* (
       (ns-name (ns.create-principal-namespace (read-keyset 'ns-keyset)))
-      (ks-ref-name (format "{}.{}" [ns-name 'spirekey-keyset]))
+      (ks-ref-name (format "{}.{}" [ns-name 'kadena]))
     )
       (define-namespace
         ns-name
