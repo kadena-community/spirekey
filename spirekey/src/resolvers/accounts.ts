@@ -89,10 +89,13 @@ const getAccountsQuery = gql`
     accounts(networkId: $networkId) @client
   }
 `;
-export const useAccounts = (networkIds: string[]) => {
-  const { data } = useQuery(getAccountsQuery, {
+export const useAccounts = (
+  networkIds: string[] = ['development', 'testnet04', 'mainnet01'],
+) => {
+  const { data, loading, error } = useQuery(getAccountsQuery, {
     variables: { networkIds },
   });
+  return { accounts: data, isLoading: loading, error };
 };
 
 type CreateAccountVariables = {
