@@ -116,7 +116,10 @@ export const account = async (
           guard: info.guard,
           minApprovals: 1,
           minRegistrationApprovals: 1,
-          devices: info.devices,
+          devices: info.devices.map((d: any) => ({
+            ...d,
+            deviceType: d['device-type'],
+          })),
           balance: acc.balance + info.balance,
           txQueue: [],
           networkId: info.networkId,
