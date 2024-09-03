@@ -7,5 +7,6 @@ const Recover = dynamic(() => import('@/components/Recover/Recover'), {
 });
 
 export default function RecoverPage() {
-  return <Recover />;
+  const params = new URLSearchParams(location.search);
+  return <Recover networkId={params.get('networkId') ?? ''} />;
 }

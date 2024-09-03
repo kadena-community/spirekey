@@ -1,5 +1,4 @@
 import { getRootkeyPasskeyName } from '@/utils/getNetworkDisplayName';
-import { registerCredentialOnChain } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { gql, useMutation } from '@apollo/client';
 import {
@@ -62,4 +61,42 @@ export const createWallet = async (
     publicKey: pubKey,
     secretKey: Buffer.from(decrypted).toString('hex'),
   };
+};
+
+const registerCredentialOnChain = async ({
+  domain,
+  pubkey,
+  credentialId,
+  chainId,
+  networkId,
+}: {
+  domain: string;
+  pubkey: string;
+  credentialId: string;
+  chainId: ChainId;
+  networkId: string;
+}) => {
+  const tx = createTransactionBuilder()
+    .execution(
+      `(${process.env.NAMESPACE}.spirekey.register-credential "${credentialId}" "${pubkey}" "${domain}")`,
+    )
+    .setMeta({ chainId, senderAccount: gasStation, gasLimit: 1800 })
+    .setNetworkId(networkId)
+    .addSigner(genesisPubKey, (withCap) => [
+      withCap(
+        `${process.env.NAMESPACE}.spirekey.GAS_PAYER`,
+        gasStation,
+        { int: 1 },
+        1,
+      ),
+    ])
+    .createTransaction();
+  const signedTx = addSignatures(
+    tx,
+    sign(tx.cmd, {
+      publicKey: genesisPubKey,
+      secretKey: genesisPrivateKey,
+    }) as { sig: string },
+  );
+  return await l1Client.submit(signedTx as ICommand);
 };

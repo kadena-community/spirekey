@@ -1,11 +1,20 @@
 import {
-  getRAccountName,
-  getWebAuthnPubkeyFormat,
-  registerRAccounts,
-} from '@/utils/register';
+  gasStation,
+  genesisPrivateKey,
+  genesisPubKey,
+} from '@/utils/constants';
+import { getWebAuthnPubkeyFormat } from '@/utils/get-webauthn-pubkey-format';
+import { l1Client } from '@/utils/shared/client';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { ApolloContextValue, gql, useMutation } from '@apollo/client';
-import { ChainId } from '@kadena/types';
+import {
+  addSignatures,
+  createTransactionBuilder,
+  ITransactionDescriptor,
+} from '@kadena/client';
+import { sign } from '@kadena/cryptography-utils';
+import { ChainId, ICommand } from '@kadena/types';
+import { getAccountNameQuery } from './account-name';
 
 type CreateAccountVariables = {
   networkId: string;
@@ -27,6 +36,7 @@ export const createAccount = async (
   }: CreateAccountVariables,
   { client }: ApolloContextValue,
 ) => {
+  if (!client) throw new Error('No client available');
   const {
     publicKey: credentialPubkey,
     deviceType,
@@ -41,12 +51,17 @@ export const createAccount = async (
     domain,
     credentialPubkey: publicKey,
   };
-  const { name: accountName, guard } = await getRAccountName(
-    credentialPubkey,
-    publicKey,
-    networkId,
-  );
-  const pendingTxs = await registerRAccounts({
+  const {
+    data: { name: accountName, guard },
+  } = await client.query({
+    query: getAccountNameQuery,
+    variables: {
+      credentialPubkey,
+      publicKey,
+      networkId,
+    },
+  });
+  const pendingTxs = await registerAccounts({
     ...account,
     accountName,
     publicKey,
@@ -107,4 +122,141 @@ export const useCreateAccount = () => {
   return {
     createAccount,
   };
+};
+
+type AccountRegistration = {
+  accountName: string;
+  alias: string;
+  color: string;
+  deviceType: string;
+  domain: string;
+  credentialId: string;
+  credentialPubkey: string;
+  networkId: string;
+  chainId?: ChainId;
+};
+const registerAccounts = async ({
+  accountName,
+  color,
+  deviceType,
+  domain,
+  credentialId,
+  credentialPubkey,
+  networkId,
+  publicKey,
+  secretKey,
+}: Omit<AccountRegistration, 'alias'> & {
+  publicKey: string;
+  secretKey: string;
+}) => {
+  const txDescriptions = await Promise.all(
+    Array(20)
+      .fill(1)
+      .map((_, i) =>
+        registerAccountOnChain({
+          accountName,
+          color,
+          deviceType,
+          domain,
+          credentialId,
+          credentialPubkey,
+          networkId,
+          chainId: i.toString() as ChainId,
+          publicKey,
+          secretKey,
+        }),
+      ),
+  );
+  return txDescriptions; // now can be registered on the account txQueue
+};
+
+const registerAccountOnChain = async ({
+  color,
+  deviceType,
+  domain,
+  credentialId,
+  credentialPubkey,
+  networkId,
+  publicKey,
+  secretKey,
+  chainId = process.env.CHAIN_ID,
+}: Omit<AccountRegistration, 'alias'> & {
+  publicKey: string;
+  secretKey: string;
+}): Promise<ITransactionDescriptor> => {
+  const tx = createTransactionBuilder()
+    .execution(
+      `
+    (let* (
+      (ns-name (ns.create-principal-namespace (read-keyset 'ns-keyset)))
+      (ks-ref-name (format "{}.{}" [ns-name 'spirekey-keyset]))
+    )
+      (define-namespace
+        ns-name
+        (read-keyset 'ns-keyset )
+        (read-keyset 'ns-keyset )
+      )
+      (namespace ns-name)
+      (define-keyset ks-ref-name
+        (read-keyset 'ns-keyset)
+      )
+      (let (
+        (account (create-principal (keyset-ref-guard ks-ref-name)))
+      )
+        (coin.create-account
+          account
+          (keyset-ref-guard ks-ref-name)
+        )
+        (${process.env.NAMESPACE}.spirekey.add-device-pair
+          account
+          coin
+          { 'guard          :  (read-keyset 'spirekey-keyset)
+          , 'credential-id  :  "${credentialId}"
+          , 'domain         :  "${domain}"
+          , 'device-type    :  "${deviceType}"
+          , 'color          :  "${color}"
+          }
+        )
+      )
+    ) 
+  `,
+    )
+    .addData('ns-keyset', {
+      keys: [getWebAuthnPubkeyFormat(credentialPubkey), publicKey],
+      pred: 'keys-any',
+    })
+    .addData('spirekey-keyset', {
+      keys: [getWebAuthnPubkeyFormat(credentialPubkey)],
+      pred: 'keys-any',
+    })
+    // Sign unrestricted with the temp pubkey
+    .addSigner({ pubKey: publicKey, scheme: 'ED25519' })
+    .addSigner({ pubKey: genesisPubKey, scheme: 'ED25519' }, (withCap) => [
+      withCap('coin.GAS'),
+      withCap(
+        `${process.env.NAMESPACE}.spirekey.GAS_PAYER`,
+        gasStation,
+        { int: 1 },
+        1,
+      ),
+    ])
+    .setMeta({
+      chainId,
+      gasLimit: 1800,
+      gasPrice: 0.0000001,
+      senderAccount: gasStation,
+    })
+    .setNetworkId(networkId)
+    .createTransaction();
+
+  const signedTx = [
+    { publicKey, secretKey },
+    { publicKey: genesisPubKey, secretKey: genesisPrivateKey },
+  ].reduce((unsignedTx, keyPair) => {
+    return addSignatures(
+      unsignedTx,
+      sign(unsignedTx.cmd, keyPair) as { sig: string },
+    );
+  }, tx) as ICommand;
+  return await l1Client.submit(signedTx);
 };

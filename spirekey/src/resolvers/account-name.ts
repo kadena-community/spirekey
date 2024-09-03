@@ -1,4 +1,4 @@
-import { getWebAuthnPubkeyFormat } from '@/utils/register';
+import { getWebAuthnPubkeyFormat } from '@/utils/get-webauthn-pubkey-format';
 import { l1Client } from '@/utils/shared/client';
 import { gql, useLazyQuery } from '@apollo/client';
 import { createTransactionBuilder } from '@kadena/client';
@@ -60,7 +60,7 @@ const getAccountName = async (
     throw new Error('Cannot retrieve account name');
   return res.result.data as RAccountInfo;
 };
-const getAccountNameQuery = gql`
+export const getAccountNameQuery = gql`
   query AccountName(
     $networkId: String!
     $hdWalletKey: String!

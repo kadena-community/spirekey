@@ -58,7 +58,11 @@ export default function Recover(props: RecoverProps) {
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const data = new FormData(event.target as HTMLFormElement);
-    const network = (data.get('network') as string) || 'mainnet01';
+    const searchParams = new URLSearchParams(location.search);
+    const network =
+      (data.get('network') as string) ||
+      searchParams.get('networkId') ||
+      'mainnet01';
     const { id } = await startAuthentication({
       challenge: 'recoverchallenge',
       rpId: window.location.hostname,
