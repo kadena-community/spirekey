@@ -1,12 +1,5 @@
-import {
-  getRAccountName,
-  getWebAuthnPubkeyFormat,
-  registerRAccounts,
-} from '@/utils/register';
-import { getNewWebauthnKey } from '@/utils/webauthnKey';
-import { type ApolloClient, gql, useMutation } from '@apollo/client';
+import { type ApolloClient, gql, useLazyQuery, useQuery } from '@apollo/client';
 import { Account } from '@kadena/spirekey-types';
-import { ChainId } from '@kadena/types';
 
 const getAccountQuery = gql`
   query GetAccount($code: String!) {
@@ -23,7 +16,7 @@ const getAccountQuery = gql`
 `;
 
 type AccountsVariable = {
-  networkId: string;
+  networkId?: string;
 };
 type ApolloContext = {
   client: ApolloClient<any>;
@@ -33,23 +26,59 @@ export const accounts = async (
   { networkId }: AccountsVariable,
   { client }: ApolloContext,
 ) => {
-  const accs = localAccounts(networkId);
+  const networkIds = networkId
+    ? [networkId]
+    : ['development', 'testnet04', 'mainnet01'];
+  const accs = networkIds.flatMap((networkId) => localAccounts(networkId));
   const resolvedAccs = await Promise.all(
     accs.map(async (acc) => {
-      const res = await client.query({
-        query: getAccountQuery,
+      const { data } = await client.query({
+        query: accountQuery,
         variables: {
-          code: `(kadena.spirekey.details "${acc.accountName}" coin)`,
-          networkId,
+          accountName: acc.accountName,
+          networkId: acc.networkId,
         },
       });
-      return Object.values(res.data)
-        .flatMap((r) => r)
-        .map((r: any) => ({ ...JSON.parse(r.result), txQueue: acc.txQueue }));
+      return data.account;
     }),
   );
-  return resolvedAccs.map((r) =>
-    r.reduce(
+  return resolvedAccs;
+};
+const localAccounts = (networkId: string) => {
+  const accString = localStorage.getItem('localAccounts');
+  if (!accString) return [];
+  const accs: Account[] = JSON.parse(accString);
+  return accs.filter((a: Account) => a.networkId === networkId);
+};
+const getAccountsQuery = gql`
+  query GetAccounts($networkId: String) {
+    accounts(networkId: $networkId) @client
+  }
+`;
+export const account = async (
+  _: any,
+  {
+    networkId,
+    accountName,
+    fungible = 'coin',
+  }: { networkId: string; accountName: string; fungible?: string },
+  { client }: ApolloContext,
+) => {
+  const res = await client.query({
+    query: getAccountQuery,
+    variables: {
+      code: `(kadena.spirekey.details "${accountName}" ${fungible})`,
+      networkId,
+    },
+  });
+  return Object.values(res.data)
+    .flatMap((r) => r)
+    .map((r: any) => ({
+      ...JSON.parse(r.result),
+      txQueue: [],
+      networkId,
+    }))
+    .reduce(
       (acc, info) => {
         const account: Account = {
           ...acc,
@@ -57,10 +86,13 @@ export const accounts = async (
           guard: info.guard,
           minApprovals: 1,
           minRegistrationApprovals: 1,
-          devices: info.devices,
+          devices: info.devices.map((d: any) => ({
+            ...d,
+            deviceType: d['device-type'],
+          })),
           balance: acc.balance + info.balance,
-          networkId,
           txQueue: [],
+          networkId: info.networkId,
         };
         return account;
       },
@@ -71,114 +103,53 @@ export const accounts = async (
           .fill(1)
           .map((_, i) => i.toString()),
       },
+    );
+};
+const isDifferentAccountWith = (account: Account) => (acc: Account) =>
+  acc.networkId !== account.networkId &&
+  acc.accountName !== account.accountName;
+const setAccount = (account: Account) => {
+  const accounts: Account[] = JSON.parse(
+    localStorage.getItem('localAccounts') || '[]',
+  );
+  const isDifferentAccount = isDifferentAccountWith(account);
+  if (accounts.every(isDifferentAccount))
+    return localStorage.setItem(
+      'localAccounts',
+      JSON.stringify([...accounts, account]),
+    );
+  return localStorage.setItem(
+    'localAccounts',
+    JSON.stringify(
+      accounts.map((acc) => {
+        if (isDifferentAccount(acc)) return acc;
+        return {
+          ...acc,
+          ...account,
+        };
+      }),
     ),
   );
 };
-const localAccounts = (networkId: string) => {
-  const accString = localStorage.getItem('localAccounts');
-  if (!accString) return [];
-  const accs: Account[] = JSON.parse(accString);
-  return accs.filter((a: Account) => a.networkId === networkId);
-};
-
-type CreateAccountVariables = {
-  networkId: string;
-  publicKey: string;
-  secretKey: string;
-  alias: string;
-  domain: string;
-  color: string;
-};
-export const createAccount = async (
-  _: any,
-  {
-    networkId,
-    publicKey,
-    secretKey,
-    alias,
-    color,
-    domain,
-  }: CreateAccountVariables,
-  { client }: ApolloContext,
-) => {
-  const {
-    publicKey: credentialPubkey,
-    deviceType,
-    credentialId,
-  } = await getNewWebauthnKey(alias);
-  const account = {
-    networkId,
-    credentialId,
-    deviceType,
-    alias,
-    color,
-    domain,
-    credentialPubkey: publicKey,
-  };
-  const { name: accountName, guard } = await getRAccountName(
-    credentialPubkey,
-    publicKey,
-    networkId,
-  );
-  const pendingTxs = await registerRAccounts({
-    ...account,
-    accountName,
-    publicKey,
-    secretKey,
-  });
-  return {
-    accountName,
-    guard,
-    networkId,
-    balance: '0.0',
-    alias,
-    chainIds: Array(20)
-      .fill(1)
-      .map((_, i) => i.toString()) as ChainId[],
-    minApprovals: 1,
-    minRegistrationApprovals: 1,
-    devices: [
-      {
-        color,
-        deviceType,
-        domain,
-        guard: {
-          keys: [getWebAuthnPubkeyFormat(publicKey)],
-          pred: 'keys-any',
-        },
-        'credential-id': credentialId,
-      },
-    ],
-    txQueue: pendingTxs,
-  };
-};
-const createAccountMutation = gql`
-  mutation CreateAccount(
-    $networkId: String
-    $publicKey: String
-    $secretKey: String
-    $alias: String
-    $domain: String
-    $color: String
-  ) {
-    createAccount(
-      networkId: $networkId
-      publicKey: $publicKey
-      secretKey: $secretKey
-      alias: $alias
-      domain: $domain
-      color: $color
-    ) @client
+const accountQuery = gql`
+  query AccountQuery($accountName: String!, $networkId: String!) {
+    account(accountName: $accountName, networkId: $networkId) @client
   }
 `;
 export const useAccount = () => {
-  const [mutate] = useMutation(createAccountMutation);
-  const createAccount = async (variables: CreateAccountVariables) => {
-    const { data } = await mutate({ variables });
-    if (!data?.createAccount) throw new Error('Account creation failed');
-    return data.createAccount;
+  const [execute] = useLazyQuery(accountQuery);
+  const getAccount = async (networkId: string, accountName: string) => {
+    const { data } = await execute({ variables: { networkId, accountName } });
+    return data.account;
   };
-  return {
-    createAccount,
+  return { getAccount, setAccount };
+};
+export const useAccounts = () => {
+  const { refetch, data } = useQuery(getAccountsQuery);
+  const getAccounts = async (networkId?: string) => {
+    const { data } = await refetch({ networkId });
+    return data.accounts as Account[];
   };
+  const accounts: Account[] = data?.accounts || [];
+  return { getAccounts, accounts };
 };

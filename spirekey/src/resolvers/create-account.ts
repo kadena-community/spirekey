@@ -1,106 +1,141 @@
 import {
-  addSignatures,
-  createTransactionBuilder,
-  ICommand,
-  type ChainId,
-  type ITransactionDescriptor,
-} from '@kadena/client';
-
-import type { AccountRegistration } from '@/context/AccountsContext';
-import {
   gasStation,
   genesisPrivateKey,
   genesisPubKey,
 } from '@/utils/constants';
+import { getWebAuthnPubkeyFormat } from '@/utils/get-webauthn-pubkey-format';
 import { l1Client } from '@/utils/shared/client';
+import { getNewWebauthnKey } from '@/utils/webauthnKey';
+import { ApolloContextValue, gql, useMutation } from '@apollo/client';
+import {
+  addSignatures,
+  createTransactionBuilder,
+  ITransactionDescriptor,
+} from '@kadena/client';
 import { sign } from '@kadena/cryptography-utils';
-import { Guard } from '@kadena/spirekey-types';
+import { ChainId, ICommand } from '@kadena/types';
+import { getAccountNameQuery } from './account-name';
 
-type RAccountInfo = { name: string; guard: Guard };
-export const getRAccountName = async (
-  publicKey: string,
-  tempPublicKey: string,
-  networkId: string,
-): Promise<RAccountInfo> => {
-  const tx = createTransactionBuilder()
-    .execution(
-      `
-    (let* (
-      (ns-name (ns.create-principal-namespace (read-keyset 'ns-keyset)))
-      (ks-ref-name (format "{}.{}" [ns-name 'spirekey-keyset]))
-    )
-      (define-namespace
-        ns-name
-        (read-keyset 'ns-keyset )
-        (read-keyset 'ns-keyset )
-      )
-      (namespace ns-name)
-      (define-keyset ks-ref-name
-        (read-keyset 'ns-keyset)
-      )
-      { 'name  : (create-principal (keyset-ref-guard ks-ref-name))
-      , 'guard : (keyset-ref-guard ks-ref-name)
-      }
-    )`,
-    )
-    .setMeta({
-      chainId: process.env.CHAIN_ID,
-    })
-    .addData('ns-keyset', {
-      keys: [getWebAuthnPubkeyFormat(publicKey), tempPublicKey],
-      pred: 'keys-any',
-    })
-    .addSigner(tempPublicKey)
-    .setNetworkId(networkId)
-    .createTransaction();
-  const res = await l1Client.local(tx, {
-    preflight: false,
-    signatureVerification: false,
-  });
-  if (res.result.status !== 'success')
-    throw new Error('Cannot retrieve account name');
-  return res.result.data as RAccountInfo;
-};
-
-export const registerCredentialOnChain = async ({
-  domain,
-  pubkey,
-  credentialId,
-  chainId,
-  networkId,
-}: {
-  domain: string;
-  pubkey: string;
-  credentialId: string;
-  chainId: ChainId;
+type CreateAccountVariables = {
   networkId: string;
-}) => {
-  const tx = createTransactionBuilder()
-    .execution(
-      `(${process.env.NAMESPACE}.spirekey.register-credential "${credentialId}" "${pubkey}" "${domain}")`,
-    )
-    .setMeta({ chainId, senderAccount: gasStation, gasLimit: 1800 })
-    .setNetworkId(networkId)
-    .addSigner(genesisPubKey, (withCap) => [
-      withCap(
-        `${process.env.NAMESPACE}.spirekey.GAS_PAYER`,
-        gasStation,
-        { int: 1 },
-        1,
-      ),
-    ])
-    .createTransaction();
-  const signedTx = addSignatures(
-    tx,
-    sign(tx.cmd, {
-      publicKey: genesisPubKey,
-      secretKey: genesisPrivateKey,
-    }) as { sig: string },
-  );
-  return await l1Client.submit(signedTx as ICommand);
+  publicKey: string;
+  secretKey: string;
+  alias: string;
+  domain: string;
+  color: string;
+};
+export const createAccount = async (
+  _: any,
+  {
+    networkId,
+    publicKey,
+    secretKey,
+    alias,
+    color,
+    domain,
+  }: CreateAccountVariables,
+  { client }: ApolloContextValue,
+) => {
+  if (!client) throw new Error('No client available');
+  const {
+    publicKey: passKey,
+    deviceType,
+    credentialId,
+  } = await getNewWebauthnKey(alias);
+  const account = {
+    networkId,
+    credentialId,
+    deviceType,
+    alias,
+    color,
+    domain,
+    credentialPubkey: publicKey,
+  };
+  const {
+    data: { name: accountName, guard },
+  } = await client.query({
+    query: getAccountNameQuery,
+    variables: {
+      hdWalletKey: publicKey,
+      passKey,
+      networkId,
+    },
+  });
+  const pendingTxs = await registerAccounts({
+    ...account,
+    accountName,
+    publicKey,
+    secretKey,
+  });
+  return {
+    accountName,
+    guard,
+    networkId,
+    balance: '0.0',
+    alias,
+    chainIds: Array(20)
+      .fill(1)
+      .map((_, i) => i.toString()) as ChainId[],
+    minApprovals: 1,
+    minRegistrationApprovals: 1,
+    devices: [
+      {
+        color,
+        deviceType,
+        domain,
+        guard: {
+          keys: [getWebAuthnPubkeyFormat(publicKey)],
+          pred: 'keys-any',
+        },
+        'credential-id': credentialId,
+      },
+    ],
+    txQueue: pendingTxs,
+  };
+};
+const createAccountMutation = gql`
+  mutation CreateAccount(
+    $networkId: String
+    $publicKey: String
+    $secretKey: String
+    $alias: String
+    $domain: String
+    $color: String
+  ) {
+    createAccount(
+      networkId: $networkId
+      publicKey: $publicKey
+      secretKey: $secretKey
+      alias: $alias
+      domain: $domain
+      color: $color
+    ) @client
+  }
+`;
+export const useCreateAccount = () => {
+  const [mutate] = useMutation(createAccountMutation);
+  const createAccount = async (variables: CreateAccountVariables) => {
+    const { data } = await mutate({ variables });
+    if (!data?.createAccount) throw new Error('Account creation failed');
+    return data.createAccount;
+  };
+  return {
+    createAccount,
+  };
 };
 
-export const registerRAccounts = async ({
+type AccountRegistration = {
+  accountName: string;
+  alias: string;
+  color: string;
+  deviceType: string;
+  domain: string;
+  credentialId: string;
+  credentialPubkey: string;
+  networkId: string;
+  chainId?: ChainId;
+};
+const registerAccounts = async ({
   accountName,
   color,
   deviceType,
@@ -118,7 +153,7 @@ export const registerRAccounts = async ({
     Array(20)
       .fill(1)
       .map((_, i) =>
-        registerRAccountOnChain({
+        registerAccountOnChain({
           accountName,
           color,
           deviceType,
@@ -135,7 +170,7 @@ export const registerRAccounts = async ({
   return txDescriptions; // now can be registered on the account txQueue
 };
 
-const registerRAccountOnChain = async ({
+const registerAccountOnChain = async ({
   color,
   deviceType,
   domain,
@@ -172,7 +207,7 @@ const registerRAccountOnChain = async ({
           account
           (keyset-ref-guard ks-ref-name)
         )
-        (${process.env.NAMESPACE}.spirekey.add-device-pair
+        (kadena.spirekey.add-device-pair
           account
           coin
           { 'guard          :  (read-keyset 'spirekey-keyset)
@@ -198,12 +233,7 @@ const registerRAccountOnChain = async ({
     .addSigner({ pubKey: publicKey, scheme: 'ED25519' })
     .addSigner({ pubKey: genesisPubKey, scheme: 'ED25519' }, (withCap) => [
       withCap('coin.GAS'),
-      withCap(
-        `${process.env.NAMESPACE}.spirekey.GAS_PAYER`,
-        gasStation,
-        { int: 1 },
-        1,
-      ),
+      withCap(`kadena.spirekey.GAS_PAYER`, gasStation, { int: 1 }, 1),
     ])
     .setMeta({
       chainId,
@@ -224,8 +254,4 @@ const registerRAccountOnChain = async ({
     );
   }, tx) as ICommand;
   return await l1Client.submit(signedTx);
-};
-export const getWebAuthnPubkeyFormat = (pubkey: string) => {
-  if (/^WEBAUTHN-/.test(pubkey)) return pubkey;
-  return `WEBAUTHN-${pubkey}`;
 };

@@ -29,10 +29,10 @@ const migrateAccountStructure = (
   },
 ): Account => ({
   ...account,
-  devices: account.devices.map((d) => ({
+  devices: account.devices.map((d: any) => ({
     ...d,
-    deviceType: d.name?.replace(/_.*/, '') || 'security-key',
-    color: d.name?.replace(/.*_/, '') || deviceColors.orange,
+    deviceType: d['device-type'] || 'security-key',
+    color: d.color || deviceColors.orange,
   })),
   networkId: account.network || account.networkId,
   txQueue: account.txQueue || [],

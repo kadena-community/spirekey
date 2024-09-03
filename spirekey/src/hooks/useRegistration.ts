@@ -1,7 +1,8 @@
 import { useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
-import { useAccount } from '@/resolvers/accounts';
-import { useCredentials, useWallet } from '@/resolvers/wallets';
+import { useCredentials } from '@/resolvers/connect-wallet';
+import { useCreateAccount } from '@/resolvers/create-account';
+import { useWallet } from '@/resolvers/create-wallet';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
 import { Account } from '@kadena/spirekey-types';
@@ -31,7 +32,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
 
   const { getCredentials } = useCredentials();
   const { createWallet } = useWallet();
-  const { createAccount } = useAccount();
+  const { createAccount } = useCreateAccount();
 
   const accountPrefix = 'SpireKey Account';
 
@@ -86,6 +87,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
         publicKey: keypair.publicKey,
         secretKey: keypair.secretKey,
       });
+      console.warn('DEBUGPRINT[8]: useRegistration.ts:82: account=', account);
       setSuccesfulAuthentication(true);
       setAccount(account);
       setCurrentAccount(account);
