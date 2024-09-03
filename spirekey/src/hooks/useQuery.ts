@@ -1,5 +1,7 @@
-import { accounts, createAccount } from '@/resolvers/accounts';
-import { connectWallet, createWallet } from '@/resolvers/wallets';
+import { accounts } from '@/resolvers/accounts';
+import { connectWallet } from '@/resolvers/connect-wallet';
+import { createAccount } from '@/resolvers/create-account';
+import { createWallet } from '@/resolvers/create-wallet';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
 const getGraphqlHost = (networkId: string) => {
