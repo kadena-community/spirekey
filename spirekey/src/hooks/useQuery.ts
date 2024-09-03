@@ -1,3 +1,4 @@
+import { accountName } from '@/resolvers/account-name';
 import { accounts } from '@/resolvers/accounts';
 import { connectWallet } from '@/resolvers/connect-wallet';
 import { createAccount } from '@/resolvers/create-account';
@@ -26,6 +27,7 @@ export const apolloClient = new ApolloClient({
   resolvers: {
     Query: {
       accounts,
+      accountName,
       connectWallet,
     },
     Mutation: {

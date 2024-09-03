@@ -5,6 +5,7 @@ import {
 } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { ApolloContextValue, gql, useMutation } from '@apollo/client';
+import { ChainId } from '@kadena/types';
 
 type CreateAccountVariables = {
   networkId: string;

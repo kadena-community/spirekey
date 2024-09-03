@@ -1,13 +1,14 @@
 import { useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
-import { useCreateAccount } from '@/resolvers/accounts';
-import { useCredentials, useWallet } from '@/resolvers/wallets';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
 import { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
 import { useState } from 'react';
 import { useReturnUrl } from './shared/useReturnUrl';
+import { useCredentials } from '@/resolvers/connect-wallet';
+import { useWallet } from '@/resolvers/create-wallet';
+import { useCreateAccount } from '@/resolvers/create-account';
 
 export type KeyPair = { publicKey: string; secretKey: string };
 
