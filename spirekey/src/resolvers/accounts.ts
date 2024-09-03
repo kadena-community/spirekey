@@ -145,10 +145,10 @@ export const useAccount = () => {
   return { getAccount, setAccount };
 };
 export const useAccounts = () => {
-  const [execute] = useLazyQuery(getAccountsQuery);
+  const { refetch, data } = useQuery(getAccountsQuery);
   const getAccounts = async (networkId?: string) => {
-    const { data } = await execute({ variables: { networkId } });
+    const { data } = await refetch({ networkId });
     return data.accounts;
   };
-  return { getAccounts };
+  return { getAccounts, accounts: data?.accounts || [] };
 };
