@@ -15,7 +15,7 @@ test.skip('Recover SpireKey Account', async ({
   recoverPage,
   localStorageHelper,
 }) => {
-  let alias = 'SpireKey Account 1';
+  const alias = 'SpireKey Account 1';
 
   await test.step('Create account', async () => {
     await welcomePage.startRegistration();

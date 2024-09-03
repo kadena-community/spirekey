@@ -3,7 +3,6 @@
 import { Canvas } from '@react-three/fiber';
 import { getGPUTier } from 'detect-gpu';
 import { motion } from 'framer-motion';
-import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { BackgroundContext } from './Background.context';
 import { container } from './Background.css';

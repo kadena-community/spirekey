@@ -67,6 +67,7 @@ const getAccountsFromLocalStorage = (): Account[] => {
 const defaultState = {
   networks: ['mainnet01', 'testnet04', getDevnetNetworkId()],
   accounts: getAccountsFromLocalStorage(),
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setAccount: (account: Account): void => undefined,
 };
 
@@ -130,8 +131,7 @@ const AccountsProvider = ({ children }: Props) => {
   const fetchAccountsFromChain = async (localAccounts: Account[]) => {
     return Promise.all(
       localAccounts.map(async (localAccount) => {
-        const { accountName, networkId, alias, devices, chainIds } =
-          localAccount;
+        const { accountName, networkId, alias, chainIds } = localAccount;
         try {
           const remoteAccount = await getAccountFromChains({
             networkId,
@@ -158,7 +158,8 @@ const AccountsProvider = ({ children }: Props) => {
             chainIds: remoteAccount.chainIds,
             txQueue: localAccount.txQueue,
           });
-        } catch (e: unknown) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
           // We've stored our local data on chain, so localAccount === remoteAccount
           return localAccount;
         }

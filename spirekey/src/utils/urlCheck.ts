@@ -19,6 +19,7 @@ export const urlCheck =
         variant: 'warning',
         timeout: 30000,
       });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       addNotification({
         id: 1,

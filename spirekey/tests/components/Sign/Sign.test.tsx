@@ -25,7 +25,7 @@ import { mockTx } from './mockTx';
 vi.mock('@kadena/client');
 
 describe('Sign', () => {
-  let matchMediaMock = new MatchMediaMock();
+  const matchMediaMock = new MatchMediaMock();
   beforeAll(() => {
     matchMediaMock.useMediaQuery('(prefers-color-scheme: dark)');
   });

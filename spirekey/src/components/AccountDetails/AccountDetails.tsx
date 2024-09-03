@@ -19,7 +19,6 @@ import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { atoms } from '@kadena/kode-ui/styles';
 import { amountCell } from './AccountDetails.css';
 
-const t = 0;
 interface AccountDetailsProps {
   account: Account;
 }

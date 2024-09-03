@@ -1,12 +1,9 @@
+import { AccountRevealer } from '@/components/AccountRevealer/AccountRevealer';
 import { MonoCheck, MonoContentCopy } from '@kadena/kode-icons/system';
-import { Stack, Text } from '@kadena/kode-ui';
+import { Stack } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
 import { useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'usehooks-ts';
-
-import { AccountRevealer } from '@/components/AccountRevealer/AccountRevealer';
-import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
-
 import * as styles from './AccountNetwork.css';
 
 type AccountNetworkProps = {

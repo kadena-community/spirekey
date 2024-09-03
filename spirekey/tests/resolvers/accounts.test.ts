@@ -1,6 +1,5 @@
 import { accounts } from '@/resolvers/accounts';
-import { type ChainId } from '@kadena/client';
-import { Mock, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('resolvers: account', () => {
   describe('query accounts', () => {
@@ -57,7 +56,7 @@ describe('resolvers: account', () => {
         },
         { client: clientMock },
       );
-      clientMock.query.calls;
+
       expect(clientMock.query.mock.calls[0][0]).toMatchObject({
         variables: {
           networkId: 'development',

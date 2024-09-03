@@ -96,6 +96,7 @@ export default function SendForm() {
   const { accounts } = useAccounts();
 
   const [tx, setTx] = useState<ICommandResult>();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [receiverError, setReceiverError] = useState('');
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -171,7 +172,6 @@ export default function SendForm() {
       await isReady();
       await Promise.all(
         transactions.map(async (tx) => {
-          const res = await l1Client.local(tx);
           const txDescriptor = await l1Client.submit(tx as ICommand);
           const txRes = await l1Client.listen(txDescriptor);
           setTx(txRes);

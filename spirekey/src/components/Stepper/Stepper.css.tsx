@@ -1,4 +1,4 @@
-import { style, styleVariants, token } from '@kadena/kode-ui/styles';
+import { style, token } from '@kadena/kode-ui/styles';
 
 export const stepper = style({});
 

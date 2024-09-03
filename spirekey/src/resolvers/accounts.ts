@@ -99,7 +99,6 @@ export const createAccount = async (
     color,
     domain,
   }: CreateAccountVariables,
-  { client }: ApolloContext,
 ) => {
   const {
     publicKey: credentialPubkey,

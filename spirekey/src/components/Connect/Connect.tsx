@@ -29,7 +29,7 @@ export default function ConnectComponent({
   onConnect,
   onCancel,
 }: ConnectComponentProps) {
-  const { accounts, setAccount } = useAccounts();
+  const { accounts } = useAccounts();
   const [isRegister, setIsRegister] = useState(false);
   const [isRecover, setIsRecover] = useState(false);
 

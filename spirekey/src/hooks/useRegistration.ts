@@ -51,6 +51,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     try {
       const recoveredKey = await getCredentials(networkId);
       setKeypair(recoveredKey);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       addNotification({
         title: 'Error unlocking wallet',
@@ -67,6 +68,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     try {
       const keypair = await createWallet(networkId, chainId!);
       setKeypair(keypair);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
     } finally {
       setIsSubmitting(false);

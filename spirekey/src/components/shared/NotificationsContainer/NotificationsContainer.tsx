@@ -1,7 +1,7 @@
 import { Notification } from '@/components/shared/Notification/Notification';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import * as styles from './NotificationsContainer.css';
 
 export const NotificationContainer = () => {

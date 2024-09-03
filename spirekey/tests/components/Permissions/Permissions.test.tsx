@@ -7,7 +7,7 @@ import { Permissions } from '@/components/Permissions/Permissions';
 import { ICap } from '@kadena/types';
 
 describe('Sign', () => {
-  let matchMediaMock = new MatchMediaMock();
+  const matchMediaMock = new MatchMediaMock();
   beforeAll(() => {
     matchMediaMock.useMediaQuery('(prefers-color-scheme: dark)');
   });

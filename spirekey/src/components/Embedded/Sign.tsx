@@ -11,7 +11,9 @@ import { useContext, useEffect, useState } from 'react';
 import { useAccounts } from '@/context/AccountsContext';
 import { getSignature } from '@/utils/getSignature';
 
+import { ErrorContext } from '@/components/ErrorNotification/ErrorNotification';
 import { Permissions } from '@/components/Permissions/Permissions';
+import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
 import { getOptimalTransactions } from '@/utils/auto-transfers';
 import { getAccountsForTx, getPermissions } from '@/utils/consent';
 import { publishEvent } from '@/utils/publishEvent';
@@ -32,11 +34,6 @@ import {
   ICommandPayload,
   IUnsignedCommand,
 } from '@kadena/types';
-
-import { ErrorContext } from '@/components/ErrorNotification/ErrorNotification';
-
-import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
-import { gql, useQuery } from '@apollo/client';
 
 interface Props {
   transactions?: string;

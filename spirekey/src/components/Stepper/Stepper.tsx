@@ -22,7 +22,7 @@ type StepProps = {
   children: ReactNode;
   active?: boolean;
 };
-export const Step = ({ children, status, active }: StepProps) => {
+export const Step = ({ children, active }: StepProps) => {
   return (
     <Stack
       className={styles.step}

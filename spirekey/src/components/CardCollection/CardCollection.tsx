@@ -1,8 +1,6 @@
-import { Stack } from '@kadena/kode-ui';
-
 import { useAccounts } from '@/context/AccountsContext';
-
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
+import { Stack } from '@kadena/kode-ui';
 import { CardContentBlock, CardFixedContainer } from '@kadena/kode-ui/patterns';
 import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
@@ -56,8 +54,9 @@ export default function CardCollection() {
         description={`available in your wallet`}
       >
         {Object.entries(sortedAccounts)
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           .filter(([_, accs]) => accs.length)
-          .map(([networkId, accounts], i) => (
+          .map(([networkId, accounts]) => (
             <Stack
               key={networkId}
               flexDirection="column"
