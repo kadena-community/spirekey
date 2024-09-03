@@ -11,7 +11,7 @@ import type { Account, Device } from '@kadena/spirekey-types';
 
 import { asyncPipe } from '@/utils/shared/asyncPipe';
 
-export const transactionDeviceFromDevice = (device: Device) => ({
+const transactionDeviceFromDevice = (device: Device) => ({
   name: `${device.deviceType}_${device.color}`,
   domain: device.domain,
   ['credential-id']: device['credential-id'],

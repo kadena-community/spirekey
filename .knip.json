@@ -1,4 +1,5 @@
 {
+  "ignoreExportsUsedInFile": true,
   "workspaces": {
     ".": {
       "entry": "scripts/*.js",
@@ -11,20 +12,42 @@
     "packages/cli": {
       "entry": "bin/cli.js"
     },
+    "sdk": {
+      "ignore": [
+        "crackle.config.ts",
+        "vitest.config.mts",
+        "./__mocks__/@kadena/client.ts"
+      ]
+    },
     "spirekey": {
       "entry": [
         "./e2e/setup/devnet.setup.ts",
         "./e2e/fixtures/*",
         "next.config.{js,ts,cjs,mjs}",
         "{instrumentation,middleware}.{js,ts}",
-        "src/{instrumentation,middleware}.{js,ts}",
-        "src/app/global-error.{js,jsx,ts,tsx}",
-        "src/app/**/{error,layout,loading,not-found,page,template,default}.{js,jsx,ts,tsx}",
-        "src/app/**/route.{js,jsx,ts,tsx}",
-        "src/app/{manifest,sitemap,robots}.{js,ts}",
-        "src/app/**/{icon,apple-icon}.{js,jsx,ts,tsx}",
-        "src/app/**/{opengraph,twitter}-image.{js,jsx,ts,tsx}",
+        "src/{instrumentation,middleware}.{js,ts}!",
+        "src/app/global-error.{js,jsx,ts,tsx}!",
+        "src/app/**/{error,layout,loading,not-found,page,template,default}.{js,jsx,ts,tsx}!",
+        "src/app/**/route.{js,jsx,ts,tsx}!",
+        "src/app/{manifest,sitemap,robots}.{js,ts}!",
+        "src/app/**/{icon,apple-icon}.{js,jsx,ts,tsx}!",
+        "src/app/**/{opengraph,twitter}-image.{js,jsx,ts,tsx}!",
         "**/*.{bench,test,test-d,spec}.?(c|m)[jt]s?(x)"
+      ],
+      "ignoreDependencies": [
+        "prettier-plugin-organize-imports",
+        "prettier-plugin-packagejson",
+        "react-intersection-observer"
+      ],
+      "ignore": [
+        "./src/utils/getAccountNameFromRegisterDeviceEvent.ts",
+        "./tsconfig.json",
+        "./__mocks__/cbor.ts",
+        "./__mocks__/@simplewebauthn/browser.ts",
+        "./create-encrypted-signers.ts",
+        "./decrypt-signers.ts",
+        "./src/utils/constants.ts",
+        "./__mocks__/@kadena/client.ts"
       ]
     }
   }

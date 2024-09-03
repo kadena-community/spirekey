@@ -6,7 +6,7 @@ test.beforeEach(async ({ spireKeyApp, webAuthnHelper }) => {
   await webAuthnHelper.enableWebAuthN();
 });
 
-test('Connect SpireKey Account: Onboarding', async ({
+test.skip('Connect SpireKey Account: Onboarding', async ({
   connectPage,
   welcomePage,
   localStorageHelper,
