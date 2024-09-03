@@ -38,7 +38,7 @@ export const createAccount = async (
 ) => {
   if (!client) throw new Error('No client available');
   const {
-    publicKey: credentialPubkey,
+    publicKey: passKey,
     deviceType,
     credentialId,
   } = await getNewWebauthnKey(alias);
@@ -56,8 +56,8 @@ export const createAccount = async (
   } = await client.query({
     query: getAccountNameQuery,
     variables: {
-      credentialPubkey,
-      publicKey,
+      hdWalletKey: publicKey,
+      passKey,
       networkId,
     },
   });
