@@ -2,8 +2,7 @@
 
 import { useAccounts } from '@/context/AccountsContext';
 import { useSettings } from '@/context/SettingsContext';
-import { getGraphClient } from '@/utils/graphql';
-import { getAccountFromChains } from '@/utils/shared/account';
+import { useRecoverAccount } from '@/resolvers/recover-account';
 import { Button, Heading, Stack, Text } from '@kadena/kode-ui';
 import {
   CardContentBlock,
@@ -13,7 +12,6 @@ import {
 import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
-import { startAuthentication } from '@simplewebauthn/browser';
 import { useRouter } from 'next/navigation';
 import { Radio, RadioGroup } from 'react-aria-components';
 import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
@@ -55,6 +53,7 @@ export default function Recover(props: RecoverProps) {
     if (props.onCancel) return props.onCancel();
     router.push('/');
   };
+  const { recoverAccount } = useRecoverAccount();
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const data = new FormData(event.target as HTMLFormElement);
@@ -63,34 +62,9 @@ export default function Recover(props: RecoverProps) {
       (data.get('network') as string) ||
       searchParams.get('networkId') ||
       'mainnet01';
-    const { id } = await startAuthentication({
-      challenge: 'recoverchallenge',
-      rpId: window.location.hostname,
-    });
-    const res = await getGraphClient(network, query, {
-      filter: `{\"array_contains\":[\"${id}\"]}`,
-    });
-    const info = res?.events?.edges?.[0]?.node?.parameters;
-    if (!info) throw new Error('No account found');
-
-    const params: string[] = JSON.parse(info);
-    const account = params.find((x) => x.startsWith('r:'));
-    const recoveredAccount = await getAccountFromChains({
-      networkId: network,
-      chainIds: Array(20)
-        .fill(0)
-        .map((_, i) => i.toString()) as ChainId[],
-      accountName: account!,
-    });
-    if (!recoveredAccount) throw new Error('Account not found');
-    const networkAccounts = accounts.filter((a) => a.networkId === network);
-
-    const updatedAccount = {
-      ...recoveredAccount,
-      alias: `SpireKey Account ${networkAccounts.length + 1} (${network})`,
-    };
-    setAccount(updatedAccount);
-    onConnect(updatedAccount);
+    const account = await recoverAccount(network);
+    setAccount(account);
+    onConnect(account);
     // Redirect back to home screen, but publish the connect event first
   };
   const { devMode } = useSettings();

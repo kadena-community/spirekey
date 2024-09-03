@@ -34,12 +34,12 @@ export const accountName = async (
   const { name, guard } = await getAccountName(passKey, hdWalletKey, networkId);
   return { name, guard };
 };
-type RAccountInfo = { name: string; guard: Guard };
+type AccountInfo = { name: string; guard: Guard };
 const getAccountName = async (
   passKey: string,
   hdWalletKey: string,
   networkId: string,
-): Promise<RAccountInfo> => {
+): Promise<AccountInfo> => {
   const tx = createTransactionBuilder()
     .execution(accountNamePactCode)
     .setMeta({
@@ -58,7 +58,7 @@ const getAccountName = async (
   });
   if (res.result.status !== 'success')
     throw new Error('Cannot retrieve account name');
-  return res.result.data as RAccountInfo;
+  return res.result.data as AccountInfo;
 };
 export const getAccountNameQuery = gql`
   query AccountName(
@@ -74,7 +74,7 @@ export const getAccountNameQuery = gql`
   }
 `;
 export const useAccountName = () => {
-  const getAccountName = useLazyQuery(getAccountNameQuery);
+  const [getAccountName] = useLazyQuery(getAccountNameQuery);
   return {
     getAccountName,
   };

@@ -1,8 +1,9 @@
 import { accountName } from '@/resolvers/account-name';
-import { accounts } from '@/resolvers/accounts';
+import { account, accounts } from '@/resolvers/accounts';
 import { connectWallet } from '@/resolvers/connect-wallet';
 import { createAccount } from '@/resolvers/create-account';
 import { createWallet } from '@/resolvers/create-wallet';
+import { recoverAccount } from '@/resolvers/recover-account';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
 const getGraphqlHost = (networkId: string) => {
@@ -27,8 +28,10 @@ export const apolloClient = new ApolloClient({
   resolvers: {
     Query: {
       accounts,
+      account,
       accountName,
       connectWallet,
+      recoverAccount,
     },
     Mutation: {
       createWallet,
