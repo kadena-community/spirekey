@@ -207,7 +207,7 @@ const registerAccountOnChain = async ({
           account
           (keyset-ref-guard ks-ref-name)
         )
-        (${process.env.NAMESPACE}.spirekey.add-device-pair
+        (kadena.spirekey.add-device-pair
           account
           coin
           { 'guard          :  (read-keyset 'spirekey-keyset)
@@ -233,12 +233,7 @@ const registerAccountOnChain = async ({
     .addSigner({ pubKey: publicKey, scheme: 'ED25519' })
     .addSigner({ pubKey: genesisPubKey, scheme: 'ED25519' }, (withCap) => [
       withCap('coin.GAS'),
-      withCap(
-        `${process.env.NAMESPACE}.spirekey.GAS_PAYER`,
-        gasStation,
-        { int: 1 },
-        1,
-      ),
+      withCap(`kadena.spirekey.GAS_PAYER`, gasStation, { int: 1 }, 1),
     ])
     .setMeta({
       chainId,

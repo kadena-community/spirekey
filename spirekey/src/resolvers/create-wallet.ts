@@ -86,13 +86,13 @@ const registerCredentialOnChain = async ({
 }) => {
   const tx = createTransactionBuilder()
     .execution(
-      `(${process.env.NAMESPACE}.spirekey.register-credential "${credentialId}" "${pubkey}" "${domain}")`,
+      `(kadena.spirekey.register-credential "${credentialId}" "${pubkey}" "${domain}")`,
     )
     .setMeta({ chainId, senderAccount: gasStation, gasLimit: 1800 })
     .setNetworkId(networkId)
     .addSigner(genesisPubKey, (withCap) => [
       withCap(
-        `${process.env.NAMESPACE}.spirekey.GAS_PAYER`,
+        `kadena.spirekey.GAS_PAYER`,
         gasStation,
         { int: 1 },
         1,

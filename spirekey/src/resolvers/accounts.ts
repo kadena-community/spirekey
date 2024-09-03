@@ -148,7 +148,8 @@ export const useAccounts = () => {
   const { refetch, data } = useQuery(getAccountsQuery);
   const getAccounts = async (networkId?: string) => {
     const { data } = await refetch({ networkId });
-    return data.accounts;
+    return data.accounts as Account[];
   };
-  return { getAccounts, accounts: data?.accounts || [] };
+  const accounts: Account[] = data?.accounts || [];
+  return { getAccounts, accounts };
 };
