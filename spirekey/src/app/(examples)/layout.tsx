@@ -1,8 +1,9 @@
-import favicon from '@/assets/images/favicon.png';
 import type { Metadata } from 'next';
 import Providers from '../providers';
 
 import '../global.css';
+import favicon from '@/assets/images/favicon.svg';
+import faviconSVG from "@/assets/images/favicon.svg";
 
 export const metadata: Metadata = {
   title: 'Kadena SpireKey',
@@ -18,6 +19,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href={favicon.src} sizes="any" />
+        <link rel="icon" href={faviconSVG.src} type="image/svg+xml" />
       </head>
       <body>
         <Providers displayDevMode={false}>{children}</Providers>
