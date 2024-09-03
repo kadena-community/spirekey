@@ -1,4 +1,4 @@
-import { accounts } from '@/resolvers/accounts';
+import { account, accounts } from '@/resolvers/accounts';
 import { describe, expect, it, vi } from 'vitest';
 
 describe('resolvers: account', () => {
@@ -49,10 +49,12 @@ describe('resolvers: account', () => {
           },
         }),
       } as any;
-      const res = accounts(
+      const res = account(
         null,
         {
-          networkIds: ['development'],
+          networkId: 'development',
+          accountName: 'r:mock-account',
+          fungible: 'coin',
         },
         { client: clientMock },
       );
@@ -62,7 +64,7 @@ describe('resolvers: account', () => {
           code: '(kadena.spirekey.details "r:mock-account" coin)',
         },
       });
-      expect(res).resolves.toMatchObject([mockAccount]);
+      expect(res).resolves.toMatchObject(mockAccount);
     });
     it('should sum the balances', async () => {
       localStorage.setItem(
@@ -109,14 +111,15 @@ describe('resolvers: account', () => {
           },
         }),
       } as any;
-      const res = await accounts(
+      const res = await account(
         null,
         {
-          networkIds: ['development'],
+          networkId: 'development',
+          accountName: 'r:mock-account',
         },
         { client: clientMock },
       );
-      expect(res[0].balance).toEqual(4.4);
+      expect(res.balance).toEqual(4.4);
     });
     it('should retrieve account info from multiple networks', () => {
       localStorage.setItem(
@@ -139,23 +142,17 @@ describe('resolvers: account', () => {
           data: {},
         }),
       } as any;
-      accounts(
-        null,
-        {
-          networkIds: ['development', 'testnet04'],
-        },
-        { client: clientMock },
-      );
+      accounts(null, {}, { client: clientMock });
       expect(clientMock.query.mock.calls[0][0]).toMatchObject({
         variables: {
           networkId: 'development',
-          code: '(kadena.spirekey.details "r:mock-account" coin)',
+          accountName: 'r:mock-account',
         },
       });
       expect(clientMock.query.mock.calls[1][0]).toMatchObject({
         variables: {
           networkId: 'testnet04',
-          code: '(kadena.spirekey.details "r:mock-account" coin)',
+          accountName: 'r:mock-account',
         },
       });
     });
@@ -183,14 +180,14 @@ describe('resolvers: account', () => {
       accounts(
         null,
         {
-          networkIds: ['testnet04'],
+          networkId: 'testnet04',
         },
         { client: clientMock },
       );
       expect(clientMock.query.mock.calls[0][0]).toMatchObject({
         variables: {
           networkId: 'testnet04',
-          code: '(kadena.spirekey.details "r:mock-account" coin)',
+          accountName: 'r:mock-account',
         },
       });
     });

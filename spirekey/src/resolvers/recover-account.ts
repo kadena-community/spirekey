@@ -58,9 +58,10 @@ export const useRecoverAccount = () => {
   const { getAccount } = useAccount();
   const [getRecoveredAccount] = useLazyQuery(recoverAccountQuery);
   const recoverAccount = async (networkId: string) => {
-    const { data, error } = await getRecoveredAccount({ variables: { networkId } });
-    console.warn("DEBUGPRINT[5]: recover-account.ts:61: error=", error)
-
+    const { data, error } = await getRecoveredAccount({
+      variables: { networkId },
+    });
+    if (error) throw error;
     const account = await getAccount(networkId, data.recoverAccount);
     const accounts = await getAccounts(networkId);
     const recoveredAccount = {

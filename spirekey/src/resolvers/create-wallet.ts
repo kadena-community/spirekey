@@ -1,12 +1,20 @@
+import {
+  gasStation,
+  genesisPrivateKey,
+  genesisPubKey,
+} from '@/utils/constants';
 import { getRootkeyPasskeyName } from '@/utils/getNetworkDisplayName';
+import { l1Client } from '@/utils/shared/client';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { gql, useMutation } from '@apollo/client';
+import { addSignatures, createTransactionBuilder } from '@kadena/client';
+import { sign } from '@kadena/cryptography-utils';
 import {
   kadenaDecrypt,
   kadenaEncrypt,
   kadenaGenKeypairFromSeed,
 } from '@kadena/hd-wallet';
-import { ChainId } from '@kadena/types';
+import { ChainId, ICommand } from '@kadena/types';
 
 type WalletsVariable = {
   networkId: string;
