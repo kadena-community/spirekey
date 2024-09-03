@@ -4,7 +4,6 @@ import type { Account } from '@kadena/spirekey-types';
 import { atoms } from '@kadena/kode-ui/styles';
 import DeviceCircle from '../Device/DeviceCircle';
 
-const test = 0;
 interface AccountProps {
   account: Account;
   onClick: (account: Account) => void;
