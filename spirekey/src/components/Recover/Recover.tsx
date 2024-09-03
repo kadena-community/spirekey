@@ -24,7 +24,7 @@ import * as styles from './styles.css';
 
 const query = `query recover($filter: String) {
   events(
-    qualifiedEventName: "${process.env.NAMESPACE}.spirekey.ADD_DEVICE"
+    qualifiedEventName: "kadena.spirekey.ADD_DEVICE"
     parametersFilter: $filter
     first: 1
   ) {
@@ -68,7 +68,7 @@ export default function Recover(props: RecoverProps) {
       rpId: window.location.hostname,
     });
     const res = await getGraphClient(network, query, {
-      filter: `{\"array_contains\":\"${id}\"}`,
+      filter: `{\"array_contains\":[\"${id}\"]}`,
     });
     const info = res?.events?.edges?.[0]?.node?.parameters;
     if (!info) throw new Error('No account found');
