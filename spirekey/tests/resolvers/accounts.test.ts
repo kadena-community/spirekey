@@ -1,6 +1,5 @@
 import { accounts } from '@/resolvers/accounts';
-import { type ChainId } from '@kadena/client';
-import { Mock, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('resolvers: account', () => {
   describe('query accounts', () => {
@@ -27,7 +26,7 @@ describe('resolvers: account', () => {
         .fill(1)
         .map((_, i) => i.toString()),
     };
-    it('returns null when no account is found', async () => {
+    it('returns accounts merged with chain data', async () => {
       localStorage.setItem(
         'localAccounts',
         JSON.stringify([
@@ -53,11 +52,10 @@ describe('resolvers: account', () => {
       const res = accounts(
         null,
         {
-          networkId: 'development',
+          networkIds: ['development'],
         },
         { client: clientMock },
       );
-      clientMock.query.calls;
       expect(clientMock.query.mock.calls[0][0]).toMatchObject({
         variables: {
           networkId: 'development',
@@ -65,6 +63,136 @@ describe('resolvers: account', () => {
         },
       });
       expect(res).resolves.toMatchObject([mockAccount]);
+    });
+    it('should sum the balances', async () => {
+      localStorage.setItem(
+        'localAccounts',
+        JSON.stringify([
+          {
+            networkId: 'development',
+            alias: 'MockAccount',
+            accountName: 'r:mock-account',
+          },
+        ]),
+      );
+      const clientMock = {
+        query: vi.fn().mockReturnValue({
+          data: {
+            chain0: {
+              result: JSON.stringify({
+                ...mockAccount,
+                account: mockAccount.accountName,
+                balance: 1.1,
+              }),
+            },
+            chain1: {
+              result: JSON.stringify({
+                ...mockAccount,
+                account: mockAccount.accountName,
+                balance: 1.1,
+              }),
+            },
+            chain2: {
+              result: JSON.stringify({
+                ...mockAccount,
+                account: mockAccount.accountName,
+                balance: 1.1,
+              }),
+            },
+            chain3: {
+              result: JSON.stringify({
+                ...mockAccount,
+                account: mockAccount.accountName,
+                balance: 1.1,
+              }),
+            },
+          },
+        }),
+      } as any;
+      const res = await accounts(
+        null,
+        {
+          networkIds: ['development'],
+        },
+        { client: clientMock },
+      );
+      expect(res[0].balance).toEqual(4.4);
+    });
+    it('should retrieve account info from multiple networks', () => {
+      localStorage.setItem(
+        'localAccounts',
+        JSON.stringify([
+          {
+            networkId: 'development',
+            alias: 'MockAccount',
+            accountName: 'r:mock-account',
+          },
+          {
+            networkId: 'testnet04',
+            alias: 'MockAccount',
+            accountName: 'r:mock-account',
+          },
+        ]),
+      );
+      const clientMock = {
+        query: vi.fn().mockReturnValue({
+          data: {},
+        }),
+      } as any;
+      accounts(
+        null,
+        {
+          networkIds: ['development', 'testnet04'],
+        },
+        { client: clientMock },
+      );
+      expect(clientMock.query.mock.calls[0][0]).toMatchObject({
+        variables: {
+          networkId: 'development',
+          code: '(kadena.spirekey.details "r:mock-account" coin)',
+        },
+      });
+      expect(clientMock.query.mock.calls[1][0]).toMatchObject({
+        variables: {
+          networkId: 'testnet04',
+          code: '(kadena.spirekey.details "r:mock-account" coin)',
+        },
+      });
+    });
+    it('should retrieve account info from a single network', () => {
+      localStorage.setItem(
+        'localAccounts',
+        JSON.stringify([
+          {
+            networkId: 'development',
+            alias: 'MockAccount',
+            accountName: 'r:mock-account',
+          },
+          {
+            networkId: 'testnet04',
+            alias: 'MockAccount',
+            accountName: 'r:mock-account',
+          },
+        ]),
+      );
+      const clientMock = {
+        query: vi.fn().mockReturnValue({
+          data: {},
+        }),
+      } as any;
+      accounts(
+        null,
+        {
+          networkIds: ['testnet04'],
+        },
+        { client: clientMock },
+      );
+      expect(clientMock.query.mock.calls[0][0]).toMatchObject({
+        variables: {
+          networkId: 'testnet04',
+          code: '(kadena.spirekey.details "r:mock-account" coin)',
+        },
+      });
     });
   });
 });

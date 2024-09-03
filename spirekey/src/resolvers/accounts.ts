@@ -4,7 +4,7 @@ import {
   registerRAccounts,
 } from '@/utils/register';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
-import { type ApolloClient, gql, useMutation } from '@apollo/client';
+import { type ApolloClient, gql, useMutation, useQuery } from '@apollo/client';
 import { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
 
@@ -23,29 +23,33 @@ const getAccountQuery = gql`
 `;
 
 type AccountsVariable = {
-  networkId: string;
+  networkIds: string[];
 };
 type ApolloContext = {
   client: ApolloClient<any>;
 };
 export const accounts = async (
   _: any,
-  { networkId }: AccountsVariable,
+  { networkIds }: AccountsVariable,
   { client }: ApolloContext,
 ) => {
-  const accs = localAccounts(networkId);
+  const accs = networkIds.flatMap((networkId) => localAccounts(networkId));
   const resolvedAccs = await Promise.all(
     accs.map(async (acc) => {
       const res = await client.query({
         query: getAccountQuery,
         variables: {
           code: `(kadena.spirekey.details "${acc.accountName}" coin)`,
-          networkId,
+          networkId: acc.networkId,
         },
       });
       return Object.values(res.data)
         .flatMap((r) => r)
-        .map((r: any) => ({ ...JSON.parse(r.result), txQueue: acc.txQueue }));
+        .map((r: any) => ({
+          ...JSON.parse(r.result),
+          txQueue: acc.txQueue,
+          networkId: acc.networkId,
+        }));
     }),
   );
   return resolvedAccs.map((r) =>
@@ -59,8 +63,8 @@ export const accounts = async (
           minRegistrationApprovals: 1,
           devices: info.devices,
           balance: acc.balance + info.balance,
-          networkId,
           txQueue: [],
+          networkId: info.networkId,
         };
         return account;
       },
@@ -79,6 +83,16 @@ const localAccounts = (networkId: string) => {
   if (!accString) return [];
   const accs: Account[] = JSON.parse(accString);
   return accs.filter((a: Account) => a.networkId === networkId);
+};
+const getAccountsQuery = gql`
+  query GetAccounts($networkId: String) {
+    accounts(networkId: $networkId) @client
+  }
+`;
+export const useAccounts = (networkIds: string[]) => {
+  const { data } = useQuery(getAccountsQuery, {
+    variables: { networkIds },
+  });
 };
 
 type CreateAccountVariables = {
