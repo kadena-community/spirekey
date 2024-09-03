@@ -16,16 +16,19 @@ const getAccountQuery = gql`
 `;
 
 type AccountsVariable = {
-  networkIds: string[];
+  networkId?: string;
 };
 type ApolloContext = {
   client: ApolloClient<any>;
 };
 export const accounts = async (
   _: any,
-  { networkIds }: AccountsVariable,
+  { networkId }: AccountsVariable,
   { client }: ApolloContext,
 ) => {
+  const networkIds = networkId
+    ? [networkId]
+    : ['development', 'testnet04', 'mainnet01'];
   const accs = networkIds.flatMap((networkId) => localAccounts(networkId));
   const resolvedAccs = await Promise.all(
     accs.map(async (acc) => {
@@ -137,11 +140,10 @@ const setAccount = (account: Account) => {
     localStorage.getItem('localAccounts') || '[]',
   );
   const isDifferentAccount = isDifferentAccountWith(account);
-  const alias = `SpireKey Account ${accounts.filter((a) => a.networkId === account.networkId).length + 1}`;
   if (accounts.every(isDifferentAccount))
     return localStorage.setItem(
       'localAccounts',
-      JSON.stringify([...accounts, { ...account, alias }]),
+      JSON.stringify([...accounts, account]),
     );
   return localStorage.setItem(
     'localAccounts',
@@ -151,7 +153,6 @@ const setAccount = (account: Account) => {
         return {
           ...acc,
           ...account,
-          alias: account.alias || acc.alias || alias,
         };
       }),
     ),
@@ -170,11 +171,11 @@ export const useAccount = () => {
   };
   return { getAccount, setAccount };
 };
-export const useAccounts = (
-  networkIds: string[] = ['development', 'testnet04', 'mainnet01'],
-) => {
-  const { data, loading, error } = useQuery(getAccountsQuery, {
-    variables: { networkIds },
-  });
-  return { accounts: data, isLoading: loading, error };
+export const useAccounts = () => {
+  const [execute] = useLazyQuery(getAccountsQuery);
+  const getAccounts = async (networkId?: string) => {
+    const { data } = await execute({ variables: { networkId } });
+    return data.accounts;
+  };
+  return { getAccounts };
 };

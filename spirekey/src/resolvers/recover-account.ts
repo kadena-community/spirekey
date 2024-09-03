@@ -54,13 +54,18 @@ export const recoverAccountQuery = gql`
   }
 `;
 export const useRecoverAccount = () => {
-  const { getAccount, setAccount } = useAccount();
+  const { getAccounts } = useAccounts();
+  const { getAccount } = useAccount();
   const [getRecoveredAccount] = useLazyQuery(recoverAccountQuery);
   const recoverAccount = async (networkId: string) => {
     const { data } = await getRecoveredAccount({ variables: { networkId } });
     const account = await getAccount(networkId, data.recoverAccount);
-    setAccount(account);
-    return account
+    const accounts = await getAccounts([networkId]);
+    const recoveredAccount = {
+      ...account,
+      alias: `SpireKey Account ${accounts.length + 1}`,
+    };
+    return recoveredAccount;
   };
   return {
     recoverAccount,
