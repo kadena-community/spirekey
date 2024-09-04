@@ -20,7 +20,7 @@ import { NetworkMainnet } from '../icons/NetworkMainnet';
 import { NetworkTestnet } from '../icons/NetworkTestnet';
 import * as styles from './styles.css';
 
-const query = `query recover($filter: String) {
+const _query = `query recover($filter: String) {
   events(
     qualifiedEventName: "kadena.spirekey.ADD_DEVICE"
     parametersFilter: $filter
@@ -43,7 +43,7 @@ type RecoverProps = {
   onCancel?: () => void;
 };
 export default function Recover(props: RecoverProps) {
-  const { setAccount, accounts } = useAccounts();
+  const { setAccount } = useAccounts();
   const router = useRouter();
   const onConnect = (account: Account) => {
     if (props.onComplete) return props.onComplete(account);

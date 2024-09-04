@@ -55,7 +55,7 @@ export default function CardCollection() {
       >
         {Object.entries(sortedAccounts)
           .filter(([_, accs]) => accs.length)
-          .map(([networkId, accounts], i) => (
+          .map(([networkId, accounts]) => (
             <Stack
               key={networkId}
               flexDirection="column"

@@ -22,7 +22,7 @@ function localStorageProvider() {
       try {
         JSON.stringify(e);
         return true;
-      } catch (error) {
+      } catch (_) {
         // this is probably a circular reference
         // we can't store this in localStorage
         return false;

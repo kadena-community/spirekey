@@ -38,8 +38,8 @@ export const getPermissions = (
     .filter((s) => keys.includes(s.pubKey))
     .flatMap((s) => s.clist)
     .reduce((caps, cap) => {
-      const module = cap?.name.replace(/\.(?:.(?!\.))+$/, '') || '';
-      const moduleCaps = caps.get(module) || [];
-      caps.set(module, [...moduleCaps, cap]);
+      const moduleName = cap?.name.replace(/\.(?:.(?!\.))+$/, '') || '';
+      const moduleCaps = caps.get(moduleName) || [];
+      caps.set(moduleName, [...moduleCaps, cap]);
       return caps;
     }, new Map());

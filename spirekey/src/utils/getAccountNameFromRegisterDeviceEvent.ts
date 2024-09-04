@@ -28,7 +28,7 @@ export const getAccountNameFromRegisterDeviceEvent = async (
       events[0].params[0],
       process.env.WALLET_NETWORK_ID || '',
     );
-  } catch (e: unknown) {
+  } catch (_) {
     throw new Error('No transaction found for event.');
   }
 };
@@ -42,7 +42,7 @@ const fetchEvents = async (
       `${domain}/txs/events?param=${credentialId}&name=REGISTER_DEVICE&modulename=${process.env.NAMESPACE}.webauthn-guard`,
     );
     return await eventsResponse.json();
-  } catch (e: unknown) {
+  } catch (_) {
     return [];
   }
 };

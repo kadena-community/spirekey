@@ -16,7 +16,6 @@ describe('auto transfers', () => {
         vi.mock('@/utils/shared/account', () => {
           return {
             getAccountFromChain: ({
-              networkId,
               accountName,
               chainId,
             }: {

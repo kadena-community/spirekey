@@ -1,19 +1,14 @@
 import React from 'react';
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import MatchMediaMock from 'vitest-matchmedia-mock';
 
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-} from '@/../tests/components/setup';
+import { cleanup, render, screen } from '@/../tests/components/setup';
 
 import Fingerprint from '@/components/icons/Fingerprint/Fingerprint';
 import * as styles from '@/components/icons/Fingerprint/Fingerprint.css';
 
 describe('<Fingerprint />', () => {
-  let matchMediaMock = new MatchMediaMock();
+  const matchMediaMock = new MatchMediaMock();
   beforeAll(() => {
     matchMediaMock.useMediaQuery('(prefers-color-scheme: dark)');
   });

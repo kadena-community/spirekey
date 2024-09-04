@@ -62,7 +62,7 @@ export const getCustomTranslation = ({
   metas: Meta[];
   type: 'granter' | 'acceptor';
 }) => {
-  // @ts-ignore
+  // @ts-expect-error Type 'undefined' could be assigned
   const [capabilityMeta]: CapabilityMeta[] = metas
     .map((meta) => {
       if (type === 'acceptor')

@@ -35,7 +35,9 @@ export function AccountComponent({ account, onClick }: AccountProps) {
         className={atoms({ textAlign: 'right' })}
       >
         <Text>{maskValue(account.accountName)}</Text>
-        <Text bold size="smallest">{account.balance} KDA</Text>
+        <Text bold size="smallest">
+          {account.balance} KDA
+        </Text>
       </Stack>
     </Stack>
   );

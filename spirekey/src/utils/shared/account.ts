@@ -46,7 +46,6 @@ export const getAccountFromChain = async ({
 export const getRAccountFromChain = async ({
   accountName,
   networkId,
-  namespace = process.env.NAMESPACE,
   chainId = process.env.CHAIN_ID as ChainId,
 }: {
   accountName: string;
@@ -197,8 +196,6 @@ const getAccountDetails = async ({
 export const getAccountFromChains = async ({
   accountName,
   networkId,
-  chainIds,
-  namespace = process.env.NAMESPACE,
 }: {
   accountName: string;
   networkId: string;

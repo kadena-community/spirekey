@@ -1,12 +1,10 @@
-import assert from 'node:assert';
-import { describe, it } from 'vitest';
-
 import {
-  filterAcceptorCapabilities,
   filterGranterCapabilities,
   getSmartContractMeta,
 } from '@/utils/shared/smartContractMeta';
 import { ICap } from '@kadena/types';
+import assert from 'node:assert';
+import { describe, it } from 'vitest';
 
 describe('smartContractMeta', () => {
   describe('filtering', () => {

@@ -52,7 +52,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     try {
       const recoveredKey = await getCredentials(networkId);
       setKeypair(recoveredKey);
-    } catch (e) {
+    } catch (_) {
       addNotification({
         title: 'Error unlocking wallet',
         message: 'Could not unlock Wallet using the provided Passkey',
@@ -68,7 +68,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     try {
       const keypair = await createWallet(networkId, chainId!);
       setKeypair(keypair);
-    } catch (e) {
+    } catch (_) {
     } finally {
       setIsSubmitting(false);
     }

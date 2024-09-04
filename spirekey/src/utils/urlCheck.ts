@@ -19,7 +19,7 @@ export const urlCheck =
         variant: 'warning',
         timeout: 30000,
       });
-    } catch (error) {
+    } catch (_) {
       addNotification({
         id: 1,
         title: 'Invalid return url received',
