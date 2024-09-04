@@ -51,8 +51,11 @@ export const createAccount = async (
     domain,
     credentialPubkey: publicKey,
   };
+
   const {
-    data: { name: accountName, guard },
+    data: {
+      accountName: { name: accountName, guard },
+    },
   } = await client.query({
     query: getAccountNameQuery,
     variables: {
