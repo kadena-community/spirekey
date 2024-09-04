@@ -58,7 +58,7 @@ export default function TransactionsPage() {
         startVisual={<MonoArrowBack />}
         style={{ top: -50 }}
         variant="outlined"
-        onPress={() => push(`/accounts/${caccount}`)}
+        onPress={() => push(`/`)}
       >
         Back to Accounts
       </Button>
