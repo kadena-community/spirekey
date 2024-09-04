@@ -39,7 +39,7 @@ export const accounts = async (
           networkId: acc.networkId,
         },
       });
-      return data.account;
+      return { ...acc, ...data.account };
     }),
   );
   return resolvedAccs;
