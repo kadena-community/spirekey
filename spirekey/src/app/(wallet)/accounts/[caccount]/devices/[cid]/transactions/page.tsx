@@ -3,7 +3,7 @@
 import { AccountDetails } from '@/components/AccountDetails/AccountDetails';
 import DeviceCard from '@/components/Card/DeviceCard';
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
-import { useAccounts } from '@/context/AccountsContext';
+import { useAccounts } from '@/resolvers/accounts';
 import { MonoArrowBack } from '@kadena/kode-icons/system';
 import { Button, maskValue } from '@kadena/kode-ui';
 import {
