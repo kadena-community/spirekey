@@ -8,12 +8,12 @@ import type {
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useContext, useEffect, useState } from 'react';
 
-import { useAccounts } from '@/context/AccountsContext';
 import { getSignature } from '@/utils/getSignature';
 
 import { ErrorContext } from '@/components/ErrorNotification/ErrorNotification';
 import { Permissions } from '@/components/Permissions/Permissions';
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
+import { useAccount, useAccounts } from '@/resolvers/accounts';
 import { getOptimalTransactions } from '@/utils/auto-transfers';
 import { getAccountsForTx, getPermissions } from '@/utils/consent';
 import { publishEvent } from '@/utils/publishEvent';
@@ -56,7 +56,8 @@ const getPubkey = (
 };
 export default function Sign(props: Props) {
   const { transactions, accounts: signAccountsString } = props;
-  const { accounts, setAccount } = useAccounts();
+  const { accounts } = useAccounts();
+  const { setAccount } = useAccount();
 
   const { errorMessage, setErrorMessage } = useContext(ErrorContext);
 
@@ -259,7 +260,7 @@ function SignPlumbingTxs({
 
   useEffect(() => {
     setSteps(plumbingSteps);
-  }, [plumbingSteps.map((s) => s.tx.hash).join(',') || '']);
+  }, [plumbingSteps.map((s) => s.tx.hash + s.caps.size).join(',') || '']);
 
   if (!credentialId) {
     return <div>No valid credentials found in this wallet to sign with</div>;

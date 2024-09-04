@@ -3,7 +3,6 @@
 import { Button } from '@/components/shared/Button/Button';
 import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { Surface } from '@/components/Surface/Surface';
-import { useAccounts } from '@/context/AccountsContext';
 import { useSign } from '@/hooks/useSign';
 import { getDeviceByPublicKey } from '@/utils/getDeviceByPublicKey';
 import { Box, Heading, ProductIcon, Stack, Text } from '@kadena/kode-ui';
@@ -26,6 +25,7 @@ import {
 import type { ICommandPayload } from '@kadena/types';
 import { Capability } from '../Capability/Capability';
 import { container, goBack, step, wrapper } from './Sign.css';
+import { useAccounts } from '@/resolvers/accounts';
 
 interface Props {
   transaction: string;
