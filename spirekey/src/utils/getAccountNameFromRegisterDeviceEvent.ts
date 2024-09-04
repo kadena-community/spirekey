@@ -28,8 +28,7 @@ export const getAccountNameFromRegisterDeviceEvent = async (
       events[0].params[0],
       process.env.WALLET_NETWORK_ID || '',
     );
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (e) {
+  } catch (_) {
     throw new Error('No transaction found for event.');
   }
 };
@@ -43,8 +42,7 @@ const fetchEvents = async (
       `${domain}/txs/events?param=${credentialId}&name=REGISTER_DEVICE&modulename=${process.env.NAMESPACE}.webauthn-guard`,
     );
     return await eventsResponse.json();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (e) {
+  } catch (_) {
     return [];
   }
 };

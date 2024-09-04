@@ -22,8 +22,7 @@ function localStorageProvider() {
       try {
         JSON.stringify(e);
         return true;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
+      } catch (_) {
         // this is probably a circular reference
         // we can't store this in localStorage
         return false;

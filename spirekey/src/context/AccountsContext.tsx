@@ -29,10 +29,10 @@ const migrateAccountStructure = (
   },
 ): Account => ({
   ...account,
-  devices: account.devices.map((d) => ({
+  devices: account.devices.map((d: any) => ({
     ...d,
-    deviceType: d.name?.replace(/_.*/, '') || 'security-key',
-    color: d.name?.replace(/.*_/, '') || deviceColors.orange,
+    deviceType: d['device-type'] || 'security-key',
+    color: d.color || deviceColors.orange,
   })),
   networkId: account.network || account.networkId,
   txQueue: account.txQueue || [],
@@ -67,8 +67,8 @@ const getAccountsFromLocalStorage = (): Account[] => {
 const defaultState = {
   networks: ['mainnet01', 'testnet04', getDevnetNetworkId()],
   accounts: getAccountsFromLocalStorage(),
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setAccount: (account: Account): void => undefined,
+
+  setAccount: (_: Account): void => undefined,
 };
 
 const networks = ['mainnet01', 'testnet04', getDevnetNetworkId()];
@@ -158,8 +158,7 @@ const AccountsProvider = ({ children }: Props) => {
             chainIds: remoteAccount.chainIds,
             txQueue: localAccount.txQueue,
           });
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (e) {
+        } catch (_) {
           // We've stored our local data on chain, so localAccount === remoteAccount
           return localAccount;
         }

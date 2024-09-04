@@ -15,7 +15,14 @@ module.exports = [
       'jsx-a11y/heading-has-content': 'warn',
       'jsx-a11y/mouse-events-have-key-events': 'warn',
       'jsx-a11y/role-supports-aria-props': 'warn',
-      '@typescript-eslint/no-unused-vars': 'error',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
     },

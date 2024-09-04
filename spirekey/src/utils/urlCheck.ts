@@ -19,8 +19,7 @@ export const urlCheck =
         variant: 'warning',
         timeout: 30000,
       });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch (_) {
       addNotification({
         id: 1,
         title: 'Invalid return url received',

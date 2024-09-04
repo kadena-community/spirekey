@@ -15,7 +15,7 @@ dotenv.config({
 
 setup('Deploy WebAuthn contract', async () => {
   const isDeployed = await isContractDeployed(
-    `${process.env.NAMESPACE}.webauthn-wallet`,
+    `kadena.spirekey`,
     `${process.env.DEVNET_HOST}/chainweb/0.0/${process.env.DEVNET_NETWORK_ID}/chain/0/pact`,
     0,
     process.env.DEVNET_NETWORK_ID as string,

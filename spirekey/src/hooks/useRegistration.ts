@@ -1,7 +1,8 @@
 import { useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
-import { useAccount } from '@/resolvers/accounts';
-import { useCredentials, useWallet } from '@/resolvers/wallets';
+import { useCredentials } from '@/resolvers/connect-wallet';
+import { useCreateAccount } from '@/resolvers/create-account';
+import { useWallet } from '@/resolvers/create-wallet';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
 import { Account } from '@kadena/spirekey-types';
@@ -31,7 +32,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
 
   const { getCredentials } = useCredentials();
   const { createWallet } = useWallet();
-  const { createAccount } = useAccount();
+  const { createAccount } = useCreateAccount();
 
   const accountPrefix = 'SpireKey Account';
 
@@ -51,8 +52,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     try {
       const recoveredKey = await getCredentials(networkId);
       setKeypair(recoveredKey);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
+    } catch (_) {
       addNotification({
         title: 'Error unlocking wallet',
         message: 'Could not unlock Wallet using the provided Passkey',
@@ -68,8 +68,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     try {
       const keypair = await createWallet(networkId, chainId!);
       setKeypair(keypair);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
+    } catch (_) {
     } finally {
       setIsSubmitting(false);
     }

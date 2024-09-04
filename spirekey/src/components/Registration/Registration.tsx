@@ -220,7 +220,7 @@ const RegisterComponent = ({
         }
       >
         <Stack flexDirection="column" gap="md">
-          <Heading as="h5">Already have a wallet?</Heading>
+          <Heading as="h5">Already have a Kadena SpireKey wallet?</Heading>
           <Text>
             Provide your passkey named{' '}
             <Text bold>{getRootkeyPasskeyName(networkId)}</Text> to add another
@@ -241,7 +241,10 @@ const RegisterComponent = ({
         </Stack>
       </CardContentBlock>
       <CardFooterGroup>
-        <Button onPress={onHandleRegisterWallet}>Create</Button>
+        {networkId === 'mainnet01' && <Button>Create coming soon</Button>}
+        {networkId !== 'mainnet01' && (
+          <Button onPress={onHandleRegisterWallet}>Create</Button>
+        )}
       </CardFooterGroup>
     </CardFixedContainer>
   );

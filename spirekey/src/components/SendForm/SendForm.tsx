@@ -96,8 +96,8 @@ export default function SendForm() {
   const { accounts } = useAccounts();
 
   const [tx, setTx] = useState<ICommandResult>();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [receiverError, setReceiverError] = useState('');
+
+  const [_, setReceiverError] = useState('');
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const account = accounts.find(
