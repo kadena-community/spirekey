@@ -4,6 +4,7 @@ import {
   makeVar,
   useLazyQuery,
   useQuery,
+  useReactiveVar,
 } from '@apollo/client';
 import { Account } from '@kadena/spirekey-types';
 
@@ -115,7 +116,7 @@ export const account = async (
     );
 };
 const isDifferentAccountWith = (account: Account) => (acc: Account) =>
-  acc.networkId !== account.networkId &&
+  acc.networkId !== account.networkId ||
   acc.accountName !== account.accountName;
 const setAccount = (account: Account) => {
   const accounts: Account[] = JSON.parse(
@@ -149,11 +150,11 @@ export const useAccount = () => {
   return { getAccount, setAccount };
 };
 export const useAccounts = () => {
-  const { refetch, data } = useQuery(getAccountsQuery);
+  const { refetch, loading } = useQuery(getAccountsQuery);
   const getAccounts = async (networkId?: string) => {
     const { data } = await refetch({ networkId });
     return data.accounts as Account[];
   };
-  const accounts: Account[] = data?.accounts || [];
-  return { getAccounts, accounts };
+  const accounts = useReactiveVar(accountsVar);
+  return { getAccounts, accounts, loading };
 };
