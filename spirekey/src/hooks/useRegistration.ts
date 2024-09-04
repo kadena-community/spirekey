@@ -87,7 +87,6 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
         publicKey: keypair.publicKey,
         secretKey: keypair.secretKey,
       });
-      console.warn('DEBUGPRINT[8]: useRegistration.ts:82: account=', account);
       setSuccesfulAuthentication(true);
       setAccount(account);
       setCurrentAccount(account);
