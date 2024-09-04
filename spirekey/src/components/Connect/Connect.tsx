@@ -1,5 +1,4 @@
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
-import { useAccounts } from '@/context/AccountsContext';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { ChainId } from '@kadena/client';
 import { Button, Heading, Stack, Text } from '@kadena/kode-ui';
@@ -15,6 +14,7 @@ import { AccountComponent } from '../Account/Account';
 import Recover from '../Recover/Recover';
 import Registration from '../Registration/Registration';
 import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
+import { useAccounts } from '@/resolvers/accounts';
 
 type ConnectComponentProps = {
   chainId: ChainId;

@@ -1,5 +1,5 @@
-import { useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
+import { useAccount, useAccounts } from '@/resolvers/accounts';
 import { useCredentials } from '@/resolvers/connect-wallet';
 import { useCreateAccount } from '@/resolvers/create-account';
 import { useWallet } from '@/resolvers/create-wallet';
@@ -26,7 +26,8 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
   const [account, setCurrentAccount] = useState<Account>();
   const [keypair, setKeypair] = useState<KeyPair>();
 
-  const { accounts, setAccount } = useAccounts();
+  const { accounts } = useAccounts();
+  const { setAccount } = useAccount();
   const { host } = useReturnUrl();
   const { addNotification } = useNotifications();
 

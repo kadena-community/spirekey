@@ -55,11 +55,12 @@ export const recoverAccountQuery = gql`
 `;
 export const useRecoverAccount = () => {
   const { getAccounts } = useAccounts();
-  const { getAccount } = useAccount();
+  const { getAccount, setAccount } = useAccount();
   const [getRecoveredAccount] = useLazyQuery(recoverAccountQuery);
   const recoverAccount = async (networkId: string) => {
     const { data, error } = await getRecoveredAccount({
       variables: { networkId },
+      fetchPolicy: 'network-only',
     });
     if (error) throw error;
     const account = await getAccount(networkId, data.recoverAccount);
@@ -68,6 +69,7 @@ export const useRecoverAccount = () => {
       ...account,
       alias: `SpireKey Account ${accounts.length + 1}`,
     };
+    setAccount(recoveredAccount);
     return recoveredAccount;
   };
   return {

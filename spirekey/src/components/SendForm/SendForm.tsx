@@ -1,6 +1,5 @@
 'use client';
 
-import { useAccounts } from '@/context/AccountsContext';
 import { l1Client } from '@/utils/shared/client';
 import { createTransactionBuilder, ICommandResult } from '@kadena/client';
 import { MonoCopyAll } from '@kadena/kode-icons/system';
@@ -26,6 +25,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
+import { useAccounts } from '@/resolvers/accounts';
 
 const isCoinAccountExisting = async ({
   accountName,
@@ -131,13 +131,13 @@ export default function SendForm() {
   const onSubmit = async (data: FormValues) => {
     if (!account) throw new Error('No account connected');
     if (!data.receiver) throw new Error('No receiver defined');
-    if (!data.networkId) throw new Error('No network selected');
+    if (!account.networkId) throw new Error('No network selected');
     try {
       setIsLoading(true);
       if (
         !(await isCoinAccountExisting({
           accountName: data.receiver,
-          networkId: data.networkId,
+          networkId: account.networkId,
           chainId: data.chainId as ChainId,
         }))
       ) {
@@ -152,7 +152,7 @@ export default function SendForm() {
         chainId: data.chainId as ChainId,
         cids: Array.isArray(cid) ? cid : [cid],
       });
-      tx.setNetworkId(data.networkId);
+      tx.setNetworkId(account.networkId);
       const { transactions, isReady } = await sign(
         [tx.createTransaction()],
         [
@@ -307,7 +307,7 @@ export default function SendForm() {
                 defaultValue={defaultValues.amount}
                 step={0.1}
                 label="Amount"
-                minValue={0.1}
+                minValue={0.0}
                 {...amountProps}
                 onValueChange={(a) => setValue('amount', a)}
               />

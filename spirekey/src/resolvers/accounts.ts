@@ -1,5 +1,14 @@
-import { type ApolloClient, gql, useLazyQuery, useQuery } from '@apollo/client';
+import {
+  type ApolloClient,
+  gql,
+  makeVar,
+  useLazyQuery,
+  useQuery,
+  useReactiveVar,
+} from '@apollo/client';
 import { Account } from '@kadena/spirekey-types';
+
+const accountsVar = makeVar<Account[]>([]);
 
 const getAccountQuery = gql`
   query GetAccount($code: String!) {
@@ -42,6 +51,7 @@ export const accounts = async (
       return { ...acc, ...data.account };
     }),
   );
+  accountsVar(resolvedAccs);
   return resolvedAccs;
 };
 const localAccounts = (networkId: string) => {
@@ -106,30 +116,25 @@ export const account = async (
     );
 };
 const isDifferentAccountWith = (account: Account) => (acc: Account) =>
-  acc.networkId !== account.networkId &&
+  acc.networkId !== account.networkId ||
   acc.accountName !== account.accountName;
 const setAccount = (account: Account) => {
   const accounts: Account[] = JSON.parse(
     localStorage.getItem('localAccounts') || '[]',
   );
   const isDifferentAccount = isDifferentAccountWith(account);
-  if (accounts.every(isDifferentAccount))
-    return localStorage.setItem(
-      'localAccounts',
-      JSON.stringify([...accounts, account]),
-    );
-  return localStorage.setItem(
-    'localAccounts',
-    JSON.stringify(
-      accounts.map((acc) => {
+  const newAccounts = accounts.every(isDifferentAccount)
+    ? [...accounts, account]
+    : accounts.map((acc) => {
         if (isDifferentAccount(acc)) return acc;
         return {
           ...acc,
           ...account,
         };
-      }),
-    ),
-  );
+      });
+
+  accountsVar(newAccounts);
+  return localStorage.setItem('localAccounts', JSON.stringify(newAccounts));
 };
 const accountQuery = gql`
   query AccountQuery($accountName: String!, $networkId: String!) {
@@ -145,11 +150,11 @@ export const useAccount = () => {
   return { getAccount, setAccount };
 };
 export const useAccounts = () => {
-  const { refetch, data } = useQuery(getAccountsQuery);
+  const { refetch, loading } = useQuery(getAccountsQuery);
   const getAccounts = async (networkId?: string) => {
     const { data } = await refetch({ networkId });
     return data.accounts as Account[];
   };
-  const accounts: Account[] = data?.accounts || [];
-  return { getAccounts, accounts };
+  const accounts = useReactiveVar(accountsVar);
+  return { getAccounts, accounts, loading };
 };

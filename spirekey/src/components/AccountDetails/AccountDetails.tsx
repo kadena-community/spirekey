@@ -53,29 +53,30 @@ export function AccountDetails({ account }: AccountDetailsProps) {
         <Column>Amount</Column>
       </TableHeader>
       <TableBody>
-        {data?.map((tx: any, idx: number) => (
-          <Row key={idx}>
-            <Cell>
-              {maskValue(
-                tx.fromAccount === account.accountName
-                  ? tx.toAccount
-                  : tx.fromAccount,
-              )}
-            </Cell>
-            <Cell>{new Date(tx.blockTime).toLocaleString()}</Cell>
-            <Cell>
-              <Box
-                className={amountCell}
-                data-type={
-                  tx.fromAccount === account.accountName ? 'debit' : 'credit'
-                }
-              >
-                {tx.fromAccount === account.accountName ? '-' : '+'}
-                {parseFloat(tx.amount)}
-              </Box>
-            </Cell>
-          </Row>
-        ))}
+        {data
+          ?.map((tx: any) => (
+            <Row key={tx.requestKey + tx.idx}>
+              <Cell>
+                {maskValue(
+                  tx.fromAccount === account.accountName
+                    ? tx.toAccount
+                    : tx.fromAccount,
+                )}
+              </Cell>
+              <Cell>{new Date(tx.blockTime).toLocaleString()}</Cell>
+              <Cell>
+                <Box
+                  className={amountCell}
+                  data-type={
+                    tx.fromAccount === account.accountName ? 'debit' : 'credit'
+                  }
+                >
+                  {tx.fromAccount === account.accountName ? '-' : '+'}
+                  {parseFloat(tx.amount)}
+                </Box>
+              </Cell>
+            </Row>
+          ))}
       </TableBody>
     </Table>
   );

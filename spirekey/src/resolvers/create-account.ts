@@ -49,7 +49,7 @@ export const createAccount = async (
     alias,
     color,
     domain,
-    credentialPubkey: publicKey,
+    credentialPubkey: passKey,
   };
 
   const {

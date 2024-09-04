@@ -1,7 +1,6 @@
 'use client';
 
 import { NotificationContainer } from '@/components/shared/NotificationsContainer/NotificationsContainer';
-import { AccountsProvider } from '@/context/AccountsContext';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { NotificationsProvider } from '@/context/shared/NotificationsContext';
 import { apolloClient } from '@/hooks/useQuery';
@@ -48,23 +47,21 @@ export default function Providers({
       <SWRConfig value={{ provider: localStorageProvider }}>
         <ApolloProvider client={apolloClient}>
           <NotificationsProvider>
-            <AccountsProvider>
-              <ThemeProvider
-                forcedTheme="dark"
-                attribute="class"
-                value={{
-                  light: darkThemeClass,
-                  dark: darkThemeClass,
-                }}
-                enableSystem={true}
-                enableColorScheme={true} // When enabled, we can't make the background of the embedded iframe transparent
-              >
-                <>
-                  {children}
-                  <NotificationContainer />
-                </>
-              </ThemeProvider>
-            </AccountsProvider>
+            <ThemeProvider
+              forcedTheme="dark"
+              attribute="class"
+              value={{
+                light: darkThemeClass,
+                dark: darkThemeClass,
+              }}
+              enableSystem={true}
+              enableColorScheme={true} // When enabled, we can't make the background of the embedded iframe transparent
+            >
+              <>
+                {children}
+                <NotificationContainer />
+              </>
+            </ThemeProvider>
           </NotificationsProvider>
         </ApolloProvider>
       </SWRConfig>

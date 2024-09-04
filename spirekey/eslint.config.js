@@ -36,6 +36,7 @@ module.exports = [
       'coverage/',
       'src/app/(examples)/',
       'src/app/(wallet)/',
+      'playwright-report/',
     ],
   },
 ];

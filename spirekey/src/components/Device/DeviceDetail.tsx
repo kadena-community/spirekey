@@ -1,8 +1,8 @@
-import { useAccounts } from '@/context/AccountsContext';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { calculateBalancePercentage } from '@/utils/balance';
 import { Box, Stack } from '@kadena/kode-ui';
 import DeviceCard from '../Card/DeviceCard';
+import { useAccounts } from '@/resolvers/accounts';
 
 interface Props {
   accountName: string;

@@ -1,4 +1,3 @@
-import { Device } from '@/context/AccountsContext';
 import {
   arrayParameterValue,
   objectParameterValue,
@@ -6,6 +5,7 @@ import {
   searchParamsToString,
   urlWithSearchParams,
 } from '@/utils/searchParameters';
+import { Device } from '@kadena/spirekey-sdk';
 import { describe, expect, it } from 'vitest';
 
 describe('searchParameters', () => {

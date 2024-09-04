@@ -1,6 +1,6 @@
 'use client';
 
-import { useAccounts } from '@/context/AccountsContext';
+import { useAccounts } from '@/resolvers/accounts';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -11,14 +11,14 @@ const CardCollection = dynamic(
 );
 
 export default function Accounts() {
-  const { accounts } = useAccounts();
+  const { accounts, loading } = useAccounts();
   const router = useRouter();
 
   useEffect(() => {
-    if (!accounts.length) {
+    if (!accounts.length && !loading) {
       router.replace('/welcome');
     }
-  }, [accounts]);
+  }, [accounts, loading]);
 
   return <CardCollection />;
 }
