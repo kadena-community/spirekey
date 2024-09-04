@@ -12,7 +12,7 @@ const getGraphqlHost = (networkId: string) => {
     return 'https://graph.testnet.kadena.network/graphql';
   return 'https://graph.kadena.network/graphql';
 };
-const cache = new InMemoryCache({});
+const cache = new InMemoryCache();
 const httpLink = new HttpLink({
   includeUnusedVariables: true,
   fetch: (_, opts) => {

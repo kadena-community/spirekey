@@ -48,23 +48,21 @@ export default function Providers({
       <SWRConfig value={{ provider: localStorageProvider }}>
         <ApolloProvider client={apolloClient}>
           <NotificationsProvider>
-            <AccountsProvider>
-              <ThemeProvider
-                forcedTheme="dark"
-                attribute="class"
-                value={{
-                  light: darkThemeClass,
-                  dark: darkThemeClass,
-                }}
-                enableSystem={true}
-                enableColorScheme={true} // When enabled, we can't make the background of the embedded iframe transparent
-              >
-                <>
-                  {children}
-                  <NotificationContainer />
-                </>
-              </ThemeProvider>
-            </AccountsProvider>
+            <ThemeProvider
+              forcedTheme="dark"
+              attribute="class"
+              value={{
+                light: darkThemeClass,
+                dark: darkThemeClass,
+              }}
+              enableSystem={true}
+              enableColorScheme={true} // When enabled, we can't make the background of the embedded iframe transparent
+            >
+              <>
+                {children}
+                <NotificationContainer />
+              </>
+            </ThemeProvider>
           </NotificationsProvider>
         </ApolloProvider>
       </SWRConfig>

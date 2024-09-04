@@ -53,8 +53,8 @@ export function AccountDetails({ account }: AccountDetailsProps) {
         <Column>Amount</Column>
       </TableHeader>
       <TableBody>
-        {data?.map((tx: any, idx: number) => (
-          <Row key={idx}>
+        {data?.map((tx: any) => (
+          <Row key={tx.requestKey + tx.toAccount}>
             <Cell>
               {maskValue(
                 tx.fromAccount === account.accountName
