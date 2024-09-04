@@ -1,7 +1,6 @@
 'use client';
 
 import { NotificationContainer } from '@/components/shared/NotificationsContainer/NotificationsContainer';
-import { AccountsProvider } from '@/context/AccountsContext';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { NotificationsProvider } from '@/context/shared/NotificationsContext';
 import { apolloClient } from '@/hooks/useQuery';

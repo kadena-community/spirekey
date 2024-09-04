@@ -1,6 +1,6 @@
 'use client';
 
-import { useAccounts } from '@/context/AccountsContext';
+import { useAccounts } from '@/resolvers/accounts';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';

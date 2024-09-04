@@ -1,6 +1,5 @@
 'use client';
 
-import { useAccounts } from '@/context/AccountsContext';
 import { l1Client } from '@/utils/shared/client';
 import { createTransactionBuilder, ICommandResult } from '@kadena/client';
 import { MonoCopyAll } from '@kadena/kode-icons/system';
@@ -26,6 +25,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
+import { useAccounts } from '@/resolvers/accounts';
 
 const isCoinAccountExisting = async ({
   accountName,

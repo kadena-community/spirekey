@@ -1,6 +1,5 @@
 'use client';
 
-import { useAccounts } from '@/context/AccountsContext';
 import { useSettings } from '@/context/SettingsContext';
 import { useRecoverAccount } from '@/resolvers/recover-account';
 import { Button, Heading, Stack, Text } from '@kadena/kode-ui';
@@ -43,7 +42,6 @@ type RecoverProps = {
   onCancel?: () => void;
 };
 export default function Recover(props: RecoverProps) {
-  const { setAccount } = useAccounts();
   const router = useRouter();
   const onConnect = (account: Account) => {
     if (props.onComplete) return props.onComplete(account);
@@ -63,7 +61,6 @@ export default function Recover(props: RecoverProps) {
       searchParams.get('networkId') ||
       'mainnet01';
     const account = await recoverAccount(network);
-    setAccount(account);
     onConnect(account);
     // Redirect back to home screen, but publish the connect event first
   };
