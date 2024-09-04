@@ -15,7 +15,6 @@ import {
   CardFixedContainer,
   CardFooterGroup,
 } from '@kadena/kode-ui/patterns';
-import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
 import AccountNetwork from '../Card/AccountNetwork';
 import Alias from '../Card/Alias';
@@ -24,7 +23,6 @@ import CardBottom from '../Card/CardBottom';
 import DeviceIcons from '../Card/DeviceIcons';
 import PasskeyCard from '../Card/PasskeyCard';
 import { Step, Stepper } from '../Stepper/Stepper';
-import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
 
 interface Props {
   redirectUrl?: string;
@@ -114,12 +112,6 @@ const RegisterComponent = ({
     return (
       <CardFixedContainer>
         <CardContentBlock
-          visual={
-            <SpireKeyKdacolorLogoGreen
-              aria-label="SpireKey"
-              fontSize={token('typography.fontSize.9xl')}
-            />
-          }
           title="Register Account"
           description={
             'Create your account to manage your web3 assets managed by your SpireKey wallet.'
@@ -156,12 +148,6 @@ const RegisterComponent = ({
     return (
       <CardFixedContainer>
         <CardContentBlock
-          visual={
-            <SpireKeyKdacolorLogoGreen
-              aria-label="SpireKey"
-              fontSize={token('typography.fontSize.9xl')}
-            />
-          }
           title="Register Account"
           description={
             'Create your account to manage your web3 assets managed by your SpireKey wallet.'
@@ -202,12 +188,6 @@ const RegisterComponent = ({
   return (
     <CardFixedContainer>
       <CardContentBlock
-        visual={
-          <SpireKeyKdacolorLogoGreen
-            aria-label="SpireKey"
-            fontSize={token('typography.fontSize.9xl')}
-          />
-        }
         title="Connect Wallet"
         description={
           'Do you wish to manage your wallet here on SpireKey? This will become your home of operation, your gateway into the a secure web 3 experience!'
