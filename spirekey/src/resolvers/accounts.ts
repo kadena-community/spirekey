@@ -1,5 +1,13 @@
-import { type ApolloClient, gql, useLazyQuery, useQuery } from '@apollo/client';
+import {
+  type ApolloClient,
+  gql,
+  makeVar,
+  useLazyQuery,
+  useQuery,
+} from '@apollo/client';
 import { Account } from '@kadena/spirekey-types';
+
+const accountsVar = makeVar<Account[]>([]);
 
 const getAccountQuery = gql`
   query GetAccount($code: String!) {
@@ -42,6 +50,7 @@ export const accounts = async (
       return { ...acc, ...data.account };
     }),
   );
+  accountsVar(resolvedAccs);
   return resolvedAccs;
 };
 const localAccounts = (networkId: string) => {
@@ -113,23 +122,18 @@ const setAccount = (account: Account) => {
     localStorage.getItem('localAccounts') || '[]',
   );
   const isDifferentAccount = isDifferentAccountWith(account);
-  if (accounts.every(isDifferentAccount))
-    return localStorage.setItem(
-      'localAccounts',
-      JSON.stringify([...accounts, account]),
-    );
-  return localStorage.setItem(
-    'localAccounts',
-    JSON.stringify(
-      accounts.map((acc) => {
+  const newAccounts = accounts.every(isDifferentAccount)
+    ? [...accounts, account]
+    : accounts.map((acc) => {
         if (isDifferentAccount(acc)) return acc;
         return {
           ...acc,
           ...account,
         };
-      }),
-    ),
-  );
+      });
+
+  accountsVar(newAccounts);
+  return localStorage.setItem('localAccounts', JSON.stringify(newAccounts));
 };
 const accountQuery = gql`
   query AccountQuery($accountName: String!, $networkId: String!) {
