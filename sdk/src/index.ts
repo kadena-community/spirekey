@@ -7,14 +7,9 @@ type SpireKeySDK = {
   sign: typeof sign;
 };
 const initSpireKey = (
-  options: { hostUrl?: string; useRAccount?: boolean } = {
-    useRAccount: false,
-  },
+  options: { hostUrl?: string } = { hostUrl: 'https://spirekey.kadena.io' },
 ): SpireKeySDK => {
-  EmbedManager.getInstance(
-    options.hostUrl || 'https://spirekey.kadena.io',
-    options.useRAccount,
-  );
+  EmbedManager.getInstance(options.hostUrl);
   return { connect, sign };
 };
 
