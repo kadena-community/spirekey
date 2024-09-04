@@ -28,6 +28,7 @@ describe('SDK', () => {
         devices: [],
         networkId: 'mainnet01',
         chainIds: ['0', '18'],
+        txQueue: [],
       };
       publishEvent('connected', account);
       vi.waitFor(() => expect(cb).toHaveBeenCalledWith(account), 1000);
@@ -37,7 +38,10 @@ describe('SDK', () => {
     it('should fire the event', () => {
       const cb = vi.fn();
       onTransactionsSigned(cb);
-      const sig = { hash: [{ sig: 'something', pubKey: 'pubKey' }] };
+      const sig = {
+        tx: { hash: [{ sig: 'something', pubKey: 'pubKey' }] },
+        accounts: [],
+      };
       publishEvent('signed', sig);
       vi.waitFor(() => expect(cb).toHaveBeenCalledWith(sig), 1000);
     });

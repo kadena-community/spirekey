@@ -34,7 +34,6 @@ export const ConnectStep = ({
   useEffect(() => {
     initSpireKey({
       hostUrl: wallet,
-      useRAccount: true,
     });
   }, [wallet]);
   const onConnect = async () => {
