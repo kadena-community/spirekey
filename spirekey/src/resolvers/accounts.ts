@@ -75,15 +75,16 @@ export const account = async (
   }: { networkId: string; accountName: string; fungible?: string },
   { client }: ApolloContext,
 ) => {
-  const res = await client.query({
+  const { data } = await client.query({
     query: getAccountQuery,
     variables: {
       code: `(kadena.spirekey.details "${accountName}" ${fungible})`,
       networkId,
     },
   });
-  return Object.values(res.data)
+  return Object.values(data)
     .flatMap((r) => r)
+    .filter((r: any) => r.result)
     .map((r: any) => ({
       ...JSON.parse(r.result),
       txQueue: [],
