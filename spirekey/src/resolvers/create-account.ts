@@ -87,7 +87,7 @@ export const createAccount = async (
         deviceType,
         domain,
         guard: {
-          keys: [getWebAuthnPubkeyFormat(publicKey)],
+          keys: [getWebAuthnPubkeyFormat(passKey)],
           pred: 'keys-any',
         },
         'credential-id': credentialId,
