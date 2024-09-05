@@ -8,12 +8,10 @@ import {
   CardFixedContainer,
   CardFooterGroup,
 } from '@kadena/kode-ui/patterns';
-import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
 import { useRouter } from 'next/navigation';
 import { Radio, RadioGroup } from 'react-aria-components';
-import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
 import { NetworkDevnet } from '../icons/NetworkDevnet';
 import { NetworkMainnet } from '../icons/NetworkMainnet';
 import { NetworkTestnet } from '../icons/NetworkTestnet';
@@ -72,12 +70,6 @@ export default function Recover(props: RecoverProps) {
           <CardContentBlock
             title="Recover"
             description="by selecting a network first"
-            visual={
-              <SpireKeyKdacolorLogoGreen
-                aria-label="SpireKey"
-                fontSize={token('typography.fontSize.9xl')}
-              />
-            }
           >
             <RadioGroup name="network">
               <Stack flexDirection="row" gap="md">
@@ -107,12 +99,6 @@ export default function Recover(props: RecoverProps) {
           <CardContentBlock
             title="Recover"
             description="by selecting a passkey"
-            visual={
-              <SpireKeyKdacolorLogoGreen
-                aria-label="SpireKey"
-                fontSize={token('typography.fontSize.9xl')}
-              />
-            }
           >
             <Heading>Select Account Passkey</Heading>
             <Text>

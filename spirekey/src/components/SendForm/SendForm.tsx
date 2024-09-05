@@ -2,7 +2,7 @@
 
 import { l1Client } from '@/utils/shared/client';
 import { createTransactionBuilder, ICommandResult } from '@kadena/client';
-import { MonoCopyAll } from '@kadena/kode-icons/system';
+import {MonoArrowBack, MonoCopyAll} from '@kadena/kode-icons/system';
 import {
   Button,
   Link,
@@ -18,13 +18,12 @@ import {
   CardFixedContainer,
   CardFooterGroup,
 } from '@kadena/kode-ui/patterns';
-import { atoms, token } from '@kadena/kode-ui/styles';
+import { atoms } from '@kadena/kode-ui/styles';
 import { Account, initSpireKey, sign } from '@kadena/spirekey-sdk';
 import { ChainId, ICommand } from '@kadena/types';
-import { useParams } from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
 import { useAccounts } from '@/resolvers/accounts';
 
 const isCoinAccountExisting = async ({
@@ -94,6 +93,7 @@ const getTransferTx = ({
 export default function SendForm() {
   const { caccount, cid } = useParams();
   const { accounts } = useAccounts();
+  const { push } = useRouter();
 
   const [tx, setTx] = useState<ICommandResult>();
 
@@ -195,13 +195,16 @@ export default function SendForm() {
   if (tx)
     return (
       <CardFixedContainer>
+        <Button
+          className={atoms({ position: 'absolute', left: 0 })}
+          startVisual={<MonoArrowBack />}
+          style={{ top: -50 }}
+          variant="outlined"
+          onPress={() => push(`/`)}
+        >
+          Back to Accounts
+        </Button>
         <CardContentBlock
-          visual={
-            <SpireKeyKdacolorLogoGreen
-              aria-label="SpireKey"
-              fontSize={token('typography.fontSize.9xl')}
-            />
-          }
           title="Transfer Result"
           description={`You have successfully transferred ${getValues('amount')}KDA to ${maskValue(getValues('receiver'))}`}
         >
@@ -267,13 +270,16 @@ export default function SendForm() {
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardFixedContainer>
+          <Button
+            className={atoms({ position: 'absolute', left: 0 })}
+            startVisual={<MonoArrowBack />}
+            style={{ top: -50 }}
+            variant="outlined"
+            onPress={() => push(`/`)}
+          >
+            Back to Accounts
+          </Button>
           <CardContentBlock
-            visual={
-              <SpireKeyKdacolorLogoGreen
-                aria-label="SpireKey"
-                fontSize={token('typography.fontSize.9xl')}
-              />
-            }
             title="Transfer"
             description="your KDA to another account."
           >

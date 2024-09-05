@@ -3,11 +3,9 @@ import { Heading, Stack } from '@kadena/kode-ui';
 import { useAccounts } from '@/resolvers/accounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { CardContentBlock, CardFixedContainer } from '@kadena/kode-ui/patterns';
-import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
 import { useRouter } from 'next/navigation';
 import { AccountComponent } from '../Account/Account';
-import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
 
 type SortedAccounts = {
   mainnet01: Account[];
@@ -44,12 +42,6 @@ export default function CardCollection() {
   return (
     <CardFixedContainer>
       <CardContentBlock
-        visual={
-          <SpireKeyKdacolorLogoGreen
-            aria-label="SpireKey"
-            fontSize={token('typography.fontSize.9xl')}
-          />
-        }
         title="Accounts"
         description={`available in your wallet`}
       >
