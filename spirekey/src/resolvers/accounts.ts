@@ -48,6 +48,7 @@ export const accounts = async (
           networkId: acc.networkId,
         },
       });
+      if (!data?.account) return acc;
       return { ...acc, ...data.account };
     }),
   );
