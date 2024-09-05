@@ -18,7 +18,7 @@ import {
   CardFixedContainer,
   CardFooterGroup,
 } from '@kadena/kode-ui/patterns';
-import { atoms, token } from '@kadena/kode-ui/styles';
+import { atoms } from '@kadena/kode-ui/styles';
 import { Account, initSpireKey, sign } from '@kadena/spirekey-sdk';
 import { ChainId, ICommand } from '@kadena/types';
 import {useParams, useRouter} from 'next/navigation';
