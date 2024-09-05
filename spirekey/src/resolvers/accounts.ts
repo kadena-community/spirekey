@@ -49,7 +49,7 @@ export const accounts = async (
         },
       });
       if (!data?.account?.accountName) return acc;
-      return { ...acc, ...data.account };
+      return { ...acc, ...data.account, txQueue: acc.txQueue };
     }),
   );
   accountsVar(resolvedAccs);
