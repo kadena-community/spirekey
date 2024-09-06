@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi, vitest } from 'vitest';
-import { onAccountConnected, publishEvent } from '../events';
+import { describe, expect, it, vi } from 'vitest';
+import { onAccountConnected } from '../events';
 
 describe('events', () => {
   describe('when firing events that are not registered', () => {

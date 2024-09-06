@@ -100,6 +100,15 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^1.5.2
         version: 1.6.0(vitest@1.6.0(@types/node@22.5.1)(happy-dom@15.0.0)(jsdom@25.0.0)(terser@5.31.6))
+      eslint:
+        specifier: ^9.9.1
+        version: 9.9.1(jiti@1.21.6)
+      eslint-plugin-jsx-a11y:
+        specifier: ^6.9.0
+        version: 6.9.0(eslint@9.9.1(jiti@1.21.6))
+      eslint-plugin-react:
+        specifier: ^7.35.0
+        version: 7.35.0(eslint@9.9.1(jiti@1.21.6))
       typescript:
         specifier: ^5.5.2
         version: 5.5.4
