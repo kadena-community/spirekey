@@ -12,7 +12,7 @@ const BetaNotification = dynamic(
   },
 );
 
-import '../global.css';
+import './global.css';
 
 export const metadata: Metadata = {
   title: 'Kadena SpireKey',

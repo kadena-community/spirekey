@@ -12,11 +12,11 @@ export default function NotificationLayout({
     <SettingsProvider displayDevMode={false}>
       <ThemeProvider
         attribute="class"
+        forcedTheme="dark"
         value={{
+          light: darkThemeClass,
           dark: darkThemeClass,
         }}
-        enableSystem={true}
-        enableColorScheme={true} // When enabled, we can't make the background of the embedded iframe transparent
       >
         {children}
       </ThemeProvider>
