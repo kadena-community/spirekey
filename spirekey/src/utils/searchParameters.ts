@@ -1,7 +1,5 @@
 import type { Device } from '@kadena/spirekey-types';
 
-import { getDeviceIconSrc } from './getDeviceIconSrc';
-
 export const returnUrlWithDevice = (
   url: string,
   device: Device,
