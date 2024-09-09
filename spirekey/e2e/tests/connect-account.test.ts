@@ -8,6 +8,8 @@ test.beforeEach(async ({ exampleApp, webAuthnHelper }) => {
 
 test('Connect SpireKey Account: Onboarding', async ({
   exampleConnectPage,
+  exampleFundPage,
+  exampleTransferPage,
   localStorageHelper,
 }) => {
   await test.step('Visit Connect page without having account', async () => {
@@ -20,5 +22,8 @@ test('Connect SpireKey Account: Onboarding', async ({
     await connectPage.createNewWallet();
     await connectPage.createNewAccount();
     await connectPage.completeRegistration();
+    await exampleFundPage.requestFunds();
+    await exampleTransferPage.setReceiver();
+    await exampleTransferPage.sign();
   });
 });
