@@ -1,9 +1,9 @@
 import { test } from '@e2e/fixtures/test.fixture';
 import { expect } from '@playwright/test';
 
-test.beforeEach(async ({ spireKeyApp, webAuthnHelper }) => {
+test.beforeEach(async ({ spireKeyApp, webAuthnHelper, page }) => {
   await spireKeyApp.openSpireKeyApp();
-  await webAuthnHelper.enableWebAuthN();
+  await webAuthnHelper.enableVirtualAuthenticator(page, null);
 });
 
 // Skip this test because multiple webauthn credentials are created

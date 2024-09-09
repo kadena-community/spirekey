@@ -1,8 +1,8 @@
 import { test } from '@e2e/fixtures/test.fixture';
 
-test.beforeEach(async ({ spireKeyApp, webAuthnHelper }) => {
+test.beforeEach(async ({ spireKeyApp, webAuthnHelper, page }) => {
   await spireKeyApp.openSpireKeyApp();
-  await webAuthnHelper.enableWebAuthN();
+  await webAuthnHelper.enableVirtualAuthenticator(page, null);
 });
 
 test('Create new account using SpireKey', async ({
