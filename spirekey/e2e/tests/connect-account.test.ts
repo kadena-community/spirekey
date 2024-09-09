@@ -15,6 +15,10 @@ test('Connect SpireKey Account: Onboarding', async ({
     await exampleConnectPage.openAdvancedSettings();
     await exampleConnectPage.selectLocalWallet();
     await exampleConnectPage.selectDevnet();
-    await exampleConnectPage.connect();
+    const connectPage = await exampleConnectPage.connect();
+    await connectPage.startRegistration();
+    await connectPage.createNewWallet();
+    await connectPage.createNewAccount();
+    await connectPage.completeRegistration();
   });
 });
