@@ -34,12 +34,22 @@ export default defineConfig({
       },
     },
   ],
-  webServer: {
-    command: `pnpm run start`,
-    url: 'http://localhost:1337',
-    reuseExistingServer: process.env.CI === undefined,
-    timeout: 60000,
-    stdout: 'ignore',
-    stderr: 'pipe',
-  },
+  webServer: [
+    {
+      command: `pnpm run start`,
+      url: 'http://localhost:1337',
+      reuseExistingServer: process.env.CI === undefined,
+      timeout: 60000,
+      stdout: 'ignore',
+      stderr: 'pipe',
+    },
+    {
+      command: `cd ../examples/embedded-nextjs/ && pnpm run start`,
+      url: 'http://localhost:1338',
+      reuseExistingServer: process.env.CI === undefined,
+      timeout: 60000,
+      stdout: 'ignore',
+      stderr: 'pipe',
+    },
+  ],
 });
