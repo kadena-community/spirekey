@@ -8,6 +8,7 @@
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "inputs": [
         "src/**",
+        "e2e/**",
         "public/**",
         "tsconfig.json",
         "package.json",
