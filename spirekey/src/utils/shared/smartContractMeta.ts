@@ -134,26 +134,3 @@ export const filterGranterCapabilities =
     const granter = capability.args[capabilityMeta.argumentIndex];
     return granter === account.accountName;
   };
-
-export const filterAcceptorCapabilities =
-  ({
-    account,
-    meta,
-  }: {
-    account: Pick<Account, 'accountName'>;
-    meta: Meta[];
-  }) =>
-  (capability: ICap) => {
-    const smartContractMeta = meta.find((m) =>
-      new RegExp(`^${m.module}\.`).test(capability.name),
-    );
-    if (!smartContractMeta) return false;
-    const capabilityMeta = getAcceptorCapabilityMeta(
-      smartContractMeta,
-      capability.name,
-    );
-    if (!capabilityMeta) return false;
-    if (capabilityMeta.argumentIndex === undefined) return true;
-    const acceptor = capability.args[capabilityMeta.argumentIndex];
-    return acceptor === account.accountName;
-  };

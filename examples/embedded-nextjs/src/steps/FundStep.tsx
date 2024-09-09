@@ -37,10 +37,7 @@ export const FundStep = ({
           visual={<ProductIcon.QuickStart size="xl" />}
           title="Step 2: Fund your account"
           description="Your account has no funds. In the real world you would be funding your account through a dex or other providers. In this example we will fund your account using a faucet simulating an onramp."
-        supportingContent={
-          <ExampleStepper step={1} />
-
-        }
+          supportingContent={<ExampleStepper step={1} />}
         >
           <Stack flexDirection="column" gap="md">
             <NumberField
