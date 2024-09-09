@@ -1,9 +1,13 @@
 import type { Metadata } from 'next';
 
+import {
+  default as favicon,
+  default as faviconSVG,
+} from '@/assets/images/favicon.svg';
+import { darkThemeClass } from '@kadena/kode-ui/styles';
+import { ThemeProvider } from 'next-themes';
 import dynamic from 'next/dynamic';
 import './global.embedded.css';
-import favicon from '@/assets/images/favicon.svg';
-import faviconSVG from "@/assets/images/favicon.svg";
 
 export const metadata: Metadata = {
   title: 'Kadena SpireKey',
@@ -29,7 +33,18 @@ export default function RootLayout({
         <link rel="icon" href={faviconSVG.src} type="image/svg+xml" />
       </head>
       <body>
-        <ErrorNotification>{children}</ErrorNotification>
+        <ThemeProvider
+          forcedTheme="dark"
+          attribute="class"
+          value={{
+            light: darkThemeClass,
+            dark: darkThemeClass,
+          }}
+          enableSystem={true}
+          enableColorScheme={true} // When enabled, we can't make the background of the embedded iframe transparent
+        >
+          <ErrorNotification>{children}</ErrorNotification>
+        </ThemeProvider>
       </body>
     </html>
   );

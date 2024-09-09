@@ -1,4 +1,5 @@
-import { atoms } from '@kadena/kode-ui/styles';
+import { atoms, darkThemeClass } from '@kadena/kode-ui/styles';
+import { ThemeProvider } from 'next-themes';
 import './globals.css';
 
 export default function RootLayout({
@@ -13,7 +14,18 @@ export default function RootLayout({
           backgroundColor: 'surface.default',
         })}
       >
-        {children}
+        <ThemeProvider
+          forcedTheme="light"
+          attribute="class"
+          value={{
+            light: 'light',
+            dark: darkThemeClass,
+          }}
+          enableSystem={true}
+          enableColorScheme={true} // When enabled, we can't make the background of the embedded iframe transparent
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

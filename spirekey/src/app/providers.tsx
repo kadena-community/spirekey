@@ -48,10 +48,9 @@ export default function Providers({
         <ApolloProvider client={apolloClient}>
           <NotificationsProvider>
             <ThemeProvider
-              forcedTheme="dark"
               attribute="class"
               value={{
-                light: darkThemeClass,
+                light: 'light',
                 dark: darkThemeClass,
               }}
               enableSystem={true}
