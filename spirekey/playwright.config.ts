@@ -36,8 +36,7 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: `npx turbo start:e2e`,
-      url: 'http://localhost:1337',
+      command: `cd .. && npx turbo start:e2e`,
       reuseExistingServer: process.env.CI === undefined,
       timeout: 60000,
       stdout: 'ignore',
