@@ -21,8 +21,3 @@ globalStyle('body.developer', {
   borderTop: `3px solid ${developerBorderColor}`,
   borderBottom: `3px solid ${developerBorderColor}`,
 });
-
-
-globalStyle('body > div:first-of-type', {
-  paddingBottom: '4rem!important',
-});

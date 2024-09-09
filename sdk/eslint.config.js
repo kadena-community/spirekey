@@ -29,12 +29,6 @@ module.exports = [
   },
   { files: ['src/'] },
   {
-    ignores: [
-      'eslint.config.js',
-      'next.config.js',
-      '.next/',
-      'coverage/',
-      'playwright-report/',
-    ],
+    ignores: ['eslint.config.js', '.next/', 'coverage/', 'dist/'],
   },
 ];

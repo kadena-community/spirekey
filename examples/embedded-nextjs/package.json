@@ -5,7 +5,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev -p 1338",
-    "lint": "next lint",
+    "lint": "eslint",
     "start": "next start"
   },
   "dependencies": {
@@ -22,6 +22,9 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vanilla-extract/next-plugin": "^2.4.1",
+    "eslint": "^9.9.1",
+    "eslint-plugin-jsx-a11y": "^6.9.0",
+    "eslint-plugin-react": "^7.35.0",
     "typescript": "^5.5.2"
   },
   "engines": {

@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/shared/Button/Button';
 import { Box, TextField } from '@kadena/kode-ui';
-import { useParams } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -12,8 +11,7 @@ const FORM_DEFAULTS = {
 type FormValues = typeof FORM_DEFAULTS;
 
 export default function ReceivePage() {
-  const params = useParams();
-  const { getValues, handleSubmit, register } = useForm({
+  const { handleSubmit, register } = useForm({
     defaultValues: FORM_DEFAULTS,
     reValidateMode: 'onBlur',
   });
