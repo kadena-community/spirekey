@@ -1,9 +1,8 @@
 import { test } from '@e2e/fixtures/test.fixture';
 import { expect } from '@playwright/test';
 
-test.beforeEach(async ({ exampleApp, webAuthnHelper }) => {
+test.beforeEach(async ({ exampleApp }) => {
   await exampleApp.open();
-  await webAuthnHelper.enableWebAuthN();
 });
 
 test('Connect SpireKey Account: Onboarding', async ({
@@ -11,6 +10,7 @@ test('Connect SpireKey Account: Onboarding', async ({
   exampleFundPage,
   exampleTransferPage,
   localStorageHelper,
+  page,
 }) => {
   await test.step('Visit Connect page without having account', async () => {
     await localStorageHelper.deleteAccounts();
@@ -20,10 +20,12 @@ test('Connect SpireKey Account: Onboarding', async ({
     const connectPage = await exampleConnectPage.connect();
     await connectPage.startRegistration();
     await connectPage.createNewWallet();
-    await connectPage.createNewAccount();
+    const credentials = await connectPage.createNewAccount();
     await connectPage.completeRegistration();
     await exampleFundPage.requestFunds();
     await exampleTransferPage.setReceiver();
-    await exampleTransferPage.sign();
+    const signPage = await exampleTransferPage.sign(credentials);
+    await signPage.signAll();
+    expect(await page.getByLabel('Status').inputValue()).toEqual('success');
   });
 });

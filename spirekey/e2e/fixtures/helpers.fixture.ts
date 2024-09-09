@@ -7,7 +7,7 @@ export const test = baseTest.extend<{
   localStorageHelper: LocalStorageHelper;
 }>({
   webAuthnHelper: async ({ page }, use) => {
-    await use(new WebAuthNHelper(page));
+    await use(new WebAuthNHelper());
   },
   localStorageHelper: async ({ page }, use) => {
     await use(new LocalStorageHelper(page));

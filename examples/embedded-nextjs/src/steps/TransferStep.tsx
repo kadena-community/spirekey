@@ -8,10 +8,14 @@ import {
   Stack,
   TextField,
 } from '@kadena/kode-ui';
+import {
+  CardContentBlock,
+  CardFixedContainer,
+  CardFooterGroup,
+} from '@kadena/kode-ui/patterns';
 import { Account, Device, sign } from '@kadena/spirekey-sdk';
 import { useState } from 'react';
 import { ExampleStepper } from './ExampleStepper';
-import { CardFixedContainer, CardFooterGroup, CardContentBlock } from '@kadena/kode-ui/patterns';
 
 const ns = 'n_eef68e581f767dd66c4d4c39ed922be944ede505';
 const getTransferTx = ({
@@ -163,7 +167,7 @@ export const TransferStep = ({
   const [networkId] = useLocalState('networkId', 'testnet04');
   const [chainId] = useLocalState('chainId', '14');
   const [receiver, setReceiver] = useLocalState('receiver', '');
-  const [amount, setAmount] = useLocalState('amount', '0.0');
+  const [amount, setAmount] = useLocalState('amount', '0.1');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [receiverError, setReceiverError] = useState('');
   const signTransaction = async (event: React.FormEvent) => {
@@ -225,14 +229,12 @@ export const TransferStep = ({
   };
   return (
     <form autoComplete="on" onSubmit={signTransaction}>
-      <CardFixedContainer >
+      <CardFixedContainer>
         <CardContentBlock
           visual={<ProductIcon.QuickStart size="xl" />}
           title={isLoading ? `Step 4: Sign` : `Step 3: Transfer`}
-          description= "Transfer KDA to another account. Your KDA might be spread across many chains on Kadena, but SpireKey will take care of converging the funds to perform your desired transaction."
-        supportingContent={
-              <ExampleStepper step={isLoading ? 3 : 2} />
-        }
+          description="Transfer KDA to another account. Your KDA might be spread across many chains on Kadena, but SpireKey will take care of converging the funds to perform your desired transaction."
+          supportingContent={<ExampleStepper step={isLoading ? 3 : 2} />}
         >
           <Stack flexDirection="column" gap="md">
             <TextField
@@ -262,8 +264,8 @@ export const TransferStep = ({
           </Stack>
         </CardContentBlock>
       </CardFixedContainer>
-        <CardFooterGroup>
-          <Button
+      <CardFooterGroup>
+        <Button
           isLoading={isLoading}
           variant="primary"
           isCompact={false}
@@ -271,7 +273,7 @@ export const TransferStep = ({
         >
           Sign
         </Button>
-        </CardFooterGroup>
+      </CardFooterGroup>
     </form>
   );
 };
