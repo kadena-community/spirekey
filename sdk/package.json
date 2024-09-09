@@ -35,6 +35,7 @@
     "build": "crackle package",
     "build:e2e": "crackle package",
     "dev": "crackle dev",
+    "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest --no-coverage"
   },
@@ -48,6 +49,9 @@
     "@kadena/spirekey-types": "workspace:*",
     "@vanilla-extract/vite-plugin": "^4.0.11",
     "@vitest/coverage-v8": "^1.5.2",
+    "eslint": "^9.9.1",
+    "eslint-plugin-jsx-a11y": "^6.9.0",
+    "eslint-plugin-react": "^7.35.0",
     "typescript": "^5.5.2",
     "vitest": "^1.6.0"
   }
