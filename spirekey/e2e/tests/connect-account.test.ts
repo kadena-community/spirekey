@@ -1,29 +1,20 @@
 import { test } from '@e2e/fixtures/test.fixture';
 import { expect } from '@playwright/test';
 
-test.beforeEach(async ({ spireKeyApp, webAuthnHelper }) => {
-  await spireKeyApp.openSpireKeyApp();
+test.beforeEach(async ({ exampleApp, webAuthnHelper }) => {
+  await exampleApp.open();
   await webAuthnHelper.enableWebAuthN();
 });
 
-test.skip('Connect SpireKey Account: Onboarding', async ({
-  connectPage,
-  welcomePage,
+test('Connect SpireKey Account: Onboarding', async ({
+  exampleConnectPage,
   localStorageHelper,
 }) => {
-  const returnUrl = 'http://localhost:1337/welcome';
-  const networkId = 'development';
-
   await test.step('Visit Connect page without having account', async () => {
     await localStorageHelper.deleteAccounts();
-    await connectPage.visit(returnUrl, networkId);
-    await connectPage.createAccount();
-  });
-
-  await test.step('Connect and redirect to dApp', async () => {
-    await welcomePage.page.waitForURL('http://localhost:1337/welcome*');
-    const url = new URL(welcomePage.page.url());
-    expect(url.pathname).toBe('/welcome');
-    expect(url.searchParams.get('user')).toBeTruthy();
+    await exampleConnectPage.openAdvancedSettings();
+    await exampleConnectPage.selectLocalWallet();
+    await exampleConnectPage.selectDevnet();
+    await exampleConnectPage.connect();
   });
 });
