@@ -32,6 +32,11 @@
       ],
       "outputLogs": "new-only"
     },
+    "start:e2e": {
+      "dependsOn": ["build:e2e"],
+      "inputs": ["pact/**", "e2e/**", "deploy.ts", "playwright.config.ts"],
+      "outputLogs": "new-only"
+    },
     "lint": {
       "dependsOn": ["^lint"],
       "outputLogs": "new-only"

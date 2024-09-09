@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "build:e2e": "next build",
     "dev": "next dev -p 1338",
     "lint": "next lint",
-    "start": "next start -p 1338"
+    "start": "next start -p 1338",
+    "start:e2e": "next start -p 1338"
   },
   "dependencies": {
     "@kadena/client": "^1.12.0",

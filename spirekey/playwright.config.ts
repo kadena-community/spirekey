@@ -36,16 +36,8 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: `pnpm run start`,
+      command: `npx turbo start:e2e`,
       url: 'http://localhost:1337',
-      reuseExistingServer: process.env.CI === undefined,
-      timeout: 60000,
-      stdout: 'ignore',
-      stderr: 'pipe',
-    },
-    {
-      command: `cd ../examples/embedded-nextjs/ && npx turbo build && pnpm run start`,
-      url: 'http://localhost:1338',
       reuseExistingServer: process.env.CI === undefined,
       timeout: 60000,
       stdout: 'ignore',
