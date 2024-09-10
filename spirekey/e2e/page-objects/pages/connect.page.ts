@@ -5,9 +5,11 @@ export class ConnectPage {
   public page: Page;
   private authenticator: any;
   private registerButton: Locator;
+  private registerAnotherButton: Locator;
   private recoverButton: Locator;
   private recoverStartButton: Locator;
   private createWalletButton: Locator;
+  private connectWalletButton: Locator;
   private createAccountButton: Locator;
   private completeButton: Locator;
   private webauthnHelper: WebAuthNHelper;
@@ -15,9 +17,13 @@ export class ConnectPage {
   constructor(page: Page) {
     this.page = page;
     this.registerButton = page.getByRole('button', { name: 'Register' });
+    this.registerAnotherButton = page.getByRole('button', {
+      name: 'Register another account',
+    });
     this.recoverStartButton = page.getByRole('button', { name: 'Recover' });
     this.recoverButton = page.getByRole('button', { name: 'Next' });
     this.createWalletButton = page.getByRole('button', { name: 'Create' });
+    this.connectWalletButton = page.getByRole('button', { name: 'Connect' });
     this.createAccountButton = page.getByRole('button', { name: 'Continue' });
     this.completeButton = page.getByRole('button', { name: 'Complete' });
 
@@ -37,6 +43,18 @@ export class ConnectPage {
       null,
     );
     await this.registerButton.click();
+  }
+
+  async startAnotherRegistration(credentials: any) {
+    this.authenticator = await this.webauthnHelper.enableVirtualAuthenticator(
+      this.page,
+      credentials,
+    );
+    await this.registerAnotherButton.click();
+  }
+
+  async connectWallet() {
+    await this.connectWalletButton.click();
   }
 
   async startRecovery(credentials: any) {
