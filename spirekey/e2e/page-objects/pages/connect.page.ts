@@ -22,6 +22,13 @@ export class ConnectPage {
     this.webauthnHelper = new WebAuthNHelper();
   }
 
+  async connectAccount(index: number = 0) {
+    const accountNumber = index + 1;
+    await this.page
+      .getByText(`SpireKey Account ${accountNumber.toString()}`)
+      .click();
+  }
+
   async startRegistration() {
     this.authenticator = await this.webauthnHelper.enableVirtualAuthenticator(
       this.page,

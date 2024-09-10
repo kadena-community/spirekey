@@ -17,8 +17,8 @@ export class ExampleTransferPage {
   async setReceiver() {
     await this.receiverInput.fill('senderx');
   }
-  async setAmount() {
-    await this.amountInput.fill('95');
+  async setAmount(amount: string) {
+    await this.amountInput.fill(amount);
   }
   async sign(credentials: any) {
     const popupPromise = this.page
