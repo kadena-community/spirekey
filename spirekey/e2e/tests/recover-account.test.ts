@@ -1,42 +1,46 @@
 import { test } from '@e2e/fixtures/test.fixture';
-import { WebAuthNHelper } from '@e2e/helpers/webauthn.helper';
 import { expect } from '@playwright/test';
 
-test.beforeEach(async ({ spireKeyApp, page }) => {
-  await spireKeyApp.openSpireKeyApp();
-  const webAuthnHelper = new WebAuthNHelper();
-  await webAuthnHelper.enableVirtualAuthenticator(page, null);
-});
-
-// Skip this test because multiple webauthn credentials are created
-// and the wrong credential is used for recovery
-test.skip('Recover SpireKey Account', async ({
-  welcomePage,
-  registerPage,
-  accountsPage,
-  recoverPage,
+test('Recover SpireKey Account', async ({
+  spireKeyApp,
+  exampleApp,
+  exampleConnectPage,
   localStorageHelper,
+  page,
 }) => {
-  const alias = 'SpireKey Account 1';
-
-  await test.step('Create account', async () => {
-    await welcomePage.startRegistration();
-    await registerPage.createWallet();
-    await registerPage.createPassKey();
-    await registerPage.completeRegistration();
-    await accountsPage.isMinted();
-    await expect(await accountsPage.getAccountCard(alias)).toBeVisible();
-  });
-
-  await test.step('Clear local storage and reload App', async () => {
-    await localStorageHelper.deleteAccounts();
-    await expect(welcomePage.page).toHaveURL('/welcome');
-  });
-
-  await test.step('Recover Account', async () => {
-    await welcomePage.startRecovery();
-    await recoverPage.selectPassKey();
-    expect(alias).toBeTruthy();
-    await expect(await accountsPage.getAccountCard(alias)).toBeVisible();
+  await test.step('Visit Connect page without having account', async () => {
+    let credentials: any = null;
+    await test.step('Select devnet and local wallet', async () => {
+      await exampleApp.open();
+      await exampleConnectPage.openAdvancedSettings();
+      await exampleConnectPage.selectLocalWallet();
+      await exampleConnectPage.selectDevnet();
+    });
+    await test.step('Create new account', async () => {
+      const connectPage = await exampleConnectPage.connect();
+      await connectPage.startRegistration();
+      await connectPage.createNewWallet();
+      credentials = await connectPage.createNewAccount();
+      await connectPage.completeRegistration();
+    });
+    await test.step('Remove account from wallet', async () => {
+      await spireKeyApp.openSpireKeyApp();
+      await localStorageHelper.deleteAccounts();
+    });
+    await test.step('Recover account', async () => {
+      await exampleApp.open();
+      await exampleConnectPage.openAdvancedSettings();
+      await exampleConnectPage.selectLocalWallet();
+      await exampleConnectPage.selectDevnet();
+      const connectPage = await exampleConnectPage.connect();
+      await connectPage.startRecovery(credentials);
+      await connectPage.recover();
+      await page
+        .getByRole('heading', { name: 'Step 2: Fund your account' })
+        .waitFor();
+      expect(
+        page.getByRole('heading', { name: 'Step 2: Fund your account' }),
+      ).toBeVisible();
+    });
   });
 });

@@ -2,10 +2,11 @@ import { WebAuthNHelper } from '@e2e/helpers/webauthn.helper';
 import { Locator, Page } from '@playwright/test';
 
 export class ConnectPage {
-  private page: Page;
+  public page: Page;
   private authenticator: any;
   private registerButton: Locator;
   private recoverButton: Locator;
+  private recoverStartButton: Locator;
   private createWalletButton: Locator;
   private createAccountButton: Locator;
   private completeButton: Locator;
@@ -14,7 +15,8 @@ export class ConnectPage {
   constructor(page: Page) {
     this.page = page;
     this.registerButton = page.getByRole('button', { name: 'Register' });
-    this.recoverButton = page.getByRole('button', { name: 'Recover' });
+    this.recoverStartButton = page.getByRole('button', { name: 'Recover' });
+    this.recoverButton = page.getByRole('button', { name: 'Next' });
     this.createWalletButton = page.getByRole('button', { name: 'Create' });
     this.createAccountButton = page.getByRole('button', { name: 'Continue' });
     this.completeButton = page.getByRole('button', { name: 'Complete' });
@@ -35,6 +37,17 @@ export class ConnectPage {
       null,
     );
     await this.registerButton.click();
+  }
+
+  async startRecovery(credentials: any) {
+    this.authenticator = await this.webauthnHelper.enableVirtualAuthenticator(
+      this.page,
+      [credentials[1]], // only add the credential of the account
+    );
+    await this.recoverStartButton.click();
+  }
+  async recover() {
+    await this.recoverButton.click();
   }
 
   async createNewWallet() {
