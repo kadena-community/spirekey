@@ -29,7 +29,7 @@ describe('deploy', () => {
         profile: 'dev',
         data: { name: 'token' },
         sender: 'sender00',
-        codeFile: './tests/utils/deploy.mock.pact',
+        codeFile: './tests/deploy.mock.pact',
       },
     ],
   };
