@@ -16,7 +16,6 @@ describe('events', () => {
         },
         '*',
       );
-
       await vi.waitFor(() => expect(cb).toHaveBeenCalledOnce(), 1000);
     });
 
@@ -33,7 +32,6 @@ describe('events', () => {
         },
         '*',
       );
-
       await vi.waitFor(() => expect(cb).toHaveBeenCalledOnce(), 1000);
     });
   });
