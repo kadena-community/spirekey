@@ -1,42 +1,87 @@
+import { WebAuthNHelper } from '@e2e/helpers/webauthn.helper';
 import { Locator, Page } from '@playwright/test';
 
 export class ConnectPage {
-  private page: Page;
-  private registerBtn: Locator;
-  private createBtn: Locator;
-  private createWalletBtn: Locator;
-  private connectBtn: Locator;
-  private completeBtn: Locator;
+  public page: Page;
+  private authenticator: any;
+  private registerButton: Locator;
+  private registerAnotherButton: Locator;
+  private recoverButton: Locator;
+  private recoverStartButton: Locator;
+  private createWalletButton: Locator;
+  private connectWalletButton: Locator;
+  private createAccountButton: Locator;
+  private completeButton: Locator;
+  private webauthnHelper: WebAuthNHelper;
 
   constructor(page: Page) {
     this.page = page;
-    this.registerBtn = this.page.getByRole('button', { name: 'Register' });
-    this.createBtn = this.page.getByRole('button', { name: 'Continue' });
-    this.createWalletBtn = this.page.getByRole('button', { name: 'Create' });
-    this.connectBtn = this.page.getByRole('button', { name: 'Connect' });
-    this.completeBtn = this.page.getByRole('button', { name: 'Complete' });
+    this.registerButton = page.getByRole('button', { name: 'Register' });
+    this.registerAnotherButton = page.getByRole('button', {
+      name: 'Register another account',
+    });
+    this.recoverStartButton = page.getByRole('button', { name: 'Recover' });
+    this.recoverButton = page.getByRole('button', { name: 'Next' });
+    this.createWalletButton = page.getByRole('button', { name: 'Create' });
+    this.connectWalletButton = page.getByRole('button', { name: 'Connect' });
+    this.createAccountButton = page.getByRole('button', { name: 'Continue' });
+    this.completeButton = page.getByRole('button', { name: 'Complete' });
+
+    this.webauthnHelper = new WebAuthNHelper();
   }
 
-  async createAccount(): Promise<void> {
-    await this.registerBtn.click();
-    await this.createWalletBtn.click();
-    await this.createBtn.click();
-    await this.completeBtn.waitFor();
-    await this.completeBtn.click();
+  async connectAccount(index: number = 0) {
+    const accountNumber = index + 1;
+    await this.page
+      .getByText(`SpireKey Account ${accountNumber.toString()}`)
+      .click();
   }
 
-  async connect(): Promise<void> {
-    await this.connectBtn.waitFor();
-    await this.connectBtn.click();
-  }
-
-  async visit(returnUrl: string, networkId: string): Promise<void> {
-    this.page.goto(`/connect?returnUrl=${returnUrl}&networkId=${networkId}`);
-  }
-
-  getConnectMessage(returnUrl: string): Locator {
-    return this.page.getByText(
-      `Which account do you want to use to identify on ${returnUrl}?`,
+  async startRegistration() {
+    this.authenticator = await this.webauthnHelper.enableVirtualAuthenticator(
+      this.page,
+      null,
     );
+    await this.registerButton.click();
+  }
+
+  async startAnotherRegistration(credentials: any) {
+    this.authenticator = await this.webauthnHelper.enableVirtualAuthenticator(
+      this.page,
+      credentials,
+    );
+    await this.registerAnotherButton.click();
+  }
+
+  async connectWallet() {
+    await this.connectWalletButton.click();
+  }
+
+  async startRecovery(credentials: any) {
+    this.authenticator = await this.webauthnHelper.enableVirtualAuthenticator(
+      this.page,
+      [credentials[1]], // only add the credential of the account
+    );
+    await this.recoverStartButton.click();
+  }
+  async recover() {
+    await this.recoverButton.click();
+  }
+
+  async createNewWallet() {
+    await this.createWalletButton.click();
+  }
+
+  async createNewAccount() {
+    await this.createAccountButton.click();
+    const credentials: any = await this.webauthnHelper.getCredentials(
+      this.authenticator.authenticatorId,
+      this.authenticator.cdpSession,
+    );
+    return credentials;
+  }
+
+  async completeRegistration() {
+    await this.completeButton.click();
   }
 }

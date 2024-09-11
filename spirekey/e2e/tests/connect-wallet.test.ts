@@ -1,11 +1,9 @@
 import { test } from '@e2e/fixtures/test.fixture';
 import { expect } from '@playwright/test';
 
-test('Recover SpireKey Account', async ({
-  spireKeyApp,
+test('Connect SpireKey Wallet', async ({
   exampleApp,
   exampleConnectPage,
-  localStorageHelper,
   page,
 }) => {
   await test.step('Visit Connect page without having account', async () => {
@@ -23,18 +21,16 @@ test('Recover SpireKey Account', async ({
       credentials = await connectPage.createNewAccount();
       await connectPage.completeRegistration();
     });
-    await test.step('Remove account from wallet', async () => {
-      await spireKeyApp.openSpireKeyApp();
-      await localStorageHelper.deleteAccounts();
-    });
-    await test.step('Recover account', async () => {
+    await test.step('Create another account', async () => {
       await exampleApp.open();
       await exampleConnectPage.openAdvancedSettings();
       await exampleConnectPage.selectLocalWallet();
       await exampleConnectPage.selectDevnet();
       const connectPage = await exampleConnectPage.connect();
-      await connectPage.startRecovery(credentials);
-      await connectPage.recover();
+      await connectPage.startAnotherRegistration(credentials);
+      await connectPage.connectWallet();
+      await connectPage.createNewAccount();
+      await connectPage.completeRegistration();
       await page
         .getByRole('heading', { name: 'Step 2: Fund your account' })
         .waitFor();

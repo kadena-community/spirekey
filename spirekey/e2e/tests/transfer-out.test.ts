@@ -1,11 +1,13 @@
 import { test } from '@e2e/fixtures/test.fixture';
 import { expect } from '@playwright/test';
 
-test('Recover SpireKey Account', async ({
+test('Transfer out', async ({
   spireKeyApp,
+  accountsPage,
+  transferPage,
   exampleApp,
   exampleConnectPage,
-  localStorageHelper,
+  exampleFundPage,
   page,
 }) => {
   await test.step('Visit Connect page without having account', async () => {
@@ -23,24 +25,21 @@ test('Recover SpireKey Account', async ({
       credentials = await connectPage.createNewAccount();
       await connectPage.completeRegistration();
     });
-    await test.step('Remove account from wallet', async () => {
-      await spireKeyApp.openSpireKeyApp();
-      await localStorageHelper.deleteAccounts();
+    await test.step('Request funds for new account', async () => {
+      await exampleFundPage.requestFunds();
+      await page.getByText('Sender: ').waitFor();
     });
-    await test.step('Recover account', async () => {
-      await exampleApp.open();
-      await exampleConnectPage.openAdvancedSettings();
-      await exampleConnectPage.selectLocalWallet();
-      await exampleConnectPage.selectDevnet();
-      const connectPage = await exampleConnectPage.connect();
-      await connectPage.startRecovery(credentials);
-      await connectPage.recover();
-      await page
-        .getByRole('heading', { name: 'Step 2: Fund your account' })
-        .waitFor();
-      expect(
-        page.getByRole('heading', { name: 'Step 2: Fund your account' }),
-      ).toBeVisible();
+    await test.step('Go to account transfer page', async () => {
+      await spireKeyApp.openSpireKeyApp();
+      await accountsPage.goToDetails('SpireKey Account 1');
+      await accountsPage.goToTransferPage();
+    });
+    await test.step('Sign for a transfer', async () => {
+      await transferPage.setReceiver();
+      await transferPage.setAmount('99');
+      const signPage = await transferPage.sign(credentials);
+      await signPage.signAll();
+      expect(await page.getByLabel('Status').inputValue()).toEqual('success');
     });
   });
 });

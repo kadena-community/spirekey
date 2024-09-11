@@ -8,6 +8,7 @@
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "inputs": [
         "src/**",
+        "e2e/**",
         "public/**",
         "tsconfig.json",
         "package.json",
@@ -31,6 +32,12 @@
         ".env"
       ],
       "outputLogs": "new-only"
+    },
+    "start:e2e": {
+      "dependsOn": ["build:e2e"],
+      "inputs": ["pact/**", "e2e/**", "deploy.ts", "playwright.config.ts"],
+      "outputLogs": "new-only",
+      "persistent": true
     },
     "lint": {
       "dependsOn": ["^lint"],

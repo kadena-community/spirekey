@@ -7,6 +7,14 @@ export class AccountsPage {
     this.page = page;
   }
 
+  async goToDetails(alias: string) {
+    await this.page.getByText(alias).click();
+  }
+
+  async goToTransferPage() {
+    await this.page.getByRole('button', { name: 'Transfer' }).click();
+  }
+
   async getAccountCard(alias: string): Promise<Locator> {
     await this.page.getByRole('heading', { name: 'Accounts' }).waitFor();
     return this.page.getByRole('heading', { name: alias });

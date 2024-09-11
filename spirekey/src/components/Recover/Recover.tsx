@@ -56,6 +56,7 @@ export default function Recover(props: RecoverProps) {
     const searchParams = new URLSearchParams(location.search);
     const network =
       (data.get('network') as string) ||
+      props.networkId ||
       searchParams.get('networkId') ||
       'mainnet01';
     const account = await recoverAccount(network);
