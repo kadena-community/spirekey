@@ -8,7 +8,6 @@ import {
   getKey,
   resolveConfiguration,
 } from '@/utils/deploy';
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('deploy', () => {
   const config: DeployConfiguration = {

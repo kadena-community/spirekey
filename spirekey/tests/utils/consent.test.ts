@@ -1,7 +1,6 @@
 import { getAccountsForTx } from '@/utils/consent';
 import { type ChainId, createTransactionBuilder } from '@kadena/client';
 import { Account, Device } from '@kadena/spirekey-types';
-import { describe, expect, it } from 'vitest';
 
 const createMockAccounts = ({
   pubKeys,

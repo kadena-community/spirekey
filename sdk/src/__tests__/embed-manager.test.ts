@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from 'vitest';
 import { EmbedManager } from './../embed-manager';
 
 describe('embed-manager', () => {

@@ -1,5 +1,4 @@
 import '@testing-library/jest-dom/vitest';
-import { vi } from 'vitest';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 vi.mock('next/navigation', () => require('next-router-mock'));

@@ -1,5 +1,4 @@
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
-import { describe, expect, it } from 'vitest';
 
 const accounts = [
   {

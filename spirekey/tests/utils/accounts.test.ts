@@ -4,7 +4,6 @@ import {
 } from '@/utils/shared/account';
 import { l1Client } from '@/utils/shared/client';
 import { type ChainId } from '@kadena/client';
-import { Mock, describe, expect, it, vi } from 'vitest';
 import { errorResponse, successResponse } from '../../__mocks__/@kadena/client';
 
 vi.mock('@kadena/client');

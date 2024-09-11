@@ -7,7 +7,6 @@ import {
 } from '@/utils/auto-transfers';
 import type { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
-import { describe, expect, it, vi } from 'vitest';
 
 describe('auto transfers', () => {
   describe('when determining the optimal transfers', () => {
