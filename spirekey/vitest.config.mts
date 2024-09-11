@@ -21,9 +21,13 @@ export default defineConfig({
       enabled: true,
       include: ['**/src/**'],
       exclude: [
-        '**/app/(examples)/**',
         '**/app/(embedded)/**',
         '**/app/(wallet)/**',
+        'src/**/*.tsx',
+        'src/**/*.d.ts',
+        'src/components/**/index.ts',
+        'src/**/*.css.ts',
+        'src/**/*.md',
       ],
       provider: 'v8',
       thresholds: {
