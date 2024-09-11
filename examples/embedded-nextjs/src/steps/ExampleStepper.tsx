@@ -1,10 +1,20 @@
-import { Step, Stepper } from '../components/Stepper/Stepper';
+import { Step, Stepper } from '@kadena/kode-ui';
+import { FC } from 'react';
 
-export const ExampleStepper = ({ step }: { step: number }) => {
+interface IProps {
+  step: number;
+  error?: boolean;
+}
+
+export const ExampleStepper: FC<IProps> = ({ step, error }) => {
   const steps = ['Connect', 'Fund', 'Transfer', 'Sign']
-    .map((label, i) => ({ label, active: i === step }))
-    .map(({ label, active }) => (
-      <Step key={label} active={active}>
+    .map((label, i) => ({
+      label,
+      active: i === step,
+      error: i === step && error,
+    }))
+    .map(({ label, active, error }) => (
+      <Step key={label} active={active} status={error ? 'error' : undefined}>
         {label}
       </Step>
     ));
