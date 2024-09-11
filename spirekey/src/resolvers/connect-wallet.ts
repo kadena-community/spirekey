@@ -93,12 +93,12 @@ export const connectWallet = async (
   { client }: ApolloContext,
 ) => {
   const cid = localStorage.getItem(`${networkId}:wallet:cid`);
-  const { publicKey, secretKey } = await getPubkeyFromPasskey(
+  const { publicKey, secretKey, seed } = await getPubkeyFromPasskey(
     networkId,
     client.query,
     cid,
   );
-  return { publicKey, secretKey };
+  return { publicKey, secretKey, seed };
 };
 
 const getAllowedCredentials = (cid: string | null) => {
@@ -156,19 +156,18 @@ const getPubkeyFromPasskey = async (
       ec.recoverPubKey(messageHash, sig, 1),
     ].map(async (p) => {
       const tempPassword = crypto.getRandomValues(new Uint16Array(32));
+      const seed = await crypto.subtle.digest(
+        'sha-512',
+        Buffer.from(p.encode('hex', false)),
+      );
       const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
         tempPassword,
-        await kadenaEncrypt(
-          tempPassword,
-          await crypto.subtle.digest(
-            'sha-512',
-            Buffer.from(p.encode('hex', false)),
-          ),
-        ),
+        await kadenaEncrypt(tempPassword, seed),
         0,
       );
       const secretBin = await kadenaDecrypt(tempPassword, privateKey);
       return {
+        seed,
         publicKey: pubKey,
         secretKey: Buffer.from(secretBin).toString('hex'),
       };
