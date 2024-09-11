@@ -7,7 +7,7 @@ type Credential = {
   id: string;
 };
 
-type User = {
+export type User = {
   alias: string;
   accountName: string;
   pendingTxIds: ITransactionDescriptor[];

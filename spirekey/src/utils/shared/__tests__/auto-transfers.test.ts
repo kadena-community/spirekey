@@ -11,46 +11,71 @@ import { ChainId } from '@kadena/types';
 describe('auto transfers', () => {
   describe('when determining the optimal transfers', () => {
     describe('when finding the optimal transfers from chain', () => {
-      it('should prepare the txs', async () => {
-        vi.mock('@/utils/shared/account', () => {
-          return {
-            getAccountFromChain: ({
+      const mocks = vi.hoisted(() => {
+        return {
+          getRAccountFromChain: vi.fn(),
+          getAccountFromChain: ({
+            accountName,
+            chainId,
+          }: {
+            accountName: string;
+            networkId: string;
+            chainId: ChainId;
+          }) => {
+            const mockedBalance: any = {
+              '4': '40',
+              '5': '50',
+              '8': '10',
+              '10': '5',
+            };
+            const accounts: Account = {
+              balance: mockedBalance[chainId] as string,
+              chainIds: [chainId],
               accountName,
-              chainId,
-            }: {
-              accountName: string;
-              networkId: string;
-              chainId: ChainId;
-            }) => {
-              const mockedBalance: any = {
-                '4': '40',
-                '5': '50',
-                '8': '10',
-                '10': '5',
-              };
-              const accounts: Account = {
-                balance: mockedBalance[chainId] as string,
-                chainIds: [chainId],
-                accountName,
-                devices: [
-                  {
-                    color: deviceColors.red,
-                    domain: 'https://spirekey.kadena.io',
-                    deviceType: 'phone',
-                    guard: { keys: ['WEBAUTHN-pubkey'], pred: 'keys-any' },
-                    'credential-id': 'XesUer',
-                  },
-                ],
-                networkId: 'development',
-                alias: 'SpireKey Account 1',
-                txQueue: [],
-                minApprovals: 1,
-                minRegistrationApprovals: 1,
-              };
-              return Promise.resolve(accounts);
-            },
-          };
+              devices: [
+                {
+                  color: deviceColors.red,
+                  domain: 'https://spirekey.kadena.io',
+                  deviceType: 'phone',
+                  guard: { keys: ['WEBAUTHN-pubkey'], pred: 'keys-any' },
+                  'credential-id': 'XesUer',
+                },
+              ],
+              networkId: 'development',
+              alias: 'SpireKey Account 1',
+              txQueue: [],
+              minApprovals: 1,
+              minRegistrationApprovals: 1,
+            };
+            return Promise.resolve(accounts);
+          },
+        };
+      });
+
+      beforeEach(() => {
+        vi.mock('@/utils/shared/account', () => {
+          return mocks;
         });
+      });
+
+      afterEach(() => {
+        vi.resetAllMocks();
+      });
+
+      it('should prepare the txs with R:account', async () => {
+        const chainIds: ChainId[] = ['4', '5', '8', '10'];
+        const account: Pick<Account, 'chainIds' | 'accountName' | 'networkId'> =
+          {
+            networkId: 'development',
+            accountName: 'r:account',
+            chainIds,
+          };
+        await getOptimalTransactions(account, '8', 75);
+
+        expect(mocks.getRAccountFromChain).toBeCalledTimes(chainIds.length);
+      });
+
+      it('should prepare the txs', async () => {
         const account: Pick<Account, 'chainIds' | 'accountName' | 'networkId'> =
           {
             networkId: 'development',
@@ -69,6 +94,7 @@ describe('auto transfers', () => {
         ]);
       });
     });
+
     describe('when finding the optimal transfers', () => {
       const accounts: AccountBalance[] = [
         { balance: 40, chainId: '4' },
