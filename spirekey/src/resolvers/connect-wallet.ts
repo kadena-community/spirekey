@@ -5,6 +5,8 @@ import {
   kadenaGenKeypairFromSeed,
 } from '@kadena/hd-wallet';
 import { ChainId } from '@kadena/types';
+import * as bip39 from '@scure/bip39';
+import { wordlist } from '@scure/bip39/wordlists/english';
 import {
   base64URLStringToBuffer,
   startAuthentication,
@@ -82,8 +84,14 @@ export const useCredentials = () => {
     if (!data.connectWallet) throw new Error('No credentials found');
     return data.connectWallet;
   };
+  const getMnemonic = async (networkId: string) => {
+    const { seed } = await getCredentials(networkId);
+    const mnemonic = bip39.entropyToMnemonic(seed, wordlist);
+    return mnemonic;
+  };
   return {
     getCredentials,
+    getMnemonic,
   };
 };
 
