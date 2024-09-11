@@ -34,12 +34,10 @@
         "src/app/**/{opengraph,twitter}-image.{js,jsx,ts,tsx}!",
         "**/*.{bench,test,test-d,spec}.?(c|m)[jt]s?(x)"
       ],
-      "ignoreBinaries": ["pactjs"],
       "ignoreDependencies": [
         "prettier-plugin-organize-imports",
         "prettier-plugin-packagejson",
-        "react-intersection-observer",
-        "@kadena/pactjs-cli"
+        "react-intersection-observer"
       ],
       "ignore": [
         "./src/utils/getAccountNameFromRegisterDeviceEvent.ts",
