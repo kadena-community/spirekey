@@ -37,7 +37,7 @@
     "dev": "crackle dev",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest --no-coverage"
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@kadena/client": "^1.12.0",
