@@ -1,6 +1,6 @@
 import { getWebAuthnPubkeyFormat } from '@/utils/get-webauthn-pubkey-format';
 import { l1Client } from '@/utils/shared/client';
-import { gql, useLazyQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { createTransactionBuilder } from '@kadena/client';
 import { Guard } from '@kadena/spirekey-types';
 
@@ -52,6 +52,7 @@ const getAccountName = async (
     .addSigner(hdWalletKey)
     .setNetworkId(networkId)
     .createTransaction();
+
   const res = await l1Client.local(tx, {
     preflight: false,
     signatureVerification: false,
@@ -73,9 +74,3 @@ export const getAccountNameQuery = gql`
     ) @client
   }
 `;
-export const useAccountName = () => {
-  const [getAccountName] = useLazyQuery(getAccountNameQuery);
-  return {
-    getAccountName,
-  };
-};
