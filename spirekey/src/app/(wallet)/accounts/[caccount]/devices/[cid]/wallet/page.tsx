@@ -2,9 +2,11 @@
 
 import DeviceCard from '@/components/Card/DeviceCard';
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
+import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useAccounts } from '@/resolvers/accounts';
-import { MonoArrowBack } from '@kadena/kode-icons/system';
-import { Button, maskValue } from '@kadena/kode-ui';
+import { useCredentials } from '@/resolvers/connect-wallet';
+import { MonoArrowBack, MonoCopyAll } from '@kadena/kode-icons/system';
+import { Button, maskValue, Stack, TextField } from '@kadena/kode-ui';
 import {
   CardContentBlock,
   CardFixedContainer,
@@ -12,6 +14,7 @@ import {
 } from '@kadena/kode-ui/patterns';
 import { atoms } from '@kadena/kode-ui/styles';
 import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function WalletPage() {
   const params = useParams();
@@ -21,6 +24,10 @@ export default function WalletPage() {
   const cid = decodeURIComponent(params.cid.toString());
   const account = accounts?.find((a) => a.accountName === caccount);
   const device = account?.devices.find((d) => d['credential-id'] === cid);
+  const { getCredentials } = useCredentials();
+  const [mnemonic, setMnemonic] = useState('');
+
+  const { addNotification } = useNotifications();
 
   return (
     <CardFixedContainer>
@@ -38,13 +45,33 @@ export default function WalletPage() {
         }
       >
         <CardFooterGroup>
-          <Button variant="primary">Reveal</Button>
+          <Button
+            variant="primary"
+            isDisabled={!!mnemonic}
+            onPress={async () => {
+              if (!account) return;
+              const { mnemonic } = await getCredentials(account.networkId);
+              if (!mnemonic)
+                addNotification({
+                  variant: 'warning',
+                  title: 'Please migrate your account',
+                  message:
+                    'Your account was created before the support of mnemonic phrases. Please create a new account and transfer your funds.',
+                  timeout: 30_000,
+                });
+              setMnemonic(mnemonic);
+            }}
+          >
+            Reveal
+          </Button>
         </CardFooterGroup>
       </SpireKeyCardContentBlock>
       <CardContentBlock
         title="Mnemonic"
         description="Make sure to keep your mnemonic phrase safe! If a bad actor get's hold of your mnemonic phrase, they will have full access to your account."
-      ></CardContentBlock>
+      >
+        <MnemonicRevealer mnemonic={mnemonic} />
+      </CardContentBlock>
       <Button
         className={atoms({ position: 'absolute', left: 0 })}
         startVisual={<MonoArrowBack />}
@@ -57,3 +84,43 @@ export default function WalletPage() {
     </CardFixedContainer>
   );
 }
+
+const MnemonicRevealer = ({ mnemonic }: { mnemonic: string }) => {
+  if (!mnemonic) return null;
+  const groupSize = 4;
+  const wordGroups = mnemonic
+    .split(' ')
+    .reduce(
+      (acc, word) => {
+        const [lastGroup, ...rest] = acc;
+        if (lastGroup.length === groupSize) return [[word], lastGroup, ...rest];
+        return [[...lastGroup, word], ...rest];
+      },
+      [[]] as string[][],
+    )
+    .reverse()
+    .map((words) => words.join(' '));
+  return (
+    <Stack gap="md" flexDirection="column">
+      {wordGroups.map((wordsStr, groupIndex) => (
+        <Stack gap="sm">
+          {wordsStr.split(' ').map((word, wordIndex) => (
+            <TextField
+              key={word}
+              type="password"
+              value={word}
+              label={`${groupIndex * groupSize + wordIndex + 1}`}
+            />
+          ))}
+
+          <Button
+            variant="transparent"
+            onPress={() => navigator.clipboard.writeText(wordsStr)}
+          >
+            <MonoCopyAll />
+          </Button>
+        </Stack>
+      ))}
+    </Stack>
+  );
+};

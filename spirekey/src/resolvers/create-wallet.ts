@@ -13,8 +13,11 @@ import {
   kadenaDecrypt,
   kadenaEncrypt,
   kadenaGenKeypairFromSeed,
+  kadenaMnemonicToSeed,
 } from '@kadena/hd-wallet';
 import { ChainId, ICommand } from '@kadena/types';
+import * as bip39 from '@scure/bip39';
+import { wordlist } from '@scure/bip39/wordlists/english';
 
 type WalletsVariable = {
   networkId: string;
@@ -49,12 +52,12 @@ export const createWallet = async (
   );
 
   const tempPassword = crypto.getRandomValues(new Uint16Array(32));
+  const entropy = await crypto.subtle.digest('sha-256', Buffer.from(hex));
+  const mnemonic = bip39.entropyToMnemonic(new Uint8Array(entropy), wordlist);
+  const seed = await kadenaMnemonicToSeed(tempPassword, mnemonic);
   const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
     tempPassword,
-    await kadenaEncrypt(
-      tempPassword,
-      await crypto.subtle.digest('sha-512', Buffer.from(hex)),
-    ),
+    seed,
     0,
   );
 
