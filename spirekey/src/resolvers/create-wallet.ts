@@ -11,7 +11,6 @@ import { addSignatures, createTransactionBuilder } from '@kadena/client';
 import { sign } from '@kadena/cryptography-utils';
 import {
   kadenaDecrypt,
-  kadenaEncrypt,
   kadenaGenKeypairFromSeed,
   kadenaMnemonicToSeed,
 } from '@kadena/hd-wallet';
