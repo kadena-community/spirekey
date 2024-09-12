@@ -16,7 +16,7 @@ import { sign } from '@kadena/cryptography-utils';
 import { ChainId, ICommand } from '@kadena/types';
 import { getAccountNameQuery } from './account-name';
 
-type CreateAccountVariables = {
+export type CreateAccountVariables = {
   networkId: string;
   publicKey: string;
   secretKey: string;
