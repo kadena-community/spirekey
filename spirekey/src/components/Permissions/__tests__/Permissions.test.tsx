@@ -1,8 +1,7 @@
 import React from 'react';
-import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import MatchMediaMock from 'vitest-matchmedia-mock';
 
-import { cleanup, render, screen } from '@/../tests/components/setup';
+import { cleanup, render, screen } from '@/../tests/setup';
 import { Permissions } from '@/components/Permissions/Permissions';
 import { ICap } from '@kadena/types';
 

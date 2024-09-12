@@ -1,5 +1,3 @@
-import { vi } from 'vitest';
-
 const startRegistration = vi.fn().mockReturnValue({
   response: {
     publicKey: 'bW9ja2VkLXdlYmF1dGhuLWtleQ==',

@@ -1,5 +1,3 @@
-import { describe, expect, it, vi, vitest } from 'vitest';
-
 import { connect } from '../connectFactory';
 import { publishEvent } from '../events';
 

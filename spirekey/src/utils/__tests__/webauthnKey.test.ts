@@ -1,5 +1,4 @@
 import { getDeviceType } from '@/utils/webauthnKey';
-import { describe, expect, it } from 'vitest';
 
 describe('webauthn key', () => {
   describe('device type determination', () => {

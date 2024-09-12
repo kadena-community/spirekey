@@ -8,7 +8,6 @@ import {
   getKey,
   resolveConfiguration,
 } from '@/utils/deploy';
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('deploy', () => {
   const config: DeployConfiguration = {
@@ -30,7 +29,7 @@ describe('deploy', () => {
         profile: 'dev',
         data: { name: 'token' },
         sender: 'sender00',
-        codeFile: './tests/utils/deploy.mock.pact',
+        codeFile: './tests/deploy.mock.pact',
       },
     ],
   };

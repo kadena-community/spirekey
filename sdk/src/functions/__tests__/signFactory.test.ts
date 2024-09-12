@@ -1,6 +1,4 @@
 import type { IUnsignedCommand } from '@kadena/client';
-import { describe, expect, it, vi, vitest } from 'vitest';
-
 import { publishEvent } from '../events';
 import { sign } from '../signFactory';
 

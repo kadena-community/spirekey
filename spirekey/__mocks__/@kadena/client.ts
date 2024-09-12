@@ -1,5 +1,4 @@
 import type { ICommandResult, ITransactionDescriptor } from '@kadena/client';
-import { vi } from 'vitest';
 
 const response = {
   reqKey: 'test-request-key',

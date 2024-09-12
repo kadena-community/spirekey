@@ -11,6 +11,7 @@ export default defineConfig({
     },
   },
   test: {
+    globals: true,
     reporters: ['default'],
     include: ['{src,tests}/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     environment: 'jsdom',
@@ -37,6 +38,6 @@ export default defineConfig({
         statements: 24,
       },
     },
-    setupFiles: [path.resolve(__dirname, './tests/components/test-mocks.ts')],
+    setupFiles: [path.resolve(__dirname, './tests/test-mocks.ts')],
   },
 });
