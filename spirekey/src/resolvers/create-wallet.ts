@@ -39,6 +39,7 @@ export const useWallet = () => {
   };
   return { createWallet };
 };
+
 export const createWallet = async (
   _: any,
   { networkId, chainId }: WalletsVariable,
@@ -46,6 +47,7 @@ export const createWallet = async (
   const { credentialId, hex } = await getNewWebauthnKey(
     getRootkeyPasskeyName(networkId!),
   );
+
   const tempPassword = crypto.getRandomValues(new Uint16Array(32));
   const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
     tempPassword,
@@ -91,12 +93,7 @@ const registerCredentialOnChain = async ({
     .setMeta({ chainId, senderAccount: gasStation, gasLimit: 1800 })
     .setNetworkId(networkId)
     .addSigner(genesisPubKey, (withCap) => [
-      withCap(
-        `kadena.spirekey.GAS_PAYER`,
-        gasStation,
-        { int: 1 },
-        1,
-      ),
+      withCap(`kadena.spirekey.GAS_PAYER`, gasStation, { int: 1 }, 1),
     ])
     .createTransaction();
   const signedTx = addSignatures(
@@ -106,5 +103,6 @@ const registerCredentialOnChain = async ({
       secretKey: genesisPrivateKey,
     }) as { sig: string },
   );
+
   return await l1Client.submit(signedTx as ICommand);
 };
