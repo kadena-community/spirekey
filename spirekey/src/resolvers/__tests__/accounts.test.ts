@@ -1,5 +1,4 @@
 import { account, accounts } from '@/resolvers/accounts';
-import { describe, expect, it, vi } from 'vitest';
 
 describe('resolvers: account', () => {
   describe('query accounts', () => {

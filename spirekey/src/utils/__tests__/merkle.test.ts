@@ -1,5 +1,4 @@
 import { getMerkleProofWith, getRootHashWith } from '@/utils/merkle';
-import { describe, expect, it } from 'vitest';
 
 describe('Merkle', () => {
   const hashMock = (value: string) => `H(${value})`;

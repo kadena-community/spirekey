@@ -81,6 +81,9 @@ importers:
       typescript:
         specifier: ^5.5.2
         version: 5.5.4
+      typescript-eslint:
+        specifier: ^8.3.0
+        version: 8.3.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
 
   packages/types:
     dependencies:
@@ -93,9 +96,6 @@ importers:
       '@kadena/client':
         specifier: ^1.12.0
         version: 1.13.0(encoding@0.1.13)
-      '@kadena/kode-ui':
-        specifier: ^0.14.2
-        version: 0.14.2
       '@vanilla-extract/css':
         specifier: ^1.15.3
         version: 1.15.5
@@ -124,6 +124,9 @@ importers:
       typescript:
         specifier: ^5.5.2
         version: 5.5.4
+      typescript-eslint:
+        specifier: ^8.3.0
+        version: 8.3.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
       vitest:
         specifier: ^1.6.0
         version: 1.6.0(@types/node@22.5.1)(happy-dom@15.0.0)(jsdom@25.0.0)(terser@5.31.6)

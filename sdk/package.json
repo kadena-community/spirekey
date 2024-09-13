@@ -37,11 +37,10 @@
     "dev": "crackle dev",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest --no-coverage"
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@kadena/client": "^1.12.0",
-    "@kadena/kode-ui": "^0.14.2",
     "@vanilla-extract/css": "^1.15.3"
   },
   "devDependencies": {
@@ -53,6 +52,7 @@
     "eslint-plugin-jsx-a11y": "^6.9.0",
     "eslint-plugin-react": "^7.35.0",
     "typescript": "^5.5.2",
+    "typescript-eslint": "^8.3.0",
     "vitest": "^1.6.0"
   }
 }

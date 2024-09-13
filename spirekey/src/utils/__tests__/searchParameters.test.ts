@@ -6,7 +6,6 @@ import {
   urlWithSearchParams,
 } from '@/utils/searchParameters';
 import { Device } from '@kadena/spirekey-sdk';
-import { describe, expect, it } from 'vitest';
 
 describe('searchParameters', () => {
   describe('returnUrlWithDevice', () => {

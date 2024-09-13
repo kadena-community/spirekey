@@ -11,6 +11,7 @@ export default defineConfig({
     },
   },
   test: {
+    globals: true,
     reporters: ['default'],
     include: ['{src,tests}/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     environment: 'jsdom',
@@ -21,9 +22,13 @@ export default defineConfig({
       enabled: true,
       include: ['**/src/**'],
       exclude: [
-        '**/app/(examples)/**',
         '**/app/(embedded)/**',
         '**/app/(wallet)/**',
+        'src/**/*.tsx',
+        'src/**/*.d.ts',
+        'src/components/**/index.ts',
+        'src/**/*.css.ts',
+        'src/**/*.md',
       ],
       provider: 'v8',
       thresholds: {
@@ -33,6 +38,6 @@ export default defineConfig({
         statements: 24,
       },
     },
-    setupFiles: [path.resolve(__dirname, './tests/components/test-mocks.ts')],
+    setupFiles: [path.resolve(__dirname, './tests/test-mocks.ts')],
   },
 });

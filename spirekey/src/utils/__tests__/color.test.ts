@@ -1,5 +1,4 @@
 import { hexadecimalToRGB } from '@/utils/color';
-import { describe, expect, it } from 'vitest';
 
 describe('color', () => {
   describe('hexadecimalToRGB', () => {
