@@ -16,9 +16,11 @@ type WalletsVariable = {
   networkId: string;
   chainId: ChainId;
 };
+
 type ApolloContext = {
   client: ApolloClient<any>;
 };
+
 const getCredentialsQuery = gql`
   query getCredentials($filter: String) {
     events(
@@ -37,7 +39,9 @@ const getCredentialsQuery = gql`
     }
   }
 `;
+
 type Query = InstanceType<typeof ApolloClient>['query'];
+
 const getCredentials = async (
   networkId: string,
   credentialId: string,
@@ -51,6 +55,7 @@ const getCredentials = async (
       networkId,
     },
   });
+
   const edges = res.data?.events?.edges;
   if (!edges.length) throw new Error('No credentials found');
   return edges.map((e: any) => {
@@ -58,11 +63,13 @@ const getCredentials = async (
     return c;
   });
 };
+
 const connectWalletQuery = gql`
   query ConnectWallet($networkId: String!) {
     connectWallet(networkId: $networkId) @client
   }
 `;
+
 export const useCredentials = () => {
   const [execute] = useLazyQuery(connectWalletQuery);
   const getCredentials = async (networkId: string) => {
@@ -86,6 +93,7 @@ export const connectWallet = async (
   { client }: ApolloContext,
 ) => {
   const cid = localStorage.getItem(`${networkId}:wallet:cid`);
+  console.log({ cid }, `${networkId}:wallet:cid`);
   const { publicKey, secretKey } = await getPubkeyFromPasskey(
     networkId,
     client.query,
@@ -102,6 +110,7 @@ const getAllowedCredentials = (cid: string | null) => {
   };
   return [allowedCredential];
 };
+
 const getPubkeyFromPasskey = async (
   networkId: string,
   query: Query,
@@ -112,9 +121,11 @@ const getPubkeyFromPasskey = async (
     challenge: 'reconnectwallet',
     allowCredentials: getAllowedCredentials(cid),
   });
+
   const usignature = new Uint8Array(
     base64URLStringToBuffer(response.signature),
   );
+
   const rStart = usignature[4] === 0 ? 5 : 4;
   const rEnd = rStart + 32;
   const sStart = usignature[rEnd + 2] === 0 ? rEnd + 3 : rEnd + 2;
@@ -171,13 +182,17 @@ const getPubkeyFromPasskey = async (
   localStorage.setItem(`${networkId}:wallet:cid`, id);
   return recoveredKey;
 };
+
 const hex = (bytes: Uint8Array) => Array.from(bytes).map(i2hex).join('');
+
 function i2hex(i: number) {
   return ('0' + i.toString(16)).slice(-2);
 }
+
 async function sha256(clientDataJSON: ArrayBuffer) {
   return await window.crypto.subtle.digest('SHA-256', clientDataJSON);
 }
+
 function concatenateData(
   authenticatorData: ArrayBuffer,
   clientDataHash: ArrayBuffer,
