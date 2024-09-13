@@ -93,7 +93,6 @@ export const connectWallet = async (
   { client }: ApolloContext,
 ) => {
   const cid = localStorage.getItem(`${networkId}:wallet:cid`);
-  console.log({ cid }, `${networkId}:wallet:cid`);
   const { publicKey, secretKey } = await getPubkeyFromPasskey(
     networkId,
     client.query,
