@@ -30,7 +30,7 @@ describe('resolvers: account', () => {
 
     beforeEach(async () => {
       vi.mock('@apollo/client', async () => {
-        const actual = (await vi.importActual('@apollo/client')) as {};
+        const actual = await vi.importActual('@apollo/client');
         return {
           ...actual,
           useLazyQuery: mocks.useLazyQuery,

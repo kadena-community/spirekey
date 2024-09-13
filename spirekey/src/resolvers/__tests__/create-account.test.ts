@@ -30,7 +30,7 @@ describe('create-account', () => {
 
   beforeEach(async () => {
     vi.mock('@apollo/client', async () => {
-      const actual = (await vi.importActual('@apollo/client')) as {};
+      const actual = await vi.importActual('@apollo/client');
       return {
         ...actual,
         useMutation: mocks.useMutation,
@@ -38,7 +38,7 @@ describe('create-account', () => {
     });
 
     vi.mock('@/utils/webauthnKey', async () => {
-      const actual = (await vi.importActual('@/utils/webauthnKey')) as {};
+      const actual = await vi.importActual('@/utils/webauthnKey');
       return {
         ...actual,
         getNewWebauthnKey: mocks.getNewWebauthnKey,
@@ -46,7 +46,7 @@ describe('create-account', () => {
     });
 
     vi.mock('@/utils/shared/client', async () => {
-      const actual = (await vi.importActual('@/utils/shared/client')) as {};
+      const actual = await vi.importActual('@/utils/shared/client');
       return {
         ...actual,
         l1Client: {

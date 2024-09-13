@@ -19,7 +19,7 @@ describe('recover-account', () => {
 
     beforeEach(async () => {
       vi.mock('./../accounts', async () => {
-        const actual = (await vi.importActual('./../accounts')) as {};
+        const actual = await vi.importActual('./../accounts');
         return {
           ...actual,
           useAccount: mocksHook.useAccount,
@@ -28,7 +28,7 @@ describe('recover-account', () => {
       });
 
       vi.mock('@apollo/client', async () => {
-        const actual = (await vi.importActual('@apollo/client')) as {};
+        const actual = await vi.importActual('@apollo/client');
         return {
           ...actual,
           useLazyQuery: mocksHook.useLazyQuery,
@@ -116,7 +116,7 @@ describe('recover-account', () => {
 
     beforeEach(async () => {
       vi.mock('@simplewebauthn/browser', async () => {
-        const actual = (await vi.importActual('@simplewebauthn/browser')) as {};
+        const actual = await vi.importActual('@simplewebauthn/browser');
         return {
           ...actual,
           startAuthentication: mocks.startAuthentication,

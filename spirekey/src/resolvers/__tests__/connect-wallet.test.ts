@@ -16,7 +16,7 @@ describe('connect-wallet', () => {
 
   beforeEach(async () => {
     vi.mock('@simplewebauthn/browser', async () => {
-      const actual = (await vi.importActual('@simplewebauthn/browser')) as {};
+      const actual = await vi.importActual('@simplewebauthn/browser');
       return {
         ...actual,
         startAuthentication: mocks.startAuthentication,
@@ -24,7 +24,7 @@ describe('connect-wallet', () => {
     });
 
     vi.mock('@apollo/client', async () => {
-      const actual = (await vi.importActual('@apollo/client')) as {};
+      const actual = await vi.importActual('@apollo/client');
       return {
         ...actual,
         useLazyQuery: mocks.useLazyQuery,

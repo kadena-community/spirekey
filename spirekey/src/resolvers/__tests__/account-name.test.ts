@@ -9,7 +9,7 @@ describe('account-name', () => {
 
   beforeEach(async () => {
     vi.mock('@/utils/shared/client', async () => {
-      const actual = (await vi.importActual('@/utils/shared/client')) as {};
+      const actual = await vi.importActual('@/utils/shared/client');
       return {
         ...actual,
         l1Client: {
