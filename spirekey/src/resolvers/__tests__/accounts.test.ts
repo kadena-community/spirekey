@@ -1,6 +1,106 @@
-import { account, accounts } from '@/resolvers/accounts';
+import {
+  account,
+  accounts,
+  setAccount,
+  useAccount,
+  useAccounts,
+} from '@/resolvers/accounts';
+import { Account } from '@kadena/spirekey-sdk';
+import { renderHook } from '@testing-library/react-hooks';
 
 describe('resolvers: account', () => {
+  describe('hooks', () => {
+    const mockExecute = vi.hoisted(() => {
+      return {
+        execute: vi.fn(),
+      };
+    });
+
+    const mockRefetch = vi.hoisted(() => {
+      return {
+        refetch: vi.fn(),
+      };
+    });
+    const mocks = vi.hoisted(() => {
+      return {
+        useLazyQuery: vi.fn(),
+        useQuery: vi.fn(),
+      };
+    });
+
+    beforeEach(async () => {
+      vi.mock('@apollo/client', async () => {
+        const actual = await vi.importActual('@apollo/client');
+        return {
+          ...actual,
+          useLazyQuery: mocks.useLazyQuery,
+          useQuery: mocks.useQuery,
+        };
+      });
+    });
+
+    afterEach(() => {
+      vi.resetAllMocks();
+    });
+
+    describe('useAccounts', () => {
+      it('should have initially no accounts', () => {
+        mocks.useQuery.mockReturnValue({
+          refetch: mockRefetch.refetch,
+        });
+
+        const { result } = renderHook(() => useAccounts());
+        expect(result.current.accounts).toEqual([]);
+      });
+
+      it('should have accounts after the get', async () => {
+        const accountsArray = [{ accountName: 'r:he-man' }];
+        mockRefetch.refetch.mockResolvedValue({
+          data: {
+            accounts: accountsArray,
+          },
+        });
+        mocks.useQuery.mockReturnValue({
+          refetch: mockRefetch.refetch,
+        });
+        const { result } = renderHook(() => useAccounts());
+        const dataResult = await result.current.getAccounts('testnet01');
+
+        expect(dataResult).toEqual(accountsArray);
+      });
+    });
+    describe('useAccount', () => {
+      it('should fetch account from getAccount', async () => {
+        const mockAccount = {
+          accountName: 'r:he-man',
+          networkId: 'development',
+          minApprovals: 1,
+          minRegistrationApprovals: 1,
+          balance: 0.0,
+          devices: [],
+          chainIds: [],
+        };
+        mockExecute.execute.mockResolvedValue({
+          data: {
+            account: mockAccount,
+          },
+        });
+        mocks.useLazyQuery.mockReturnValue([mockExecute.execute]);
+
+        const { result } = renderHook(() => useAccount());
+
+        const resultData = await result.current.getAccount(
+          'https://graph',
+          'r:he-man',
+        );
+
+        expect(mocks.useLazyQuery).toBeCalledTimes(1);
+        expect(mockExecute.execute).toBeCalledTimes(1);
+        expect(resultData).toEqual(mockAccount);
+      });
+    });
+  });
+
   describe('query accounts', () => {
     const mockAccount = {
       accountName: 'r:mock-account',
@@ -120,6 +220,7 @@ describe('resolvers: account', () => {
       );
       expect(res.balance).toEqual(4.4);
     });
+
     it('should retrieve account info from multiple networks', () => {
       localStorage.setItem(
         'localAccounts',
@@ -155,6 +256,7 @@ describe('resolvers: account', () => {
         },
       });
     });
+
     it('should retrieve account info from a single network', () => {
       localStorage.setItem(
         'localAccounts',
@@ -189,6 +291,48 @@ describe('resolvers: account', () => {
           accountName: 'r:mock-account',
         },
       });
+    });
+  });
+
+  describe('setAccount', () => {
+    const localStorageKey = 'localAccounts';
+    const localStorageObject = [
+      {
+        accountName: 'r:he-man',
+        networkId: 'testnet04',
+      },
+      {
+        accountName: 'r:cringer',
+        networkId: 'mainnet01',
+      },
+    ] as Account[];
+
+    beforeEach(() => {
+      localStorage.setItem(localStorageKey, JSON.stringify(localStorageObject));
+    });
+
+    it('should save the given account to the localstorage', () => {
+      const account = {
+        accountName: 'skeletor',
+        networkId: 'testnet04',
+      } as Account;
+
+      setAccount(account);
+      expect(JSON.parse(localStorage.getItem(localStorageKey) ?? '[]')).toEqual(
+        [...localStorageObject, account],
+      );
+    });
+
+    it('should NOT save the given account to the localstorage, if it is already in localstorage', () => {
+      const account = {
+        accountName: 'r:he-man',
+        networkId: 'testnet04',
+      } as Account;
+
+      setAccount(account);
+      expect(JSON.parse(localStorage.getItem(localStorageKey) ?? '[]')).toEqual(
+        [...localStorageObject],
+      );
     });
   });
 });

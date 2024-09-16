@@ -14,7 +14,7 @@ export default defineConfig({
     globals: true,
     reporters: ['default'],
     include: ['{src,tests}/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
-    environment: 'jsdom',
+    environment: 'happy-dom',
     env: {
       NAMESPACE: 'n_eef68e581f767dd66c4d4c39ed922be944ede505',
     },

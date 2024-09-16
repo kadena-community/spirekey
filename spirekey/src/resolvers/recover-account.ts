@@ -2,7 +2,7 @@ import { ApolloContextValue, gql, useLazyQuery } from '@apollo/client';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useAccount, useAccounts } from './accounts';
 
-type AccountNameVariable = {
+export type AccountNameVariable = {
   networkId: string;
   hdWalletKey: string;
   passKey: string;
@@ -25,6 +25,7 @@ const getAccountsByCidQuery = gql`
     }
   }
 `;
+
 export const recoverAccount = async (
   _: any,
   { networkId }: AccountNameVariable,
@@ -48,15 +49,18 @@ export const recoverAccount = async (
   const account = params.find((x) => x.startsWith('r:'));
   return account;
 };
+
 export const recoverAccountQuery = gql`
   query RecoverAccount($networkId: String!) {
     recoverAccount(networkId: $networkId) @client
   }
 `;
+
 export const useRecoverAccount = () => {
   const { getAccounts } = useAccounts();
   const { getAccount, setAccount } = useAccount();
   const [getRecoveredAccount] = useLazyQuery(recoverAccountQuery);
+
   const recoverAccount = async (networkId: string) => {
     const { data, error } = await getRecoveredAccount({
       variables: { networkId },
@@ -72,6 +76,7 @@ export const useRecoverAccount = () => {
     setAccount(recoveredAccount);
     return recoveredAccount;
   };
+
   return {
     recoverAccount,
   };

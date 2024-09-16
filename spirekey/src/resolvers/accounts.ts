@@ -55,17 +55,20 @@ export const accounts = async (
   accountsVar(resolvedAccs);
   return resolvedAccs;
 };
+
 const localAccounts = (networkId: string) => {
   const accString = localStorage.getItem('localAccounts');
   if (!accString) return [];
   const accs: Account[] = JSON.parse(accString);
   return accs.filter((a: Account) => a.networkId === networkId);
 };
+
 const getAccountsQuery = gql`
   query GetAccounts($networkId: String) {
     accounts(networkId: $networkId) @client
   }
 `;
+
 export const account = async (
   _: any,
   {
@@ -120,10 +123,12 @@ export const account = async (
 const isDifferentAccountWith = (account: Account) => (acc: Account) =>
   acc.networkId !== account.networkId ||
   acc.accountName !== account.accountName;
-const setAccount = (account: Account) => {
+
+export const setAccount = (account: Account) => {
   const accounts: Account[] = JSON.parse(
     localStorage.getItem('localAccounts') || '[]',
   );
+
   const isDifferentAccount = isDifferentAccountWith(account);
   const newAccounts = accounts.every(isDifferentAccount)
     ? [...accounts, account]
@@ -138,11 +143,13 @@ const setAccount = (account: Account) => {
   accountsVar(newAccounts);
   return localStorage.setItem('localAccounts', JSON.stringify(newAccounts));
 };
+
 const accountQuery = gql`
   query AccountQuery($accountName: String!, $networkId: String!) {
     account(accountName: $accountName, networkId: $networkId) @client
   }
 `;
+
 export const useAccount = () => {
   const [execute] = useLazyQuery(accountQuery);
   const getAccount = async (networkId: string, accountName: string) => {
