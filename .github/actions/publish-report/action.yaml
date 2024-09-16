@@ -26,4 +26,4 @@ runs:
       - name: Add Link to Summary
         shell: bash
         if: ${{ !cancelled() }}
-        run: echo "### E2E Report - https://${{ github.repository_owner }}.github.io/webauthn-wallet/${{ github.event.number }}/${{ steps.timestamp.outputs.timestamp }}/" >> $GITHUB_STEP_SUMMARY
+        run: echo "### E2E Report - https://${{ github.repository_owner }}.github.io/spirekey/${{ github.event.number }}/${{ steps.timestamp.outputs.timestamp }}/" >> $GITHUB_STEP_SUMMARY
