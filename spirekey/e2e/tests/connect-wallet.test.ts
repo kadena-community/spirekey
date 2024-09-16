@@ -40,7 +40,7 @@ test('Connect SpireKey Wallet', async ({
       await page
         .getByRole('heading', { name: 'Step 2: Fund your account' })
         .waitFor();
-      expect(
+      await expect(
         page.getByRole('heading', { name: 'Step 2: Fund your account' }),
       ).toBeVisible();
     });
