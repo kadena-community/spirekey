@@ -5,6 +5,7 @@ import * as styles from './styles.css';
 export class EmbedManager {
   public baseUrl: string;
 
+  private window: Window;
   public popup: WindowProxy | null = null;
   public notification: HTMLIFrameElement;
 
@@ -52,6 +53,7 @@ export class EmbedManager {
   }
 
   constructor(baseUrl: string) {
+    this.window = window;
     this.baseUrl = baseUrl;
     this.notification = this.makeNotification(this.baseUrl);
   }
@@ -64,7 +66,7 @@ export class EmbedManager {
     // inivisble because it could be below another application or minimized on desktop
     // or in a other tab on iOS
     this.closePopup();
-    this.popup = open(this.baseUrl + path, 'SpireKeyPopup', params);
+    this.popup = this.window.open(this.baseUrl + path, 'SpireKeyPopup', params);
   }
 
   public closePopup() {
