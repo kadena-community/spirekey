@@ -39,8 +39,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0
       '@kadena/kode-ui':
-        specifier: ^0.14.2
-        version: 0.14.3
+        specifier: ^0.16.0
+        version: 0.16.0
       '@kadena/spirekey-sdk':
         specifier: workspace:*
         version: link:../../sdk
@@ -963,8 +963,8 @@ packages:
   '@kadena/kode-ui@0.14.2':
     resolution: {integrity: sha512-j00HRY60/GbbebjIlJ/1bswnnNxAQ0UiJoGLud7jc2f6Mx/uzI6FP0E+VxrQKNA8J1G+lIOO9YS+h+ENgIlpKQ==}
 
-  '@kadena/kode-ui@0.14.3':
-    resolution: {integrity: sha512-QkM1tD497wBNTFUPhVunS9ZaKtYOIWduW1eZzraQxX4JawHufRBrlxvIc8whrIIMhMBWoXiUso5gxhLXQAHBkw==}
+  '@kadena/kode-ui@0.16.0':
+    resolution: {integrity: sha512-a4Yh4yoAHQ9hbXtZXW8mlVS68l8V6Y2Zn+YfL8bOJfyEi094neEA4/tyci6kyOJYfdCkDAR2jnSBU9K9cAdPxw==}
 
   '@kadena/pactjs-cli@1.13.0':
     resolution: {integrity: sha512-4CWIhHG4X2QZp0KCLVNP+0lpWSFwpRXLgiGYmnm/BbNygYfkY5pUqTU+bhuqDWkCk6UreQrLzOCZpOH46o+aNA==}
@@ -6386,7 +6386,7 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       react-stately: 3.32.2(react@18.3.1)
 
-  '@kadena/kode-ui@0.14.3':
+  '@kadena/kode-ui@0.16.0':
     dependencies:
       '@kadena/kode-icons': 0.2.0
       '@react-aria/accordion': 3.0.0-alpha.25(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
