@@ -27,7 +27,7 @@ export default function BetaNotification() {
         <div>
           Kadena SpireKey is currently in beta. Join us on{' '}
           <a
-            href="https://discord.com/channels/502858632178958377/1244573952676724766"
+            href="https://discord.com/invite/kadena"
             target="_blank"
             rel="noreferrer"
             className={styles.discordChannel}
