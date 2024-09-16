@@ -2,14 +2,20 @@ import { test } from '@e2e/fixtures/test.fixture';
 import { expect } from '@playwright/test';
 
 test('Connect SpireKey Account', async ({
+  spireKeyApp,
   exampleApp,
   exampleConnectPage,
   exampleFundPage,
   exampleTransferPage,
+  localStorageHelper,
   page,
 }) => {
   await test.step('Visit Connect page without having account', async () => {
     let credentials: any = null;
+    await test.step('Clear state', async () => {
+      await spireKeyApp.openSpireKeyApp();
+      await localStorageHelper.deleteAccounts();
+    });
     await test.step('Select devnet and local wallet', async () => {
       await exampleApp.open();
       await exampleConnectPage.openAdvancedSettings();

@@ -9,9 +9,14 @@ test('Transfer out', async ({
   exampleConnectPage,
   exampleFundPage,
   page,
+  localStorageHelper,
 }) => {
   await test.step('Visit Connect page without having account', async () => {
     let credentials: any = null;
+    await test.step('Clear state', async () => {
+      await spireKeyApp.openSpireKeyApp();
+      await localStorageHelper.deleteAccounts();
+    });
     await test.step('Select devnet and local wallet', async () => {
       await exampleApp.open();
       await exampleConnectPage.openAdvancedSettings();
