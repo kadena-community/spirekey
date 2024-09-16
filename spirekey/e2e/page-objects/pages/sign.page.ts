@@ -1,5 +1,5 @@
 import { WebAuthNHelper } from '@e2e/helpers/webauthn.helper';
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 
 export class SignPage {
   private signButtons: Locator;
@@ -21,6 +21,7 @@ export class SignPage {
   async signAll() {
     await this.page.getByText('Permissions').waitFor();
     for (const signButton of await this.signButtons.all()) {
+      await expect(signButton).toBeEnabled();
       await signButton.click();
     }
   }
