@@ -8,10 +8,16 @@ test.beforeEach(async ({ spireKeyApp, page }) => {
 });
 
 test('Create new account using SpireKey', async ({
+  spireKeyApp,
+  localStorageHelper,
   welcomePage,
   registerPage,
   accountsPage,
 }) => {
+  await test.step('Clear state', async () => {
+    await spireKeyApp.openSpireKeyApp();
+    await localStorageHelper.deleteAccounts();
+  });
   await test.step('Start Registration', async () => {
     await welcomePage.startRegistration();
   });
@@ -34,11 +40,16 @@ test('Create new account using SpireKey', async ({
 });
 
 test('Create new account using SpireKey with dev mode enabled', async ({
+  spireKeyApp,
   welcomePage,
   registerPage,
   accountsPage,
   localStorageHelper,
 }) => {
+  await test.step('Clear state', async () => {
+    await spireKeyApp.openSpireKeyApp();
+    await localStorageHelper.deleteAccounts();
+  });
   await test.step('Enable devMode.', async () => {
     await localStorageHelper.enableDevMode();
   });
