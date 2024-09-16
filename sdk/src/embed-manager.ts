@@ -59,6 +59,11 @@ export class EmbedManager {
   public openPopup(path: string) {
     const { width, height } = screen;
     const params = `width=500,height=${height},left=${width - 500},top=0,popup=1`;
+
+    // for issue that the popup may be open somewhere in an (invisible to the user) tab, first try to close the popup.
+    // inivisble because it could be below another application or minimized on desktop
+    // or in a other tab on iOS
+    this.closePopup();
     this.popup = open(this.baseUrl + path, 'SpireKeyPopup', params);
   }
 
