@@ -65,6 +65,7 @@ export class EmbedManager {
     // for issue that the popup may be open somewhere in an (invisible to the user) tab, first try to close the popup.
     // inivisble because it could be below another application or minimized on desktop
     // or in a other tab on iOS
+    this.closePopup();
     setTimeout(() => {
       this.popup = this.window.open(
         this.baseUrl + path,
