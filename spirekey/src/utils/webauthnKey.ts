@@ -57,6 +57,20 @@ function extractPublicKeyHex(arrayBuffer: ArrayBuffer) {
 
   return key.getPublic().encode('hex', false);
 }
+const getAaguid = (authData?: string) => {
+  if (!authData) return null;
+  const hex = Buffer.from(
+    Uint8Array.from(Buffer.from(authData, 'base64')).slice(37, 37 + 16),
+  ).toString('hex');
+  const segments: string[] = [
+    hex.slice(0, 8), // 8
+    hex.slice(8, 12), // 4
+    hex.slice(12, 16), // 4
+    hex.slice(16, 20), // 4
+    hex.slice(20, 32), // 8
+  ];
+  return segments.join('-');
+};
 
 export const getNewWebauthnKey = async (displayName: string) => {
   const res = await startRegistration({
@@ -86,10 +100,11 @@ export const getNewWebauthnKey = async (displayName: string) => {
   if (!res.response.publicKey)
     throw new Error('No public key returned from webauthn');
 
+  const aaguid = getAaguid(res.response.authenticatorData);
   return {
     credentialId: res.id,
     publicKey: await getPublicKey(res),
     hex: extractPublicKeyHex(base64URLStringToBuffer(res.response.publicKey)),
-    deviceType: getDeviceType(res.response.transports),
+    deviceType: aaguid || getDeviceType(res.response.transports),
   };
 };
