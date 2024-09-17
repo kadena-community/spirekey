@@ -1,7 +1,6 @@
 import { DeviceDesktop } from '@/components/icons/DeviceDesktop';
 import { DevicePhone } from '@/components/icons/DevicePhone';
 import { DeviceSecurityKey } from '@/components/icons/DeviceSecurityKey';
-import Image from 'next/image';
 import { ReactNode } from 'react';
 import aaguidMap from './aaguid.json' with { type: 'json' };
 
@@ -12,7 +11,7 @@ export const getDeviceIcon = (deviceType: string): ReactNode => {
   const aaguid = getAaguid(aaguidMap, deviceType);
   if (aaguid)
     return (
-      <Image src={aaguid.icon_dark} alt={aaguid.name} width={40} height={40} />
+      <img src={aaguid.icon_dark} alt={aaguid.name} width={40} height={40} />
     );
   switch (deviceType) {
     case 'security-key':
