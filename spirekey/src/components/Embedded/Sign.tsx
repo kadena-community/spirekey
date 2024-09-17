@@ -1,21 +1,12 @@
 'use client';
 
-import type {
-  Account,
-  Device,
-  OptimalTransactionsAccount,
-} from '@kadena/spirekey-types';
-import { startAuthentication } from '@simplewebauthn/browser';
-import { useContext, useEffect, useState } from 'react';
-
-import { getSignature } from '@/utils/getSignature';
-
-import { ErrorContext } from '@/components/ErrorNotification/ErrorNotification';
 import { Permissions } from '@/components/Permissions/Permissions';
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
+import { useErrors } from '@/context/shared/ErrorContext/ErrorContext';
 import { useAccount, useAccounts } from '@/resolvers/accounts';
 import { getOptimalTransactions } from '@/utils/auto-transfers';
 import { getAccountsForTx, getPermissions } from '@/utils/consent';
+import { getSignature } from '@/utils/getSignature';
 import { publishEvent } from '@/utils/publishEvent';
 import { l1Client } from '@/utils/shared/client';
 import { addSignatures } from '@kadena/client';
@@ -28,12 +19,19 @@ import {
   Stack,
 } from '@kadena/kode-ui';
 import { CardFixedContainer, CardFooterGroup } from '@kadena/kode-ui/patterns';
+import type {
+  Account,
+  Device,
+  OptimalTransactionsAccount,
+} from '@kadena/spirekey-types';
 import {
   ICap,
   ICommand,
   ICommandPayload,
   IUnsignedCommand,
 } from '@kadena/types';
+import { startAuthentication } from '@simplewebauthn/browser';
+import { useEffect, useState } from 'react';
 
 interface Props {
   transactions?: string;
@@ -58,8 +56,7 @@ export default function Sign(props: Props) {
   const { transactions, accounts: signAccountsString } = props;
   const { accounts } = useAccounts();
   const { setAccount } = useAccount();
-
-  const { errorMessage, setErrorMessage } = useContext(ErrorContext);
+  const { errorMessage, setErrorMessage } = useErrors();
 
   if (!transactions) throw new Error('No transactions provided');
 
@@ -256,7 +253,7 @@ function SignPlumbingTxs({
   onCompleted,
 }: SignPlumbingTxsProps) {
   const [steps, setSteps] = useState(plumbingSteps);
-  const { errorMessage, setErrorMessage } = useContext(ErrorContext);
+  const { errorMessage, setErrorMessage } = useErrors();
 
   useEffect(() => {
     setSteps(plumbingSteps);
