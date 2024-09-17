@@ -96,9 +96,9 @@ describe('create-wallet', () => {
 
       expect(result).toEqual({
         publicKey:
-          'c4fb3a6262b12e4a33c6afef824bbd88107ec8ee496e2b7b4ce5b390d9531c8c',
+          '5a6274f271c36a7181721040543e43b0ae8d337f374d35e69dee817f4218410f',
         secretKey:
-          '91d50fea212326e58e17dea2ab5a7ea2befefa080a319e4e5b5a3fa233a4c778',
+          '4fb2694dcd0345c839e6802d199781e7ba6f4ba67040f22817f7a1f11a031ff8',
       });
 
       expect(mocks.submit).toHaveBeenCalledOnce();
