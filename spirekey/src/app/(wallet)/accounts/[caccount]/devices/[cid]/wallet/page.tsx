@@ -108,7 +108,7 @@ const MnemonicRevealer = ({ mnemonic }: { mnemonic: string }) => {
             <TextField
               key={word}
               type="password"
-              value={word}
+              value="****"
               label={`${groupIndex * groupSize + wordIndex + 1}`}
             />
           ))}

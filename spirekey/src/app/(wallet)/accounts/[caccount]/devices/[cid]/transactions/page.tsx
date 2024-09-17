@@ -45,6 +45,12 @@ export default function TransactionsPage() {
           >
             Transfer
           </Button>
+          <Button
+            variant="info"
+            onPress={() => push(`/accounts/${caccount}/devices/${cid}/wallet`)}
+          >
+            Settings
+          </Button>
         </CardFooterGroup>
       </SpireKeyCardContentBlock>
       <CardContentBlock
