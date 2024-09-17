@@ -155,8 +155,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0
       '@kadena/kode-ui':
-        specifier: ^0.14.2
-        version: 0.14.2
+        specifier: ^0.16.0
+        version: 0.16.0
       '@kadena/spirekey-sdk':
         specifier: workspace:*
         version: link:../sdk
@@ -974,9 +974,6 @@ packages:
 
   '@kadena/kode-icons@0.2.0':
     resolution: {integrity: sha512-gqQCq7QdV3OGGQbPNOE85ovzpykOHAV2/+baLv5QDCN1WaEZoPHBql3In2JaUsk07YZICHxa37PmnLpCw6Jt4Q==}
-
-  '@kadena/kode-ui@0.14.2':
-    resolution: {integrity: sha512-j00HRY60/GbbebjIlJ/1bswnnNxAQ0UiJoGLud7jc2f6Mx/uzI6FP0E+VxrQKNA8J1G+lIOO9YS+h+ENgIlpKQ==}
 
   '@kadena/kode-ui@0.16.0':
     resolution: {integrity: sha512-a4Yh4yoAHQ9hbXtZXW8mlVS68l8V6Y2Zn+YfL8bOJfyEi094neEA4/tyci6kyOJYfdCkDAR2jnSBU9K9cAdPxw==}
@@ -6425,30 +6422,6 @@ snapshots:
   '@kadena/kode-icons@0.2.0':
     dependencies:
       react: 18.3.1
-
-  '@kadena/kode-ui@0.14.2':
-    dependencies:
-      '@kadena/kode-icons': 0.1.0
-      '@react-aria/accordion': 3.0.0-alpha.25(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@react-aria/focus': 3.18.2(react@18.3.1)
-      '@react-aria/selection': 3.17.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@react-aria/utils': 3.25.2(react@18.3.1)
-      '@react-stately/table': 3.12.2(react@18.3.1)
-      '@react-stately/utils': 3.10.3(react@18.3.1)
-      '@react-types/grid': 3.2.8(react@18.3.1)
-      '@react-types/table': 3.10.1(react@18.3.1)
-      '@vanilla-extract/css': 1.14.2
-      '@vanilla-extract/css-utils': 0.1.4
-      '@vanilla-extract/recipes': 0.5.1(@vanilla-extract/css@1.14.2)
-      '@vanilla-extract/sprinkles': 1.6.1(@vanilla-extract/css@1.14.2)
-      classnames: 2.5.1
-      lodash.get: 4.4.2
-      lodash.mapvalues: 4.6.0
-      lodash.omit: 4.5.0
-      react: 18.3.1
-      react-aria: 3.34.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react-dom: 18.3.1(react@18.3.1)
-      react-stately: 3.32.2(react@18.3.1)
 
   '@kadena/kode-ui@0.16.0':
     dependencies:
