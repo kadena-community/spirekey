@@ -58,9 +58,13 @@ export class ConnectPage {
   }
 
   async startRecovery(credentials: any) {
+    const accountCredentials = credentials.filter(({ userHandle }: any) =>
+      Buffer.from(userHandle, 'base64').toString().includes('Account'),
+    );
+
     this.authenticator = await this.webauthnHelper.enableVirtualAuthenticator(
       this.page,
-      [credentials[1]], // only add the credential of the account
+      accountCredentials,
     );
     await this.recoverStartButton.click();
   }
