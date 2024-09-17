@@ -1,5 +1,7 @@
-import { CardContentBlock, CardFixedContainer } from '@kadena/kode-ui/patterns';
+import { Heading, Stack, Text } from '@kadena/kode-ui';
+import { CardFixedContainer } from '@kadena/kode-ui/patterns';
 import React, { FC, PropsWithChildren } from 'react';
+import { cardContainerClass, gridContentClass } from './Layout.css';
 
 interface IProps {
   title: string;
@@ -12,10 +14,12 @@ export const Layout: FC<PropsWithChildren<IProps>> = ({
   children,
 }) => {
   return (
-    <CardFixedContainer>
-      <CardContentBlock title={title} description={description}>
-        {children}
-      </CardContentBlock>
+    <CardFixedContainer className={cardContainerClass}>
+      <Stack gap="xl" flexDirection="column" className={gridContentClass}>
+        <Heading>{title}</Heading>
+        <Text>{description}</Text>
+      </Stack>
+      {children}
     </CardFixedContainer>
   );
 };
