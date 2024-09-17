@@ -7,8 +7,16 @@ import { apolloClient } from '@/hooks/useQuery';
 import { ApolloProvider } from '@apollo/client';
 import { darkThemeClass } from '@kadena/kode-ui/styles';
 import { ThemeProvider } from 'next-themes';
+import dynamic from 'next/dynamic';
 import { ReactNode } from 'react';
 import { SWRConfig } from 'swr';
+
+const ErrorProvider = dynamic(
+  () => import('@/context/shared/ErrorContext/ErrorContext'),
+  {
+    ssr: false,
+  },
+);
 
 function localStorageProvider() {
   if (typeof window === 'undefined') return new Map();
@@ -49,17 +57,20 @@ export default function Providers({
           <NotificationsProvider>
             <ThemeProvider
               attribute="class"
+              forcedTheme="dark"
               value={{
-                light: 'light',
+                light: darkThemeClass,
                 dark: darkThemeClass,
               }}
               enableSystem={true}
               enableColorScheme={true} // When enabled, we can't make the background of the embedded iframe transparent
             >
-              <>
-                {children}
-                <NotificationContainer />
-              </>
+              <ErrorProvider>
+                <>
+                  {children}
+                  <NotificationContainer />
+                </>
+              </ErrorProvider>
             </ThemeProvider>
           </NotificationsProvider>
         </ApolloProvider>

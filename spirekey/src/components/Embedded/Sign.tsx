@@ -10,9 +10,9 @@ import { useContext, useEffect, useState } from 'react';
 
 import { getSignature } from '@/utils/getSignature';
 
-import { ErrorContext } from '@/components/ErrorNotification/ErrorNotification';
 import { Permissions } from '@/components/Permissions/Permissions';
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
+import { useErrors } from '@/context/shared/ErrorContext/ErrorContext';
 import { useAccount, useAccounts } from '@/resolvers/accounts';
 import { getOptimalTransactions } from '@/utils/auto-transfers';
 import { getAccountsForTx, getPermissions } from '@/utils/consent';
@@ -58,8 +58,7 @@ export default function Sign(props: Props) {
   const { transactions, accounts: signAccountsString } = props;
   const { accounts } = useAccounts();
   const { setAccount } = useAccount();
-
-  const { errorMessage, setErrorMessage } = useContext(ErrorContext);
+  const { errorMessage, setErrorMessage } = useErrors();
 
   if (!transactions) throw new Error('No transactions provided');
 

@@ -3,8 +3,8 @@
 import { Notification, NotificationHeading } from '@kadena/kode-ui';
 
 import { publishEvent } from '@/utils/publishEvent';
-import React, { createContext, ReactNode, useState } from 'react';
-import * as styles from './ErrorNotification.css';
+import React, { createContext, ReactNode, useContext, useState } from 'react';
+import * as styles from './ErrorContext.css';
 
 // Define the context type
 interface ErrorContextType {
@@ -22,9 +22,9 @@ interface ErrorNotificationProps {
   children: ReactNode;
 }
 
-export default function ErrorNotification({
-  children,
-}: ErrorNotificationProps) {
+export const useErrors = () => useContext(ErrorContext);
+
+export default function ErrorProvider({ children }: ErrorNotificationProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   return (
