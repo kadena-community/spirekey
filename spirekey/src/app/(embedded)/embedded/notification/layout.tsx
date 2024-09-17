@@ -12,9 +12,8 @@ export default function NotificationLayout({
     <SettingsProvider displayDevMode={false}>
       <ThemeProvider
         attribute="class"
-        forcedTheme="dark"
         value={{
-          light: darkThemeClass,
+          light: 'light',
           dark: darkThemeClass,
         }}
       >
