@@ -52,6 +52,14 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     setIsSubmitting(true);
     try {
       const recoveredKey = await getCredentials(networkId);
+      if (!recoveredKey.mnemonic)
+        return addNotification({
+          variant: 'warning',
+          title: 'Please migrate your account',
+          message:
+            'Your account was created before the support of mnemonic phrases. Please create a new account and transfer your funds.',
+          timeout: 30_000,
+        });
       setKeypair(recoveredKey);
     } catch (_) {
       addNotification({
