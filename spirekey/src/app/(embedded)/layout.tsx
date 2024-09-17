@@ -4,8 +4,6 @@ import {
   default as favicon,
   default as faviconSVG,
 } from '@/assets/images/favicon.svg';
-import { darkThemeClass } from '@kadena/kode-ui/styles';
-import { ThemeProvider } from 'next-themes';
 import './global.embedded.css';
 
 export const metadata: Metadata = {
