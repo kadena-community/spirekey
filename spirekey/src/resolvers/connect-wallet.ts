@@ -3,8 +3,11 @@ import {
   kadenaDecrypt,
   kadenaEncrypt,
   kadenaGenKeypairFromSeed,
+  kadenaMnemonicToSeed,
 } from '@kadena/hd-wallet';
 import { ChainId } from '@kadena/types';
+import * as bip39 from '@scure/bip39';
+import { wordlist } from '@scure/bip39/wordlists/english';
 import {
   base64URLStringToBuffer,
   startAuthentication,
@@ -93,12 +96,12 @@ export const connectWallet = async (
   { client }: ApolloContext,
 ) => {
   const cid = localStorage.getItem(`${networkId}:wallet:cid`);
-  const { publicKey, secretKey } = await getPubkeyFromPasskey(
+  const { publicKey, secretKey, mnemonic } = await getPubkeyFromPasskey(
     networkId,
     client.query,
     cid,
   );
-  return { publicKey, secretKey };
+  return { publicKey, secretKey, mnemonic };
 };
 
 const getAllowedCredentials = (cid: string | null) => {
@@ -114,7 +117,7 @@ const getPubkeyFromPasskey = async (
   networkId: string,
   query: Query,
   cid: string | null,
-) => {
+): Promise<{ publicKey: string; secretKey: string; mnemonic?: string }> => {
   const { response, id } = await startAuthentication({
     rpId: window.location.hostname,
     challenge: 'reconnectwallet',
@@ -150,21 +153,54 @@ const getPubkeyFromPasskey = async (
     window.location.hostname,
     query,
   );
+  const newRecoveredKeys = await Promise.all(
+    [
+      ec.recoverPubKey(messageHash, sig, 0),
+      ec.recoverPubKey(messageHash, sig, 1),
+    ].map(async (p) => {
+      const tempPassword = crypto.getRandomValues(new Uint16Array(32));
+      const entropy = await crypto.subtle.digest(
+        'sha-256',
+        Buffer.from(p.encode('hex', false)),
+      );
+      const mnemonic = bip39.entropyToMnemonic(
+        new Uint8Array(entropy),
+        wordlist,
+      );
+      const seed = await kadenaMnemonicToSeed(tempPassword, mnemonic);
+      const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
+        tempPassword,
+        seed,
+        0,
+      );
+      const secretBin = await kadenaDecrypt(tempPassword, privateKey);
+      return {
+        mnemonic,
+        publicKey: pubKey,
+        secretKey: Buffer.from(secretBin).toString('hex'),
+      };
+    }),
+  );
+  const newRecoveredKey = newRecoveredKeys.find(({ publicKey }) =>
+    foundKeys.includes(publicKey),
+  );
+  if (newRecoveredKey) {
+    localStorage.setItem(`${networkId}:wallet:cid`, id);
+    return newRecoveredKey;
+  }
   const recoveredKeys = await Promise.all(
     [
       ec.recoverPubKey(messageHash, sig, 0),
       ec.recoverPubKey(messageHash, sig, 1),
     ].map(async (p) => {
       const tempPassword = crypto.getRandomValues(new Uint16Array(32));
+      const seed = await crypto.subtle.digest(
+        'sha-512',
+        Buffer.from(p.encode('hex', false)),
+      );
       const [pubKey, privateKey] = await kadenaGenKeypairFromSeed(
         tempPassword,
-        await kadenaEncrypt(
-          tempPassword,
-          await crypto.subtle.digest(
-            'sha-512',
-            Buffer.from(p.encode('hex', false)),
-          ),
-        ),
+        await kadenaEncrypt(tempPassword, seed),
         0,
       );
       const secretBin = await kadenaDecrypt(tempPassword, privateKey);
