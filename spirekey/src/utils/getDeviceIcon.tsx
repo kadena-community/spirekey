@@ -21,6 +21,6 @@ export const getDeviceIcon = (deviceType: string): ReactNode => {
     case 'desktop':
       return <DeviceDesktop />;
     default:
-      return null;
+      return <DeviceDesktop />;
   }
 };
