@@ -1,11 +1,11 @@
-import { Card, Heading, Stack } from '@kadena/kode-ui';
+import { Stack } from '@kadena/kode-ui';
 
 import { useAccounts } from '@/resolvers/accounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { CardContentBlock, CardFixedContainer } from '@kadena/kode-ui/patterns';
 import { Account } from '@kadena/spirekey-types';
 import { useRouter } from 'next/navigation';
-import { AccountComponent } from '../Account/Account';
+import { AccountTile } from '../AccountTile/AccountTile';
 
 type SortedAccounts = {
   mainnet01: Account[];
@@ -58,19 +58,21 @@ export default function AccountCollection() {
           >
             <CardFixedContainer>
               <CardContentBlock title={getNetworkDisplayName(networkId)}>
-                {accounts.map((account) => {
-                  return (
-                    <AccountComponent
-                      key={account.accountName + account.networkId}
-                      account={account}
-                      onClick={(account) =>
-                        router.push(
-                          `/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}/transactions`,
-                        )
-                      }
-                    />
-                  );
-                })}
+                <Stack flexDirection="column" gap="sm">
+                  {accounts.map((account) => {
+                    return (
+                      <AccountTile
+                        key={account.accountName + account.networkId}
+                        account={account}
+                        onClick={(account) =>
+                          router.push(
+                            `/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}/transactions`,
+                          )
+                        }
+                      />
+                    );
+                  })}
+                </Stack>
               </CardContentBlock>
             </CardFixedContainer>
           </Stack>

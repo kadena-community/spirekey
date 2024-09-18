@@ -2,9 +2,7 @@ import { deviceColors } from '@/styles/shared/tokens.css';
 import { hexadecimalToRGB } from '@/utils/color';
 import { Box, Stack } from '@kadena/kode-ui';
 import classnames from 'classnames';
-import Image from 'next/image';
 import { ReactNode } from 'react';
-import CardLogo from '../../assets/images/card-logo.svg';
 import * as styles from './Card.css';
 
 type CardProps = {

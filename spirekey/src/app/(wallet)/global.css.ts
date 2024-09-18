@@ -2,7 +2,6 @@ import '@kadena/kode-ui/global';
 import { tokens, vars } from '@kadena/kode-ui/styles';
 import { globalStyle } from '@vanilla-extract/css';
 
-const developerBackgroundColor = vars.colors.$gray70;
 const developerBorderColor = vars.colors.$pink50;
 
 globalStyle('body', {

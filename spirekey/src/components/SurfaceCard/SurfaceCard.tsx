@@ -21,7 +21,9 @@ export const SurfaceCard: FC<Props> = ({
     <Surface onClick={onClick} onTouchStart={onTouchStart}>
       <Box marginBlockEnd="lg">
         <Heading variant="h5">{title}</Heading>
-        <Text>{description}</Text>
+        <Text>
+          <>{description}</>
+        </Text>
       </Box>
       <Surface>{children}</Surface>
     </Surface>
