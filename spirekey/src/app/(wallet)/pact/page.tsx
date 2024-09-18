@@ -1,12 +1,8 @@
 'use client';
-import { accountName } from '@/resolvers/account-name';
 import { useAccounts } from '@/resolvers/accounts';
-import {
-  createTransactionBuilder,
-  IBuilder,
-  ITransactionBuilder,
-} from '@kadena/client';
-import { addSigner } from '@kadena/client/fp';
+import { genesisPrivateKey, genesisPubKey } from '@/utils/constants';
+import { signWithKeyPair } from '@/utils/signSubmitListen';
+import { createTransactionBuilder, IBuilder } from '@kadena/client';
 import {
   Button,
   Select,
@@ -20,10 +16,10 @@ import {
   CardFixedContainer,
   CardFooterGroup,
 } from '@kadena/kode-ui/patterns';
-import { sign } from '@kadena/spirekey-sdk';
+import { initSpireKey, sign } from '@kadena/spirekey-sdk';
 import { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const addDataString = (dataString: string) => (builder: IBuilder<any>) => {
   try {
@@ -82,18 +78,37 @@ export default function PactPage() {
         addCapabilityString(verifierCapabilities),
       )
       .addSigner(
-        {
-          pubKey: account!.devices[0].guard.keys[0],
-          scheme: 'WebAuthn',
-        },
+        account?.accountName === 'sender00'
+          ? { pubKey: genesisPubKey, scheme: 'ED25519' }
+          : {
+              pubKey: account!.devices[0].guard.keys[0],
+              scheme: 'WebAuthn',
+            },
         addCapabilityString(capabilities),
       )
       .createTransaction();
+    if (account?.accountName === 'sender00')
+      return setSignedTx(
+        JSON.stringify(
+          signWithKeyPair({
+            publicKey: genesisPubKey,
+            secretKey: genesisPrivateKey,
+          })(tx),
+          null,
+          2,
+        ),
+      );
     const {
       transactions: [signedTx],
     } = await sign([tx]);
     setSignedTx(JSON.stringify(signedTx, null, 2));
   };
+
+  useEffect(() => {
+    initSpireKey({
+      hostUrl: window.location.origin,
+    });
+  }, []);
 
   return (
     <CardFixedContainer>
@@ -121,16 +136,24 @@ export default function PactPage() {
           </Select>
           <Select
             label="Account"
-            onSelectionChange={(a) =>
-              setAccount(accounts.find((acc) => acc.accountName === a))
-            }
+            onSelectionChange={(a) => {
+              if (a === 'sender00')
+                return setAccount({
+                  accountName: 'sender00',
+                  networkId,
+                } as Account);
+              setAccount(accounts.find((acc) => acc.accountName === a));
+            }}
             selectedKey={account?.accountName}
           >
-            {accounts
-              .filter((a) => a.networkId === networkId)
-              .map((a) => (
-                <SelectItem key={a.accountName}>{a.alias}</SelectItem>
-              ))}
+            {[
+              ...accounts
+                .filter((a) => a.networkId === networkId)
+                .map((a) => (
+                  <SelectItem key={a.accountName}>{a.alias}</SelectItem>
+                )),
+              <SelectItem key="sender00">Sender00</SelectItem>,
+            ]}
           </Select>
           <TextareaField label="code" value={code} onValueChange={setCode} />
           <TextareaField label="data" value={data} onValueChange={setData} />
@@ -151,7 +174,7 @@ export default function PactPage() {
             onValueChange={setVerifierCapabilities}
           />
           <CardFooterGroup>
-            <Button>Sign</Button>
+            <Button onPress={onSign}>Sign</Button>
           </CardFooterGroup>
 
           <TextareaField
