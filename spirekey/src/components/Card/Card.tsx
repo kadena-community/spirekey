@@ -72,14 +72,6 @@ export default function Card({
           </Stack>
         </Stack>
       </Stack>
-      <Image
-        src={CardLogo}
-        alt="Kadena logo"
-        className={styles.cardLogo}
-        width={68}
-        height={20}
-        role="presentation"
-      />
     </Box>
   );
 }

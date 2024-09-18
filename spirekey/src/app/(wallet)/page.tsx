@@ -5,8 +5,8 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-const CardCollection = dynamic(
-  () => import('@/components/CardCollection/CardCollection'),
+const AccountCollection = dynamic(
+  () => import('@/components/AccountCollection/AccountCollection'),
   { ssr: false },
 );
 
@@ -20,5 +20,5 @@ export default function Accounts() {
     }
   }, [accounts, loading]);
 
-  return <CardCollection />;
+  return <AccountCollection />;
 }

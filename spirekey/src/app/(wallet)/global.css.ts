@@ -17,7 +17,5 @@ globalStyle('body', {
 });
 
 globalStyle('body.developer', {
-  backgroundColor: developerBackgroundColor,
   borderTop: `3px solid ${developerBorderColor}`,
-  borderBottom: `3px solid ${developerBorderColor}`,
 });
