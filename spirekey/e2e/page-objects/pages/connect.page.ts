@@ -22,8 +22,8 @@ export class ConnectPage {
     });
     this.recoverStartButton = page.getByRole('button', { name: 'Recover' });
     this.recoverButton = page.getByRole('button', { name: 'Next' });
-    this.createWalletButton = page.getByRole('button', { name: 'Import' });
-    this.connectWalletButton = page.getByRole('button', { name: 'Connect' });
+    this.createWalletButton = page.getByRole('button', { name: 'Create' });
+    this.connectWalletButton = page.getByRole('button', { name: 'Import' });
     this.createAccountButton = page.getByRole('button', { name: 'Continue' });
     this.completeButton = page.getByRole('button', { name: 'Complete' });
 
