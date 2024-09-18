@@ -17,6 +17,7 @@ import {
 import { ChainId, ICommand } from '@kadena/types';
 import * as bip39 from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
+import { useWallet as useLocalWallet } from './wallet';
 
 type WalletsVariable = {
   networkId: string;
@@ -46,6 +47,7 @@ export const createWallet = async (
   _: any,
   { networkId, chainId }: WalletsVariable,
 ) => {
+  const { setWallet } = useLocalWallet();
   const { credentialId, hex } = await getNewWebauthnKey(
     getRootkeyPasskeyName(networkId!),
   );
@@ -67,7 +69,7 @@ export const createWallet = async (
     pubkey: pubKey,
     domain: window.location.hostname,
   });
-  localStorage.setItem(`${networkId}:wallet:cid`, credentialId);
+  setWallet(networkId, credentialId);
   const decrypted = await kadenaDecrypt(tempPassword, privateKey);
   return {
     publicKey: pubKey,
