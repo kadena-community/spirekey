@@ -4,7 +4,7 @@ import DeviceCard from '@/components/Card/DeviceCard';
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
 import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useFlag } from '@/hooks/useFlag';
-import { useAccounts } from '@/resolvers/accounts';
+import { useAccount, useAccounts } from '@/resolvers/accounts';
 import { useCredentials } from '@/resolvers/connect-wallet';
 import { MonoArrowBack, MonoCopyAll } from '@kadena/kode-icons/system';
 import { Button, maskValue, Stack, TextField } from '@kadena/kode-ui';
@@ -75,10 +75,7 @@ export default function WalletPage() {
         <MnemonicRevealer mnemonic={mnemonic} />
       </CardContentBlock>
       {isAccountManagementEnabled && (
-        <CardContentBlock
-          title="Manage Account"
-          description="Manage your account details"
-        ></CardContentBlock>
+        <AliasEditor accountName={account?.accountName} />
       )}
       <Button
         className={atoms({ position: 'absolute', left: 0 })}
@@ -92,6 +89,38 @@ export default function WalletPage() {
     </CardFixedContainer>
   );
 }
+
+const AliasEditor = ({ accountName }: { accountName?: string }) => {
+  const { accounts, loading } = useAccounts();
+  const { setAccount } = useAccount();
+  const [alias, setAlias] = useState('');
+  if (loading) return <div>Loading...</div>;
+  const account = accounts?.find((a) => a.accountName === accountName);
+  if (!account) return <div>No account found...</div>;
+  return (
+    <CardContentBlock
+      title="Manage Account"
+      description="Manage your account details"
+    >
+      <Stack flexDirection="column">
+        <TextField
+          label="Alias"
+          value={alias || account.alias}
+          onValueChange={(v) => setAlias(v)}
+        />
+        <CardFooterGroup>
+          <Button
+            variant="primary"
+            isDisabled={!alias || alias === account.alias}
+            onPress={() => setAccount({ ...account, alias })}
+          >
+            Save
+          </Button>
+        </CardFooterGroup>
+      </Stack>
+    </CardContentBlock>
+  );
+};
 
 const MnemonicRevealer = ({ mnemonic }: { mnemonic: string }) => {
   if (!mnemonic) return null;
