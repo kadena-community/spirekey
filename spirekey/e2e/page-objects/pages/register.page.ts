@@ -29,7 +29,7 @@ export class RegisterPage {
   }
 
   async createPassKey(): Promise<void> {
-    await this.page.getByRole('heading', { name: 'Register' }).waitFor();
+    await this.page.getByRole('heading', { name: 'Add Account' }).waitFor();
     await this.continueButton.click();
   }
 

@@ -1,28 +1,12 @@
 'use client';
 
-import type { ChainId } from '@kadena/client';
-import { Button, Heading, Stack, Text } from '@kadena/kode-ui';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-
-import { deviceColors } from '@/styles/shared/tokens.css';
-import { getRootkeyPasskeyName } from '@/utils/getNetworkDisplayName';
-
-import { KeyPair, useRegistration } from '@/hooks/useRegistration';
+import { useRegistration } from '@/hooks/useRegistration';
 import { getUser } from '@/utils/connect';
-import {
-  CardContentBlock,
-  CardFixedContainer,
-  CardFooterGroup,
-} from '@kadena/kode-ui/patterns';
+import type { ChainId } from '@kadena/client';
 import { Account } from '@kadena/spirekey-types';
-import AccountNetwork from '../Card/AccountNetwork';
-import Alias from '../Card/Alias';
-import Card from '../Card/Card';
-import CardBottom from '../Card/CardBottom';
-import DeviceIcons from '../Card/DeviceIcons';
-import PasskeyCard from '../Card/PasskeyCard';
-import { Step, Stepper } from '../Stepper/Stepper';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { RegisterComponent } from './components/RegisterComponent';
 
 interface Props {
   redirectUrl?: string;
@@ -67,6 +51,7 @@ export default function Registration({
     );
     router.push(`${completeRedirectUrl}?${new URLSearchParams({ user })}`);
   };
+
   return (
     <RegisterComponent
       account={account}
@@ -82,150 +67,3 @@ export default function Registration({
     />
   );
 }
-
-const RegisterComponent = ({
-  account,
-  keypair,
-  isSubmitting,
-  succesfulAuthentication,
-  networkId,
-  onCancel,
-  onHandleRegisterWallet,
-  onHandleConnectWallet,
-  onSubmit,
-  onComplete,
-}: {
-  account?: Account;
-  keypair?: KeyPair;
-  isSubmitting: boolean;
-  succesfulAuthentication: boolean;
-  networkId: string;
-  onCancel: () => void;
-  onHandleConnectWallet: () => void;
-  onHandleRegisterWallet: () => void;
-  onSubmit: () => void;
-  onComplete: () => void;
-}) => {
-  const [isAnimationFinished, setAnimationFinished] = useState(false);
-
-  if (account && isAnimationFinished)
-    return (
-      <CardFixedContainer>
-        <CardContentBlock
-          title="Register Account"
-          description={
-            'Create your account to manage your web3 assets managed by your SpireKey wallet.'
-          }
-          supportingContent={
-            <Stepper>
-              <Step>Create Wallet</Step>
-              <Step>Register Account</Step>
-            </Stepper>
-          }
-          extendedContent={
-            <Card
-              color={deviceColors.purple}
-              balancePercentage={50}
-              title={<Alias title={account.alias.replace(/\(.*\)/, '')} />}
-              icons={<DeviceIcons account={account} />}
-              center={<AccountNetwork account={account} isLoading={true} />}
-              cardBottom={<CardBottom account={account} />}
-            />
-          }
-        />
-        <CardFooterGroup>
-          <Button variant="outlined" onPress={onCancel}>
-            Cancel
-          </Button>
-          <Button variant="primary" onPress={onComplete}>
-            Complete
-          </Button>
-        </CardFooterGroup>
-      </CardFixedContainer>
-    );
-
-  if (keypair)
-    return (
-      <CardFixedContainer>
-        <CardContentBlock
-          title="Register Account"
-          description={
-            'Create your account to manage your web3 assets managed by your SpireKey wallet.'
-          }
-          supportingContent={
-            <Stepper>
-              <Step>Create Wallet</Step>
-              <Step active>Register Account</Step>
-            </Stepper>
-          }
-          extendedContent={
-            <PasskeyCard
-              isInProgress={!succesfulAuthentication && isSubmitting}
-              isSuccessful={succesfulAuthentication}
-              onSuccessfulAnimationEnd={() => setAnimationFinished(true)}
-              onSubmit={onSubmit}
-            />
-          }
-        />
-        <CardFooterGroup>
-          <Button
-            variant="outlined"
-            onPress={onCancel}
-            isDisabled={isSubmitting || succesfulAuthentication}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            onPress={onSubmit}
-            isDisabled={isSubmitting || succesfulAuthentication}
-          >
-            Continue
-          </Button>
-        </CardFooterGroup>
-      </CardFixedContainer>
-    );
-  return (
-    <CardFixedContainer>
-      <CardContentBlock
-        title="Connect Wallet"
-        description={
-          'Do you wish to manage your wallet here on SpireKey? This will become your home of operation, your gateway into the a secure web 3 experience!'
-        }
-        supportingContent={
-          <Stepper>
-            <Step active>Create Wallet</Step>
-            <Step>Register Account</Step>
-          </Stepper>
-        }
-      >
-        <Stack flexDirection="column" gap="md">
-          <Heading as="h5">Already have a Kadena SpireKey wallet?</Heading>
-          <Text>
-            Provide your passkey named{' '}
-            <Text bold>{getRootkeyPasskeyName(networkId)}</Text> to add another
-            account to this wallet.
-          </Text>
-          <CardFooterGroup>
-            <Button onPress={onHandleConnectWallet}>Connect</Button>
-          </CardFooterGroup>
-          <Heading as="h5">No wallet yet?</Heading>
-          <Text>
-            Create a new wallet using a passkey. This passkey will be stored on
-            your device as <Text bold>{getRootkeyPasskeyName(networkId)}</Text>.
-          </Text>
-          <Text>
-            This passkey will be used to perform maintenance operations as well
-            as recovery operations. SpireKey will not use this key for signing!
-          </Text>
-        </Stack>
-      </CardContentBlock>
-      <CardFooterGroup>
-        {networkId === 'mainnet01' && <Button>Create coming soon</Button>}
-        {networkId !== 'mainnet01' && (
-          <Button onPress={onHandleRegisterWallet}>Create</Button>
-        )}
-      </CardFooterGroup>
-    </CardFixedContainer>
-  );
-};
