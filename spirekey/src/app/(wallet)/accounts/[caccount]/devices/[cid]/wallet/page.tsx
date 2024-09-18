@@ -3,6 +3,7 @@
 import DeviceCard from '@/components/Card/DeviceCard';
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
 import { useNotifications } from '@/context/shared/NotificationsContext';
+import { useFlag } from '@/hooks/useFlag';
 import { useAccounts } from '@/resolvers/accounts';
 import { useCredentials } from '@/resolvers/connect-wallet';
 import { MonoArrowBack, MonoCopyAll } from '@kadena/kode-icons/system';
@@ -26,6 +27,7 @@ export default function WalletPage() {
   const device = account?.devices.find((d) => d['credential-id'] === cid);
   const { getCredentials } = useCredentials();
   const [mnemonic, setMnemonic] = useState('');
+  const isAccountManagementEnabled = useFlag('account_management');
 
   const { addNotification } = useNotifications();
 
@@ -72,6 +74,12 @@ export default function WalletPage() {
       >
         <MnemonicRevealer mnemonic={mnemonic} />
       </CardContentBlock>
+      {isAccountManagementEnabled && (
+        <CardContentBlock
+          title="Manage Account"
+          description="Manage your account details"
+        ></CardContentBlock>
+      )}
       <Button
         className={atoms({ position: 'absolute', left: 0 })}
         startVisual={<MonoArrowBack />}
