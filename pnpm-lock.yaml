@@ -156,7 +156,7 @@ importers:
         version: 0.1.0
       '@kadena/kode-ui':
         specifier: ^0.16.0
-        version: link:../../kadena.js/packages/libs/kode-ui
+        version: 0.16.0
       '@kadena/spirekey-sdk':
         specifier: workspace:*
         version: link:../sdk
