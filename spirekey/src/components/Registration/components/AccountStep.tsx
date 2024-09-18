@@ -34,7 +34,6 @@ export const AccountStep: FC<IProps> = ({
       }
     >
       <OnBoardingStepper step={1} steps={steps} />
-
       <LayoutContext>
         <Stack className={passkeyWrapperClass}>
           <Card

@@ -32,7 +32,6 @@ export const KeypairStep: FC<IProps> = ({
       }
     >
       <OnBoardingStepper step={1} steps={steps} />
-
       <LayoutContext>
         <Stack className={passkeyWrapperClass}>
           <PasskeyCard
@@ -43,7 +42,6 @@ export const KeypairStep: FC<IProps> = ({
           />
         </Stack>
       </LayoutContext>
-
       <LayoutActions>
         <Button
           variant="outlined"

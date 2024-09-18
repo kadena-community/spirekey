@@ -2,7 +2,7 @@ import { Heading, Stack } from '@kadena/kode-ui';
 import { FC, ReactNode } from 'react';
 
 interface Props {
-  children: ReactNode;
+  children: string;
   append?: ReactNode;
 }
 export const PageTitle: FC<Props> = ({ children, append }) => (
