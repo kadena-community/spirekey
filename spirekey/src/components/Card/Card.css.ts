@@ -7,6 +7,7 @@ export const card = style({
   color: 'black',
   margin: '0 auto',
   aspectRatio: '8560 / 5398',
+  width: '100%',
   height: 'auto',
   flexShrink: 0,
   background: "url('/images/card-background.svg') no-repeat center center",

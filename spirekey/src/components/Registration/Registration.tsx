@@ -51,6 +51,7 @@ export default function Registration({
     );
     router.push(`${completeRedirectUrl}?${new URLSearchParams({ user })}`);
   };
+
   return (
     <RegisterComponent
       account={account}

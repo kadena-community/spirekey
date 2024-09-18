@@ -1,10 +1,8 @@
 import { Layout } from '@/components/OnBoarding/components/Layout/Layout';
 import { LayoutActions } from '@/components/OnBoarding/components/Layout/LayoutActions';
 import { LayoutContext } from '@/components/OnBoarding/components/Layout/LayoutContext';
-import {
-  defaultSteps,
-  OnBoardingStepper,
-} from '@/components/OnBoarding/components/OnBoardingStepper/OnBoardingStepper';
+import { OnBoardingStepper } from '@/components/OnBoarding/components/OnBoardingStepper/OnBoardingStepper';
+import { FLOWTYPE } from '@/components/OnBoarding/components/OnBoardingStepper/utils';
 import { Button } from '@kadena/kode-ui';
 import { FC, useState } from 'react';
 
@@ -12,31 +10,31 @@ interface IProps {
   onHandleRegisterWallet: () => void;
   onHandleConnectWallet: () => void;
   networkId: string;
+  setFlowType: React.Dispatch<
+    React.SetStateAction<keyof typeof FLOWTYPE | undefined>
+  >;
+  steps: string[];
 }
 
 export const ConnectWalletStep: FC<IProps> = ({
   onHandleRegisterWallet,
   onHandleConnectWallet,
   networkId,
+  setFlowType,
+  steps,
 }) => {
   const [activeStep, setActiveStep] = useState<number | undefined>(undefined);
-  const [steps, setSteps] = useState<string[]>(defaultSteps);
+  //const [steps, setSteps] = useState<string[]>(defaultSteps);
 
   const handleCreate = () => {
     setActiveStep(0);
-    setSteps((v) => {
-      v[0] = 'Create';
-      return v;
-    });
+    setFlowType(FLOWTYPE.CREATE);
     onHandleRegisterWallet();
   };
 
   const handleImport = () => {
     setActiveStep(0);
-    setSteps((v) => {
-      v[0] = 'Import';
-      return v;
-    });
+    setFlowType(FLOWTYPE.IMPORT);
     onHandleConnectWallet();
   };
 

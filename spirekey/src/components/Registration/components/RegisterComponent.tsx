@@ -1,5 +1,7 @@
 'use client';
 
+import { defaultSteps } from '@/components/OnBoarding/components/OnBoardingStepper/OnBoardingStepper';
+import { FLOWTYPE } from '@/components/OnBoarding/components/OnBoardingStepper/utils';
 import { KeyPair } from '@/hooks/useRegistration';
 import { Account } from '@kadena/spirekey-types';
 import React, { useState } from 'react';
@@ -31,10 +33,18 @@ export const RegisterComponent = ({
   onComplete: () => void;
 }) => {
   const [isAnimationFinished, setAnimationFinished] = useState(false);
+  const [flowType, setFlowType] = useState<keyof typeof FLOWTYPE | undefined>(
+    undefined,
+  );
+
+  const steps = defaultSteps;
+  if (flowType === FLOWTYPE.CREATE) steps[0] = 'Create';
+  if (flowType === FLOWTYPE.IMPORT) steps[0] = 'Import';
 
   if (account && isAnimationFinished)
     return (
       <AccountStep
+        steps={steps}
         account={account}
         onCancel={onCancel}
         onComplete={onComplete}
@@ -44,6 +54,7 @@ export const RegisterComponent = ({
   if (keypair)
     return (
       <KeypairStep
+        steps={steps}
         setAnimationFinished={setAnimationFinished}
         succesfulAuthentication={succesfulAuthentication}
         isSubmitting={isSubmitting}
@@ -53,6 +64,8 @@ export const RegisterComponent = ({
     );
   return (
     <ConnectWalletStep
+      steps={steps}
+      setFlowType={setFlowType}
       onHandleRegisterWallet={onHandleRegisterWallet}
       onHandleConnectWallet={onHandleConnectWallet}
       networkId={networkId}

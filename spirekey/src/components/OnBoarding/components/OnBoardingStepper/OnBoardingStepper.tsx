@@ -1,4 +1,4 @@
-import { IStepProps, Stack, Step, Stepper } from '@kadena/kode-ui';
+import { Stack, Step, Stepper } from '@kadena/kode-ui';
 import React, { FC } from 'react';
 import { gridStepperClass } from '../Layout/Layout.css';
 import { createStatus } from './utils';

@@ -66,7 +66,7 @@ export default function TransactionsPage() {
         variant="outlined"
         onPress={() => push(`/`)}
       >
-        Back to Accounts
+        Go back
       </Button>
     </CardFixedContainer>
   );

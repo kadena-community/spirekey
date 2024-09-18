@@ -1,8 +1,9 @@
 'use client';
 
+import { useAccounts } from '@/resolvers/accounts';
 import { l1Client } from '@/utils/shared/client';
 import { createTransactionBuilder, ICommandResult } from '@kadena/client';
-import {MonoArrowBack, MonoCopyAll} from '@kadena/kode-icons/system';
+import { MonoArrowBack, MonoCopyAll } from '@kadena/kode-icons/system';
 import {
   Button,
   Link,
@@ -21,10 +22,9 @@ import {
 import { atoms } from '@kadena/kode-ui/styles';
 import { Account, initSpireKey, sign } from '@kadena/spirekey-sdk';
 import { ChainId, ICommand } from '@kadena/types';
-import {useParams, useRouter} from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useAccounts } from '@/resolvers/accounts';
 
 const isCoinAccountExisting = async ({
   accountName,
@@ -202,7 +202,7 @@ export default function SendForm() {
           variant="outlined"
           onPress={() => push(`/`)}
         >
-          Back to Accounts
+          Go back
         </Button>
         <CardContentBlock
           title="Transfer Result"
@@ -277,7 +277,7 @@ export default function SendForm() {
             variant="outlined"
             onPress={() => push(`/`)}
           >
-            Back to Accounts
+            Go back
           </Button>
           <CardContentBlock
             title="Transfer"

@@ -20,8 +20,7 @@ export const gridContextPlaceholderClass = style({
 export const gridContextClass = style({
   position: 'absolute',
   gridArea: 'context',
-  background: 'black',
-  opacity: '.1',
+  background: '#161f29',
   minHeight: '30dvh',
   left: '-2.3rem',
   top: '-2.2rem',
