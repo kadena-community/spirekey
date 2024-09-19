@@ -1,9 +1,7 @@
 import { getDeviceIcon } from '@/utils/getDeviceIcon';
 import { Heading, maskValue, Stack, Text, Tile } from '@kadena/kode-ui';
-import { atoms } from '@kadena/kode-ui/styles';
 import type { Account } from '@kadena/spirekey-types';
 import { useMemo } from 'react';
-import DeviceCircle from '../Device/DeviceCircle';
 
 interface AccountProps {
   account: Account;

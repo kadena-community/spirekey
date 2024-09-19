@@ -8,7 +8,7 @@ import {
   MonoAccountBalanceWallet,
   MonoArrowBack,
 } from '@kadena/kode-icons/system';
-import { Button, maskValue } from '@kadena/kode-ui';
+import { Button } from '@kadena/kode-ui';
 import {
   CardContentBlock,
   CardFixedContainer,
@@ -30,7 +30,7 @@ export default function AccountPage() {
     <CardFixedContainer>
       <CardContentBlock
         title="Account"
-        description={`Overview of your account ${maskValue(caccount)}`}
+        description={`Overview of your selected account`}
         visual={
           <MonoAccountBalanceWallet
             width={64}
