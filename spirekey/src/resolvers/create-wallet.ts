@@ -1,3 +1,4 @@
+import { useWallet as useLocalWallet } from '@/hooks/useWallet';
 import {
   gasStation,
   genesisPrivateKey,
@@ -46,6 +47,7 @@ export const createWallet = async (
   _: any,
   { networkId, chainId }: WalletsVariable,
 ) => {
+  const { setWallet } = useLocalWallet();
   const { credentialId, hex } = await getNewWebauthnKey(
     getRootkeyPasskeyName(networkId!),
   );
@@ -67,7 +69,7 @@ export const createWallet = async (
     pubkey: pubKey,
     domain: window.location.hostname,
   });
-  localStorage.setItem(`${networkId}:wallet:cid`, credentialId);
+  setWallet(networkId, credentialId);
   const decrypted = await kadenaDecrypt(tempPassword, privateKey);
   return {
     publicKey: pubKey,
