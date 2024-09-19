@@ -1,3 +1,4 @@
+import { useWallet } from '@/hooks/useWallet';
 import { ApolloClient, gql, useLazyQuery } from '@apollo/client';
 import {
   kadenaDecrypt,
@@ -14,7 +15,6 @@ import {
 } from '@simplewebauthn/browser';
 import { PublicKeyCredentialDescriptorJSON } from '@simplewebauthn/types';
 import elliptic from 'elliptic';
-import { useWallet } from '../hooks/useWallet';
 
 type WalletsVariable = {
   networkId: string;

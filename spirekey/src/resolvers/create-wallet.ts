@@ -1,3 +1,4 @@
+import { useWallet as useLocalWallet } from '@/hooks/useWallet';
 import {
   gasStation,
   genesisPrivateKey,
@@ -17,7 +18,6 @@ import {
 import { ChainId, ICommand } from '@kadena/types';
 import * as bip39 from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
-import { useWallet as useLocalWallet } from '../hooks/useWallet';
 
 type WalletsVariable = {
   networkId: string;
