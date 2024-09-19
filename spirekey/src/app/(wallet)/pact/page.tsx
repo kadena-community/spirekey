@@ -50,7 +50,10 @@ export default function PactPage() {
 
   return (
     <CardFixedContainer>
-      <CardContentBlock title="Tx builder">
+      <CardContentBlock
+        title="Tx builder"
+        description="Build your tx and get it signed. Use sender00 if you just want a signature."
+      >
         <Stack flexDirection="column" gap="md">
           <Select
             label="Chain"
@@ -93,35 +96,46 @@ export default function PactPage() {
               <SelectItem key="sender00">Sender00</SelectItem>,
             ]}
           </Select>
-          <TextareaField label="code" value={code} onValueChange={setCode} />
-          <TextareaField label="data" value={data} onValueChange={setData} />
-          <TextareaField
-            label="capabilities"
-            value={capabilities}
-            onValueChange={setCapabilities}
-          />
+        </Stack>
+      </CardContentBlock>
+      <Stack flexDirection="column" gap="md" marginBlock="md">
+        <TextareaField label="code" value={code} onValueChange={setCode} />
+        <TextareaField label="data" value={data} onValueChange={setData} />
+        <TextareaField
+          label="capabilities"
+          value={capabilities}
+          onValueChange={setCapabilities}
+        />
+      </Stack>
+      <CardContentBlock
+        title="Verifier Plugins"
+        description="Optional: Add your verifier plugin here"
+      >
+        <Stack flexDirection="column" gap="md">
           <TextField
             label="verifier"
             value={verifierName}
             onValueChange={setVerifierName}
           />
           <TextField label="proof" value={proof} onValueChange={setProof} />
-          <TextareaField
-            label="verifier capabilities"
-            value={verifierCapabilities}
-            onValueChange={setVerifierCapabilities}
-          />
-          <CardFooterGroup>
-            <Button onPress={onSign}>Sign</Button>
-          </CardFooterGroup>
-
-          <TextareaField
-            label="Signed TX"
-            value={signedTx}
-            onValueChange={setSignedTx}
-          />
         </Stack>
       </CardContentBlock>
+      <Stack flexDirection="column" gap="md">
+        <TextareaField
+          label="verifier capabilities"
+          value={verifierCapabilities}
+          onValueChange={setVerifierCapabilities}
+        />
+        <CardFooterGroup>
+          <Button onPress={onSign}>Sign</Button>
+        </CardFooterGroup>
+
+        <TextareaField
+          label="Signed TX"
+          value={signedTx}
+          onValueChange={setSignedTx}
+        />
+      </Stack>
     </CardFixedContainer>
   );
 }
