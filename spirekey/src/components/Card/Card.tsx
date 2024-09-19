@@ -11,7 +11,7 @@ type CardProps = {
   title?: ReactNode;
   icons?: ReactNode;
   center?: ReactNode;
-  cardBottom?: ReactNode;
+  cardBalance?: ReactNode;
   children?: ReactNode;
 };
 
@@ -21,7 +21,7 @@ export default function Card({
   title,
   icons,
   center,
-  cardBottom,
+  cardBalance,
   children,
 }: CardProps) {
   const { r, g, b } = hexadecimalToRGB(color);
@@ -41,11 +41,7 @@ export default function Card({
       }
     >
       {children}
-      <Stack
-        flexDirection="column"
-        justifyContent="space-between"
-        className={styles.cardContentContainer}
-      >
+      <Stack flexDirection="column" className={styles.cardContentContainer}>
         <Stack flexDirection="row">
           <Stack
             flexDirection="row"
@@ -54,20 +50,21 @@ export default function Card({
           >
             {title}
           </Stack>
-          <Stack flexDirection="row" alignItems="center">
-            {icons}
-          </Stack>
         </Stack>
+        <Stack flex={1} />
         {center}
+        <Stack flexDirection="column" className={styles.txAndBalance}>
+          {cardBalance}
+        </Stack>
+        <Stack flex={1} />
         <Stack
           flexDirection="row"
-          justifyContent="space-between"
-          alignItems="flex-end"
+          justifyContent="flex-end"
+          alignItems="center"
           className={styles.cardContentBottom}
+          width="100%"
         >
-          <Stack flexDirection="column" className={styles.txAndBalance}>
-            {cardBottom}
-          </Stack>
+          {icons}
         </Stack>
       </Stack>
     </Box>

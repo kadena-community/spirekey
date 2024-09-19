@@ -52,17 +52,6 @@ export default function PasskeyCard({
               </div>
             </motion.div>
           )}
-          {fingerprintAnimationDone && (
-            <motion.div
-              key="logo"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <SpireKeyKdacolorLogoGreen className={styles.logo} />
-              {children}
-            </motion.div>
-          )}
         </AnimatePresence>
       </div>
     </Card>

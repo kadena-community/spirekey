@@ -1,4 +1,4 @@
-import { atoms } from '@kadena/kode-ui/styles';
+import { atoms, token } from '@kadena/kode-ui/styles';
 import { keyframes, style } from '@vanilla-extract/css';
 import { charArray } from './characters';
 
@@ -12,7 +12,7 @@ export const codeFont = style([
 export const wrapper = style([
   codeFont,
   {
-    color: 'black',
+    color: token('color.text.base.default'),
     display: 'flex',
     justifyContent: 'center',
   },

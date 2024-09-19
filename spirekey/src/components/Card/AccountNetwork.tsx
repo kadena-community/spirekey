@@ -50,11 +50,7 @@ export default function AccountNetwork({
               setHasCopied(true);
             }}
           >
-            {hasCopied ? (
-              <MonoCheck color="green" />
-            ) : (
-              <MonoContentCopy color="black" />
-            )}
+            {hasCopied ? <MonoCheck color="green" /> : <MonoContentCopy />}
           </button>
         )}
       </Stack>

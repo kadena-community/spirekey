@@ -50,16 +50,15 @@ export default function AccountPage() {
       >
         <CardFooterGroup>
           <Button
-            variant="primary"
-            onPress={() => push(`/accounts/${caccount}/devices/${cid}/send`)}
-          >
-            Transfer
-          </Button>
-          <Button
-            variant="info"
+            variant="outlined"
             onPress={() => push(`/accounts/${caccount}/devices/${cid}/wallet`)}
           >
             Settings
+          </Button>
+          <Button
+            onPress={() => push(`/accounts/${caccount}/devices/${cid}/send`)}
+          >
+            Transfer
           </Button>
         </CardFooterGroup>
       </CardContentBlock>

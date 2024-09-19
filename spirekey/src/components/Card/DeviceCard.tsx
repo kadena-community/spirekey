@@ -1,9 +1,8 @@
 import type { Account, Device } from '@kadena/spirekey-types';
-
 import AccountNetwork from './AccountNetwork';
 import Alias from './Alias';
 import Card from './Card';
-import CardBottom from './CardBottom';
+import CardBalance from './CardBalance';
 import DeviceIcons from './DeviceIcons';
 
 type CardProps = {
@@ -44,7 +43,7 @@ export default function DeviceCard({
           isLoading={isLoading || hasPendingTX}
         />
       }
-      cardBottom={<CardBottom account={account} />}
+      cardBalance={<CardBalance account={account} />}
     />
   );
 }

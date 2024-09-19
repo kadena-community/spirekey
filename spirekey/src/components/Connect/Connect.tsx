@@ -116,7 +116,7 @@ export default function ConnectComponent({
         title="Accounts"
         description={`available for network: ${getNetworkDisplayName(networkId)}`}
       >
-        <Stack gap="xl" flexDirection="column">
+        <Stack gap="sm" flexDirection="column">
           {candidateAccounts.map((account) => (
             <AccountTile
               key={account.accountName}
