@@ -1,7 +1,7 @@
 import AccountNetwork from '@/components/Card/AccountNetwork';
 import Alias from '@/components/Card/Alias';
 import Card from '@/components/Card/Card';
-import CardBottom from '@/components/Card/CardBottom';
+import CardBalance from '@/components/Card/CardBalance';
 import DeviceIcons from '@/components/Card/DeviceIcons';
 import { Layout } from '@/components/OnBoarding/components/Layout/Layout';
 import { LayoutActions } from '@/components/OnBoarding/components/Layout/LayoutActions';
@@ -42,7 +42,7 @@ export const AccountStep: FC<IProps> = ({
             title={<Alias title={account.alias.replace(/\(.*\)/, '')} />}
             icons={<DeviceIcons account={account} />}
             center={<AccountNetwork account={account} isLoading={true} />}
-            cardBottom={<CardBottom account={account} />}
+            cardBalance={<CardBalance account={account} />}
           />
         </Stack>
       </LayoutContext>

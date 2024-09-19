@@ -17,9 +17,11 @@ export const Layout: FC<PropsWithChildren<IProps>> = ({
     <CardFixedContainer className={cardContainerClass}>
       <Stack gap="xl" flexDirection="column" className={gridContentClass}>
         <Heading>{title}</Heading>
-        <Text>{description}</Text>
+        <Text>
+          <>{description}</>
+        </Text>
       </Stack>
-      {children}
+      <>{children}</>
     </CardFixedContainer>
   );
 };

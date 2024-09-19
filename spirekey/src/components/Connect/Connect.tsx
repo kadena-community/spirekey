@@ -11,7 +11,7 @@ import {
 import { token } from '@kadena/kode-ui/styles';
 import { Account } from '@kadena/spirekey-types';
 import { useState } from 'react';
-import { AccountComponent } from '../Account/Account';
+import { AccountTile } from '../AccountTile/AccountTile';
 import Recover from '../Recover/Recover';
 import Registration from '../Registration/Registration';
 import SpireKeyKdacolorLogoGreen from '../icons/KdaLogoGreen';
@@ -116,9 +116,9 @@ export default function ConnectComponent({
         title="Accounts"
         description={`available for network: ${getNetworkDisplayName(networkId)}`}
       >
-        <Stack gap="xl" flexDirection="column">
+        <Stack gap="sm" flexDirection="column">
           {candidateAccounts.map((account) => (
-            <AccountComponent
+            <AccountTile
               key={account.accountName}
               account={account}
               onClick={connectAndPrime}

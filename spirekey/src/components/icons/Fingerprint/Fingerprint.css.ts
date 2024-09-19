@@ -17,7 +17,7 @@ const finalize = keyframes({
 
 export const backgroundLine = style({
   fill: 'none',
-  stroke: '#E4E5E5',
+  stroke: 'transparent',
   strokeLinecap: 'round',
 });
 

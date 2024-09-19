@@ -2,9 +2,7 @@ import { deviceColors } from '@/styles/shared/tokens.css';
 import { hexadecimalToRGB } from '@/utils/color';
 import { Box, Stack } from '@kadena/kode-ui';
 import classnames from 'classnames';
-import Image from 'next/image';
 import { ReactNode } from 'react';
-import CardLogo from '../../assets/images/card-logo.svg';
 import * as styles from './Card.css';
 
 type CardProps = {
@@ -13,7 +11,7 @@ type CardProps = {
   title?: ReactNode;
   icons?: ReactNode;
   center?: ReactNode;
-  cardBottom?: ReactNode;
+  cardBalance?: ReactNode;
   children?: ReactNode;
 };
 
@@ -23,7 +21,7 @@ export default function Card({
   title,
   icons,
   center,
-  cardBottom,
+  cardBalance,
   children,
 }: CardProps) {
   const { r, g, b } = hexadecimalToRGB(color);
@@ -43,11 +41,7 @@ export default function Card({
       }
     >
       {children}
-      <Stack
-        flexDirection="column"
-        justifyContent="space-between"
-        className={styles.cardContentContainer}
-      >
+      <Stack flexDirection="column" className={styles.cardContentContainer}>
         <Stack flexDirection="row">
           <Stack
             flexDirection="row"
@@ -56,30 +50,23 @@ export default function Card({
           >
             {title}
           </Stack>
-          <Stack flexDirection="row" alignItems="center">
-            {icons}
-          </Stack>
         </Stack>
+        <Stack flex={1} />
         {center}
+        <Stack flexDirection="column" className={styles.txAndBalance}>
+          {cardBalance}
+        </Stack>
+        <Stack flex={1} />
         <Stack
           flexDirection="row"
-          justifyContent="space-between"
-          alignItems="flex-end"
+          justifyContent="flex-end"
+          alignItems="center"
           className={styles.cardContentBottom}
+          width="100%"
         >
-          <Stack flexDirection="column" className={styles.txAndBalance}>
-            {cardBottom}
-          </Stack>
+          {icons}
         </Stack>
       </Stack>
-      <Image
-        src={CardLogo}
-        alt="Kadena logo"
-        className={styles.cardLogo}
-        width={68}
-        height={20}
-        role="presentation"
-      />
     </Box>
   );
 }

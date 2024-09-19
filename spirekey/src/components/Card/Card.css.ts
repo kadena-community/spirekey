@@ -14,6 +14,8 @@ export const card = style({
   backdropFilter: 'blur(16px)',
   borderRadius: '1rem',
   backgroundSize: 'cover',
+  boxShadow: '0px 0px 24px 0px #000000CC',
+
   selectors: {
     '&:before': {
       content: '',
@@ -24,8 +26,7 @@ export const card = style({
       borderRadius: '1rem',
       padding: '1rem',
       border: '0.25rem solid transparent',
-      background:
-        'linear-gradient(0deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0), rgba(255, 255, 255, 1)) border-box',
+
       mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
       maskComposite: 'xor, exclude',
       zIndex: '-1',
@@ -77,7 +78,7 @@ export const accountAlias = style([
     fontWeight: 'primaryFont.bold',
   }),
   {
-    color: token('color.text.base.inverse.default'),
+    color: token('color.text.base.default'),
     textOverflow: 'ellipsis',
     overflow: 'hidden',
   },
@@ -89,31 +90,35 @@ export const accountAliasContainer = style({
 });
 
 export const accountIcon = style({
-  color: 'black',
+  color: token('color.text.base.default'),
   marginInline: 'clamp(0.1rem, 2vw, 1rem)',
 });
 
 export const accountIconInner = style({
   height: '100%',
   display: 'block',
-  color: 'black',
+  color: token('color.text.base.default'),
 });
 
 // Should update the getDeviceIcon component to return the component directly
 export const device = style({});
-globalStyle(`${device} > svg`, {
-  width: token('icon.size.sm'),
+globalStyle(`${device} > svg, ${device} > img`, {
+  width: token('icon.size.lg'),
 });
 
 export const cardContentBottom = style({
-  color: 'black',
+  color: token('color.text.base.default'),
 });
 
 export const txAndBalance = style({
   gap: 'clamp(0.3rem, 2vw, 0.9rem)',
+  marginBlockStart: '-.4rem',
 });
 
-export const balanceLabel = style([atoms({ fontSize: 'sm' })]);
+export const balanceLabel = style([
+  atoms({ fontSize: 'sm' }),
+  { opacity: 0.6 },
+]);
 
 export const balance = style([
   atoms({
