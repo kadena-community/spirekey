@@ -1,8 +1,6 @@
 'use client';
+import { useSignTx } from '@/hooks/useSignTx';
 import { useAccounts } from '@/resolvers/accounts';
-import { genesisPrivateKey, genesisPubKey } from '@/utils/constants';
-import { signWithKeyPair } from '@/utils/signSubmitListen';
-import { createTransactionBuilder, IBuilder } from '@kadena/client';
 import {
   Button,
   Select,
@@ -16,40 +14,9 @@ import {
   CardFixedContainer,
   CardFooterGroup,
 } from '@kadena/kode-ui/patterns';
-import { initSpireKey, sign } from '@kadena/spirekey-sdk';
 import { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
-import { useEffect, useState } from 'react';
-
-const addDataString = (dataString: string) => (builder: IBuilder<any>) => {
-  try {
-    const data = JSON.parse(dataString);
-    return Object.entries(data).reduce(
-      (b: IBuilder<any>, [key, value]: any) => b.addData(key, value),
-      builder,
-    );
-  } catch (_) {
-    return builder;
-  }
-};
-const addCapabilityString = (capabilityString: string) => {
-  const capsStr = capabilityString.match(/\(.*\)/g);
-  if (!capsStr) return () => [];
-  return (withCap: any) => {
-    return capsStr.map((capStr) => {
-      const [capName, ...args] = capStr.replace(/\(|\)/g, '').split(' ');
-      return withCap(
-        capName,
-        args.map((a) => {
-          if (/^".*"$/.test(a)) return a.replace(/^"|"$/g, '');
-          if (/^\d+$/.test(a)) return { int: a };
-          if (/^\d+\.\d+$/.test(a)) return { decimal: a };
-          return JSON.parse(a);
-        }),
-      );
-    });
-  };
-};
+import { useState } from 'react';
 
 export default function PactPage() {
   const [networkId, setNetworkId] = useState('development');
@@ -63,52 +30,23 @@ export default function PactPage() {
   const [account, setAccount] = useState<Account>();
   const [signedTx, setSignedTx] = useState('');
   const { accounts } = useAccounts();
+  const { signTx } = useSignTx();
 
   const onSign = async () => {
-    const addData = addDataString(data);
-    const builder = createTransactionBuilder().execution(code);
-    const tx = addData(builder)
-      .setNetworkId(networkId)
-      .setMeta({
-        senderAccount: account?.accountName,
-        gasLimit: 100_000,
-      })
-      .addVerifier(
-        { name: verifierName, proof },
-        addCapabilityString(verifierCapabilities),
-      )
-      .addSigner(
-        account?.accountName === 'sender00'
-          ? { pubKey: genesisPubKey, scheme: 'ED25519' }
-          : {
-              pubKey: account!.devices[0].guard.keys[0],
-              scheme: 'WebAuthn',
-            },
-        addCapabilityString(capabilities),
-      )
-      .createTransaction();
-    if (account?.accountName === 'sender00')
-      return setSignedTx(
-        JSON.stringify(
-          signWithKeyPair({
-            publicKey: genesisPubKey,
-            secretKey: genesisPrivateKey,
-          })(tx),
-          null,
-          2,
-        ),
-      );
-    const {
-      transactions: [signedTx],
-    } = await sign([tx]);
+    if (!account) throw new Error('No account selected');
+    const signedTx = await signTx({
+      publicKey: account.devices[0].guard.keys[0],
+      accountName: account.accountName,
+      verifierCapabilities,
+      networkId,
+      capabilities,
+      proof,
+      verifierName,
+      data,
+      code,
+    });
     setSignedTx(JSON.stringify(signedTx, null, 2));
   };
-
-  useEffect(() => {
-    initSpireKey({
-      hostUrl: window.location.origin,
-    });
-  }, []);
 
   return (
     <CardFixedContainer>
