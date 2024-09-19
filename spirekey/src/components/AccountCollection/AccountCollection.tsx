@@ -1,11 +1,13 @@
-import { Stack } from '@kadena/kode-ui';
+import { Button, Heading, Stack } from '@kadena/kode-ui';
 
 import { useAccounts } from '@/resolvers/accounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
+import { MonoAddCard, MonoSelectAll } from '@kadena/kode-icons/system';
 import { CardContentBlock, CardFixedContainer } from '@kadena/kode-ui/patterns';
 import { Account } from '@kadena/spirekey-types';
 import { useRouter } from 'next/navigation';
 import { AccountTile } from '../AccountTile/AccountTile';
+import { cardContainerWrapperClass, iconColorClass } from './style.css';
 
 type SortedAccounts = {
   mainnet01: Account[];
@@ -40,11 +42,14 @@ export default function AccountCollection() {
   );
 
   return (
-    <>
+    <Stack flexDirection="column" gap="xl">
       <CardFixedContainer>
         <CardContentBlock
           title="Wallet Accounts"
           description={`All available accounts with your wallet`}
+          visual={
+            <MonoSelectAll width={64} height={64} className={iconColorClass} />
+          }
         ></CardContentBlock>
       </CardFixedContainer>
       {Object.entries(sortedAccounts)
@@ -53,11 +58,29 @@ export default function AccountCollection() {
           <Stack
             key={networkId}
             flexDirection="column"
-            gap="md"
-            marginBlock="xxl"
+            className={cardContainerWrapperClass}
           >
             <CardFixedContainer>
-              <CardContentBlock title={getNetworkDisplayName(networkId)}>
+              <CardContentBlock
+                title=" "
+                supportingContent={
+                  <Stack flexDirection="column" gap="md" marginBlockStart="md">
+                    <Heading as="h4">
+                      {getNetworkDisplayName(networkId)}
+                    </Heading>
+                    <Button
+                      isCompact
+                      variant="outlined"
+                      startVisual={<MonoAddCard />}
+                      onPress={() => {
+                        router.push(`/register?networkId=${networkId}`);
+                      }}
+                    >
+                      Add Account
+                    </Button>
+                  </Stack>
+                }
+              >
                 <Stack flexDirection="column" gap="sm">
                   {accounts.map((account) => {
                     return (
@@ -66,7 +89,7 @@ export default function AccountCollection() {
                         account={account}
                         onClick={(account) =>
                           router.push(
-                            `/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}/transactions`,
+                            `/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
                           )
                         }
                       />
@@ -77,6 +100,6 @@ export default function AccountCollection() {
             </CardFixedContainer>
           </Stack>
         ))}
-    </>
+    </Stack>
   );
 }

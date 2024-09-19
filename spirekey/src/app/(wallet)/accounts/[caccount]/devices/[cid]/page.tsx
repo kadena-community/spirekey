@@ -1,26 +1,83 @@
 'use client';
 
-import { PageTitle } from '@/components/Layout/PageTitle';
-import dynamic from 'next/dynamic';
-import { useParams } from 'next/navigation';
+import { iconColorClass } from '@/components/AccountCollection/style.css';
+import { AccountDetails } from '@/components/AccountDetails/AccountDetails';
+import DeviceCard from '@/components/Card/DeviceCard';
+import { useAccounts } from '@/resolvers/accounts';
+import {
+  MonoAccountBalanceWallet,
+  MonoArrowBack,
+} from '@kadena/kode-icons/system';
+import { Button, maskValue } from '@kadena/kode-ui';
+import {
+  CardContentBlock,
+  CardFixedContainer,
+  CardFooterGroup,
+} from '@kadena/kode-ui/patterns';
+import { atoms } from '@kadena/kode-ui/styles';
+import { useParams, useRouter } from 'next/navigation';
 
-const DeviceDetail = dynamic(
-  () =>
-    import('@/components/Device/DeviceDetail').then((mod) => mod.DeviceDetail),
-  {
-    ssr: false,
-  },
-);
-
-export default function DeviceDetailPage() {
+export default function AccountPage() {
   const params = useParams();
-  const accountName = decodeURIComponent(String(params.caccount));
-  const credentialId = decodeURIComponent(String(params.cid));
+  const { accounts } = useAccounts();
+  const { push } = useRouter();
+  const caccount = decodeURIComponent(params.caccount.toString());
+  const cid = decodeURIComponent(params.cid.toString());
+  const account = accounts?.find((a) => a.accountName === caccount);
+  const device = account?.devices.find((d) => d['credential-id'] === cid);
 
   return (
-    <>
-      <PageTitle>Device details</PageTitle>
-      <DeviceDetail accountName={accountName} credentialId={credentialId} />
-    </>
+    <CardFixedContainer>
+      <CardContentBlock
+        title="Account"
+        description={`Overview of your account ${maskValue(caccount)}`}
+        visual={
+          <MonoAccountBalanceWallet
+            width={64}
+            height={64}
+            className={iconColorClass}
+          />
+        }
+        extendedContent={
+          account && device ? (
+            <DeviceCard
+              account={account}
+              device={device}
+              color={device?.color}
+            />
+          ) : null
+        }
+      >
+        <CardFooterGroup>
+          <Button
+            variant="primary"
+            onPress={() => push(`/accounts/${caccount}/devices/${cid}/send`)}
+          >
+            Transfer
+          </Button>
+          <Button
+            variant="info"
+            onPress={() => push(`/accounts/${caccount}/devices/${cid}/wallet`)}
+          >
+            Settings
+          </Button>
+        </CardFooterGroup>
+      </CardContentBlock>
+      <CardContentBlock
+        title="Transactions"
+        description="Your most recent transactions."
+      >
+        {account && <AccountDetails account={account} />}
+      </CardContentBlock>
+      <Button
+        className={atoms({ position: 'absolute', left: 0 })}
+        startVisual={<MonoArrowBack />}
+        style={{ top: -50 }}
+        variant="outlined"
+        onPress={() => push(`/`)}
+      >
+        Go back
+      </Button>
+    </CardFixedContainer>
   );
 }
