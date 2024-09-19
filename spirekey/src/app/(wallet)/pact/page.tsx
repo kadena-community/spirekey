@@ -1,6 +1,7 @@
 'use client';
 import { useSignTx } from '@/hooks/useSignTx';
 import { useAccounts } from '@/resolvers/accounts';
+import { getChainwebUrl } from '@/utils/shared/client';
 import {
   Button,
   Select,
@@ -29,13 +30,14 @@ export default function PactPage() {
   const [proof, setProof] = useState('');
   const [account, setAccount] = useState<Account>();
   const [signedTx, setSignedTx] = useState('');
+  const [host, setHost] = useState('http://localhost:8080');
   const { accounts } = useAccounts();
   const { signTx } = useSignTx();
 
   const onSign = async () => {
     if (!account) throw new Error('No account selected');
     const signedTx = await signTx({
-      publicKey: account.devices[0].guard.keys[0],
+      publicKey: account.devices ? account.devices[0].guard.keys[0] : '',
       accountName: account.accountName,
       verifierCapabilities,
       networkId,
@@ -45,7 +47,18 @@ export default function PactPage() {
       data,
       code,
     });
-    setSignedTx(JSON.stringify(signedTx, null, 2));
+    setSignedTx(JSON.stringify(signedTx));
+  };
+
+  const onCopyCurl = async () => {
+    if (!signedTx) throw new Error('No signed tx');
+    const chainwebUrl = getChainwebUrl({ networkId, chainId, host });
+    await navigator.clipboard.writeText(`curl \
+    "${chainwebUrl}/api/v1/send" \
+    -XPOST \
+    -d '${signedTx}' \
+    -H "Content-Type:application/json" \
+    -sk`);
   };
 
   return (
@@ -135,6 +148,13 @@ export default function PactPage() {
           value={signedTx}
           onValueChange={setSignedTx}
         />
+        <TextField label="host" value={host} onValueChange={setHost} />
+
+        <CardFooterGroup>
+          <Button onPress={onCopyCurl} isDisabled={!signedTx}>
+            Copy curl
+          </Button>
+        </CardFooterGroup>
       </Stack>
     </CardFixedContainer>
   );
