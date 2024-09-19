@@ -14,7 +14,7 @@ import {
 } from '@simplewebauthn/browser';
 import { PublicKeyCredentialDescriptorJSON } from '@simplewebauthn/types';
 import elliptic from 'elliptic';
-import { useWallet } from './wallet';
+import { useWallet } from '../hooks/useWallet';
 
 type WalletsVariable = {
   networkId: string;
