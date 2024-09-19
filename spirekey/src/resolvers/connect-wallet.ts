@@ -1,3 +1,4 @@
+import { useWallet } from '@/hooks/useWallet';
 import { ApolloClient, gql, useLazyQuery } from '@apollo/client';
 import {
   kadenaDecrypt,
@@ -95,7 +96,8 @@ export const connectWallet = async (
   { networkId }: WalletsVariable,
   { client }: ApolloContext,
 ) => {
-  const cid = localStorage.getItem(`${networkId}:wallet:cid`);
+  const { getWallet } = useWallet();
+  const cid = getWallet(networkId);
   const { publicKey, secretKey, mnemonic } = await getPubkeyFromPasskey(
     networkId,
     client.query,
@@ -118,6 +120,7 @@ const getPubkeyFromPasskey = async (
   query: Query,
   cid: string | null,
 ): Promise<{ publicKey: string; secretKey: string; mnemonic?: string }> => {
+  const { setWallet } = useWallet();
   const { response, id } = await startAuthentication({
     rpId: window.location.hostname,
     challenge: 'reconnectwallet',
@@ -214,7 +217,7 @@ const getPubkeyFromPasskey = async (
     foundKeys.includes(publicKey),
   );
   if (!recoveredKey) throw new Error('No public key could be recovered');
-  localStorage.setItem(`${networkId}:wallet:cid`, id);
+  setWallet(networkId, id);
   return recoveredKey;
 };
 
