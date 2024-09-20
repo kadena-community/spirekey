@@ -12,7 +12,7 @@ export class AccountsPage {
   }
 
   async goToTransferPage() {
-    await this.page.getByRole('button', { name: 'Transfer' }).click();
+    await this.page.getByRole('button', { name: 'New Transfer' }).click();
   }
 
   async getAccountCard(alias: string): Promise<Locator> {
