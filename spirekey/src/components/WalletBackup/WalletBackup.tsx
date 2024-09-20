@@ -62,16 +62,6 @@ export default function WalletBackup() {
         {isAccountManagementEnabled && (
           <AliasEditor accountName={account?.accountName} />
         )}
-
-        <Button
-          className={atoms({ position: 'absolute', left: 0 })}
-          startVisual={<MonoArrowBack />}
-          style={{ top: -50 }}
-          variant="outlined"
-          onPress={() => push(`/`)}
-        >
-          Back to Accounts
-        </Button>
       </Stack>
     </>
   );

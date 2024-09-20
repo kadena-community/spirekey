@@ -2,10 +2,15 @@
 
 import { iconColorClass } from '@/components/AccountCollection/style.css';
 import { AccountDetails } from '@/components/AccountDetails/AccountDetails';
+import { tabs } from '@/components/AccountTabs/AccountTabs';
 import DeviceCard from '@/components/Card/DeviceCard';
 import SendForm from '@/components/SendForm/SendForm';
 import WalletBackup from '@/components/WalletBackup/WalletBackup';
 import { useAccounts } from '@/resolvers/accounts';
+import {
+  isLastSectionATab,
+  removeLastSectionOfRoute,
+} from '@/utils/removeLastSectionOfRoute';
 import {
   MonoAccountBalanceWallet,
   MonoArrowBack,
@@ -17,17 +22,36 @@ import {
   CardFooterGroup,
 } from '@kadena/kode-ui/patterns';
 import { atoms } from '@kadena/kode-ui/styles';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 
 export default function AccountLayout({ children }: { children: any }) {
   const params = useParams();
+  const pathName = usePathname();
+
   const { accounts } = useAccounts();
   const { push } = useRouter();
   const caccount = decodeURIComponent(params.caccount.toString());
   const cid = decodeURIComponent(params.cid.toString());
   const account = accounts?.find((a) => a.accountName === caccount);
   const device = account?.devices.find((d) => d['credential-id'] === cid);
+
+  const handleBack = () => {
+    const arr = pathName.split('/');
+    const lastSection = arr.pop();
+    const tabsArray = Object.keys(tabs);
+
+    console.log(
+      { lastSection, pathName },
+      isLastSectionATab(lastSection, tabsArray),
+    );
+
+    if (isLastSectionATab(lastSection, tabsArray)) {
+      push('/');
+    } else {
+      push(removeLastSectionOfRoute(pathName));
+    }
+  };
 
   return (
     <Stack flexDirection="column" gap="xxxl" width="100%">
@@ -56,13 +80,15 @@ export default function AccountLayout({ children }: { children: any }) {
             <Button
               variant="outlined"
               onPress={() =>
-                push(`/accounts/${caccount}/devices/${cid}/wallet`)
+                push(`/accounts/${caccount}/devices/${cid}/settings`)
               }
             >
               Settings
             </Button>
             <Button
-              onPress={() => push(`/accounts/${caccount}/devices/${cid}/send`)}
+              onPress={() =>
+                push(`/accounts/${caccount}/devices/${cid}/transfer`)
+              }
             >
               New Transfer
             </Button>
@@ -74,7 +100,7 @@ export default function AccountLayout({ children }: { children: any }) {
           startVisual={<MonoArrowBack />}
           style={{ top: -50 }}
           variant="outlined"
-          onPress={() => push(`/`)}
+          onPress={handleBack}
         >
           Go back
         </Button>

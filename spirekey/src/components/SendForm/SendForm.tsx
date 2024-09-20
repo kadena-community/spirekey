@@ -259,15 +259,6 @@ export default function SendForm() {
       maxWidth="content.maxWidth"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Button
-          className={atoms({ position: 'absolute', left: 0 })}
-          startVisual={<MonoArrowBack />}
-          style={{ top: -50 }}
-          variant="outlined"
-          onPress={() => push(`/`)}
-        >
-          Go back
-        </Button>
         <Heading>Transfer</Heading>
         <Text>your KDA to another account.</Text>
 
