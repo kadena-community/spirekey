@@ -40,14 +40,12 @@ export default function DeviceIcons({
     const aaguid = getAaguid(aaguidMap, type);
     const icon = getDeviceIcon(type, aaguid);
 
-    if (!aaguid) return null;
-
     return (
       <Stack key={i} className={styles.device} alignItems="center" gap="sm">
-        {prependTitle && <Text variant="code">{aaguid.name}</Text>}
+        {prependTitle && <Text variant="code">{aaguid?.name}</Text>}
         {icon}
         {appendTitle && !prependTitle && (
-          <Text variant="code">{aaguid.name}</Text>
+          <Text variant="code">{aaguid?.name}</Text>
         )}
       </Stack>
     );
