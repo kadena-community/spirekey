@@ -13,8 +13,8 @@ import { MnemonicRevealer } from './components/MnemonicRevealer';
 export default function WalletBackup() {
   const params = useParams();
   const { accounts } = useAccounts();
-  const caccount = decodeURIComponent(params.caccount.toString());
-  const account = accounts?.find((a) => a.accountName === caccount);
+  const raccount = decodeURIComponent(params.raccount.toString());
+  const account = accounts?.find((a) => a.accountName === raccount);
   const { getCredentials } = useCredentials();
   const [mnemonic, setMnemonic] = useState('');
   const isAccountManagementEnabled = useFlag('account_management');
@@ -26,7 +26,7 @@ export default function WalletBackup() {
       <Stack flexDirection="column">
         <Heading>Wallet</Heading>
         <Text>
-          Reveal the mnemonic phrase of your account {maskValue(caccount)}
+          Reveal the mnemonic phrase of your account {maskValue(raccount)}
         </Text>
         <Button
           variant="primary"

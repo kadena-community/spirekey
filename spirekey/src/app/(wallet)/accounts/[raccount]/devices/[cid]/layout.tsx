@@ -20,7 +20,7 @@ import {
 } from '@kadena/kode-ui/patterns';
 import { atoms } from '@kadena/kode-ui/styles';
 import { useParams, usePathname, useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 export default function AccountLayout({ children }: { children: any }) {
   const params = useParams();
@@ -28,12 +28,12 @@ export default function AccountLayout({ children }: { children: any }) {
 
   const { accounts } = useAccounts();
   const { push } = useRouter();
-  const caccount = decodeURIComponent(params.caccount.toString());
+  const raccount = decodeURIComponent(params.raccount.toString());
   const cid = decodeURIComponent(params.cid.toString());
-  const account = accounts?.find((a) => a.accountName === caccount);
+  const account = accounts?.find((a) => a.accountName === raccount);
   const device = account?.devices.find((d) => d['credential-id'] === cid);
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     const arr = pathName.split('/');
     const lastSection = arr.pop();
     const tabsArray = Object.keys(tabs);
@@ -43,7 +43,7 @@ export default function AccountLayout({ children }: { children: any }) {
     } else {
       push(removeLastSectionOfRoute(pathName));
     }
-  };
+  }, [pathName]);
 
   return (
     <Stack flexDirection="column" gap="xxxl" width="100%">
@@ -72,14 +72,14 @@ export default function AccountLayout({ children }: { children: any }) {
             <Button
               variant="outlined"
               onPress={() =>
-                push(`/accounts/${caccount}/devices/${cid}/settings`)
+                push(`/accounts/${raccount}/devices/${cid}/settings`)
               }
             >
               Settings
             </Button>
             <Button
               onPress={() =>
-                push(`/accounts/${caccount}/devices/${cid}/transfer`)
+                push(`/accounts/${raccount}/devices/${cid}/transfer`)
               }
             >
               New Transfer

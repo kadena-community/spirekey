@@ -8,8 +8,8 @@ import { useParams } from 'next/navigation';
 export default function TransactionsPage() {
   const params = useParams();
   const { accounts } = useAccounts();
-  const caccount = decodeURIComponent(params.caccount.toString());
-  const account = accounts?.find((a) => a.accountName === caccount);
+  const raccount = decodeURIComponent(params.raccount.toString());
+  const account = accounts?.find((a) => a.accountName === raccount);
   return (
     <AccountTabs selectedTabKey="transactions">
       {account && <AccountDetails account={account} />}

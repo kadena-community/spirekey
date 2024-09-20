@@ -88,7 +88,7 @@ const getTransferTx = ({
   return tx;
 };
 export default function SendForm() {
-  const { caccount, cid } = useParams();
+  const { raccount, cid } = useParams();
   const { accounts } = useAccounts();
 
   const [tx, setTx] = useState<ICommandResult>();
@@ -97,11 +97,11 @@ export default function SendForm() {
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const account = accounts.find(
-    (a) => a.accountName === decodeURIComponent(caccount as string),
+    (a) => a.accountName === decodeURIComponent(raccount as string),
   );
-  const decodedAccount = Array.isArray(caccount)
-    ? decodeURIComponent(caccount[0])
-    : decodeURIComponent(caccount);
+  const decodedAccount = Array.isArray(raccount)
+    ? decodeURIComponent(raccount[0])
+    : decodeURIComponent(raccount);
 
   const defaultValues = {
     sender: decodedAccount,
