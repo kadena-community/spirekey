@@ -1,11 +1,23 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-
-const SendForm = dynamic(() => import('@/components/SendForm/SendForm'), {
-  ssr: false,
-});
+import SendForm from '@/components/SendForm/SendForm';
+import { TabItem, Tabs } from '@kadena/kode-ui';
 
 export default function SendPage() {
-  return <SendForm />;
+  return (
+    <Tabs isContained>
+      <TabItem key="Overview" title="Overview">
+        <></>
+      </TabItem>
+      <TabItem key="Transactions" title="Transactions">
+        <></>
+      </TabItem>
+      <TabItem key="Transfers" title="Transfers">
+        <SendForm />
+      </TabItem>
+      <TabItem key="Settings" title="Settings">
+        <></>
+      </TabItem>
+    </Tabs>
+  );
 }

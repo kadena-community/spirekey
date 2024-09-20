@@ -1,6 +1,5 @@
 import {
   Box,
-  Card,
   Cell,
   Column,
   Row,
@@ -17,6 +16,7 @@ import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 
 import { atoms } from '@kadena/kode-ui/styles';
+import { Heading } from 'react-aria-components';
 import { amountCell } from './AccountDetails.css';
 
 interface AccountDetailsProps {
@@ -42,7 +42,7 @@ export function AccountDetails({ account }: AccountDetailsProps) {
   );
 
   if (!data?.length) {
-    return <Card fullWidth>No Transactions</Card>;
+    return <Heading>No Transactions</Heading>;
   }
 
   return (
@@ -53,30 +53,29 @@ export function AccountDetails({ account }: AccountDetailsProps) {
         <Column>Amount</Column>
       </TableHeader>
       <TableBody>
-        {data
-          ?.map((tx: any) => (
-            <Row key={tx.requestKey + tx.idx}>
-              <Cell>
-                {maskValue(
-                  tx.fromAccount === account.accountName
-                    ? tx.toAccount
-                    : tx.fromAccount,
-                )}
-              </Cell>
-              <Cell>{new Date(tx.blockTime).toLocaleString()}</Cell>
-              <Cell>
-                <Box
-                  className={amountCell}
-                  data-type={
-                    tx.fromAccount === account.accountName ? 'debit' : 'credit'
-                  }
-                >
-                  {tx.fromAccount === account.accountName ? '-' : '+'}
-                  {parseFloat(tx.amount)}
-                </Box>
-              </Cell>
-            </Row>
-          ))}
+        {data?.map((tx: any) => (
+          <Row key={tx.requestKey + tx.idx}>
+            <Cell>
+              {maskValue(
+                tx.fromAccount === account.accountName
+                  ? tx.toAccount
+                  : tx.fromAccount,
+              )}
+            </Cell>
+            <Cell>{new Date(tx.blockTime).toLocaleString()}</Cell>
+            <Cell>
+              <Box
+                className={amountCell}
+                data-type={
+                  tx.fromAccount === account.accountName ? 'debit' : 'credit'
+                }
+              >
+                {tx.fromAccount === account.accountName ? '-' : '+'}
+                {parseFloat(tx.amount)}
+              </Box>
+            </Cell>
+          </Row>
+        ))}
       </TableBody>
     </Table>
   );
