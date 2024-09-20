@@ -1,21 +1,18 @@
 'use client';
 
 import { iconColorClass } from '@/components/AccountCollection/style.css';
-import { AccountDetails } from '@/components/AccountDetails/AccountDetails';
 import { tabs } from '@/components/AccountTabs/AccountTabs';
 import DeviceCard from '@/components/Card/DeviceCard';
-import SendForm from '@/components/SendForm/SendForm';
-import WalletBackup from '@/components/WalletBackup/WalletBackup';
 import { useAccounts } from '@/resolvers/accounts';
 import {
-  isLastSectionATab,
+  isStringInArray,
   removeLastSectionOfRoute,
 } from '@/utils/removeLastSectionOfRoute';
 import {
   MonoAccountBalanceWallet,
   MonoArrowBack,
 } from '@kadena/kode-icons/system';
-import { Button, Stack, TabItem, Tabs } from '@kadena/kode-ui';
+import { Button, Stack } from '@kadena/kode-ui';
 import {
   CardContentBlock,
   CardFixedContainer,
@@ -41,12 +38,7 @@ export default function AccountLayout({ children }: { children: any }) {
     const lastSection = arr.pop();
     const tabsArray = Object.keys(tabs);
 
-    console.log(
-      { lastSection, pathName },
-      isLastSectionATab(lastSection, tabsArray),
-    );
-
-    if (isLastSectionATab(lastSection, tabsArray)) {
+    if (isStringInArray(lastSection, tabsArray)) {
       push('/');
     } else {
       push(removeLastSectionOfRoute(pathName));

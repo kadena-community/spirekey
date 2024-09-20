@@ -3,7 +3,7 @@
 import { useAccounts } from '@/resolvers/accounts';
 import { l1Client } from '@/utils/shared/client';
 import { createTransactionBuilder, ICommandResult } from '@kadena/client';
-import { MonoArrowBack, MonoCopyAll } from '@kadena/kode-icons/system';
+import { MonoCopyAll } from '@kadena/kode-icons/system';
 import {
   Button,
   Heading,
@@ -19,7 +19,7 @@ import {
 import { atoms } from '@kadena/kode-ui/styles';
 import { Account, initSpireKey, sign } from '@kadena/spirekey-sdk';
 import { ChainId, ICommand } from '@kadena/types';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -90,7 +90,6 @@ const getTransferTx = ({
 export default function SendForm() {
   const { caccount, cid } = useParams();
   const { accounts } = useAccounts();
-  const { push } = useRouter();
 
   const [tx, setTx] = useState<ICommandResult>();
 

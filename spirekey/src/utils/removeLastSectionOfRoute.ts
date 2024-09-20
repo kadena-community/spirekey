@@ -1,8 +1,9 @@
-export const isLastSectionATab = (
+//whitelist could include undefined
+export const isStringInArray = (
   lastSection: string | undefined,
   whitelist?: string[],
 ): boolean => {
-  return !!(lastSection && whitelist?.includes(lastSection));
+  return !!(lastSection !== undefined && whitelist?.includes(lastSection));
 };
 
 export const removeLastSectionOfRoute = (
@@ -12,7 +13,7 @@ export const removeLastSectionOfRoute = (
   const arr = route.split('/');
   const lastSection = arr.pop();
 
-  if (whitelist && !isLastSectionATab(lastSection, whitelist)) return route;
+  if (whitelist && !isStringInArray(lastSection, whitelist)) return route;
 
   return arr.join('/');
 };
