@@ -2,7 +2,7 @@
 
 import { AccountDetails } from '@/components/AccountDetails/AccountDetails';
 import { useAccounts } from '@/resolvers/accounts';
-import { TabItem } from '@kadena/kode-ui';
+import { TabItem, Tabs } from '@kadena/kode-ui';
 import { useParams } from 'next/navigation';
 
 export default function TransactionsPage() {
@@ -11,7 +11,7 @@ export default function TransactionsPage() {
   const caccount = decodeURIComponent(params.caccount.toString());
   const account = accounts?.find((a) => a.accountName === caccount);
   return (
-    <>
+    <Tabs isContained>
       <TabItem key="Overview" title="Overview">
         <></>
       </TabItem>
@@ -24,6 +24,6 @@ export default function TransactionsPage() {
       <TabItem key="Settings" title="Settings">
         <></>
       </TabItem>
-    </>
+    </Tabs>
   );
 }

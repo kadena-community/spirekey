@@ -5,17 +5,17 @@ import { TabItem, Tabs } from '@kadena/kode-ui';
 
 export default function WalletPage() {
   return (
-    <Tabs isContained>
-      <TabItem key="Overview" title="Overview">
+    <Tabs isContained defaultSelectedKey="settings">
+      <TabItem key="overview" title="Overview">
         <></>
       </TabItem>
-      <TabItem key="Transactions" title="Transactions">
+      <TabItem key="transactions" title="Transactions">
         <></>
       </TabItem>
-      <TabItem key="Transfers" title="Transfers">
+      <TabItem key="transfers" title="Transfers">
         <></>
       </TabItem>
-      <TabItem key="Settings" title="Settings">
+      <TabItem key="settings" title="Settings">
         <WalletBackup />
       </TabItem>
     </Tabs>

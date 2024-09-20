@@ -12,6 +12,7 @@ const BetaNotification = dynamic(
   },
 );
 
+import { Footer } from '@/components/Footer/Footer';
 import { Stack } from '@kadena/kode-ui';
 import './global.css';
 import { layoutWrapperClass } from './styles.css';
@@ -41,6 +42,8 @@ export default function RootLayout({
             className={layoutWrapperClass}
           >
             {children}
+
+            <Footer />
           </Stack>
         </Providers>
       </body>
