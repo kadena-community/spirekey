@@ -39,7 +39,9 @@ export default function DeviceIcons({
   return Array.from(uniqueDeviceTypes).map((type, i) => {
     const aaguid = getAaguid(aaguidMap, type);
     const icon = getDeviceIcon(type, aaguid);
-    console.log(aaguid);
+
+    if (!aaguid) return null;
+
     return (
       <Stack key={i} className={styles.device} alignItems="center" gap="sm">
         {prependTitle && <Text variant="code">{aaguid.name}</Text>}
