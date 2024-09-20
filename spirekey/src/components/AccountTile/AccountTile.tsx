@@ -1,7 +1,7 @@
-import { getDeviceIcon } from '@/utils/getDeviceIcon';
 import { Heading, maskValue, Stack, Text, Tile } from '@kadena/kode-ui';
 import type { Account } from '@kadena/spirekey-types';
 import { useMemo } from 'react';
+import DeviceIcons from '../Card/DeviceIcons';
 
 interface AccountProps {
   account: Account;
@@ -19,8 +19,8 @@ export function AccountTile({ account, onClick }: AccountProps) {
   return (
     <Tile as="button" onClick={() => onClick(account)}>
       <Stack flexDirection="column" width="100%">
-        <Stack width="100%" gap="md">
-          {getDeviceIcon(account.devices[0].deviceType)}
+        <Stack width="100%" gap="md" alignItems="flex-start">
+          <DeviceIcons account={account} device={account.devices[0]} />
 
           <Stack
             alignItems="flex-start"
