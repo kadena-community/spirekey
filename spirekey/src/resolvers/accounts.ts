@@ -166,7 +166,7 @@ export const useAccount = () => {
   const [execute] = useLazyQuery(accountQuery);
   const getAccount = async (networkId: string, accountName: string) => {
     const { data } = await execute({ variables: { networkId, accountName } });
-    return data.account;
+    return data.account as Account;
   };
   return { getAccount, setAccount };
 };

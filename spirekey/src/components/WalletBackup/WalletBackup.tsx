@@ -8,6 +8,7 @@ import { Button, Stack } from '@kadena/kode-ui';
 import { CardContentBlock } from '@kadena/kode-ui/patterns';
 import { useParams } from 'next/navigation';
 import React, { useState } from 'react';
+import { AddDevice } from '../AddDevice/AddDevice';
 import { AliasEditor } from './components/AliasEditor';
 import { MnemonicRevealer } from './components/MnemonicRevealer';
 
@@ -62,6 +63,13 @@ export default function WalletBackup() {
 
       <Stack flexDirection="column" marginBlockStart="xxl">
         <MnemonicRevealer mnemonic={mnemonic} />
+
+        {isAccountManagementEnabled && (
+          <>
+            <AliasEditor accountName={account?.accountName} />
+            <AddDevice accountName={account?.accountName} />
+          </>
+        )}
       </Stack>
     </>
   );
