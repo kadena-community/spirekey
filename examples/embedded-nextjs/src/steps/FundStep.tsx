@@ -36,7 +36,7 @@ export const FundStep = ({
         <CardContentBlock
           visual={<ProductIcon.QuickStart size="xl" />}
           title="Step 2: Fund your account"
-          description="Your account has no funds. In the real world you would be funding your account through a dex or other providers. In this example we will fund your account using a faucet simulating an onramp."
+          description="Your new account has no funds. In the real world you would be funding your account through a DEX or other providers. In this example we will fund your account using a faucet simulating an onramp."
           supportingContent={<ExampleStepper step={1} />}
         >
           <Stack flexDirection="column" gap="md">
@@ -46,7 +46,7 @@ export const FundStep = ({
               maxValue={20}
               step={0.1}
               onValueChange={setAmount}
-              label="amount"
+              label="Amount"
             />
           </Stack>
         </CardContentBlock>
