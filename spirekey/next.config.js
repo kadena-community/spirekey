@@ -30,12 +30,12 @@ const nextConfig = {
       {
         source: '/accounts/:raccount/devices',
         destination: '/',
-        permanent: true,
+        permanent: false,
       },
       {
         source: '/accounts',
         destination: '/',
-        permanent: true,
+        permanent: false,
       },
     ];
   },
