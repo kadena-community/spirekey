@@ -9,7 +9,7 @@ export const createStatus = (
   step: number | undefined,
   idx: number,
 ): IStepProps['status'] => {
-  if (step === idx) return 'active';
+  if (step !== undefined && idx <= step) return 'active';
 
   return 'inactive';
 };
