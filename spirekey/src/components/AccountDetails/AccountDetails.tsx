@@ -1,3 +1,6 @@
+import { useNotifications } from '@/context/shared/NotificationsContext';
+import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
+import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import {
   Box,
   Cell,
@@ -6,18 +9,15 @@ import {
   Table,
   TableBody,
   TableHeader,
+  Text,
   maskValue,
 } from '@kadena/kode-ui';
-import type { Account } from '@kadena/spirekey-types';
-import useSWR from 'swr';
-
-import { useNotifications } from '@/context/shared/NotificationsContext';
-import { getChainwebDataUrl } from '@/utils/getChainwebDataUrl';
-import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
-
 import { atoms } from '@kadena/kode-ui/styles';
+import type { Account } from '@kadena/spirekey-types';
 import { Heading } from 'react-aria-components';
+import useSWR from 'swr';
 import { amountCell } from './AccountDetails.css';
+import { createExplorerLink } from './utils';
 
 interface AccountDetailsProps {
   account: Account;
@@ -46,7 +46,7 @@ export function AccountDetails({ account }: AccountDetailsProps) {
   }
 
   return (
-    <Table className={atoms({ width: '100%' })}>
+    <Table isStriped className={atoms({ width: '100%' })}>
       <TableHeader>
         <Column>Account</Column>
         <Column>Date</Column>
@@ -54,25 +54,32 @@ export function AccountDetails({ account }: AccountDetailsProps) {
       </TableHeader>
       <TableBody>
         {data?.map((tx: any) => (
-          <Row key={tx.requestKey + tx.idx}>
+          <Row
+            key={tx.requestKey + tx.idx}
+            href={createExplorerLink(tx, account.networkId)}
+          >
             <Cell>
-              {maskValue(
-                tx.fromAccount === account.accountName
-                  ? tx.toAccount
-                  : tx.fromAccount,
-              )}
+              <Text variant="code">
+                {maskValue(
+                  tx.fromAccount === account.accountName
+                    ? tx.toAccount
+                    : tx.fromAccount,
+                )}
+              </Text>
             </Cell>
             <Cell>{new Date(tx.blockTime).toLocaleString()}</Cell>
             <Cell>
-              <Box
-                className={amountCell}
-                data-type={
-                  tx.fromAccount === account.accountName ? 'debit' : 'credit'
-                }
-              >
-                {tx.fromAccount === account.accountName ? '-' : '+'}
-                {parseFloat(tx.amount)}
-              </Box>
+              <Text variant="code">
+                <Box
+                  className={amountCell}
+                  data-type={
+                    tx.fromAccount === account.accountName ? 'debit' : 'credit'
+                  }
+                >
+                  {tx.fromAccount === account.accountName ? '-' : '+'}
+                  {parseFloat(tx.amount)}
+                </Box>
+              </Text>
             </Cell>
           </Row>
         ))}
