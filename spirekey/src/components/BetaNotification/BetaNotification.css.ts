@@ -1,14 +1,25 @@
-import { atoms } from '@kadena/kode-ui/styles';
+import { atoms, responsiveStyle } from '@kadena/kode-ui/styles';
 import { globalStyle, style } from '@vanilla-extract/css';
 
 export const container = style([
   atoms({
-    padding: 'md',
-    position: 'fixed',
+    marginInline: 'auto',
+    marginBlockEnd: 'md',
   }),
   {
+    position: 'relative',
+    top: '0',
+    left: '0',
+    right: '0',
+    width: '100%',
     zIndex: 9999,
   },
+  responsiveStyle({
+    md: {
+      position: 'absolute',
+      width: '42rem',
+    },
+  }),
 ]);
 
 export const discordChannel = style({

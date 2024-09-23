@@ -1,7 +1,6 @@
 'use client';
 
-import { Notification, NotificationHeading } from '@kadena/kode-ui';
-
+import { Notification, NotificationHeading, Stack } from '@kadena/kode-ui';
 import * as styles from './BetaNotification.css';
 
 export default function BetaNotification() {
@@ -13,7 +12,7 @@ export default function BetaNotification() {
   }
 
   return (
-    <div className={styles.container}>
+    <Stack className={styles.container}>
       <Notification
         intent="warning"
         isDismissable
@@ -37,6 +36,6 @@ export default function BetaNotification() {
           and share your feedback!
         </div>
       </Notification>
-    </div>
+    </Stack>
   );
 }
