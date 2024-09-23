@@ -1,8 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-
-import { Notification } from '../../components/shared/Notification/Notification';
-
-type NotificationVariant = 'error' | 'warning' | 'notice' | 'success';
+export type NotificationVariant = 'error' | 'warning' | 'notice' | 'success';
 
 interface Notification {
   id: number;
