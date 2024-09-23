@@ -233,7 +233,7 @@ export const TransferStep = ({
         <CardContentBlock
           visual={<ProductIcon.QuickStart size="xl" />}
           title={isLoading ? `Step 4: Sign` : `Step 3: Transfer`}
-          description="Transfer KDA to another account. Your KDA might be spread across many chains on Kadena, but SpireKey will take care of converging the funds to perform your desired transaction."
+          description="Transfer KDA to another account. Your KDA might be spread across multiple chains on Kadena, but SpireKey will take care of converging the funds to perform your desired transaction."
           supportingContent={
             <ExampleStepper step={isLoading ? 3 : 2} error={!!receiverError} />
           }

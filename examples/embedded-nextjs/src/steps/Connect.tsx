@@ -54,7 +54,7 @@ export const ConnectStep = ({
         <CardContentBlock
           visual={<ProductIcon.QuickStart size="xl" />}
           title="Step 1: Connect your account"
-          description="SpireKey SDK assists your users on their journey through the process of guiding funds from other chains to the correct chain in order to interacting with your dApp. Give it a try in this example."
+          description="SpireKey SDK assists your users through the process of guiding funds between chains in order to interact with your dApp. Give it a try in this example."
           supportingContent={<ExampleStepper step={0} />}
         >
           <Stack flexDirection="column" gap="md">
