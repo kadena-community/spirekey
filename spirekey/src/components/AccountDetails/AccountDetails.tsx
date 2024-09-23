@@ -17,7 +17,6 @@ import type { Account } from '@kadena/spirekey-types';
 import { Heading } from 'react-aria-components';
 import useSWR from 'swr';
 import { amountCell } from './AccountDetails.css';
-import { createExplorerLink } from './utils';
 
 interface AccountDetailsProps {
   account: Account;
@@ -54,10 +53,7 @@ export function AccountDetails({ account }: AccountDetailsProps) {
       </TableHeader>
       <TableBody>
         {data?.map((tx: any) => (
-          <Row
-            key={tx.requestKey + tx.idx}
-            href={createExplorerLink(tx, account.networkId)}
-          >
+          <Row key={tx.requestKey + tx.idx}>
             <Cell>
               <Text variant="code">
                 {maskValue(
