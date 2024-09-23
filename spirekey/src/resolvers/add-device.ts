@@ -1,3 +1,4 @@
+import { deviceColors } from '@/styles/shared/tokens.css';
 import {
   gasStation,
   genesisPrivateKey,
@@ -12,7 +13,8 @@ import { ApolloContextValue, gql, useMutation } from '@apollo/client';
 import { createTransactionBuilder } from '@kadena/client';
 import { Account } from '@kadena/spirekey-types';
 import { ChainId, ICommand } from '@kadena/types';
-import { accountQuery } from './accounts';
+import { accountName } from './account-name';
+import { accountQuery, useAccount } from './accounts';
 import { connectWalletQuery } from './connect-wallet';
 
 type AddDeviceVariable = {
@@ -35,6 +37,7 @@ const getAddDeviceMutation = gql`
 `;
 export const useAddDevice = () => {
   const [mutate] = useMutation(getAddDeviceMutation);
+  const { setAccount } = useAccount();
   const addDevice = async (networkId: string, accountName: string) => {
     const { data } = await mutate({
       variables: {
@@ -44,7 +47,8 @@ export const useAddDevice = () => {
       },
     });
     if (!data?.addDevice) throw new Error('Could not add device');
-    return data.createWallet;
+    const newAccount: Account = data.createWallet;
+    setAccount(newAccount);
   };
   return { addDevice };
 };
@@ -63,9 +67,11 @@ export const addDevice = async (
     query: connectWalletQuery,
     variables: { networkId },
   });
-  const { credentialId, publicKey: passKey } = await getNewWebauthnKey(
-    getRootkeyPasskeyName(networkId!),
-  );
+  const {
+    credentialId,
+    publicKey: passKey,
+    deviceType,
+  } = await getNewWebauthnKey(getRootkeyPasskeyName(networkId!));
   const {
     data: { account },
   } = await client.query({
@@ -75,18 +81,29 @@ export const addDevice = async (
       networkId,
     },
   });
-  console.warn('DEBUGPRINT[3]: add-device.ts:87: account=', account);
-  await addDeviceOnChain({
-    account,
-    publicKey: getWebAuthnPubkeyFormat(passKey),
-    credentialId,
-    managerPublicKey: publicKey,
-    managerSecretKey: secretKey,
-    domain: window.location.hostname,
-    deviceType: 'webauthn',
-    color: '#000000',
-    chainId: '0',
-  });
+  const txs = await Promise.all(
+    Array(20)
+      .fill(0)
+      .map((_, i) => i.toString())
+      .map((chainId) =>
+        addDeviceOnChain({
+          account,
+          publicKey: getWebAuthnPubkeyFormat(passKey),
+          credentialId,
+          managerPublicKey: publicKey,
+          managerSecretKey: secretKey,
+          domain: window.location.hostname,
+          deviceType,
+          color: deviceColors.darkGreen,
+          chainId: chainId as ChainId,
+        }),
+      ),
+  );
+  const newAccount = {
+    ...account,
+    txQueue: [...account.txQueue, ...txs],
+  };
+  return newAccount;
 };
 
 const addDeviceOnChain = async ({
@@ -115,12 +132,8 @@ const addDeviceOnChain = async ({
   const { ksn, ns } = guard.keysetref;
   const tx = createTransactionBuilder()
     .execution(
-      `(let (
-        (ns-name "${ns}")
-        (ks-ref-name "${ns}.${ksn}")
-      )
-      (namespace ns-name)
-      (define-keyset ks-ref-name (read-keyset 'kadena-keyset))
+      `(namespace "${ns}")
+      (define-keyset "${ns}.${ksn}" (read-keyset 'kadena-keyset))
       (kadena.spirekey.add-device-pair
         "${account.accountName}"
         coin
@@ -130,12 +143,12 @@ const addDeviceOnChain = async ({
         , 'device-type    :  "${deviceType}"
         , 'color          :  "${color}"
         }
-      ))`.trim(),
+      )`.trim(),
     )
     .setMeta({
       chainId,
-      senderAccount: gasStation,
-      gasLimit: 1800,
+      senderAccount: account.accountName,
+      gasLimit: 20_000,
       gasPrice: 0.000_000_1,
     })
     .addData('kadena-keyset', {
@@ -152,24 +165,12 @@ const addDeviceOnChain = async ({
     })
     .setNetworkId(account.networkId)
     .addSigner({ pubKey: managerPublicKey, scheme: 'ED25519' })
-    .addSigner({ pubKey: genesisPubKey, scheme: 'ED25519' }, (withCap) => [
-      withCap(
-        'kadena.spirekey.GAS_PAYER',
-        account.accountName,
-        { int: '1' },
-        { decimal: '1' },
-      ),
-    ])
     .createTransaction();
   const signWithManager = signWithKeyPair({
     publicKey: managerPublicKey,
     secretKey: managerSecretKey,
   });
-  const signWithGenesis = signWithKeyPair({
-    publicKey: genesisPubKey,
-    secretKey: genesisPrivateKey,
-  });
-  const signedTx = signWithManager(signWithGenesis(tx));
+  const signedTx = signWithManager(tx);
   const res = await l1Client.local(signedTx, {
     preflight: true,
     signatureVerification: true,
@@ -178,5 +179,5 @@ const addDeviceOnChain = async ({
     console.error('Error while adding new device', res);
     throw new Error('Could not add device');
   }
-  return await l1Client.submit(signedTx as ICommand);
+  // return await l1Client.submit(signedTx as ICommand);
 };
