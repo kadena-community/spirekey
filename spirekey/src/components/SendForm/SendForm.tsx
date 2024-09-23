@@ -3,26 +3,23 @@
 import { useAccounts } from '@/resolvers/accounts';
 import { l1Client } from '@/utils/shared/client';
 import { createTransactionBuilder, ICommandResult } from '@kadena/client';
-import { MonoArrowBack, MonoCopyAll } from '@kadena/kode-icons/system';
+import { MonoCopyAll } from '@kadena/kode-icons/system';
 import {
   Button,
+  Heading,
   Link,
   maskValue,
   NumberField,
   Select,
   SelectItem,
   Stack,
+  Text,
   TextField,
 } from '@kadena/kode-ui';
-import {
-  CardContentBlock,
-  CardFixedContainer,
-  CardFooterGroup,
-} from '@kadena/kode-ui/patterns';
 import { atoms } from '@kadena/kode-ui/styles';
 import { Account, initSpireKey, sign } from '@kadena/spirekey-sdk';
 import { ChainId, ICommand } from '@kadena/types';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -91,9 +88,8 @@ const getTransferTx = ({
   return tx;
 };
 export default function SendForm() {
-  const { caccount, cid } = useParams();
+  const { raccount, cid } = useParams();
   const { accounts } = useAccounts();
-  const { push } = useRouter();
 
   const [tx, setTx] = useState<ICommandResult>();
 
@@ -101,11 +97,11 @@ export default function SendForm() {
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const account = accounts.find(
-    (a) => a.accountName === decodeURIComponent(caccount as string),
+    (a) => a.accountName === decodeURIComponent(raccount as string),
   );
-  const decodedAccount = Array.isArray(caccount)
-    ? decodeURIComponent(caccount[0])
-    : decodeURIComponent(caccount);
+  const decodedAccount = Array.isArray(raccount)
+    ? decodeURIComponent(raccount[0])
+    : decodeURIComponent(raccount);
 
   const defaultValues = {
     sender: decodedAccount,
@@ -194,70 +190,63 @@ export default function SendForm() {
 
   if (tx)
     return (
-      <CardFixedContainer>
-        <Button
-          className={atoms({ position: 'absolute', left: 0 })}
-          startVisual={<MonoArrowBack />}
-          style={{ top: -50 }}
-          variant="outlined"
-          onPress={() => push(`/`)}
-        >
-          Go back
-        </Button>
-        <CardContentBlock
-          title="Transfer Result"
-          description={`You have successfully transferred ${getValues('amount')}KDA to ${maskValue(getValues('receiver'))}`}
-        >
-          <Stack flexDirection="column" gap="md">
-            <TextField
-              isReadOnly
-              value={tx.reqKey}
-              label="Request Key"
-              endAddon={
-                <Button
-                  variant="transparent"
-                  onPress={() => navigator.clipboard.writeText(tx.reqKey)}
-                >
-                  <Stack as="span" flexDirection="row" gap="xs">
-                    Copy
-                    <MonoCopyAll />
-                  </Stack>
-                </Button>
-              }
-            />
-            <TextField isReadOnly label="Status" value={tx.result.status} />
-            <Button
-              variant="outlined"
-              onPress={() => setShowDetails(!showDetails)}
-              className={atoms({ marginInlineStart: 'auto' })}
-            >
-              {showDetails ? 'Hide Details' : 'Show Details'}
-            </Button>
-          </Stack>
-        </CardContentBlock>
+      <>
+        <Heading>Transfer Result</Heading>
+        <Text>
+          You have successfully transferred {getValues('amount')}KDA to{' '}
+          {maskValue(getValues('receiver'))}
+        </Text>
+
+        <Stack flexDirection="column" gap="md">
+          <TextField
+            isReadOnly
+            value={tx.reqKey}
+            label="Request Key"
+            endAddon={
+              <Button
+                variant="transparent"
+                onPress={() => navigator.clipboard.writeText(tx.reqKey)}
+              >
+                <Stack as="span" flexDirection="row" gap="xs">
+                  Copy
+                  <MonoCopyAll />
+                </Stack>
+              </Button>
+            }
+          />
+          <TextField isReadOnly label="Status" value={tx.result.status} />
+          <Button
+            variant="outlined"
+            onPress={() => setShowDetails(!showDetails)}
+            className={atoms({ marginInlineStart: 'auto' })}
+          >
+            {showDetails ? 'Hide Details' : 'Show Details'}
+          </Button>
+        </Stack>
+
         {showDetails &&
           tx
             .events!.sort((a: any, b: any) => b.params[2] - a.params[2])
             .map(({ params }: any) => {
               const isGasEvent = params[2] < 0.1;
               return (
-                <CardContentBlock
-                  title={isGasEvent ? 'Gas Fees' : 'Transfer Amount'}
-                  key={params[2]}
-                  description={
-                    isGasEvent
+                <>
+                  <Heading>
+                    {isGasEvent ? 'Gas Fees' : 'Transfer Amount'}
+                  </Heading>
+                  <Text>
+                    {isGasEvent
                       ? `You have paid ${params[2]} on gas fees for this transaction`
-                      : `You have successfully transferred ${params[2]} KDA to ${maskValue(params[1])}`
-                  }
-                >
+                      : `You have successfully transferred ${params[2]} KDA to ${maskValue(params[1])}`}
+                  </Text>
                   <Stack flexDirection="column" gap="md">
                     <TextField label="Receiver" isReadOnly value={params[1]} />
                     <TextField label="Amount" isReadOnly value={params[2]} />
                   </Stack>
-                </CardContentBlock>
+                </>
               );
             })}
-      </CardFixedContainer>
+      </>
     );
   return (
     <Stack
@@ -269,70 +258,56 @@ export default function SendForm() {
       maxWidth="content.maxWidth"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <CardFixedContainer>
-          <Button
-            className={atoms({ position: 'absolute', left: 0 })}
-            startVisual={<MonoArrowBack />}
-            style={{ top: -50 }}
-            variant="outlined"
-            onPress={() => push(`/`)}
+        <Heading>Transfer</Heading>
+        <Text>your KDA to another account.</Text>
+
+        <Stack flexDirection="column" gap="md">
+          <TextField
+            value={account.accountName}
+            name="sender"
+            type="text"
+            label={`Sender: ${account.balance} (KDA)`}
+            isReadOnly
+            disabled
+          />
+          <TextField
+            type="text"
+            defaultValue={defaultValues.receiver}
+            label="Receiver"
+            {...register('receiver')}
+          />
+          <Select
+            label="Chain"
+            defaultSelectedKey="0"
+            onSelectionChange={(c) => setValue('chainId', c as ChainId)}
           >
-            Go back
-          </Button>
-          <CardContentBlock
-            title="Transfer"
-            description="your KDA to another account."
-          >
-            <Stack flexDirection="column" gap="md">
-              <TextField
-                value={account.accountName}
-                name="sender"
-                type="text"
-                label={`Sender: ${account.balance} (KDA)`}
-                isReadOnly
-                disabled
-              />
-              <TextField
-                type="text"
-                defaultValue={defaultValues.receiver}
-                label="Receiver"
-                {...register('receiver')}
-              />
-              <Select
-                label="Chain"
-                defaultSelectedKey="0"
-                onSelectionChange={(c) => setValue('chainId', c as ChainId)}
-              >
-                {Array(20)
-                  .fill(1)
-                  .map((_, i) => (
-                    <SelectItem key={i}>{i.toString()}</SelectItem>
-                  ))}
-              </Select>
-              <NumberField
-                defaultValue={defaultValues.amount}
-                step={0.1}
-                label="Amount"
-                minValue={0.0}
-                {...amountProps}
-                onValueChange={(a) => setValue('amount', a)}
-              />
-            </Stack>
-          </CardContentBlock>
-        </CardFixedContainer>
-        <CardFooterGroup>
-          <Link variant="outlined" href="/">
-            Cancel
-          </Link>
-          <Button
-            isLoading={isLoading}
-            variant="primary"
-            isCompact={false}
-            type="submit"
-          >
-            Sign
-          </Button>
-        </CardFooterGroup>
+            {Array(20)
+              .fill(1)
+              .map((_, i) => (
+                <SelectItem key={i}>{i.toString()}</SelectItem>
+              ))}
+          </Select>
+          <NumberField
+            defaultValue={defaultValues.amount}
+            step={0.1}
+            label="Amount"
+            minValue={0.0}
+            {...amountProps}
+            onValueChange={(a) => setValue('amount', a)}
+          />
+        </Stack>
+
+        <Link variant="outlined" href="/">
+          Cancel
+        </Link>
+        <Button
+          isLoading={isLoading}
+          variant="primary"
+          isCompact={false}
+          type="submit"
+        >
+          Sign
+        </Button>
       </form>
     </Stack>
   );

@@ -25,6 +25,20 @@ const nextConfig = {
     E2E_TEST: process.env.E2E_TEST,
     USE_RACCOUNT: process.env.USE_RACCOUNT,
   },
+  async redirects() {
+    return [
+      {
+        source: '/accounts/:raccount/devices',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/accounts',
+        destination: '/',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = withVanillaExtract(nextConfig);

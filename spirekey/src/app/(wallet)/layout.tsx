@@ -12,7 +12,10 @@ const BetaNotification = dynamic(
   },
 );
 
+import { Footer } from '@/components/Footer/Footer';
+import { Stack } from '@kadena/kode-ui';
 import './global.css';
+import { layoutWrapperClass } from './styles.css';
 
 export const metadata: Metadata = {
   title: 'Kadena SpireKey',
@@ -32,7 +35,17 @@ export default function RootLayout({
       </head>
       <body>
         <BetaNotification />
-        <Providers>{children}</Providers>
+        <Providers>
+          <Stack
+            alignItems="center"
+            flexDirection="column"
+            className={layoutWrapperClass}
+          >
+            {children}
+
+            <Footer />
+          </Stack>
+        </Providers>
       </body>
     </html>
   );
