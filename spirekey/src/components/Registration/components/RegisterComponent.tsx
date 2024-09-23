@@ -4,8 +4,7 @@ import { defaultSteps } from '@/components/OnBoarding/components/OnBoardingStepp
 import { FLOWTYPE } from '@/components/OnBoarding/components/OnBoardingStepper/utils';
 import { KeyPair } from '@/hooks/useRegistration';
 import { Account } from '@kadena/spirekey-types';
-import React, { useState } from 'react';
-import { AccountStep } from './AccountStep';
+import React, { useEffect, useState } from 'react';
 import { ConnectWalletStep } from './ConnectWalletStep';
 import { KeypairStep } from './KeypairStep';
 
@@ -41,15 +40,12 @@ export const RegisterComponent = ({
   if (flowType === FLOWTYPE.CREATE) steps[0] = 'Create';
   if (flowType === FLOWTYPE.IMPORT) steps[0] = 'Import';
 
-  if (account && isAnimationFinished)
-    return (
-      <AccountStep
-        steps={steps}
-        account={account}
-        onCancel={onCancel}
-        onComplete={onComplete}
-      />
-    );
+  useEffect(() => {
+    if (account && isAnimationFinished) {
+      onComplete();
+    }
+  }, [account, isAnimationFinished]);
+  if (account && isAnimationFinished) return null;
 
   if (keypair)
     return (
