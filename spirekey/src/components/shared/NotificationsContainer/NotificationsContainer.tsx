@@ -1,8 +1,8 @@
-import { Notification } from '@/components/shared/Notification/Notification';
 import { useNotifications } from '@/context/shared/NotificationsContext';
-
-import { AnimatePresence } from 'framer-motion';
+import { Notification, NotificationHeading } from '@kadena/kode-ui';
+import { AnimatePresence, motion } from 'framer-motion';
 import * as styles from './NotificationsContainer.css';
+import { mapVariantToIntent } from './utils';
 
 export const NotificationContainer = () => {
   const { notifications } = useNotifications();
@@ -11,12 +11,18 @@ export const NotificationContainer = () => {
     <div className={styles.wrapper}>
       <AnimatePresence>
         {notifications.map(({ id, variant, title, message }) => (
-          <Notification
+          <motion.div
             key={id}
-            variant={variant}
-            title={title}
-            message={message}
-          />
+            initial={{ opacity: 0, y: -100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -100, transition: { duration: 0.1 } }}
+            layout
+          >
+            <Notification intent={mapVariantToIntent(variant)} role="alert">
+              <NotificationHeading>{title}</NotificationHeading>
+              {message}
+            </Notification>
+          </motion.div>
         ))}
       </AnimatePresence>
     </div>
