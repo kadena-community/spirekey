@@ -84,8 +84,4 @@ export class ConnectPage {
     );
     return credentials;
   }
-
-  async completeRegistration() {
-    await this.completeButton.click();
-  }
 }

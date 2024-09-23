@@ -51,10 +51,12 @@ export default function Registration({
       'base64',
     );
 
-    router.push(
-      `/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
-    );
-    return;
+    if (!redirectUrl) {
+      router.push(
+        `/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
+      );
+      return;
+    }
     router.push(`${completeRedirectUrl}?${new URLSearchParams({ user })}`);
   };
 

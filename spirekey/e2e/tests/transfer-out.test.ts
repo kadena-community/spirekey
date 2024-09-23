@@ -28,7 +28,6 @@ test('Transfer out', async ({
       await connectPage.startRegistration();
       await connectPage.createNewWallet();
       credentials = await connectPage.createNewAccount();
-      await connectPage.completeRegistration();
     });
     await test.step('Request funds for new account', async () => {
       await exampleFundPage.requestFunds();
