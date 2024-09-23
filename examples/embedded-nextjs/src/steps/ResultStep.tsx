@@ -18,7 +18,7 @@ export const ResultStep = ({ result }: { result: string }) => {
       <CardContentBlock
         visual={<ProductIcon.QuickStart size="xl" />}
         title="Step 5: Result"
-        description="You have successfully transferred KDA to another account. All without burdened with the concept of chains."
+        description="You have successfully transferred KDA to another account, without the need to manually manage the concept of multiple chains."
       >
         <Stack flexDirection="column" gap="md">
           <TextField
