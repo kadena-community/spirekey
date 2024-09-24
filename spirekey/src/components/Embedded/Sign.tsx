@@ -5,12 +5,12 @@ import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock'
 import { useErrors } from '@/context/shared/ErrorContext/ErrorContext';
 import { useAccount, useAccounts } from '@/resolvers/accounts';
 import { useAutoTransfers } from '@/resolvers/auto-transfers';
-import { getOptimalTransactions } from '@/utils/auto-transfers';
+import { useCredentials } from '@/resolvers/connect-wallet';
 import { getAccountsForTx, getPermissions } from '@/utils/consent';
 import { getSignature } from '@/utils/getSignature';
 import { publishEvent } from '@/utils/publishEvent';
 import { l1Client } from '@/utils/shared/client';
-import { addSignatures } from '@kadena/client';
+import { signWithKeyPair } from '@/utils/signSubmitListen';
 import { MonoCAccount } from '@kadena/kode-icons/system';
 import {
   Accordion,
@@ -272,6 +272,7 @@ function SignPlumbingTxs({
 }: SignPlumbingTxsProps) {
   const [steps, setSteps] = useState(plumbingSteps);
   const { errorMessage, setErrorMessage } = useErrors();
+  const { getCredentials } = useCredentials();
 
   useEffect(() => {
     setSteps(plumbingSteps);
@@ -306,17 +307,12 @@ function SignPlumbingTxs({
               variant="primary"
               onPress={async () => {
                 try {
-                  const res = await startAuthentication({
-                    challenge: tx.hash,
-                    rpId: window.location.hostname,
-                    allowCredentials: credentialId
-                      ? [{ id: credentialId, type: 'public-key' }]
-                      : undefined,
-                  });
+                  const { networkId } = JSON.parse(tx.cmd);
+                  const { publicKey, secretKey } =
+                    await getCredentials(networkId);
 
-                  const signedTx = addSignatures(
+                  const signedTx = signWithKeyPair({ publicKey, secretKey })(
                     tx,
-                    getSignature(res.response),
                   );
                   const newSteps = steps.map((step) => {
                     if (step.tx.hash !== tx.hash) return step;
