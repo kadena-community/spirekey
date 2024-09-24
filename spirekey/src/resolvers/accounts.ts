@@ -17,6 +17,7 @@ const getAccountQuery = gql`
       .map(
         (_, i) => `
     chain${i}: pactQuery(pactQuery: { chainId: "${i}", code: $code }) {
+      chainId
       result
     }
    `,
@@ -90,11 +91,12 @@ export const account = async (
     .filter((r: any) => r.result)
     .map((r: any) => ({
       ...JSON.parse(r.result),
+      chainId: r.chainId,
       txQueue: [],
       networkId,
     }))
     .reduce(
-      (acc, info) => {
+      (acc, { chainId, ...info }) => {
         const account: Account = {
           ...acc,
           accountName: info.account,
@@ -106,6 +108,7 @@ export const account = async (
             deviceType: d['device-type'],
           })),
           balance: acc.balance + info.balance,
+          balances: [...acc.balances, { chainId, balance: info.balance }],
           txQueue: [],
           networkId: info.networkId,
         };
@@ -114,6 +117,7 @@ export const account = async (
       {
         __typename: 'Account',
         balance: 0,
+        balances: [],
         chainIds: Array(20)
           .fill(1)
           .map((_, i) => i.toString()),
@@ -144,7 +148,7 @@ export const setAccount = (account: Account) => {
   return localStorage.setItem('localAccounts', JSON.stringify(newAccounts));
 };
 
-const accountQuery = gql`
+export const accountQuery = gql`
   query AccountQuery($accountName: String!, $networkId: String!) {
     account(accountName: $accountName, networkId: $networkId) @client
   }

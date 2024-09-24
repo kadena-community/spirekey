@@ -1,3 +1,4 @@
+import { accountBalances } from '@/resolvers/account-balances';
 import { accountName } from '@/resolvers/account-name';
 import { account, accounts } from '@/resolvers/accounts';
 import { connectWallet } from '@/resolvers/connect-wallet';
@@ -30,6 +31,7 @@ export const apolloClient = new ApolloClient({
       accounts,
       account,
       accountName,
+      accountBalances,
       connectWallet,
       recoverAccount,
     },
