@@ -37,7 +37,7 @@ export const autoTransfers = async (
   },
   { client }: ApolloContextValue,
 ) => {
-  if (!client) return [];
+  if (!client) return null;
   const { data: accountBalancesData } = await client.query({
     query: accountBalancesQuery,
     variables: {
@@ -71,7 +71,7 @@ export const useAutoTransfers = () => {
     fungibleRequests?: FungibleRequest[],
   ) => {
     if (!fungibleRequests) return [];
-    const { data, error } = await execute({
+    const { data } = await execute({
       variables: {
         networkId,
         accountName,

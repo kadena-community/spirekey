@@ -7,7 +7,7 @@ import {
   IBuilder,
   type ChainId,
 } from '@kadena/client';
-import { Account, OptimalTransactionsAccount } from '@kadena/spirekey-types';
+import { Account } from '@kadena/spirekey-types';
 import BigNumber from 'bignumber.js';
 
 export type AccountBalance = {
@@ -154,11 +154,3 @@ export const getTransferTransaction =
     const cmd = getRAccountTransferCommand(accountBalance, target);
     return getRAccountTransferCaps(accountBalance, target)(cmd);
   };
-
-export const getOptimalTransactions = async (
-  account: OptimalTransactionsAccount,
-  target: ChainId,
-  amount: number,
-) => {
-  return [];
-};
