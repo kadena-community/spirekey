@@ -273,18 +273,28 @@ function SignPlumbingTxs({
   const [steps, setSteps] = useState(plumbingSteps);
   const { errorMessage, setErrorMessage } = useErrors();
   const { getCredentials } = useCredentials();
-
+  const [networkId, setNetworkId] = useState<string>();
   useEffect(() => {
+    const foundNetworkId = plumbingSteps.reduce((foundNetworkId, { tx }) => {
+      const { networkId } = JSON.parse(tx.cmd);
+      if (!foundNetworkId) return networkId;
+      if (foundNetworkId !== networkId) {
+        throw new Error('Multiple network IDs found');
+      }
+      return networkId;
+    }, null);
+    if (foundNetworkId) setNetworkId(foundNetworkId);
     setSteps(plumbingSteps);
   }, [plumbingSteps.map((s) => s.tx.hash + s.caps.size).join(',') || '']);
 
-  if (!credentialId) {
+  if (!credentialId)
     return <div>No valid credentials found in this wallet to sign with</div>;
-  }
+
+  if (!networkId) return null;
 
   return (
     <>
-      {steps.map(({ title, caps, tx, signed }) => (
+      {steps.map(({ title, caps, tx }) => (
         <Stack flexDirection="column" gap="sm" marginBlock="md" key={tx.hash}>
           <ContentHeader heading={title} icon={<MonoCAccount />} />
           {[...caps.entries()].map(([module, capabilities]) => (
@@ -302,37 +312,34 @@ function SignPlumbingTxs({
               </AccordionItem>
             </Accordion>
           ))}
-          <Stack gap="md" justifyContent="flex-end">
-            <Button
-              variant="primary"
-              onPress={async () => {
-                try {
-                  const { networkId } = JSON.parse(tx.cmd);
-                  const { publicKey, secretKey } =
-                    await getCredentials(networkId);
-
+        </Stack>
+      ))}
+      <Stack gap="md" justifyContent="flex-end">
+        <Button
+          variant="primary"
+          onPress={async () => {
+            try {
+              const { publicKey, secretKey } = await getCredentials(networkId);
+              const newSteps = await Promise.all(
+                steps.map(async ({ tx, ...step }) => {
                   const signedTx = signWithKeyPair({ publicKey, secretKey })(
                     tx,
                   );
-                  const newSteps = steps.map((step) => {
-                    if (step.tx.hash !== tx.hash) return step;
-                    return { ...step, tx: signedTx, signed: true };
-                  });
-                  setSteps(newSteps);
-                  if (newSteps.every((step) => step.signed))
-                    onCompleted(newSteps.map(({ tx }) => tx) as ICommand[]);
-                } catch (error: any) {
-                  setErrorMessage(error.message);
-                  console.error({ errorMessage: errorMessage, error });
-                }
-              }}
-              isDisabled={signed}
-            >
-              Sign
-            </Button>
-          </Stack>
-        </Stack>
-      ))}
+                  return { ...step, tx: signedTx, signed: true };
+                }),
+              );
+              setSteps(newSteps);
+              onCompleted(newSteps.map(({ tx }) => tx) as ICommand[]);
+            } catch (error: any) {
+              setErrorMessage(error.message);
+              console.error({ errorMessage: errorMessage, error });
+            }
+          }}
+          isDisabled={steps.every((s) => s.signed)}
+        >
+          Sign
+        </Button>
+      </Stack>
     </>
   );
 }
