@@ -1,5 +1,5 @@
 import { atoms, style, tokens } from '@kadena/kode-ui/styles';
-import { globalStyle, keyframes } from '@vanilla-extract/css';
+import { keyframes } from '@vanilla-extract/css';
 
 const rotate = keyframes({
   '0%': { transform: 'rotate(0deg)' },
