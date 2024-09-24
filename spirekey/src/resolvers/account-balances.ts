@@ -34,7 +34,9 @@ export const accountBalances = async (
       accountName: account.accountName,
       networkId: account.networkId,
       chainId,
-      credentials: [],
+      credentials: account.keyset.keys.filter(
+        (k: string) => !k.startsWith('WEBAUTHN'),
+      ),
       balance: parseFloat(balance),
       cost: 0,
     }),

@@ -10,10 +10,6 @@ import {
 import { Account, OptimalTransactionsAccount } from '@kadena/spirekey-types';
 import BigNumber from 'bignumber.js';
 
-type Credential = {
-  pubKey: string;
-  credentialId: string;
-};
 export type AccountBalance = {
   accountName: string;
   credentials: string[];
@@ -164,12 +160,5 @@ export const getOptimalTransactions = async (
   target: ChainId,
   amount: number,
 ) => {
-  const accountBalances = await getAccountBalances(account);
-  const optimalTransfers = getOptimalTransfers(
-    accountBalances.filter((x) => !!x),
-    target,
-    amount,
-  );
-  if (!optimalTransfers) return null;
-  return optimalTransfers.map(getTransferTransaction(target));
+  return [];
 };

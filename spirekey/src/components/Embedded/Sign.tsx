@@ -4,6 +4,7 @@ import { Permissions } from '@/components/Permissions/Permissions';
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
 import { useErrors } from '@/context/shared/ErrorContext/ErrorContext';
 import { useAccount, useAccounts } from '@/resolvers/accounts';
+import { useAutoTransfers } from '@/resolvers/auto-transfers';
 import { getOptimalTransactions } from '@/utils/auto-transfers';
 import { getAccountsForTx, getPermissions } from '@/utils/consent';
 import { getSignature } from '@/utils/getSignature';
@@ -84,12 +85,19 @@ export default function Sign(props: Props) {
   );
 
   const [plumbingTxs, setPlumbingTxs] = useState<IUnsignedCommand[]>();
+  const { getAutoTransfers } = useAutoTransfers();
 
   useEffect(() => {
     Promise.all(
       signAccounts.flatMap((account) =>
-        account.requestedFungibles?.flatMap(({ amount }) =>
-          getOptimalTransactions(account, meta.chainId, amount),
+        getAutoTransfers(
+          account.networkId,
+          account.accountName,
+          account.requestedFungibles?.map(({ amount, fungible, target }) => ({
+            amount,
+            fungible,
+            target: target || meta.chainId,
+          })),
         ),
       ),
     )
@@ -176,6 +184,10 @@ export default function Sign(props: Props) {
   const keys = txAccounts.accounts.flatMap((a) =>
     a.devices.flatMap((d) => d.guard.keys),
   );
+
+  const plumbingKeys = txAccounts.accounts.flatMap(
+    (a) => a.keyset?.keys.filter((k) => !k.startsWith('WEBAUTHN')) || [],
+  );
   const plumbingSteps =
     plumbingTxs
       ?.map((tx, i) => {
@@ -183,7 +195,7 @@ export default function Sign(props: Props) {
         const cmd: ICommandPayload = JSON.parse(tx.cmd);
         return {
           title: `Step ${i + 1}`,
-          caps: getPermissions(keys, cmd.signers),
+          caps: getPermissions(plumbingKeys, cmd.signers),
           tx,
         };
       })

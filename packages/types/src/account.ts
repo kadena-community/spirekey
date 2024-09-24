@@ -21,6 +21,7 @@ export type OptimalTransactionsAccount = Pick<
 export type RequestedFungible = {
   fungible: string;
   amount: number;
+  target: ChainId;
 };
 export type Account = {
   alias: string;
@@ -29,9 +30,8 @@ export type Account = {
   minRegistrationApprovals: number;
   balance: string;
   devices: Device[];
-  // The keyset refguard of the r:account, in the future,
-  // this will be a keyset, but this will only happen after coin v7
   guard?: Guard;
+  keyset?: Keyset;
   networkId: string;
   chainIds: ChainId[];
   txQueue: QueuedTx[];

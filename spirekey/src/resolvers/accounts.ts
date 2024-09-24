@@ -82,23 +82,31 @@ export const account = async (
   const { data } = await client.query({
     query: getAccountQuery,
     variables: {
-      code: `(kadena.spirekey.details "${accountName}" ${fungible})`,
+      code: `[(kadena.spirekey.details "${accountName}" ${fungible})
+      (describe-keyset "${accountName.replace(/^r:/, '')}")
+      ]`,
       networkId,
     },
   });
+
   return Object.values(data)
     .flatMap((r) => r)
     .filter((r: any) => r.result)
-    .map((r: any) => ({
-      ...JSON.parse(r.result),
-      chainId: r.chainId,
-      txQueue: [],
-      networkId,
-    }))
+    .map((r: any) => {
+      const [acc, keyset] = JSON.parse(r.result);
+      return {
+        ...acc,
+        keyset,
+        chainId: r.chainId,
+        txQueue: [],
+        networkId,
+      };
+    })
     .reduce(
       (acc, { chainId, ...info }) => {
         const account: Account = {
           ...acc,
+          keyset: acc.keyset || info.keyset,
           accountName: info.account,
           guard: info.guard,
           minApprovals: 1,
