@@ -21,7 +21,7 @@ export type OptimalTransactionsAccount = Pick<
 export type RequestedFungible = {
   fungible: string;
   amount: number;
-  target: ChainId;
+  target?: ChainId;
 };
 export type Account = {
   alias: string;
