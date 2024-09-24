@@ -1,11 +1,9 @@
-import { deviceColors } from '@/styles/shared/tokens.css';
+import { autoTransfers } from '@/resolvers/auto-transfers';
 import {
   AccountBalance,
-  getOptimalTransactions,
   getOptimalTransfers,
   sortAccountBalances,
 } from '@/utils/auto-transfers';
-import type { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
 
 describe('auto transfers', () => {
@@ -13,41 +11,17 @@ describe('auto transfers', () => {
     describe('when finding the optimal transfers from chain', () => {
       const mocks = vi.hoisted(() => {
         return {
-          getRAccountFromChain: vi.fn(),
-          getAccountFromChain: ({
-            accountName,
-            chainId,
-          }: {
-            accountName: string;
-            networkId: string;
-            chainId: ChainId;
-          }) => {
-            const mockedBalance: any = {
-              '4': '40',
-              '5': '50',
-              '8': '10',
-              '10': '5',
-            };
-            const accounts: Account = {
-              balance: mockedBalance[chainId] as string,
-              chainIds: [chainId],
-              accountName,
-              devices: [
-                {
-                  color: deviceColors.red,
-                  domain: 'https://spirekey.kadena.io',
-                  deviceType: 'phone',
-                  guard: { keys: ['WEBAUTHN-pubkey'], pred: 'keys-any' },
-                  'credential-id': 'XesUer',
-                },
-              ],
-              networkId: 'development',
-              alias: 'SpireKey Account 1',
-              txQueue: [],
-              minApprovals: 1,
-              minRegistrationApprovals: 1,
-            };
-            return Promise.resolve(accounts);
+          client: {
+            query: vi.fn().mockResolvedValue({
+              data: {
+                accountBalances: [
+                  { balance: '40', chainId: '4', credentials: ['pubkey'] },
+                  { balance: '50', chainId: '5', credentials: ['pubkey'] },
+                  { balance: '10', chainId: '8', credentials: ['pubkey'] },
+                  { balance: '5', chainId: '10', credentials: ['pubkey'] },
+                ],
+              },
+            }),
           },
         };
       });
@@ -63,35 +37,22 @@ describe('auto transfers', () => {
       });
 
       it('should prepare the txs with R:account', async () => {
-        const chainIds: ChainId[] = ['4', '5', '8', '10'];
-        const account: Pick<Account, 'chainIds' | 'accountName' | 'networkId'> =
+        const txs = await autoTransfers(
+          null,
           {
             networkId: 'development',
             accountName: 'r:account',
-            chainIds,
-          };
-        await getOptimalTransactions(account, '8', 75);
-
-        expect(mocks.getRAccountFromChain).toBeCalledTimes(chainIds.length);
-      });
-
-      it('should prepare the txs', async () => {
-        const account: Pick<Account, 'chainIds' | 'accountName' | 'networkId'> =
-          {
-            networkId: 'development',
-            accountName: 'c:account',
-            chainIds: ['4', '5', '8', '10'],
-          };
-        const res = await getOptimalTransactions(account, '8', 75);
-        const cmds = res?.map(({ cmd }) => JSON.parse(cmd));
-        expect(cmds).toMatchObject([
-          {
-            meta: { chainId: '5' },
+            fungibleRequests: [{ target: '8', amount: 75, fungible: 'coin' }],
           },
-          {
-            meta: { chainId: '4' },
-          },
-        ]);
+          { client: mocks.client as any },
+        );
+        expect(txs?.length).toEqual(2);
+        expect(
+          txs?.map((tx) => {
+            const cmd = JSON.parse(tx.cmd);
+            return { chainId: cmd.meta.chainId };
+          }),
+        ).toEqual([{ chainId: '5' }, { chainId: '4' }]);
       });
     });
 
@@ -106,7 +67,7 @@ describe('auto transfers', () => {
         chainId: x.chainId as ChainId,
         accountName: 'c:account',
         target: '8',
-        credentials: [{ pubKey: 'WEBAUTHN-pubkey', credentialId: 'XesUer' }],
+        credentials: ['pubkey'],
         networkId: 'development',
         cost: 0,
       }));

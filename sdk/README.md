@@ -54,6 +54,7 @@ const someHandler = async () => {
             {
               fungible: 'coin',
               amount: amount, // The requested amount
+              target: '5', // Optional: The chainId to target
             },
           ],
         },
@@ -127,6 +128,7 @@ const someHandler = async () => {
           {
             fungible: 'coin',
             amount: amount, // The requested amount
+            target: '5', // Optional: The chainId to target
           },
         ],
       },

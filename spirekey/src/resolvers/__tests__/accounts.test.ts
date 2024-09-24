@@ -140,10 +140,13 @@ describe('resolvers: account', () => {
         query: vi.fn().mockReturnValue({
           data: {
             chain0: {
-              result: JSON.stringify({
-                ...mockAccount,
-                account: mockAccount.accountName,
-              }),
+              result: JSON.stringify([
+                {
+                  ...mockAccount,
+                  account: mockAccount.accountName,
+                },
+                { keys: ['pubkey'], pred: 'keys-any' },
+              ]),
             },
           },
         }),
@@ -157,12 +160,13 @@ describe('resolvers: account', () => {
         },
         { client: clientMock },
       );
-      expect(clientMock.query.mock.calls[0][0]).toMatchObject({
-        variables: {
-          networkId: 'development',
-          code: '(kadena.spirekey.details "r:mock-account" coin)',
-        },
-      });
+      const {
+        variables: { networkId, code },
+      } = clientMock.query.mock.calls[0][0];
+      expect(networkId).toEqual('development');
+      expect(code.replace(/\r|\n|(  )/g, '')).toEqual(
+        `[(kadena.spirekey.details "r:mock-account" coin)(describe-keyset "mock-account")]`,
+      );
       expect(res).resolves.toMatchObject(mockAccount);
     });
     it('should sum the balances', async () => {
@@ -180,32 +184,44 @@ describe('resolvers: account', () => {
         query: vi.fn().mockReturnValue({
           data: {
             chain0: {
-              result: JSON.stringify({
-                ...mockAccount,
-                account: mockAccount.accountName,
-                balance: 1.1,
-              }),
+              result: JSON.stringify([
+                {
+                  ...mockAccount,
+                  account: mockAccount.accountName,
+                  balance: 1.1,
+                },
+                { keys: ['pubkey'], pred: 'keys-any' },
+              ]),
             },
             chain1: {
-              result: JSON.stringify({
-                ...mockAccount,
-                account: mockAccount.accountName,
-                balance: 1.1,
-              }),
+              result: JSON.stringify([
+                {
+                  ...mockAccount,
+                  account: mockAccount.accountName,
+                  balance: 1.1,
+                },
+                { keys: ['pubkey'], pred: 'keys-any' },
+              ]),
             },
             chain2: {
-              result: JSON.stringify({
-                ...mockAccount,
-                account: mockAccount.accountName,
-                balance: 1.1,
-              }),
+              result: JSON.stringify([
+                {
+                  ...mockAccount,
+                  account: mockAccount.accountName,
+                  balance: 1.1,
+                },
+                { keys: ['pubkey'], pred: 'keys-any' },
+              ]),
             },
             chain3: {
-              result: JSON.stringify({
-                ...mockAccount,
-                account: mockAccount.accountName,
-                balance: 1.1,
-              }),
+              result: JSON.stringify([
+                {
+                  ...mockAccount,
+                  account: mockAccount.accountName,
+                  balance: 1.1,
+                },
+                { keys: ['pubkey'], pred: 'keys-any' },
+              ]),
             },
           },
         }),
