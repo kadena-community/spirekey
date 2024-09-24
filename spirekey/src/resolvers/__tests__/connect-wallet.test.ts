@@ -56,7 +56,11 @@ describe('connect-wallet', () => {
     it('should have credentials', async () => {
       mocks.execute.mockResolvedValue({
         data: {
-          connectWallet: 'TESTDATA',
+          connectWallet: {
+            publicKey: 'pubkey',
+            secretKey: 'secret',
+            mnemonic: 'mnemonic',
+          },
         },
       });
       mocks.useLazyQuery.mockReturnValue([mocks.execute]);
@@ -64,7 +68,11 @@ describe('connect-wallet', () => {
       const { result } = renderHook(() => useCredentials());
       const dataResult = await result.current.getCredentials('testnet04');
 
-      expect(dataResult).toEqual('TESTDATA');
+      expect(dataResult).toEqual({
+        publicKey: 'pubkey',
+        secretKey: 'secret',
+        mnemonic: 'mnemonic',
+      });
     });
   });
 
