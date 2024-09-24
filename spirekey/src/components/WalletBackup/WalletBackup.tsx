@@ -4,7 +4,7 @@ import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useFlag } from '@/hooks/useFlag';
 import { useAccounts } from '@/resolvers/accounts';
 import { useCredentials } from '@/resolvers/connect-wallet';
-import { Button, Heading, maskValue, Stack, Text } from '@kadena/kode-ui';
+import { Button, Stack } from '@kadena/kode-ui';
 import { CardContentBlock } from '@kadena/kode-ui/patterns';
 import { useParams } from 'next/navigation';
 import React, { useState } from 'react';
