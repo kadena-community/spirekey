@@ -8,11 +8,13 @@ import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import * as styles from './Card.css';
 
 interface CardBalanceProps {
-  account: Account;
+  account?: Account;
 }
 
 export default function CardBalance({ account }: CardBalanceProps) {
   const { addNotification } = useNotifications();
+
+  if (!account) return;
   const domain = getChainwebDataUrl(account.networkId);
 
   if (!domain) {

@@ -60,13 +60,12 @@ export default function AccountLayout({ children }: { children: any }) {
             />
           }
           extendedContent={
-            account && device ? (
-              <DeviceCard
-                account={account}
-                device={device}
-                color={device?.color}
-              />
-            ) : null
+            <DeviceCard
+              isLoading={loading}
+              account={account}
+              device={device}
+              color={device?.color}
+            />
           }
         >
           {!loading && (
