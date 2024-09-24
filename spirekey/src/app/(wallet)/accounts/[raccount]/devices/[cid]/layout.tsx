@@ -3,6 +3,7 @@
 import { iconColorClass } from '@/components/AccountCollection/style.css';
 import { tabs } from '@/components/AccountTabs/AccountTabs';
 import DeviceCard from '@/components/Card/DeviceCard';
+import { Loader } from '@/components/MainLoader/Loader';
 import { useAccounts } from '@/resolvers/accounts';
 import {
   isStringInArray,
@@ -26,7 +27,7 @@ export default function AccountLayout({ children }: { children: any }) {
   const params = useParams();
   const pathName = usePathname();
 
-  const { accounts } = useAccounts();
+  const { accounts, loading } = useAccounts();
   const { push } = useRouter();
   const raccount = decodeURIComponent(params.raccount.toString());
   const cid = decodeURIComponent(params.cid.toString());
@@ -68,23 +69,25 @@ export default function AccountLayout({ children }: { children: any }) {
             ) : null
           }
         >
-          <CardFooterGroup>
-            <Button
-              variant="outlined"
-              onPress={() =>
-                push(`/accounts/${raccount}/devices/${cid}/settings`)
-              }
-            >
-              Settings
-            </Button>
-            <Button
-              onPress={() =>
-                push(`/accounts/${raccount}/devices/${cid}/transfer`)
-              }
-            >
-              New Transfer
-            </Button>
-          </CardFooterGroup>
+          {!loading && (
+            <CardFooterGroup>
+              <Button
+                variant="outlined"
+                onPress={() =>
+                  push(`/accounts/${raccount}/devices/${cid}/settings`)
+                }
+              >
+                Settings
+              </Button>
+              <Button
+                onPress={() =>
+                  push(`/accounts/${raccount}/devices/${cid}/transfer`)
+                }
+              >
+                New Transfer
+              </Button>
+            </CardFooterGroup>
+          )}
         </CardContentBlock>
 
         <Button
@@ -98,7 +101,19 @@ export default function AccountLayout({ children }: { children: any }) {
         </Button>
       </CardFixedContainer>
 
-      {children}
+      {loading && (
+        <>
+          <Stack
+            width="100%"
+            justifyContent="center"
+            alignItems="center"
+            style={{ height: '200px' }}
+          >
+            <Loader />
+          </Stack>
+        </>
+      )}
+      {!loading && children}
     </Stack>
   );
 }

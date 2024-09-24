@@ -1,5 +1,5 @@
 import { MonoCopyAll } from '@kadena/kode-icons/system';
-import { Button, Stack, TextField } from '@kadena/kode-ui';
+import { Button, Stack, Text, TextField } from '@kadena/kode-ui';
 import React, { FC } from 'react';
 
 interface IProps {
@@ -24,9 +24,15 @@ export const MnemonicRevealer: FC<IProps> = ({ mnemonic }) => {
   return (
     <Stack gap="md" flexDirection="column">
       {wordGroups.map((wordsStr, groupIndex) => (
-        <Stack gap="sm">
+        <Stack gap="lg" alignItems="flex-end">
           {wordsStr.split(' ').map((word, wordIndex) => (
             <TextField
+              startVisual={
+                <Text variant="code">
+                  {groupIndex * groupSize + wordIndex + 1}
+                </Text>
+              }
+              isReadOnly
               key={word}
               type="password"
               value="****"
