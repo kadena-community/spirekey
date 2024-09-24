@@ -61,11 +61,11 @@ const getMinCost = (requested: number, available: number) => {
 };
 type OptimalTransfers = {
   required: number;
-  balances: AccountBalance[];
+  balances: Omit<AccountBalance, 'credentials'>[];
 };
 const gasFeeMargins = 1e-4;
 export const getOptimalTransfers = (
-  accountBalances: AccountBalance[],
+  accountBalances: Omit<AccountBalance, 'credentials'>[],
   target: ChainId,
   amount: number,
 ) => {

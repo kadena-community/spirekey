@@ -1,6 +1,7 @@
 import { accountBalances } from '@/resolvers/account-balances';
 import { accountName } from '@/resolvers/account-name';
 import { account, accounts } from '@/resolvers/accounts';
+import { autoTransfers } from '@/resolvers/auto-transfers';
 import { connectWallet } from '@/resolvers/connect-wallet';
 import { createAccount } from '@/resolvers/create-account';
 import { createWallet } from '@/resolvers/create-wallet';
@@ -32,6 +33,7 @@ export const apolloClient = new ApolloClient({
       account,
       accountName,
       accountBalances,
+      autoTransfers,
       connectWallet,
       recoverAccount,
     },
