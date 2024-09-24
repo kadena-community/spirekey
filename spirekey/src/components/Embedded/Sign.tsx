@@ -32,6 +32,7 @@ import {
 } from '@kadena/types';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useEffect, useState } from 'react';
+import { MainLoader } from '../MainLoader/MainLoader';
 
 interface Props {
   transactions?: string;
@@ -54,7 +55,7 @@ const getPubkey = (
 };
 export default function Sign(props: Props) {
   const { transactions, accounts: signAccountsString } = props;
-  const { accounts } = useAccounts();
+  const { accounts, loading } = useAccounts();
   const { setAccount } = useAccount();
   const { errorMessage, setErrorMessage } = useErrors();
 
@@ -200,6 +201,11 @@ export default function Sign(props: Props) {
     if (!plumbingTxs?.length) return true;
     return signedPlumbingTxs;
   };
+
+  if (loading) {
+    return <MainLoader />;
+  }
+
   return (
     <CardFixedContainer>
       <SpireKeyCardContentBlock
