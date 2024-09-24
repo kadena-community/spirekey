@@ -16,7 +16,7 @@ type Credential = {
 };
 export type AccountBalance = {
   accountName: string;
-  credentials: Credential[];
+  credentials: string[];
   balance: number;
   chainId: ChainId;
   networkId: string;
@@ -61,11 +61,11 @@ const getMinCost = (requested: number, available: number) => {
 };
 type OptimalTransfers = {
   required: number;
-  balances: Omit<AccountBalance, 'credentials'>[];
+  balances: AccountBalance[];
 };
 const gasFeeMargins = 1e-4;
 export const getOptimalTransfers = (
-  accountBalances: Omit<AccountBalance, 'credentials'>[],
+  accountBalances: AccountBalance[],
   target: ChainId,
   amount: number,
 ) => {
@@ -137,20 +137,17 @@ export const getRAccountTransferCaps =
   (accountBalance: AccountBalance, target: ChainId) => (cmd: IBuilder<any>) =>
     accountBalance.credentials
       .reduce(
-        (cmd, credential) =>
-          cmd.addSigner(
-            { pubKey: credential.pubKey, scheme: 'WebAuthn' },
-            (withCap) => [
-              withCap(
-                `coin.TRANSFER_XCHAIN`,
-                accountBalance.accountName,
-                accountBalance.accountName,
-                { decimal: accountBalance.cost.toFixed(8) },
-                target,
-              ),
-              withCap(`coin.GAS`),
-            ],
-          ),
+        (cmd, pubKey) =>
+          cmd.addSigner({ pubKey, scheme: 'ED25519' }, (withCap) => [
+            withCap(
+              `coin.TRANSFER_XCHAIN`,
+              accountBalance.accountName,
+              accountBalance.accountName,
+              { decimal: accountBalance.cost.toFixed(8) },
+              target,
+            ),
+            withCap(`coin.GAS`),
+          ]),
         cmd,
       )
       .setNetworkId(accountBalance.networkId)
