@@ -1,3 +1,4 @@
+import { MainLoader } from '@/components/MainLoader/MainLoader';
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
 import { useAccounts } from '@/resolvers/accounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
@@ -29,7 +30,7 @@ export default function ConnectComponent({
   onConnect,
   onCancel,
 }: ConnectComponentProps) {
-  const { accounts } = useAccounts();
+  const { accounts, loading } = useAccounts();
   const [isRegister, setIsRegister] = useState(false);
   const [isRecover, setIsRecover] = useState(false);
 
@@ -48,6 +49,10 @@ export default function ConnectComponent({
   const connectAndPrime = async (account: Account) => {
     return onConnect(account);
   };
+
+  if (loading) {
+    return <MainLoader />;
+  }
 
   if (isRegister)
     return (
