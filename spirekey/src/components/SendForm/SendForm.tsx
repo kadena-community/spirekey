@@ -285,8 +285,9 @@ export default function SendForm() {
             <NumberField
               defaultValue={defaultValues.amount}
               step={0.1}
-              label="Amount"
+              label={`Amount (max: ${parseFloat(account.balance).toLocaleString() ?? '0.0'} KDA)`}
               minValue={0.0}
+              maxValue={parseFloat(account.balance) ?? 0.0}
               {...amountProps}
               onValueChange={(a) => setValue('amount', a)}
             />
