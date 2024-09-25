@@ -1,11 +1,10 @@
 'use client';
 
 import { useErrors } from '@/context/shared/ErrorContext/ErrorContext';
+import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useCredentials } from '@/resolvers/connect-wallet';
 import { signWithKeyPair } from '@/utils/signSubmitListen';
 import { Button, Stack, Text } from '@kadena/kode-ui';
-
-import { useNotifications } from '@/context/shared/NotificationsContext';
 import { ICap, ICommand, IUnsignedCommand } from '@kadena/types';
 import React, { FC, useEffect, useState } from 'react';
 import { Step } from './Step';
@@ -84,12 +83,24 @@ export const SignPlumbingTxs: FC<SignPlumbingTxsProps> = ({
           variant="primary"
           onPress={async () => {
             try {
-              const { publicKey, secretKey } = await getCredentials(networkId);
               const newSteps = await Promise.all(
                 steps.map(async ({ tx, ...step }) => {
-                  const signedTx = signWithKeyPair({ publicKey, secretKey })(
-                    tx,
-                  );
+                  const { publicKey, secretKey, mnemonic } =
+                    await getCredentials(networkId);
+
+                  console.log({ mnemonic });
+                  if (!mnemonic) {
+                    addNotification({
+                      variant: 'error',
+                      title: 'Please migrate your account',
+                      message:
+                        'Your account was created before the support of mnemonic phrases. Please create a new account and transfer your funds.',
+                    });
+                  }
+                  const signedTx = signWithKeyPair({
+                    publicKey,
+                    secretKey,
+                  })(tx);
                   return { ...step, tx: signedTx, signed: true };
                 }),
               );

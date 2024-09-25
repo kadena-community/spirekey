@@ -12,36 +12,19 @@ import { publishEvent } from '@/utils/publishEvent';
 import { l1Client } from '@/utils/shared/client';
 import { Button } from '@kadena/kode-ui';
 import { CardFixedContainer, CardFooterGroup } from '@kadena/kode-ui/patterns';
-import type {
-  Account,
-  Device,
-  OptimalTransactionsAccount,
-} from '@kadena/spirekey-types';
+import type { OptimalTransactionsAccount } from '@kadena/spirekey-types';
 import { ICommand, ICommandPayload, IUnsignedCommand } from '@kadena/types';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useEffect, useState } from 'react';
 import { MainLoader } from '../MainLoader/MainLoader';
 import { SignPlumbingTxs } from './components/SignPlumbingTxs/SignPlumbingTxs';
+import { getPubkey, getSubtitle } from './utils';
 
 interface Props {
   transactions?: string;
   accounts?: string;
 }
 
-// @TODO get from other package?
-const getPubkey = (
-  accounts: Account[],
-  credentialId: Device['credential-id'],
-) => {
-  for (const account of accounts) {
-    for (const device of account.devices) {
-      if (credentialId === device['credential-id']) {
-        return device.guard.keys[0];
-      }
-    }
-  }
-  throw new Error('No public key found');
-};
 export default function Sign(props: Props) {
   const { transactions, accounts: signAccountsString } = props;
   const { accounts, loading } = useAccounts();
@@ -68,13 +51,22 @@ export default function Sign(props: Props) {
 
   const txAccounts = getAccountsForTx(accounts)(tx);
   const { signers, meta }: ICommandPayload = JSON.parse(tx.cmd);
-
   const signAccounts: OptimalTransactionsAccount[] = JSON.parse(
     signAccountsString || '[]',
   );
 
   const [plumbingTxs, setPlumbingTxs] = useState<IUnsignedCommand[]>();
   const { getAutoTransfers } = useAutoTransfers();
+
+  useEffect(() => {
+    if (!transactions) {
+      addNotification({
+        variant: 'error',
+        title: 'No transactions provided',
+      });
+      return;
+    }
+  }, [transactions]);
 
   useEffect(() => {
     Promise.all(
@@ -210,12 +202,7 @@ export default function Sign(props: Props) {
       .filter((x) => !!x) || [];
   const caps = getPermissions(keys, signers);
 
-  const getSubtitle = (size: number) => {
-    if (size > 1) return `asked for the following ${caps.size} modules`;
-    return 'asked for the following module';
-  };
   const onCompletedPlumbingTxs = (txs: ICommand[]) => {
-    console.log({ txs });
     setSignedPlumbingTxs(txs);
   };
   const isReadyForSigning = () => {
