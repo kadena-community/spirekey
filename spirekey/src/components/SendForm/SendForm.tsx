@@ -1,12 +1,12 @@
 'use client';
 
+import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useAccounts } from '@/resolvers/accounts';
 import { l1Client } from '@/utils/shared/client';
 import { createTransactionBuilder, ICommandResult } from '@kadena/client';
 import { MonoCopyAll } from '@kadena/kode-icons/system';
 import {
   Button,
-  Form,
   Heading,
   Link,
   maskValue,
@@ -91,10 +91,10 @@ const getTransferTx = ({
 export default function SendForm() {
   const { raccount, cid } = useParams();
   const { accounts } = useAccounts();
-
+  const { addNotification } = useNotifications();
   const [tx, setTx] = useState<ICommandResult>();
 
-  const [_, setReceiverError] = useState('');
+  const [receiverError, setReceiverError] = useState('');
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const account = accounts.find(
@@ -126,7 +126,9 @@ export default function SendForm() {
   });
 
   const onSubmit = async (data: FormValues) => {
-    if (!account) throw new Error('No account connected');
+    if (!account) {
+      throw new Error('No account connected');
+    }
     if (!data.receiver) throw new Error('No receiver defined');
     if (!account.networkId) throw new Error('No network selected');
     try {
@@ -175,7 +177,12 @@ export default function SendForm() {
         }),
       );
     } catch (e) {
-      if (e instanceof Error && e.message === 'Account does not exist') throw e;
+      if (e instanceof Error && e.message === 'Account does not exist') {
+        addNotification({
+          variant: 'error',
+          title: 'Receiver account does not exist',
+        });
+      }
       console.warn('User canceled signin', e);
     } finally {
       setIsLoading(false);
@@ -258,7 +265,7 @@ export default function SendForm() {
       as="main"
       maxWidth="content.maxWidth"
     >
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Heading>Transfer KDA</Heading>
 
         <TextField value={account.accountName} name="sender" type="hidden" />
@@ -268,6 +275,8 @@ export default function SendForm() {
             type="text"
             defaultValue={defaultValues.receiver}
             label="Receiver"
+            variant={receiverError ? 'negative' : 'default'}
+            errorMessage={receiverError}
             {...register('receiver')}
           />
           <Stack width="100%" gap="md">
@@ -307,7 +316,7 @@ export default function SendForm() {
             Sign
           </Button>
         </Stack>
-      </Form>
+      </form>
     </Stack>
   );
 }
