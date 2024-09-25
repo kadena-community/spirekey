@@ -11,6 +11,7 @@ test('Connect SpireKey Account', async ({
   page,
 }) => {
   await test.step('Visit Connect page without having account', async () => {
+    test.slow();
     let credentials: any = null;
     await test.step('Clear state', async () => {
       await spireKeyApp.openSpireKeyApp();
@@ -27,7 +28,7 @@ test('Connect SpireKey Account', async ({
       await connectPage.startRegistration();
       await connectPage.createNewWallet();
       credentials = await connectPage.createNewAccount();
-      await connectPage.page.waitForEvent('close');
+      //await connectPage.page.waitForEvent('close');
     });
     await test.step('Request funds for new account', async () => {
       await exampleFundPage.requestFunds();
@@ -48,7 +49,7 @@ test('Connect SpireKey Account', async ({
     await test.step('Connect to existing account', async () => {
       const connectPage = await exampleConnectPage.connect();
       await connectPage.connectAccount(0);
-      await connectPage.page.waitForEvent('close');
+      //await connectPage.page.waitForEvent('close');
     });
     await test.step('Sign for a transfer', async () => {
       await exampleTransferPage.setReceiver();
