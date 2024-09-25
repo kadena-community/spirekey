@@ -39,9 +39,7 @@ export class ExampleConnectPage {
     const popupPromise = this.page
       .context()
       .waitForEvent('page', (p) => p.url().startsWith('http://localhost:1337'));
-
-    await this.page.getByRole('button', { name: 'Connect' }).first().waitFor();
-    await this.page.getByRole('button', { name: 'Connect' }).first().click();
+    await this.connectButton.click();
     const popup = await popupPromise;
     return new ConnectPage(popup);
   }
