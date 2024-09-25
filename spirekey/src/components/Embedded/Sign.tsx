@@ -3,37 +3,25 @@
 import { Permissions } from '@/components/Permissions/Permissions';
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
 import { useErrors } from '@/context/shared/ErrorContext/ErrorContext';
+import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useAccount, useAccounts } from '@/resolvers/accounts';
 import { useAutoTransfers } from '@/resolvers/auto-transfers';
-import { useCredentials } from '@/resolvers/connect-wallet';
 import { getAccountsForTx, getPermissions } from '@/utils/consent';
 import { getSignature } from '@/utils/getSignature';
 import { publishEvent } from '@/utils/publishEvent';
 import { l1Client } from '@/utils/shared/client';
-import { signWithKeyPair } from '@/utils/signSubmitListen';
-import { MonoCAccount } from '@kadena/kode-icons/system';
-import {
-  Accordion,
-  AccordionItem,
-  Button,
-  ContentHeader,
-  Stack,
-} from '@kadena/kode-ui';
+import { Button } from '@kadena/kode-ui';
 import { CardFixedContainer, CardFooterGroup } from '@kadena/kode-ui/patterns';
 import type {
   Account,
   Device,
   OptimalTransactionsAccount,
 } from '@kadena/spirekey-types';
-import {
-  ICap,
-  ICommand,
-  ICommandPayload,
-  IUnsignedCommand,
-} from '@kadena/types';
+import { ICommand, ICommandPayload, IUnsignedCommand } from '@kadena/types';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useEffect, useState } from 'react';
 import { MainLoader } from '../MainLoader/MainLoader';
+import { SignPlumbingTxs } from './components/SignPlumbingTxs/SignPlumbingTxs';
 
 interface Props {
   transactions?: string;
@@ -59,6 +47,7 @@ export default function Sign(props: Props) {
   const { accounts, loading } = useAccounts();
   const { setAccount } = useAccount();
   const { errorMessage, setErrorMessage } = useErrors();
+  const { addNotification } = useNotifications();
 
   if (!transactions) throw new Error('No transactions provided');
 
@@ -118,6 +107,7 @@ export default function Sign(props: Props) {
       window.removeEventListener('beforeunload', cancel);
     };
   }, []);
+
   const onSign = async () => {
     const credentialId = txAccounts.accounts[0].devices[0]['credential-id'];
     const res = await startAuthentication({
@@ -150,33 +140,51 @@ export default function Sign(props: Props) {
         },
       });
 
-    const txs = await Promise.all(
-      signedPlumbingTxs!.map((tx) => l1Client.submit(tx)),
-    );
-    const accs = signAccounts.map((sAcc) => {
-      const account = accounts.find(
-        (acc) =>
-          acc.accountName === sAcc.accountName &&
-          acc.networkId === sAcc.networkId,
+    try {
+      const txs = await Promise.all(
+        signedPlumbingTxs!.map((tx) => l1Client.submit(tx)),
       );
-      if (!account) throw new Error('Account is not found');
-      const newAccount = { ...account, txQueue: [...account.txQueue, ...txs] };
-      setAccount(newAccount);
-      return newAccount;
-    });
 
-    //TODO should be in try catch Error handling
-    publishEvent('signed', {
-      accounts: accs,
-      tx: {
-        [tx.hash]: [
-          {
-            ...getSignature(res.response),
-            pubKey: getPubkey(accounts, credentialId),
-          },
-        ],
-      },
-    });
+      const accs = signAccounts.map((sAcc) => {
+        const account = accounts.find(
+          (acc) =>
+            acc.accountName === sAcc.accountName &&
+            acc.networkId === sAcc.networkId,
+        );
+        if (!account) {
+          addNotification({
+            variant: 'error',
+            title: 'Account is not found',
+          });
+          throw new Error('Account is not found');
+        }
+        const newAccount = {
+          ...account,
+          txQueue: [...account.txQueue, ...txs],
+        };
+        setAccount(newAccount);
+        return newAccount;
+      });
+
+      //TODO should be in try catch Error handling
+      publishEvent('signed', {
+        accounts: accs,
+        tx: {
+          [tx.hash]: [
+            {
+              ...getSignature(res.response),
+              pubKey: getPubkey(accounts, credentialId),
+            },
+          ],
+        },
+      });
+    } catch (e: any) {
+      addNotification({
+        variant: 'error',
+        title: 'There was a problem with the signing',
+        message: e.message ?? '',
+      });
+    }
   };
 
   const onCancel = () => publishEvent('canceled:sign');
@@ -251,96 +259,5 @@ export default function Sign(props: Props) {
         </Button>
       </CardFooterGroup>
     </CardFixedContainer>
-  );
-}
-
-type PlumbingTxStep = {
-  title: string;
-  caps: Map<string, ICap[]>;
-  tx: IUnsignedCommand;
-  signed?: boolean;
-};
-type SignPlumbingTxsProps = {
-  plumbingSteps: PlumbingTxStep[];
-  credentialId?: string;
-  onCompleted: (txs: ICommand[]) => void;
-};
-
-function SignPlumbingTxs({
-  plumbingSteps,
-  credentialId,
-  onCompleted,
-}: SignPlumbingTxsProps) {
-  const [steps, setSteps] = useState(plumbingSteps);
-  const { errorMessage, setErrorMessage } = useErrors();
-  const { getCredentials } = useCredentials();
-  const [networkId, setNetworkId] = useState<string>();
-  useEffect(() => {
-    const foundNetworkId = plumbingSteps.reduce((foundNetworkId, { tx }) => {
-      const { networkId } = JSON.parse(tx.cmd);
-      if (!foundNetworkId) return networkId;
-      if (foundNetworkId !== networkId) {
-        throw new Error('Multiple network IDs found');
-      }
-      return networkId;
-    }, null);
-    if (foundNetworkId) setNetworkId(foundNetworkId);
-    setSteps(plumbingSteps);
-  }, [plumbingSteps.map((s) => s.tx.hash + s.caps.size).join(',') || '']);
-
-  if (!credentialId)
-    return <div>No valid credentials found in this wallet to sign with</div>;
-
-  if (!networkId) return null;
-
-  return (
-    <>
-      {steps.map(({ title, caps, tx }) => (
-        <Stack flexDirection="column" gap="sm" marginBlock="md" key={tx.hash}>
-          <ContentHeader heading={title} icon={<MonoCAccount />} />
-          {[...caps.entries()].map(([module, capabilities]) => (
-            <Accordion
-              key={
-                module + capabilities.map((c) => JSON.stringify(c)).join(',')
-              }
-            >
-              <AccordionItem title={`Details: ${title}`}>
-                <Permissions
-                  module={module}
-                  capabilities={capabilities}
-                  key={module}
-                />
-              </AccordionItem>
-            </Accordion>
-          ))}
-        </Stack>
-      ))}
-      <Stack gap="md" justifyContent="flex-end">
-        <Button
-          variant="primary"
-          onPress={async () => {
-            try {
-              const { publicKey, secretKey } = await getCredentials(networkId);
-              const newSteps = await Promise.all(
-                steps.map(async ({ tx, ...step }) => {
-                  const signedTx = signWithKeyPair({ publicKey, secretKey })(
-                    tx,
-                  );
-                  return { ...step, tx: signedTx, signed: true };
-                }),
-              );
-              setSteps(newSteps);
-              onCompleted(newSteps.map(({ tx }) => tx) as ICommand[]);
-            } catch (error: any) {
-              setErrorMessage(error.message);
-              console.error({ errorMessage: errorMessage, error });
-            }
-          }}
-          isDisabled={steps.every((s) => s.signed)}
-        >
-          Sign
-        </Button>
-      </Stack>
-    </>
   );
 }
