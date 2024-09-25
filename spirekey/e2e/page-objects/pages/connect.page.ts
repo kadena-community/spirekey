@@ -82,10 +82,7 @@ export class ConnectPage {
       this.authenticator.authenticatorId,
       this.authenticator.cdpSession,
     );
+    await this.page.waitForEvent('close');
     return credentials;
-  }
-
-  async completeRegistration() {
-    await this.completeButton.click();
   }
 }

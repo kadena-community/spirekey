@@ -24,6 +24,7 @@
     "start:e2e": "next start --port 1337",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "test:watch": "vitest",
     "update": "tsx ./deploy.ts ./pact/deploy/update.json",
     "update:del": "tsx ./deploy.ts ./pact/deploy/local-delivery.json",

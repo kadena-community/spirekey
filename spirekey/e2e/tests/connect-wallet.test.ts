@@ -25,7 +25,6 @@ test('Connect SpireKey Wallet', async ({
       await connectPage.startRegistration();
       await connectPage.createNewWallet();
       credentials = await connectPage.createNewAccount();
-      await connectPage.completeRegistration();
     });
     await test.step('Create another account', async () => {
       await exampleApp.open();
@@ -36,7 +35,6 @@ test('Connect SpireKey Wallet', async ({
       await connectPage.startAnotherRegistration(credentials);
       await connectPage.connectWallet();
       await connectPage.createNewAccount();
-      await connectPage.completeRegistration();
       await page
         .getByRole('heading', { name: 'Step 2: Fund your account' })
         .waitFor();
