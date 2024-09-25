@@ -37,7 +37,8 @@ export class RegisterPage {
     await this.page
       .getByRole('heading', { name: 'SpireKey Account 1' })
       .waitFor();
-    await this.page.getByRole('button', { name: 'New Transfer' }).waitFor();
+    await this.page.getByText('Spirekey Account 1').isVisible();
+    await this.page.getByText('Balance 0 KDA').isVisible();
   }
 
   async getRedirectMessage(message: string): Promise<Locator> {

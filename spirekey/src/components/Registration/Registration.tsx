@@ -53,7 +53,6 @@ export default function Registration({
       'base64',
     );
 
-    console.log({ pathname });
     if (!pathname.includes('embedded')) {
       router.push(
         `/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,

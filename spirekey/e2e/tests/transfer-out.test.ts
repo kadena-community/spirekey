@@ -12,6 +12,7 @@ test('Transfer out', async ({
   localStorageHelper,
 }) => {
   await test.step('Visit Connect page without having account', async () => {
+    test.slow();
     let credentials: any = null;
     await test.step('Clear state', async () => {
       await spireKeyApp.openSpireKeyApp();

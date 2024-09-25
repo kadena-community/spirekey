@@ -25,7 +25,6 @@ test('Recover SpireKey Account', async ({
       await connectPage.startRegistration();
       await connectPage.createNewWallet();
       credentials = await connectPage.createNewAccount();
-      await connectPage.page.waitForEvent('close');
     });
     await test.step('Remove account from wallet', async () => {
       await spireKeyApp.openSpireKeyApp();
