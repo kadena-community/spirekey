@@ -28,9 +28,10 @@ export default function AccountNetwork({
     };
   }, [hasCopied]);
 
-  const [accountNamespace, accountName] = (account?.accountName || ':').split(
-    ':',
-  );
+  const [accountNamespace, accountNameFull] = (
+    account?.accountName || ':'
+  ).split(':');
+  const [accountName, accountSuffix] = accountNameFull.split('.');
 
   if (!account) return;
 
@@ -42,6 +43,10 @@ export default function AccountNetwork({
         )}
 
         <AccountRevealer accountName={accountName} reveal={!isLoading} />
+
+        {!isLoading && (
+          <span className={styles.namespace}>.{accountSuffix}</span>
+        )}
 
         {!isLoading && (
           <button
