@@ -14,8 +14,11 @@ export async function middleware(request: NextRequest) {
 
   //const clientId = createClientId(request);
 
+  const userAgent = request.headers.get('user-agent');
+  if (userAgent?.includes('Edge Functions')) return;
+
   console.log(request.url, {
-    userAgent: request.headers.get('user-agent'),
+    userAgent: userAgent,
     isMobile: request.headers.get('sec-ch-ua-mobile'),
     platform: request.headers.get('sec-ch-ua-platform'),
   });
@@ -82,5 +85,5 @@ export async function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|images|.*\\.png$).*)'],
 };
