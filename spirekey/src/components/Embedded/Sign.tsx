@@ -207,6 +207,7 @@ export default function Sign(props: Props) {
     return 'asked for the following module';
   };
   const onCompletedPlumbingTxs = (txs: ICommand[]) => {
+    console.log({ txs });
     setSignedPlumbingTxs(txs);
   };
   const isReadyForSigning = () => {

@@ -1,12 +1,12 @@
 'use client';
 import SendForm from '@/components/SendForm/SendForm';
-import { CardFixedContainer } from '@kadena/kode-ui/patterns';
+import { Card } from '@kadena/kode-ui';
 import React from 'react';
 
 export default function SendPage() {
   return (
-    <CardFixedContainer>
+    <Card fullWidth>
       <SendForm />
-    </CardFixedContainer>
+    </Card>
   );
 }
