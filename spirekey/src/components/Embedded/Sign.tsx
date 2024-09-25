@@ -4,12 +4,13 @@ import { Permissions } from '@/components/Permissions/Permissions';
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
 import { useErrors } from '@/context/shared/ErrorContext/ErrorContext';
 import { useAccount, useAccounts } from '@/resolvers/accounts';
-import { getOptimalTransactions } from '@/utils/auto-transfers';
+import { useAutoTransfers } from '@/resolvers/auto-transfers';
+import { useCredentials } from '@/resolvers/connect-wallet';
 import { getAccountsForTx, getPermissions } from '@/utils/consent';
 import { getSignature } from '@/utils/getSignature';
 import { publishEvent } from '@/utils/publishEvent';
 import { l1Client } from '@/utils/shared/client';
-import { addSignatures } from '@kadena/client';
+import { signWithKeyPair } from '@/utils/signSubmitListen';
 import { MonoCAccount } from '@kadena/kode-icons/system';
 import {
   Accordion,
@@ -32,6 +33,7 @@ import {
 } from '@kadena/types';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useEffect, useState } from 'react';
+import { MainLoader } from '../MainLoader/MainLoader';
 
 interface Props {
   transactions?: string;
@@ -54,7 +56,7 @@ const getPubkey = (
 };
 export default function Sign(props: Props) {
   const { transactions, accounts: signAccountsString } = props;
-  const { accounts } = useAccounts();
+  const { accounts, loading } = useAccounts();
   const { setAccount } = useAccount();
   const { errorMessage, setErrorMessage } = useErrors();
 
@@ -83,12 +85,19 @@ export default function Sign(props: Props) {
   );
 
   const [plumbingTxs, setPlumbingTxs] = useState<IUnsignedCommand[]>();
+  const { getAutoTransfers } = useAutoTransfers();
 
   useEffect(() => {
     Promise.all(
       signAccounts.flatMap((account) =>
-        account.requestedFungibles?.flatMap(({ amount }) =>
-          getOptimalTransactions(account, meta.chainId, amount),
+        getAutoTransfers(
+          account.networkId,
+          account.accountName,
+          account.requestedFungibles?.map(({ amount, fungible, target }) => ({
+            amount,
+            fungible,
+            target: target || meta.chainId,
+          })),
         ),
       ),
     )
@@ -175,6 +184,10 @@ export default function Sign(props: Props) {
   const keys = txAccounts.accounts.flatMap((a) =>
     a.devices.flatMap((d) => d.guard.keys),
   );
+
+  const plumbingKeys = txAccounts.accounts.flatMap(
+    (a) => a.keyset?.keys.filter((k) => !k.startsWith('WEBAUTHN')) || [],
+  );
   const plumbingSteps =
     plumbingTxs
       ?.map((tx, i) => {
@@ -182,7 +195,7 @@ export default function Sign(props: Props) {
         const cmd: ICommandPayload = JSON.parse(tx.cmd);
         return {
           title: `Step ${i + 1}`,
-          caps: getPermissions(keys, cmd.signers),
+          caps: getPermissions(plumbingKeys, cmd.signers),
           tx,
         };
       })
@@ -200,6 +213,11 @@ export default function Sign(props: Props) {
     if (!plumbingTxs?.length) return true;
     return signedPlumbingTxs;
   };
+
+  if (loading) {
+    return <MainLoader />;
+  }
+
   return (
     <CardFixedContainer>
       <SpireKeyCardContentBlock
@@ -254,18 +272,29 @@ function SignPlumbingTxs({
 }: SignPlumbingTxsProps) {
   const [steps, setSteps] = useState(plumbingSteps);
   const { errorMessage, setErrorMessage } = useErrors();
-
+  const { getCredentials } = useCredentials();
+  const [networkId, setNetworkId] = useState<string>();
   useEffect(() => {
+    const foundNetworkId = plumbingSteps.reduce((foundNetworkId, { tx }) => {
+      const { networkId } = JSON.parse(tx.cmd);
+      if (!foundNetworkId) return networkId;
+      if (foundNetworkId !== networkId) {
+        throw new Error('Multiple network IDs found');
+      }
+      return networkId;
+    }, null);
+    if (foundNetworkId) setNetworkId(foundNetworkId);
     setSteps(plumbingSteps);
   }, [plumbingSteps.map((s) => s.tx.hash + s.caps.size).join(',') || '']);
 
-  if (!credentialId) {
+  if (!credentialId)
     return <div>No valid credentials found in this wallet to sign with</div>;
-  }
+
+  if (!networkId) return null;
 
   return (
     <>
-      {steps.map(({ title, caps, tx, signed }) => (
+      {steps.map(({ title, caps, tx }) => (
         <Stack flexDirection="column" gap="sm" marginBlock="md" key={tx.hash}>
           <ContentHeader heading={title} icon={<MonoCAccount />} />
           {[...caps.entries()].map(([module, capabilities]) => (
@@ -283,42 +312,34 @@ function SignPlumbingTxs({
               </AccordionItem>
             </Accordion>
           ))}
-          <Stack gap="md" justifyContent="flex-end">
-            <Button
-              variant="primary"
-              onPress={async () => {
-                try {
-                  const res = await startAuthentication({
-                    challenge: tx.hash,
-                    rpId: window.location.hostname,
-                    allowCredentials: credentialId
-                      ? [{ id: credentialId, type: 'public-key' }]
-                      : undefined,
-                  });
-
-                  const signedTx = addSignatures(
-                    tx,
-                    getSignature(res.response),
-                  );
-                  const newSteps = steps.map((step) => {
-                    if (step.tx.hash !== tx.hash) return step;
-                    return { ...step, tx: signedTx, signed: true };
-                  });
-                  setSteps(newSteps);
-                  if (newSteps.every((step) => step.signed))
-                    onCompleted(newSteps.map(({ tx }) => tx) as ICommand[]);
-                } catch (error: any) {
-                  setErrorMessage(error.message);
-                  console.error({ errorMessage: errorMessage, error });
-                }
-              }}
-              isDisabled={signed}
-            >
-              Sign
-            </Button>
-          </Stack>
         </Stack>
       ))}
+      <Stack gap="md" justifyContent="flex-end">
+        <Button
+          variant="primary"
+          onPress={async () => {
+            try {
+              const { publicKey, secretKey } = await getCredentials(networkId);
+              const newSteps = await Promise.all(
+                steps.map(async ({ tx, ...step }) => {
+                  const signedTx = signWithKeyPair({ publicKey, secretKey })(
+                    tx,
+                  );
+                  return { ...step, tx: signedTx, signed: true };
+                }),
+              );
+              setSteps(newSteps);
+              onCompleted(newSteps.map(({ tx }) => tx) as ICommand[]);
+            } catch (error: any) {
+              setErrorMessage(error.message);
+              console.error({ errorMessage: errorMessage, error });
+            }
+          }}
+          isDisabled={steps.every((s) => s.signed)}
+        >
+          Sign
+        </Button>
+      </Stack>
     </>
   );
 }

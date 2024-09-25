@@ -7,7 +7,7 @@ import { useCopyToClipboard } from 'usehooks-ts';
 import * as styles from './AccountNetwork.css';
 
 type AccountNetworkProps = {
-  account: Account;
+  account?: Account;
   isLoading?: boolean;
 };
 
@@ -28,9 +28,11 @@ export default function AccountNetwork({
     };
   }, [hasCopied]);
 
-  const [accountNamespace, accountName] = (account.accountName || ':').split(
+  const [accountNamespace, accountName] = (account?.accountName || ':').split(
     ':',
   );
+
+  if (!account) return;
 
   return (
     <Stack flexDirection="column">

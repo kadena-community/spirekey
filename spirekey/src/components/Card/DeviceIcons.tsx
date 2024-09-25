@@ -5,7 +5,7 @@ import type { Account, Device } from '@kadena/spirekey-types';
 import * as styles from './Card.css';
 
 type DeviceIconsProps = {
-  account: Account;
+  account?: Account;
   device?: Device;
   showSingleIcon?: boolean;
   prependTitle?: boolean;
@@ -23,6 +23,7 @@ export default function DeviceIcons({
   prependTitle = false,
   appendTitle = false,
 }: DeviceIconsProps) {
+  if (!account) return;
   const firstDevice = account.devices[0];
   const uniqueDeviceTypes = new Set<string>([
     device?.deviceType || firstDevice.deviceType,
