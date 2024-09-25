@@ -7,16 +7,12 @@ import {
   IBuilder,
   type ChainId,
 } from '@kadena/client';
-import { Account, OptimalTransactionsAccount } from '@kadena/spirekey-types';
+import { Account } from '@kadena/spirekey-types';
 import BigNumber from 'bignumber.js';
 
-type Credential = {
-  pubKey: string;
-  credentialId: string;
-};
 export type AccountBalance = {
   accountName: string;
-  credentials: Credential[];
+  credentials: string[];
   balance: number;
   chainId: ChainId;
   networkId: string;
@@ -137,20 +133,17 @@ export const getRAccountTransferCaps =
   (accountBalance: AccountBalance, target: ChainId) => (cmd: IBuilder<any>) =>
     accountBalance.credentials
       .reduce(
-        (cmd, credential) =>
-          cmd.addSigner(
-            { pubKey: credential.pubKey, scheme: 'WebAuthn' },
-            (withCap) => [
-              withCap(
-                `coin.TRANSFER_XCHAIN`,
-                accountBalance.accountName,
-                accountBalance.accountName,
-                { decimal: accountBalance.cost.toFixed(8) },
-                target,
-              ),
-              withCap(`coin.GAS`),
-            ],
-          ),
+        (cmd, pubKey) =>
+          cmd.addSigner({ pubKey, scheme: 'ED25519' }, (withCap) => [
+            withCap(
+              `coin.TRANSFER_XCHAIN`,
+              accountBalance.accountName,
+              accountBalance.accountName,
+              { decimal: accountBalance.cost.toFixed(8) },
+              target,
+            ),
+            withCap(`coin.GAS`),
+          ]),
         cmd,
       )
       .setNetworkId(accountBalance.networkId)
@@ -161,18 +154,3 @@ export const getTransferTransaction =
     const cmd = getRAccountTransferCommand(accountBalance, target);
     return getRAccountTransferCaps(accountBalance, target)(cmd);
   };
-
-export const getOptimalTransactions = async (
-  account: OptimalTransactionsAccount,
-  target: ChainId,
-  amount: number,
-) => {
-  const accountBalances = await getAccountBalances(account);
-  const optimalTransfers = getOptimalTransfers(
-    accountBalances.filter((x) => !!x),
-    target,
-    amount,
-  );
-  if (!optimalTransfers) return null;
-  return optimalTransfers.map(getTransferTransaction(target));
-};

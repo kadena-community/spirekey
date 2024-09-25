@@ -6,6 +6,7 @@ import {
   Cell,
   Column,
   Row,
+  Stack,
   Table,
   TableBody,
   TableHeader,
@@ -14,8 +15,10 @@ import {
 } from '@kadena/kode-ui';
 import { atoms } from '@kadena/kode-ui/styles';
 import type { Account } from '@kadena/spirekey-types';
+import { useEffect } from 'react';
 import { Heading } from 'react-aria-components';
 import useSWR from 'swr';
+import { Loader } from '../MainLoader/Loader';
 import { amountCell } from './AccountDetails.css';
 
 interface AccountDetailsProps {
@@ -33,12 +36,33 @@ export function AccountDetails({ account }: AccountDetailsProps) {
     });
   }
 
-  const { data } = useSWR(
+  const { data, isLoading, error } = useSWR(
     `${domain}/txs/account/${encodeURIComponent(account.accountName)}`,
     async (url: string) => {
       return await fetch(url).then((res) => res.json());
     },
   );
+
+  useEffect(() => {
+    if (!error) return;
+    addNotification({
+      variant: 'error',
+      title: `There was an issue with the loading of the transactions`,
+    });
+  }, [error]);
+
+  if (isLoading) {
+    return (
+      <Stack
+        width="100%"
+        alignItems="center"
+        justifyContent="center"
+        style={{ height: '100px' }}
+      >
+        <Loader />
+      </Stack>
+    );
+  }
 
   if (!data?.length) {
     return <Heading>No Transactions</Heading>;

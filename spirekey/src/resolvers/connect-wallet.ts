@@ -68,7 +68,7 @@ const getCredentials = async (
   });
 };
 
-const connectWalletQuery = gql`
+export const connectWalletQuery = gql`
   query ConnectWallet($networkId: String!) {
     connectWallet(networkId: $networkId) @client
   }
@@ -84,7 +84,8 @@ export const useCredentials = () => {
     });
 
     if (!data.connectWallet) throw new Error('No credentials found');
-    return data.connectWallet;
+    const { publicKey, secretKey, mnemonic } = data.connectWallet;
+    return { publicKey, secretKey, mnemonic };
   };
   return {
     getCredentials,
