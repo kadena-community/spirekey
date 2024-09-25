@@ -6,6 +6,7 @@ import { createTransactionBuilder, ICommandResult } from '@kadena/client';
 import { MonoCopyAll } from '@kadena/kode-icons/system';
 import {
   Button,
+  Form,
   Heading,
   Link,
   maskValue,
@@ -257,58 +258,55 @@ export default function SendForm() {
       as="main"
       maxWidth="content.maxWidth"
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Heading>Transfer</Heading>
-        <Text>your KDA to another account.</Text>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Heading>Transfer KDA</Heading>
 
-        <Stack flexDirection="column" gap="md">
-          <TextField
-            value={account.accountName}
-            name="sender"
-            type="text"
-            label={`Sender: ${account.balance} (KDA)`}
-            isReadOnly
-            disabled
-          />
+        <TextField value={account.accountName} name="sender" type="hidden" />
+
+        <Stack flexDirection="column" gap="md" marginBlock="lg">
           <TextField
             type="text"
             defaultValue={defaultValues.receiver}
             label="Receiver"
             {...register('receiver')}
           />
-          <Select
-            label="Chain"
-            defaultSelectedKey="0"
-            onSelectionChange={(c) => setValue('chainId', c as ChainId)}
-          >
-            {Array(20)
-              .fill(1)
-              .map((_, i) => (
-                <SelectItem key={i}>{i.toString()}</SelectItem>
-              ))}
-          </Select>
-          <NumberField
-            defaultValue={defaultValues.amount}
-            step={0.1}
-            label="Amount"
-            minValue={0.0}
-            {...amountProps}
-            onValueChange={(a) => setValue('amount', a)}
-          />
+          <Stack width="100%" gap="md">
+            <Select
+              label="Chain"
+              defaultSelectedKey="0"
+              onSelectionChange={(c) => setValue('chainId', c as ChainId)}
+            >
+              {Array(20)
+                .fill(1)
+                .map((_, i) => (
+                  <SelectItem key={i}>{i.toString()}</SelectItem>
+                ))}
+            </Select>
+            <NumberField
+              defaultValue={defaultValues.amount}
+              step={0.1}
+              label="Amount"
+              minValue={0.0}
+              {...amountProps}
+              onValueChange={(a) => setValue('amount', a)}
+            />
+          </Stack>
         </Stack>
 
-        <Link variant="outlined" href="/">
-          Cancel
-        </Link>
-        <Button
-          isLoading={isLoading}
-          variant="primary"
-          isCompact={false}
-          type="submit"
-        >
-          Sign
-        </Button>
-      </form>
+        <Stack width="100%" justifyContent="flex-end" gap="md">
+          <Link variant="outlined" href="/">
+            Cancel
+          </Link>
+          <Button
+            isLoading={isLoading}
+            variant="primary"
+            isCompact={false}
+            type="submit"
+          >
+            Sign
+          </Button>
+        </Stack>
+      </Form>
     </Stack>
   );
 }
