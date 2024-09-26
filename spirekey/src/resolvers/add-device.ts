@@ -71,7 +71,7 @@ export const addDeviceTxs = async (
           account,
           publicKey: getWebAuthnPubkeyFormat(passKey),
           credentialId,
-          domain: window.location.hostname,
+          domain: window.location.origin,
           deviceType,
           color: deviceColors.darkGreen,
           chainId: chainId as ChainId,

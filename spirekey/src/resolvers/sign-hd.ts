@@ -1,7 +1,8 @@
+import { handleTxQueue } from '@/hooks/useTxQueue';
 import { l1Client } from '@/utils/shared/client';
 import { signWithKeyPair } from '@/utils/signSubmitListen';
 import { ApolloContextValue, gql, useMutation } from '@apollo/client';
-import { IUnsignedCommand } from '@kadena/types';
+import { ICommand, IUnsignedCommand } from '@kadena/types';
 import { connectWalletQuery } from './connect-wallet';
 
 type SignHdVariable = {
@@ -34,12 +35,25 @@ export const signSubmitHd = async (
   const signWithHd = signWithKeyPair({ publicKey, secretKey });
   const signedTxs = txs.map(signWithHd);
   const results = await Promise.all(signedTxs.map((tx) => l1Client.local(tx)));
-  return results;
+  if (results.some((r) => r.result.status !== 'success'))
+    throw new Error('Could not sign transactions');
+  return await Promise.all(
+    signedTxs.map((tx) => l1Client.submit(tx as ICommand)),
+  );
 };
 
 export const useSignSubmitHd = () => {
-  const [mutate] = useMutation(signHdMutationQuery);
-  const signSubmitHd = async (networkId: string, txs: IUnsignedCommand[]) => {
+  const [mutate, { loading }] = useMutation(signHdMutationQuery);
+  const signSubmitHd = async (
+    networkId: string,
+    txs: IUnsignedCommand[],
+    autoTxs?: IUnsignedCommand[],
+  ) => {
+    if (autoTxs?.length)
+      await handleTxQueue(await signSubmitTxs(networkId, autoTxs));
+    return await signSubmitTxs(networkId, txs);
+  };
+  const signSubmitTxs = async (networkId: string, txs: IUnsignedCommand[]) => {
     const { data, errors } = await mutate({
       variables: {
         networkId,
@@ -50,5 +64,5 @@ export const useSignSubmitHd = () => {
     if (!data?.signSubmitHd) throw new Error('Could not sign transactions');
     return data.signSubmitHd;
   };
-  return { signSubmitHd };
+  return { signSubmitHd, isSubmitting: loading };
 };

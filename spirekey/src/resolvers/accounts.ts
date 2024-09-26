@@ -54,6 +54,7 @@ export const accounts = async (
     }),
   );
   accountsVar(resolvedAccs);
+  localStorage.setItem('localAccounts', JSON.stringify(resolvedAccs));
   return resolvedAccs;
 };
 
