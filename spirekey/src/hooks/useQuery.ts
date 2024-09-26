@@ -7,6 +7,7 @@ import { connectWallet } from '@/resolvers/connect-wallet';
 import { createAccount } from '@/resolvers/create-account';
 import { createWallet } from '@/resolvers/create-wallet';
 import { recoverAccount } from '@/resolvers/recover-account';
+import { signHd } from '@/resolvers/sign-hd';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
 const getGraphqlHost = (networkId: string) => {
@@ -42,6 +43,7 @@ export const apolloClient = new ApolloClient({
     Mutation: {
       createWallet,
       createAccount,
+      signHd,
     },
   },
 });

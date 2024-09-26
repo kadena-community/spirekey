@@ -63,14 +63,13 @@ export default function WalletBackup() {
 
       <Stack flexDirection="column" marginBlockStart="xxl">
         <MnemonicRevealer mnemonic={mnemonic} />
-
-        {isAccountManagementEnabled && (
-          <>
-            <AliasEditor accountName={account?.accountName} />
-            <AddDevice accountName={account?.accountName} />
-          </>
-        )}
       </Stack>
+
+      {isAccountManagementEnabled && (
+        <>
+          <AddDevice accountName={account?.accountName} />
+        </>
+      )}
     </>
   );
 }
