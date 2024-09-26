@@ -10,6 +10,7 @@ export const codeFont = style([
 
 export const account = style([
   codeFont,
+  {},
   atoms({ fontWeight: 'monospaceFont.bold' }),
 ]);
 
