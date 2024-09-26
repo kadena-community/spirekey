@@ -1,7 +1,7 @@
 import { Permissions } from '@/components/Permissions/Permissions';
 import { useAccounts } from '@/resolvers/accounts';
 import { useAddDevice } from '@/resolvers/add-device';
-import { useSignHd } from '@/resolvers/sign-hd';
+import { useSignSubmitHd } from '@/resolvers/sign-hd';
 import { Button, Stack, TextareaField } from '@kadena/kode-ui';
 import { CardContentBlock, CardFooterGroup } from '@kadena/kode-ui/patterns';
 import { useState } from 'react';
@@ -11,7 +11,7 @@ export const AddDevice = ({ accountName }: { accountName?: string }) => {
   const { getAddDeviceTxs } = useAddDevice();
   const [txs, setTxs] = useState();
   const account = accounts?.find((a) => a.accountName === accountName);
-  const { signHd } = useSignHd();
+  const { signSubmitHd } = useSignSubmitHd();
   if (!account) return null;
   return (
     <>
@@ -52,7 +52,9 @@ export const AddDevice = ({ accountName }: { accountName?: string }) => {
             />
           </Stack>
           <CardFooterGroup>
-            <Button onPress={() => signHd(account.networkId, txs)}>Sign</Button>
+            <Button onPress={() => signSubmitHd(account.networkId, txs)}>
+              Sign
+            </Button>
           </CardFooterGroup>
         </CardContentBlock>
       )}

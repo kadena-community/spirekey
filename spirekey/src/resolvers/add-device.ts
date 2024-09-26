@@ -101,8 +101,8 @@ const addDeviceOnChain = async ({
   const guard: any = account.guard;
   if (!guard.keysetref || !account.keyset)
     throw new Error('No keysetref found');
-  const [managerPublicKey] = account.keyset.keys.filter((k) =>
-    k.startsWith('WEBAUTHN'),
+  const [managerPublicKey] = account.keyset.keys.filter(
+    (k) => !k.startsWith('WEBAUTHN'),
   );
   const { ksn, ns } = guard.keysetref;
   const tx = createTransactionBuilder()
