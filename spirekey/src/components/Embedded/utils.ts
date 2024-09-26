@@ -1,4 +1,12 @@
 import type { Account, Device } from '@kadena/spirekey-types';
+import { ICap, IUnsignedCommand } from '@kadena/types';
+
+export type PlumbingTxStep = {
+  title: string;
+  caps: Map<string, ICap[]>;
+  tx: IUnsignedCommand;
+  signed?: boolean;
+};
 
 // @TODO get from other package?
 export const getPubkey = (
@@ -19,3 +27,13 @@ export const getSubtitle = (size: number): string => {
   if (size > 1) return `asked for the following ${size} modules`;
   return 'asked for the following module';
 };
+
+export const findNetworkId = (steps: PlumbingTxStep[]): string | null =>
+  steps.reduce((foundNetworkId, { tx }) => {
+    const { networkId } = JSON.parse(tx.cmd);
+    if (!foundNetworkId) return networkId;
+    if (foundNetworkId !== networkId) {
+      throw new Error('Multiple network IDs found');
+    }
+    return networkId;
+  }, null);

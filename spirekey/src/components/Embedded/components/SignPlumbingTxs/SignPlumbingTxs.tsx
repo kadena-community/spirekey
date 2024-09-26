@@ -5,8 +5,10 @@ import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useCredentials } from '@/resolvers/connect-wallet';
 import { signWithKeyPair } from '@/utils/signSubmitListen';
 import { Button, Stack, Text } from '@kadena/kode-ui';
+import { Account } from '@kadena/spirekey-types';
 import { ICap, ICommand, IUnsignedCommand } from '@kadena/types';
 import React, { FC, useEffect, useState } from 'react';
+import { findNetworkId } from '../../utils';
 import { Step } from './Step';
 
 type PlumbingTxStep = {
@@ -16,12 +18,14 @@ type PlumbingTxStep = {
   signed?: boolean;
 };
 type SignPlumbingTxsProps = {
+  account: Account;
   plumbingSteps: PlumbingTxStep[];
   credentialId?: string;
   onCompleted: (txs: ICommand[]) => void;
 };
 
 export const SignPlumbingTxs: FC<SignPlumbingTxsProps> = ({
+  account,
   plumbingSteps,
   credentialId,
   onCompleted,
@@ -33,14 +37,8 @@ export const SignPlumbingTxs: FC<SignPlumbingTxsProps> = ({
   const { addNotification } = useNotifications();
 
   useEffect(() => {
-    const foundNetworkId = plumbingSteps.reduce((foundNetworkId, { tx }) => {
-      const { networkId } = JSON.parse(tx.cmd);
-      if (!foundNetworkId) return networkId;
-      if (foundNetworkId !== networkId) {
-        throw new Error('Multiple network IDs found');
-      }
-      return networkId;
-    }, null);
+    const foundNetworkId = findNetworkId(plumbingSteps);
+
     if (foundNetworkId) {
       setNetworkId(foundNetworkId);
     } else {
@@ -85,21 +83,26 @@ export const SignPlumbingTxs: FC<SignPlumbingTxsProps> = ({
             try {
               const newSteps = await Promise.all(
                 steps.map(async ({ tx, ...step }) => {
-                  const { publicKey, secretKey, mnemonic } =
+                  const { publicKey, secretKey } =
                     await getCredentials(networkId);
 
-                  if (!mnemonic) {
+                  if (!account.keyset?.keys.includes(publicKey)) {
                     addNotification({
                       variant: 'error',
                       title: 'Please migrate your account',
                       message:
                         'Your account was created before the support of mnemonic phrases. Please create a new account and transfer your funds.',
                     });
+
+                    throw new Error(
+                      'Your account was created before the support of mnemonic phrases',
+                    );
                   }
                   const signedTx = signWithKeyPair({
                     publicKey,
                     secretKey,
                   })(tx);
+
                   return { ...step, tx: signedTx, signed: true };
                 }),
               );

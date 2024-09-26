@@ -10,53 +10,86 @@ import { getAccountsForTx, getPermissions } from '@/utils/consent';
 import { getSignature } from '@/utils/getSignature';
 import { publishEvent } from '@/utils/publishEvent';
 import { l1Client } from '@/utils/shared/client';
-import { Button } from '@kadena/kode-ui';
+import { Button, Stack } from '@kadena/kode-ui';
 import { CardFixedContainer, CardFooterGroup } from '@kadena/kode-ui/patterns';
 import type { OptimalTransactionsAccount } from '@kadena/spirekey-types';
 import { ICommand, ICommandPayload, IUnsignedCommand } from '@kadena/types';
 import { startAuthentication } from '@simplewebauthn/browser';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { MainLoader } from '../MainLoader/MainLoader';
 import { SignPlumbingTxs } from './components/SignPlumbingTxs/SignPlumbingTxs';
 import { getPubkey, getSubtitle } from './utils';
 
-interface Props {
+interface IProps {
   transactions?: string;
   accounts?: string;
 }
 
-export default function Sign(props: Props) {
-  const { transactions, accounts: signAccountsString } = props;
+type StepProps = {
+  title: string;
+  caps: Map<any, any>;
+  tx: IUnsignedCommand;
+};
+
+const Sign: FC<IProps> = ({ transactions, accounts: signAccountsString }) => {
   const { accounts, loading } = useAccounts();
   const { setAccount } = useAccount();
   const { errorMessage, setErrorMessage } = useErrors();
   const { addNotification } = useNotifications();
-
-  if (!transactions) throw new Error('No transactions provided');
-
-  const [signedPlumbingTxs, setSignedPlumbingTxs] = useState<ICommand[]>();
-  const unsingedTxs: IUnsignedCommand[] = JSON.parse(transactions);
-
-  if (!unsingedTxs.length) {
-    console.error({ error: 'No valid transactions provided' });
-    setErrorMessage('No valid transactions provided');
-  }
-
-  // for now only support one tx provided
-  const [tx] = unsingedTxs;
-  if (!tx) {
-    setErrorMessage('No valid transaction provided');
-    console.error({ error: errorMessage });
-  }
-
-  const txAccounts = getAccountsForTx(accounts)(tx);
-  const { signers, meta }: ICommandPayload = JSON.parse(tx.cmd);
-  const signAccounts: OptimalTransactionsAccount[] = JSON.parse(
-    signAccountsString || '[]',
-  );
-
   const [plumbingTxs, setPlumbingTxs] = useState<IUnsignedCommand[]>();
+  const [signedPlumbingTxs, setSignedPlumbingTxs] = useState<ICommand[]>();
+  const [plumbingSteps, setPlumbingSteps] = useState<StepProps[]>();
   const { getAutoTransfers } = useAutoTransfers();
+
+  const { txAccounts, tx } = useMemo(() => {
+    if (!transactions) throw new Error('No transactions provided');
+    const unsingedTxs: IUnsignedCommand[] = JSON.parse(transactions);
+
+    if (!unsingedTxs.length) {
+      console.error({ error: 'No valid transactions provided' });
+      setErrorMessage('No valid transactions provided');
+    }
+
+    // for now only support one tx provided
+    const [tx] = unsingedTxs;
+
+    if (!tx) {
+      setErrorMessage('No valid transaction provided');
+      console.error({ error: errorMessage });
+    }
+
+    return { txAccounts: getAccountsForTx(accounts)(tx), tx };
+  }, [accounts, transactions]);
+
+  const signAccounts: OptimalTransactionsAccount[] = useMemo(() => {
+    return JSON.parse(signAccountsString || '[]');
+  }, [signAccountsString]);
+
+  const { signers, meta }: ICommandPayload = useMemo(() => {
+    return JSON.parse(tx.cmd);
+  }, [tx]);
+
+  useEffect(() => {
+    if (!plumbingTxs) return;
+
+    const plumbingKeys = txAccounts.accounts.flatMap(
+      (a) => a.keyset?.keys.filter((k) => !k.startsWith('WEBAUTHN')) || [],
+    );
+    const steps =
+      plumbingTxs
+        ?.map((tx, i) => {
+          if (!tx) return null;
+          const cmd: ICommandPayload = JSON.parse(tx.cmd);
+          return {
+            title: `Step ${i + 1}`,
+            caps: getPermissions(plumbingKeys, cmd.signers),
+            tx,
+          };
+        })
+        .filter((x) => !!x) || [];
+
+    setPlumbingSteps(steps);
+  }, [plumbingTxs, txAccounts]);
 
   useEffect(() => {
     if (!transactions) {
@@ -110,6 +143,8 @@ export default function Sign(props: Props) {
         : undefined,
     });
 
+    // console.log({ accounts, signedPlumbingTxs });
+
     if (!signedPlumbingTxs)
       //TODO should be in try catch Error handling
       publishEvent('signed', {
@@ -143,6 +178,7 @@ export default function Sign(props: Props) {
             acc.accountName === sAcc.accountName &&
             acc.networkId === sAcc.networkId,
         );
+
         if (!account) {
           addNotification({
             variant: 'error',
@@ -154,6 +190,7 @@ export default function Sign(props: Props) {
           ...account,
           txQueue: [...account.txQueue, ...txs],
         };
+
         setAccount(newAccount);
         return newAccount;
       });
@@ -185,21 +222,6 @@ export default function Sign(props: Props) {
     a.devices.flatMap((d) => d.guard.keys),
   );
 
-  const plumbingKeys = txAccounts.accounts.flatMap(
-    (a) => a.keyset?.keys.filter((k) => !k.startsWith('WEBAUTHN')) || [],
-  );
-  const plumbingSteps =
-    plumbingTxs
-      ?.map((tx, i) => {
-        if (!tx) return null;
-        const cmd: ICommandPayload = JSON.parse(tx.cmd);
-        return {
-          title: `Step ${i + 1}`,
-          caps: getPermissions(plumbingKeys, cmd.signers),
-          tx,
-        };
-      })
-      .filter((x) => !!x) || [];
   const caps = getPermissions(keys, signers);
 
   const onCompletedPlumbingTxs = (txs: ICommand[]) => {
@@ -214,24 +236,29 @@ export default function Sign(props: Props) {
     return <MainLoader />;
   }
 
+  if (!plumbingSteps) return;
+
   return (
     <CardFixedContainer>
       <SpireKeyCardContentBlock
         title="Permissions"
         description={getSubtitle(caps.size)}
       >
-        <SignPlumbingTxs
-          plumbingSteps={plumbingSteps}
-          credentialId={txAccounts.accounts[0]?.devices[0]['credential-id']}
-          onCompleted={onCompletedPlumbingTxs}
-        />
-        {[...caps.entries()].map(([module, capabilities]) => (
-          <Permissions
-            module={module}
-            capabilities={capabilities}
-            key={module}
+        <Stack gap="lg" flexDirection="column">
+          <SignPlumbingTxs
+            account={txAccounts.accounts[0]}
+            plumbingSteps={plumbingSteps}
+            credentialId={txAccounts.accounts[0]?.devices[0]['credential-id']}
+            onCompleted={onCompletedPlumbingTxs}
           />
-        ))}
+          {[...caps.entries()].map(([module, capabilities]) => (
+            <Permissions
+              module={module}
+              capabilities={capabilities}
+              key={module}
+            />
+          ))}
+        </Stack>
       </SpireKeyCardContentBlock>
       <CardFooterGroup>
         <Button variant="outlined" onPress={onCancel}>
@@ -247,4 +274,6 @@ export default function Sign(props: Props) {
       </CardFooterGroup>
     </CardFixedContainer>
   );
-}
+};
+
+export default Sign;
