@@ -88,7 +88,6 @@ export const SignPlumbingTxs: FC<SignPlumbingTxsProps> = ({
                   const { publicKey, secretKey, mnemonic } =
                     await getCredentials(networkId);
 
-                  console.log({ mnemonic });
                   if (!mnemonic) {
                     addNotification({
                       variant: 'error',
