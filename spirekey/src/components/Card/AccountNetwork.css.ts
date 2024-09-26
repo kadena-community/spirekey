@@ -10,7 +10,7 @@ export const codeFont = style([
 
 export const account = style([
   codeFont,
-  atoms({ fontWeight: 'monospaceFont.bold', cursor: 'pointer' }),
+  atoms({ fontWeight: 'monospaceFont.bold' }),
 ]);
 
 export const namespace = style([
@@ -24,9 +24,10 @@ export const namespace = style([
 export const copyButton = style([
   atoms({
     padding: 'md',
-    opacity: 1,
+    cursor: 'pointer',
   }),
   {
+    opacity: 1,
     background: 'none',
     border: 'none',
   },

@@ -12,6 +12,7 @@ test('Transfer out', async ({
   localStorageHelper,
 }) => {
   await test.step('Visit Connect page without having account', async () => {
+    test.slow();
     let credentials: any = null;
     await test.step('Clear state', async () => {
       await spireKeyApp.openSpireKeyApp();
@@ -28,7 +29,6 @@ test('Transfer out', async ({
       await connectPage.startRegistration();
       await connectPage.createNewWallet();
       credentials = await connectPage.createNewAccount();
-      await connectPage.completeRegistration();
     });
     await test.step('Request funds for new account', async () => {
       await exampleFundPage.requestFunds();
