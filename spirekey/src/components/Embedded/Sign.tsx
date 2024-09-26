@@ -120,7 +120,6 @@ const Sign: FC<IProps> = (props) => {
         },
       });
 
-    return;
     const txs = await Promise.all(
       signedPlumbingTxs!.map((tx) => l1Client.submit(tx)),
     );

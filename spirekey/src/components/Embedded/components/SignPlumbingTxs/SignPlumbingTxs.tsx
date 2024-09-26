@@ -8,7 +8,6 @@ import { Button, Stack, Text } from '@kadena/kode-ui';
 import { Account } from '@kadena/spirekey-types';
 import { ICap, ICommand, IUnsignedCommand } from '@kadena/types';
 import React, { FC, useEffect, useState } from 'react';
-import { findNetworkId } from '../../utils';
 import { Step } from './Step';
 
 type PlumbingTxStep = {
