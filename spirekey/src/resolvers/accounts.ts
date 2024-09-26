@@ -54,6 +54,7 @@ export const accounts = async (
     }),
   );
   accountsVar(resolvedAccs);
+  localStorage.setItem('localAccounts', JSON.stringify(resolvedAccs));
   return resolvedAccs;
 };
 
@@ -88,6 +89,9 @@ export const account = async (
       networkId,
     },
   });
+  const localAccount = localAccounts(networkId).find(
+    (a) => a.accountName === accountName,
+  );
 
   return Object.values(data)
     .flatMap((r) => r)
@@ -124,6 +128,7 @@ export const account = async (
       },
       {
         __typename: 'Account',
+        alias: localAccount?.alias,
         balance: 0,
         balances: [],
         chainIds: Array(20)
@@ -166,7 +171,7 @@ export const useAccount = () => {
   const [execute] = useLazyQuery(accountQuery);
   const getAccount = async (networkId: string, accountName: string) => {
     const { data } = await execute({ variables: { networkId, accountName } });
-    return data.account;
+    return data.account as Account;
   };
   return { getAccount, setAccount };
 };

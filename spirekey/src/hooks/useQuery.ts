@@ -1,11 +1,13 @@
 import { accountBalances } from '@/resolvers/account-balances';
 import { accountName } from '@/resolvers/account-name';
 import { account, accounts } from '@/resolvers/accounts';
+import { addDeviceTxs } from '@/resolvers/add-device';
 import { autoTransfers } from '@/resolvers/auto-transfers';
 import { connectWallet } from '@/resolvers/connect-wallet';
 import { createAccount } from '@/resolvers/create-account';
 import { createWallet } from '@/resolvers/create-wallet';
 import { recoverAccount } from '@/resolvers/recover-account';
+import { signSubmitHd } from '@/resolvers/sign-hd';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
 const getGraphqlHost = (networkId: string) => {
@@ -31,6 +33,7 @@ export const apolloClient = new ApolloClient({
     Query: {
       accounts,
       account,
+      addDeviceTxs,
       accountName,
       accountBalances,
       autoTransfers,
@@ -40,6 +43,7 @@ export const apolloClient = new ApolloClient({
     Mutation: {
       createWallet,
       createAccount,
+      signSubmitHd,
     },
   },
 });
