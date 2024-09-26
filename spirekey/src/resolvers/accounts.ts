@@ -88,6 +88,9 @@ export const account = async (
       networkId,
     },
   });
+  const localAccount = localAccounts(networkId).find(
+    (a) => a.accountName === accountName,
+  );
 
   return Object.values(data)
     .flatMap((r) => r)
@@ -124,6 +127,7 @@ export const account = async (
       },
       {
         __typename: 'Account',
+        alias: localAccount?.alias,
         balance: 0,
         balances: [],
         chainIds: Array(20)
