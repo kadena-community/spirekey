@@ -30,6 +30,7 @@ export const getSubtitle = (size: number): string => {
 
 export const findNetworkId = (steps: PlumbingTxStep[]): string | null =>
   steps.reduce((foundNetworkId, { tx }) => {
+    console.log({ tx });
     const { networkId } = JSON.parse(tx.cmd);
     if (!foundNetworkId) return networkId;
     if (foundNetworkId !== networkId) {

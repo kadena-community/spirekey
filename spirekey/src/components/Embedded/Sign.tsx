@@ -36,70 +36,33 @@ const Sign: FC<IProps> = ({ transactions, accounts: signAccountsString }) => {
   const { setAccount } = useAccount();
   const { errorMessage, setErrorMessage } = useErrors();
   const { addNotification } = useNotifications();
-  const [plumbingTxs, setPlumbingTxs] = useState<IUnsignedCommand[]>();
-  const [signedPlumbingTxs, setSignedPlumbingTxs] = useState<ICommand[]>();
-  const [plumbingSteps, setPlumbingSteps] = useState<StepProps[]>();
   const { getAutoTransfers } = useAutoTransfers();
 
-  const { txAccounts, tx } = useMemo(() => {
-    if (!transactions) throw new Error('No transactions provided');
-    const unsingedTxs: IUnsignedCommand[] = JSON.parse(transactions);
+  if (!transactions) throw new Error('No transactions provided');
 
-    if (!unsingedTxs.length) {
-      console.error({ error: 'No valid transactions provided' });
-      setErrorMessage('No valid transactions provided');
-    }
+  const [signedPlumbingTxs, setSignedPlumbingTxs] = useState<ICommand[]>();
+  const unsingedTxs: IUnsignedCommand[] = JSON.parse(transactions);
 
-    // for now only support one tx provided
-    const [tx] = unsingedTxs;
+  if (!unsingedTxs.length) {
+    console.error({ error: 'No valid transactions provided' });
+    setErrorMessage('No valid transactions provided');
+  }
 
-    if (!tx) {
-      setErrorMessage('No valid transaction provided');
-      console.error({ error: errorMessage });
-    }
+  // for now only support one tx provided
+  const [tx] = unsingedTxs;
+  if (!tx) {
+    setErrorMessage('No valid transaction provided');
+    console.error({ error: errorMessage });
+  }
 
-    return { txAccounts: getAccountsForTx(accounts)(tx), tx };
-  }, [accounts, transactions]);
+  const txAccounts = getAccountsForTx(accounts)(tx);
+  const { signers, meta }: ICommandPayload = JSON.parse(tx.cmd);
 
-  const signAccounts: OptimalTransactionsAccount[] = useMemo(() => {
-    return JSON.parse(signAccountsString || '[]');
-  }, [signAccountsString]);
+  const signAccounts: OptimalTransactionsAccount[] = JSON.parse(
+    signAccountsString || '[]',
+  );
 
-  const { signers, meta }: ICommandPayload = useMemo(() => {
-    return JSON.parse(tx.cmd);
-  }, [tx]);
-
-  useEffect(() => {
-    if (!plumbingTxs) return;
-
-    const plumbingKeys = txAccounts.accounts.flatMap(
-      (a) => a.keyset?.keys.filter((k) => !k.startsWith('WEBAUTHN')) || [],
-    );
-    const steps =
-      plumbingTxs
-        ?.map((tx, i) => {
-          if (!tx) return null;
-          const cmd: ICommandPayload = JSON.parse(tx.cmd);
-          return {
-            title: `Step ${i + 1}`,
-            caps: getPermissions(plumbingKeys, cmd.signers),
-            tx,
-          };
-        })
-        .filter((x) => !!x) || [];
-
-    setPlumbingSteps(steps);
-  }, [plumbingTxs, txAccounts]);
-
-  useEffect(() => {
-    if (!transactions) {
-      addNotification({
-        variant: 'error',
-        title: 'No transactions provided',
-      });
-      return;
-    }
-  }, [transactions]);
+  const [plumbingTxs, setPlumbingTxs] = useState<IUnsignedCommand[]>();
 
   useEffect(() => {
     Promise.all(
@@ -222,6 +185,22 @@ const Sign: FC<IProps> = ({ transactions, accounts: signAccountsString }) => {
     a.devices.flatMap((d) => d.guard.keys),
   );
 
+  const plumbingKeys = txAccounts.accounts.flatMap(
+    (a) => a.keyset?.keys.filter((k) => !k.startsWith('WEBAUTHN')) || [],
+  );
+  const plumbingSteps =
+    plumbingTxs
+      ?.map((tx, i) => {
+        if (!tx) return null;
+        const cmd: ICommandPayload = JSON.parse(tx.cmd);
+        return {
+          title: `Step ${i + 1}`,
+          caps: getPermissions(plumbingKeys, cmd.signers),
+          tx,
+        };
+      })
+      .filter((x) => !!x) || [];
+
   const caps = getPermissions(keys, signers);
 
   const onCompletedPlumbingTxs = (txs: ICommand[]) => {
@@ -235,8 +214,6 @@ const Sign: FC<IProps> = ({ transactions, accounts: signAccountsString }) => {
   if (loading) {
     return <MainLoader />;
   }
-
-  if (!plumbingSteps) return;
 
   return (
     <CardFixedContainer>
