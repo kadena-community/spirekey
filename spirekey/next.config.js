@@ -24,6 +24,8 @@ const nextConfig = {
     CAPABILITY_TRANSLATIONS: process.env.CAPABILITY_TRANSLATIONS,
     E2E_TEST: process.env.E2E_TEST,
     USE_RACCOUNT: process.env.USE_RACCOUNT,
+    GA_ACCOUNT: process.env.GA_ACCOUNT,
+    GA_ACCOUNT_API: process.env.GA_ACCOUNT_API,
   },
   async redirects() {
     return [
