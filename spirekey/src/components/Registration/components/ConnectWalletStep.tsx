@@ -26,8 +26,7 @@ export const ConnectWalletStep: FC<IProps> = ({
 }) => {
   const [activeStep, setActiveStep] = useState<number | undefined>(undefined);
   const { getWallet } = useWallet();
-  const hasWallet = getWallet(networkId);
-  //const [steps, setSteps] = useState<string[]>(defaultSteps);
+  const hasWallet = !!getWallet(networkId);
 
   const handleCreate = () => {
     setActiveStep(0);
