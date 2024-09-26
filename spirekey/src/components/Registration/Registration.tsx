@@ -66,11 +66,20 @@ export default function Registration({
   const handleRecoverAccountHandler = async () => {
     const account = await handleRecoverAccount();
 
-    if (!account) return;
+    if (!account) throw new Error('No user registered');
+    if (onComplete) return onComplete(account);
 
-    router.push(
-      `/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
+    const user = Buffer.from(JSON.stringify(getUser(account))).toString(
+      'base64',
     );
+
+    if (!pathname.includes('embedded')) {
+      router.push(
+        `/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
+      );
+      return;
+    }
+    router.push(`${completeRedirectUrl}?${new URLSearchParams({ user })}`);
   };
 
   return (
