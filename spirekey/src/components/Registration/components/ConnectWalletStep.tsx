@@ -56,7 +56,7 @@ export const ConnectWalletStep: FC<IProps> = ({
           variant={hasWallet ? 'primary' : 'outlined'}
           onPress={handleImport}
         >
-          Import
+          Connect
         </Button>
 
         {networkId === 'mainnet01' && !hasWallet && (
