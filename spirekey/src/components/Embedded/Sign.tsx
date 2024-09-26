@@ -3,7 +3,6 @@
 import { Permissions } from '@/components/Permissions/Permissions';
 import { SpireKeyCardContentBlock } from '@/components/SpireKeyCardContentBlock';
 import { useErrors } from '@/context/shared/ErrorContext/ErrorContext';
-import { useNotifications } from '@/context/shared/NotificationsContext';
 import { useAccount, useAccounts } from '@/resolvers/accounts';
 import { useAutoTransfers } from '@/resolvers/auto-transfers';
 import { getAccountsForTx, getPermissions } from '@/utils/consent';
@@ -15,7 +14,7 @@ import { CardFixedContainer, CardFooterGroup } from '@kadena/kode-ui/patterns';
 import type { OptimalTransactionsAccount } from '@kadena/spirekey-types';
 import { ICommand, ICommandPayload, IUnsignedCommand } from '@kadena/types';
 import { startAuthentication } from '@simplewebauthn/browser';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { MainLoader } from '../MainLoader/MainLoader';
 import { SignPlumbingTxs } from './components/SignPlumbingTxs/SignPlumbingTxs';
 import { getPubkey, getSubtitle } from './utils';
@@ -25,18 +24,11 @@ interface IProps {
   accounts?: string;
 }
 
-type StepProps = {
-  title: string;
-  caps: Map<any, any>;
-  tx: IUnsignedCommand;
-};
-
-const Sign: FC<IProps> = ({ transactions, accounts: signAccountsString }) => {
+const Sign: FC<IProps> = (props) => {
+  const { transactions, accounts: signAccountsString } = props;
   const { accounts, loading } = useAccounts();
   const { setAccount } = useAccount();
   const { errorMessage, setErrorMessage } = useErrors();
-  const { addNotification } = useNotifications();
-  const { getAutoTransfers } = useAutoTransfers();
 
   if (!transactions) throw new Error('No transactions provided');
 
@@ -63,6 +55,7 @@ const Sign: FC<IProps> = ({ transactions, accounts: signAccountsString }) => {
   );
 
   const [plumbingTxs, setPlumbingTxs] = useState<IUnsignedCommand[]>();
+  const { getAutoTransfers } = useAutoTransfers();
 
   useEffect(() => {
     Promise.all(
@@ -95,7 +88,6 @@ const Sign: FC<IProps> = ({ transactions, accounts: signAccountsString }) => {
       window.removeEventListener('beforeunload', cancel);
     };
   }, []);
-
   const onSign = async () => {
     const credentialId = txAccounts.accounts[0].devices[0]['credential-id'];
     const res = await startAuthentication({
@@ -105,8 +97,6 @@ const Sign: FC<IProps> = ({ transactions, accounts: signAccountsString }) => {
         ? [{ id: credentialId, type: 'public-key' }]
         : undefined,
     });
-
-    // console.log({ accounts, signedPlumbingTxs });
 
     if (!signedPlumbingTxs)
       //TODO should be in try catch Error handling
@@ -130,53 +120,34 @@ const Sign: FC<IProps> = ({ transactions, accounts: signAccountsString }) => {
         },
       });
 
-    try {
-      const txs = await Promise.all(
-        signedPlumbingTxs!.map((tx) => l1Client.submit(tx)),
+    return;
+    const txs = await Promise.all(
+      signedPlumbingTxs!.map((tx) => l1Client.submit(tx)),
+    );
+    const accs = signAccounts.map((sAcc) => {
+      const account = accounts.find(
+        (acc) =>
+          acc.accountName === sAcc.accountName &&
+          acc.networkId === sAcc.networkId,
       );
+      if (!account) throw new Error('Account is not found');
+      const newAccount = { ...account, txQueue: [...account.txQueue, ...txs] };
+      setAccount(newAccount);
+      return newAccount;
+    });
 
-      const accs = signAccounts.map((sAcc) => {
-        const account = accounts.find(
-          (acc) =>
-            acc.accountName === sAcc.accountName &&
-            acc.networkId === sAcc.networkId,
-        );
-
-        if (!account) {
-          addNotification({
-            variant: 'error',
-            title: 'Account is not found',
-          });
-          throw new Error('Account is not found');
-        }
-        const newAccount = {
-          ...account,
-          txQueue: [...account.txQueue, ...txs],
-        };
-
-        setAccount(newAccount);
-        return newAccount;
-      });
-
-      //TODO should be in try catch Error handling
-      publishEvent('signed', {
-        accounts: accs,
-        tx: {
-          [tx.hash]: [
-            {
-              ...getSignature(res.response),
-              pubKey: getPubkey(accounts, credentialId),
-            },
-          ],
-        },
-      });
-    } catch (e: any) {
-      addNotification({
-        variant: 'error',
-        title: 'There was a problem with the signing',
-        message: e.message ?? '',
-      });
-    }
+    //TODO should be in try catch Error handling
+    publishEvent('signed', {
+      accounts: accs,
+      tx: {
+        [tx.hash]: [
+          {
+            ...getSignature(res.response),
+            pubKey: getPubkey(accounts, credentialId),
+          },
+        ],
+      },
+    });
   };
 
   const onCancel = () => publishEvent('canceled:sign');
@@ -200,7 +171,6 @@ const Sign: FC<IProps> = ({ transactions, accounts: signAccountsString }) => {
         };
       })
       .filter((x) => !!x) || [];
-
   const caps = getPermissions(keys, signers);
 
   const onCompletedPlumbingTxs = (txs: ICommand[]) => {

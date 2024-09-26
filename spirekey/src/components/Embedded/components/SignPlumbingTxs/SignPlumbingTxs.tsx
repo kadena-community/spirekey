@@ -37,16 +37,15 @@ export const SignPlumbingTxs: FC<SignPlumbingTxsProps> = ({
   const { addNotification } = useNotifications();
 
   useEffect(() => {
-    const foundNetworkId = findNetworkId(plumbingSteps);
-
-    if (foundNetworkId) {
-      setNetworkId(foundNetworkId);
-    } else {
-      addNotification({
-        variant: 'error',
-        title: 'No network found',
-      });
-    }
+    const foundNetworkId = plumbingSteps.reduce((acc, { tx }) => {
+      const { networkId } = JSON.parse(tx.cmd);
+      if (!acc) return networkId;
+      if (acc !== networkId) {
+        throw new Error('Multiple network IDs found');
+      }
+      return networkId;
+    }, null);
+    if (foundNetworkId) setNetworkId(foundNetworkId);
     setSteps(plumbingSteps);
   }, [plumbingSteps.map((s) => s.tx.hash + s.caps.size).join(',') || '']);
 

@@ -27,14 +27,3 @@ export const getSubtitle = (size: number): string => {
   if (size > 1) return `asked for the following ${size} modules`;
   return 'asked for the following module';
 };
-
-export const findNetworkId = (steps: PlumbingTxStep[]): string | null =>
-  steps.reduce((foundNetworkId, { tx }) => {
-    console.log({ tx });
-    const { networkId } = JSON.parse(tx.cmd);
-    if (!foundNetworkId) return networkId;
-    if (foundNetworkId !== networkId) {
-      throw new Error('Multiple network IDs found');
-    }
-    return networkId;
-  }, null);
