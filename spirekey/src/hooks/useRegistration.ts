@@ -3,6 +3,7 @@ import { useAccount, useAccounts } from '@/resolvers/accounts';
 import { useCredentials } from '@/resolvers/connect-wallet';
 import { useCreateAccount } from '@/resolvers/create-account';
 import { useWallet } from '@/resolvers/create-wallet';
+import { useRecoverAccount } from '@/resolvers/recover-account';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
 import { Account } from '@kadena/spirekey-types';
@@ -34,6 +35,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
   const { getCredentials } = useCredentials();
   const { createWallet } = useWallet();
   const { createAccount } = useCreateAccount();
+  const { recoverAccount } = useRecoverAccount();
 
   const accountPrefix = 'SpireKey Account';
 
@@ -113,6 +115,25 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     }
   };
 
+  const handleRecoverAccount = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    try {
+      const account = await recoverAccount(networkId);
+      return account;
+    } catch (error: any) {
+      addNotification({
+        variant: 'error',
+        title: 'no account has been found for the passKey',
+        message: error?.message || 'Please try again later...',
+        timeout: 5000,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return {
     allowRedirect,
     isSubmitting,
@@ -120,6 +141,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     handleSubmit,
     handleRegisterWallet,
     handleConnectWallet,
+    handleRecoverAccount,
     keypair,
     account,
   };

@@ -18,6 +18,7 @@ export const RegisterComponent = ({
   onHandleRegisterWallet,
   onHandleConnectWallet,
   onSubmit,
+  handleRecoverAccount,
   onComplete,
 }: {
   account?: Account;
@@ -29,16 +30,24 @@ export const RegisterComponent = ({
   onHandleConnectWallet: () => void;
   onHandleRegisterWallet: () => void;
   onSubmit: () => void;
+  handleRecoverAccount: () => void;
   onComplete: () => void;
 }) => {
   const [isAnimationFinished, setAnimationFinished] = useState(false);
+
   const [flowType, setFlowType] = useState<keyof typeof FLOWTYPE | undefined>(
     undefined,
   );
 
   const steps = defaultSteps;
-  if (flowType === FLOWTYPE.CREATE) steps[0] = 'Create';
-  if (flowType === FLOWTYPE.IMPORT) steps[0] = 'Import';
+  if (flowType === FLOWTYPE.CREATE) {
+    steps[0] = 'Create';
+    steps[1] = 'Add Account';
+  }
+  if (flowType === FLOWTYPE.IMPORT) {
+    steps[0] = 'Wallet';
+    steps[1] = 'Account';
+  }
 
   useEffect(() => {
     if (account && isAnimationFinished) {
@@ -55,6 +64,7 @@ export const RegisterComponent = ({
         succesfulAuthentication={succesfulAuthentication}
         isSubmitting={isSubmitting}
         onSubmit={onSubmit}
+        onImport={handleRecoverAccount}
         onCancel={onCancel}
       />
     );

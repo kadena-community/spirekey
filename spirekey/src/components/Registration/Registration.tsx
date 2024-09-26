@@ -26,7 +26,7 @@ export default function Registration({
   const router = useRouter();
   const pathname = usePathname();
   const decodedRedirectUrl = decodeURI(redirectUrl || '');
-  const cancelRedirectUrl = decodedRedirectUrl || '/welcome';
+  const cancelRedirectUrl = decodedRedirectUrl || '/';
   const completeRedirectUrl = decodedRedirectUrl || '/';
   const handleCancel = () => {
     if (onCancel) return onCancel();
@@ -40,6 +40,7 @@ export default function Registration({
     isSubmitting,
     succesfulAuthentication,
     handleSubmit,
+    handleRecoverAccount,
   } = useRegistration({
     networkId,
     chainId,
@@ -62,6 +63,16 @@ export default function Registration({
     router.push(`${completeRedirectUrl}?${new URLSearchParams({ user })}`);
   };
 
+  const handleRecoverAccountHandler = async () => {
+    const account = await handleRecoverAccount();
+
+    if (!account) return;
+
+    router.push(
+      `/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
+    );
+  };
+
   return (
     <RegisterComponent
       account={account}
@@ -71,6 +82,7 @@ export default function Registration({
       networkId={networkId}
       onCancel={handleCancel}
       onSubmit={handleSubmit}
+      handleRecoverAccount={handleRecoverAccountHandler}
       onComplete={handleComplete}
       onHandleConnectWallet={handleConnectWallet}
       onHandleRegisterWallet={handleRegisterWallet}

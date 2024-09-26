@@ -8,7 +8,7 @@ interface IProps {
   steps?: string[];
 }
 
-export const defaultSteps = ['Create / Import', 'Add account'];
+export const defaultSteps = ['Wallet', 'Account'];
 
 export const OnBoardingStepper: FC<IProps> = ({
   step,

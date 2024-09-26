@@ -13,6 +13,7 @@ interface IProps {
   isSubmitting: boolean;
   onCancel?: () => void;
   onSubmit: () => void;
+  onImport: () => void;
   steps: string[];
 }
 
@@ -21,14 +22,14 @@ export const KeypairStep: FC<IProps> = ({
   succesfulAuthentication,
   isSubmitting,
   onSubmit,
-  onCancel,
+  onImport,
   steps,
 }) => {
   return (
     <Layout
-      title="Add Account"
+      title={steps[1]}
       description={
-        'Create your account to manage your web3 assets managed by your SpireKey wallet.'
+        'your account to manage your web3 assets managed by your SpireKey wallet.'
       }
     >
       <OnBoardingStepper step={1} steps={steps} />
@@ -45,10 +46,10 @@ export const KeypairStep: FC<IProps> = ({
       <LayoutActions>
         <Button
           variant="outlined"
-          onPress={onCancel}
+          onPress={onImport}
           isDisabled={isSubmitting || succesfulAuthentication}
         >
-          Cancel
+          Import
         </Button>
 
         <Button
