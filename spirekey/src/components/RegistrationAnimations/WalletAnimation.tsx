@@ -40,6 +40,11 @@ export const WalletAnimation: FC<IProps> = ({
     setHoveredCreate(animateCreate);
   }, [animateCreate]);
 
+  const handleCreateClick = () => {
+    if (disableCreateButton || !onCreateClick) return;
+    onCreateClick();
+  };
+
   return (
     <svg
       className={wrapperClass}
@@ -62,7 +67,7 @@ export const WalletAnimation: FC<IProps> = ({
         data-isDisabled={disableCreateButton}
         onMouseEnter={() => setHoveredCreate(true)}
         onMouseLeave={() => setHoveredCreate(false)}
-        onClick={onCreateClick && onCreateClick}
+        onClick={handleCreateClick}
       >
         <rect x="308" y="126" width="48" height="48" rx="6" fill="white" />
         <path
