@@ -2,7 +2,9 @@ import React, { FC } from 'react';
 import { walletIconClass } from './style.css';
 import { IChildProps } from './WalletAnimation';
 
-export const ConnectWalletAnimation: FC<IChildProps> = ({ playAnimation }) => {
+export const ConnectWalletAnimation: FC<IChildProps> = ({
+  playImportAnimation,
+}) => {
   return (
     <g id="wallet">
       <rect x="138" y="88" width="124" height="124" rx="22" fill="black" />
@@ -10,7 +12,7 @@ export const ConnectWalletAnimation: FC<IChildProps> = ({ playAnimation }) => {
       <g
         id="wallet-icon"
         className={walletIconClass}
-        data-import-animated={playAnimation}
+        data-import-animated={playImportAnimation}
       >
         <path
           d="M164 102C157.373 102 152 107.373 152 114V150H158V114C158 110.686 160.686 108 164 108H236C239.314 108 242 110.686 242 114V150H248V114C248 107.373 242.627 102 236 102H164Z"
