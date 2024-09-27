@@ -15,20 +15,33 @@ export const cardContainerClass = style([
 
 export const gridContextPlaceholderClass = style({
   gridArea: 'context',
-  minHeight: '30dvh',
+  minHeight: '37vw',
+  ...responsiveStyle({
+    md: {
+      minHeight: 'auto',
+      height: '30vh',
+    },
+  }),
 });
 export const gridContextClass = style({
   position: 'absolute',
+
   gridArea: 'context',
   background: 'transparent',
-  minHeight: '30dvh',
+
+  minHeight: '30dvw',
   left: '-2.3rem',
-  top: '-2.2rem',
+  top: '-12vw',
   width: '100vw!important',
 
   ...responsiveStyle({
-    xs: {},
+    xs: {
+      top: '-21vw',
+    },
+
     md: {
+      minHeight: '30dvh',
+      top: '-8.5rem',
       width: '112.3%!important',
     },
   }),

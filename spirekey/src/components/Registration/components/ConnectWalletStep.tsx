@@ -3,8 +3,9 @@ import { LayoutActions } from '@/components/OnBoarding/components/Layout/LayoutA
 import { LayoutContext } from '@/components/OnBoarding/components/Layout/LayoutContext';
 import { OnBoardingStepper } from '@/components/OnBoarding/components/OnBoardingStepper/OnBoardingStepper';
 import { FLOWTYPE } from '@/components/OnBoarding/components/OnBoardingStepper/utils';
+import { WalletAnimation } from '@/components/RegistrationAnimations/WalletAnimation';
 import { useWallet } from '@/hooks/useWallet';
-import { Button } from '@kadena/kode-ui';
+import { Button, Stack } from '@kadena/kode-ui';
 import { FC, useState } from 'react';
 
 interface IProps {
@@ -25,6 +26,7 @@ export const ConnectWalletStep: FC<IProps> = ({
   steps,
 }) => {
   const [activeStep, setActiveStep] = useState<number | undefined>(undefined);
+  const [hoveredConnectWallet, setHoveredConnectWallet] = useState(false);
   const { getWallet } = useWallet();
   const hasWallet = !!getWallet(networkId);
 
@@ -48,15 +50,31 @@ export const ConnectWalletStep: FC<IProps> = ({
       }
     >
       <OnBoardingStepper step={activeStep} steps={steps} />
-      <LayoutContext />
+      <LayoutContext>
+        <WalletAnimation
+          disableCreateWalletButton={hasWallet}
+          animateConnectWallet={hoveredConnectWallet}
+          onConnectWalletClick={handleImport}
+        />
+      </LayoutContext>
 
       <LayoutActions>
-        <Button
-          variant={hasWallet ? 'primary' : 'outlined'}
-          onPress={handleImport}
+        <Stack
+          as="span"
+          onMouseEnter={() => {
+            setHoveredConnectWallet(true);
+          }}
+          onMouseLeave={() => {
+            setHoveredConnectWallet(false);
+          }}
         >
-          Connect
-        </Button>
+          <Button
+            variant={hasWallet ? 'primary' : 'outlined'}
+            onPress={handleImport}
+          >
+            Connect
+          </Button>
+        </Stack>
 
         {networkId === 'mainnet01' && !hasWallet && (
           <Button>Create coming soon</Button>

@@ -7,7 +7,6 @@ export const LayoutContext: FC<PropsWithChildren> = ({ children }) => {
     <>
       <Stack className={gridContextPlaceholderClass} width="100%" />
       <Stack
-        marginBlock="xxl"
         width="100%"
         alignItems="center"
         justifyContent="center"
