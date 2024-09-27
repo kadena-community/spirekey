@@ -29,7 +29,9 @@ export function AccountTile({ account, onClick }: AccountProps) {
             gap="sm"
             marginBlockStart="sm"
           >
-            <Heading as="h6">{account.alias.replace(/ \(.*\)/, '')}</Heading>
+            <Heading as="h6">
+              {account.alias?.replace(/ \(.*\)/, '') ?? 'Spirekey'}
+            </Heading>
             {accountNameArray.length === 2 && (
               <Stack as="span">
                 <Text variant="code" size="small">

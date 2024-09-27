@@ -6,7 +6,7 @@ type CardProps = {
   title?: string;
 };
 
-export default function Alias({ title = '' }: CardProps) {
+export default function Alias({ title = 'Spirekey' }: CardProps) {
   if (!title) return null;
   return (
     <>

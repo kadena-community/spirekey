@@ -3,6 +3,7 @@ import { LayoutActions } from '@/components/OnBoarding/components/Layout/LayoutA
 import { LayoutContext } from '@/components/OnBoarding/components/Layout/LayoutContext';
 import { OnBoardingStepper } from '@/components/OnBoarding/components/OnBoardingStepper/OnBoardingStepper';
 import { FLOWTYPE } from '@/components/OnBoarding/components/OnBoardingStepper/utils';
+import { useWallet } from '@/hooks/useWallet';
 import { Button } from '@kadena/kode-ui';
 import { FC, useState } from 'react';
 
@@ -24,7 +25,8 @@ export const ConnectWalletStep: FC<IProps> = ({
   steps,
 }) => {
   const [activeStep, setActiveStep] = useState<number | undefined>(undefined);
-  //const [steps, setSteps] = useState<string[]>(defaultSteps);
+  const { getWallet } = useWallet();
+  const hasWallet = !!getWallet(networkId);
 
   const handleCreate = () => {
     setActiveStep(0);
@@ -49,12 +51,17 @@ export const ConnectWalletStep: FC<IProps> = ({
       <LayoutContext />
 
       <LayoutActions>
-        <Button variant="outlined" onPress={handleImport}>
-          Import
+        <Button
+          variant={hasWallet ? 'primary' : 'outlined'}
+          onPress={handleImport}
+        >
+          Connect
         </Button>
 
-        {networkId === 'mainnet01' && <Button>Create coming soon</Button>}
-        {networkId !== 'mainnet01' && (
+        {networkId === 'mainnet01' && !hasWallet && (
+          <Button>Create coming soon</Button>
+        )}
+        {networkId !== 'mainnet01' && !hasWallet && (
           <Button onPress={handleCreate}>Create</Button>
         )}
       </LayoutActions>

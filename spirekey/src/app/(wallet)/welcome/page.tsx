@@ -18,12 +18,13 @@ export default function Home() {
         style={{ height: '100svh' }}
       >
         <Stack flexDirection="column" alignItems="center" gap="sm">
-          <Image src={logo} alt="SpireKey logo" style={{ marginTop: '2rem', maxWidth: '50vw' }} />
+          <Image
+            src={logo}
+            alt="SpireKey logo"
+            style={{ marginTop: '2rem', maxWidth: '50vw' }}
+          />
         </Stack>
         <Stack flexDirection="row" justifyContent="center" gap="xl">
-          <ButtonLink href={'/recover'} variant="secondary">
-            Recover
-          </ButtonLink>
           <ButtonLink href={'/register'}>Register</ButtonLink>
         </Stack>
       </Stack>
