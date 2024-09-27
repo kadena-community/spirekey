@@ -7,7 +7,8 @@ import {
 } from './style.css';
 
 export interface IChildProps {
-  playAnimation: boolean;
+  playCreateAnimation: boolean;
+  playImportAnimation: boolean;
 }
 interface IProps {
   disableCreateButton?: boolean;
@@ -29,7 +30,7 @@ export const WalletAnimation: FC<IProps> = ({
   Child,
 }) => {
   const [hoveredImport, setHoveredImport] = useState(false);
-  const [_, setHoveredCreate] = useState(false);
+  const [hoveredCreate, setHoveredCreate] = useState(false);
 
   useEffect(() => {
     setHoveredImport(animateImport);
@@ -48,7 +49,12 @@ export const WalletAnimation: FC<IProps> = ({
       xmlns="http://www.w3.org/2000/svg"
     >
       <g className={childWrapperClass}>
-        {<Child playAnimation={hoveredImport} />}
+        {
+          <Child
+            playImportAnimation={hoveredImport}
+            playCreateAnimation={hoveredCreate}
+          />
+        }
       </g>
       <g
         id="create"

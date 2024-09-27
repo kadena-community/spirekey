@@ -2,10 +2,6 @@ import React, { FC } from 'react';
 import { walletIconClass } from './style.css';
 import { IChildProps } from './WalletAnimation';
 
-// id="wallet-icon"
-//         className={walletIconClass}
-//         data-import-animated={playAnimation}
-
 export const ConnectWalletAnimation: FC<IChildProps> = ({ playAnimation }) => {
   return (
     <g id="wallet">
