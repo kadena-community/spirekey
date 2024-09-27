@@ -22,6 +22,7 @@ import {
 import { atoms } from '@kadena/kode-ui/styles';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useCallback } from 'react';
+import { backButtonClass } from './style.css';
 
 export default function AccountLayout({ children }: { children: any }) {
   const params = useParams();
@@ -71,12 +72,12 @@ export default function AccountLayout({ children }: { children: any }) {
           {!loading && (
             <CardFooterGroup>
               <Button
+                className={backButtonClass}
+                startVisual={<MonoArrowBack />}
                 variant="outlined"
-                onPress={() =>
-                  push(`/accounts/${raccount}/devices/${cid}/settings`)
-                }
+                onPress={handleBack}
               >
-                Settings
+                Go back
               </Button>
               <Button
                 onPress={() =>
