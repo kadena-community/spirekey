@@ -18,6 +18,7 @@ interface IProps {
 }
 
 export const KeypairStep: FC<IProps> = ({
+  setAnimationFinished,
   succesfulAuthentication,
   isSubmitting,
   onSubmit,
@@ -26,6 +27,16 @@ export const KeypairStep: FC<IProps> = ({
 }) => {
   const [hoveredImport, setHoveredImport] = useState(false);
   const [hoveredContinue, setHoveredContinue] = useState(false);
+
+  const handleSubmit = () => {
+    onSubmit();
+    setAnimationFinished(true);
+  };
+  const handleImport = () => {
+    onImport();
+    setAnimationFinished(true);
+  };
+
   return (
     <Layout
       title={steps[1]}
@@ -40,8 +51,8 @@ export const KeypairStep: FC<IProps> = ({
           disableImportButton={isSubmitting || succesfulAuthentication}
           animateImport={hoveredImport}
           animateCreate={hoveredContinue}
-          onImportClick={onImport}
-          onCreateClick={onSubmit}
+          onImportClick={handleImport}
+          onCreateClick={handleSubmit}
           Child={ImportAccountAnimation}
         />
       </LayoutContext>
@@ -57,7 +68,7 @@ export const KeypairStep: FC<IProps> = ({
         >
           <Button
             variant="outlined"
-            onPress={onImport}
+            onPress={handleImport}
             isDisabled={isSubmitting || succesfulAuthentication}
           >
             Import
@@ -75,7 +86,7 @@ export const KeypairStep: FC<IProps> = ({
         >
           <Button
             variant="primary"
-            onPress={onSubmit}
+            onPress={handleSubmit}
             isDisabled={isSubmitting || succesfulAuthentication}
           >
             Continue
