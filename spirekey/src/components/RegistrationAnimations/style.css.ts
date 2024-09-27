@@ -1,7 +1,7 @@
 import { keyframes, style } from '@vanilla-extract/css';
 
 export const wrapperClass = style({});
-export const createWalletClass = style({
+export const createClass = style({
   transition: 'opacity .2s ease',
   selectors: {
     '&:hover:not([data-isDisabled="true"])': {
@@ -14,12 +14,16 @@ export const createWalletClass = style({
     },
   },
 });
-export const connectWalletClass = style({
+export const importClass = style({
   transition: 'opacity .2s ease',
   selectors: {
-    '&:hover': {
+    '&:hover:not([data-isDisabled="true"])': {
       cursor: 'pointer',
       opacity: '.2',
+    },
+    '&[data-isDisabled="true"]': {
+      opacity: '.2',
+      cursor: 'not-allowed',
     },
   },
 });
@@ -38,7 +42,7 @@ const blinkAnimation = keyframes({
 
 export const walletIconClass = style({
   selectors: {
-    '&[data-connectwallet-animated="true"]': {
+    '&[data-import-animated="true"]': {
       animation: `${blinkAnimation} 4s linear 0s normal`,
       animationIterationCount: 'infinite',
     },

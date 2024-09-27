@@ -1,28 +1,38 @@
 import React, { FC, useEffect, useState } from 'react';
 import {
-  connectWalletClass,
-  createWalletClass,
+  createClass,
+  importClass,
   walletIconClass,
   wrapperClass,
 } from './style.css';
 
 interface IProps {
-  disableCreateWalletButton: boolean;
-  animateConnectWallet: boolean;
-  onConnectWalletClick: () => void;
+  disableCreateButton?: boolean;
+  disableImportButton?: boolean;
+  animateImport?: boolean;
+  animateCreate?: boolean;
+  onImportClick?: () => void;
+  onCreateClick?: () => void;
 }
 
 export const WalletAnimation: FC<IProps> = ({
-  disableCreateWalletButton,
-  animateConnectWallet,
-  onConnectWalletClick,
+  disableCreateButton = false,
+  disableImportButton = false,
+  animateImport = false,
+  animateCreate = false,
+  onImportClick,
+  onCreateClick,
 }) => {
-  const [hoveredConnectWallet, setHoveredConnectWallet] = useState(false);
-  const [_, setHoveredCreateWallet] = useState(false);
+  const [hoveredImport, setHoveredImport] = useState(false);
+  const [_, setHoveredCreate] = useState(false);
 
   useEffect(() => {
-    setHoveredConnectWallet(animateConnectWallet);
-  }, [animateConnectWallet]);
+    setHoveredImport(animateImport);
+  }, [animateImport]);
+
+  useEffect(() => {
+    setHoveredCreate(animateCreate);
+  }, [animateCreate]);
 
   return (
     <svg
@@ -38,7 +48,7 @@ export const WalletAnimation: FC<IProps> = ({
         <g
           id="wallet-icon"
           className={walletIconClass}
-          data-connectwallet-animated={hoveredConnectWallet}
+          data-import-animated={hoveredImport}
         >
           <path
             d="M200 175C211.759 175 221.621 166.882 224.289 155.945C225.074 152.725 227.686 150 231 150L248 150V186C248 192.627 242.627 198 236 198H164C157.373 198 152 192.627 152 186V150L169 150C172.314 150 174.926 152.725 175.711 155.945C178.379 166.882 188.241 175 200 175Z"
@@ -75,28 +85,30 @@ export const WalletAnimation: FC<IProps> = ({
         </g>
       </g>
       <g
-        id="create-wallet"
-        className={createWalletClass}
-        data-isDisabled={disableCreateWalletButton}
-        onMouseEnter={() => setHoveredCreateWallet(true)}
-        onMouseLeave={() => setHoveredCreateWallet(false)}
+        id="create"
+        className={createClass}
+        data-isDisabled={disableCreateButton}
+        onMouseEnter={() => setHoveredCreate(true)}
+        onMouseLeave={() => setHoveredCreate(false)}
+        onClick={onCreateClick && onCreateClick}
       >
         <rect x="308" y="126" width="48" height="48" rx="6" fill="white" />
         <path
-          id="create-wallet-icon"
+          id="create-icon"
           d="M330.6 162.364C330.022 162.364 329.565 161.876 329.602 161.299L329.953 155.867C330.007 155.04 329.088 154.51 328.399 154.972L323.845 158.022C323.362 158.345 322.706 158.19 322.419 157.685L320.526 154.351C320.241 153.849 320.439 153.211 320.958 152.958L325.838 150.581C326.588 150.216 326.588 149.148 325.838 148.783L320.958 146.405C320.439 146.153 320.241 145.514 320.526 145.013L322.419 141.679C322.706 141.174 323.362 141.019 323.845 141.342L328.399 144.392C329.088 144.853 330.007 144.324 329.953 143.497L329.602 138.064C329.565 137.488 330.022 137 330.6 137H334.387C334.965 137 335.423 137.49 335.384 138.067L335.02 143.49C334.964 144.319 335.884 144.85 336.574 144.388L341.123 141.342C341.606 141.019 342.262 141.174 342.549 141.679L344.442 145.014C344.727 145.515 344.529 146.153 344.011 146.406L339.145 148.783C338.397 149.149 338.397 150.215 339.145 150.58L344.011 152.958C344.529 153.211 344.727 153.849 344.442 154.35L342.549 157.685C342.262 158.19 341.606 158.345 341.123 158.022L336.574 154.975C335.884 154.513 334.964 155.045 335.02 155.873L335.384 161.297C335.423 161.874 334.965 162.364 334.387 162.364H330.6Z"
           fill="black"
         />
       </g>
       <g
-        id="connect-wallet"
-        className={connectWalletClass}
-        onMouseEnter={() => setHoveredConnectWallet(true)}
-        onMouseLeave={() => setHoveredConnectWallet(false)}
-        onClick={onConnectWalletClick}
+        id="import"
+        className={importClass}
+        data-isDisabled={disableImportButton}
+        onMouseEnter={() => setHoveredImport(true)}
+        onMouseLeave={() => setHoveredImport(false)}
+        onClick={onImportClick && onImportClick}
       >
         <rect x="44" y="126" width="48" height="48" rx="6" fill="white" />
-        <g id="connect-wallet-icon">
+        <g id="import-icon">
           <path
             d="M77.9413 138.078C77.8113 138.078 77.6813 138.046 77.5675 137.983C74.4475 136.415 71.75 135.75 68.5163 135.75C65.2988 135.75 62.2438 136.494 59.465 137.983C59.075 138.188 58.5875 138.046 58.36 137.666C58.1492 137.281 58.2937 136.802 58.685 136.589C61.7075 134.99 65.0225 134.167 68.5163 134.167C71.9775 134.167 75 134.911 78.315 136.573C78.7213 136.779 78.8675 137.254 78.6563 137.634C78.5251 137.903 78.2472 138.076 77.9413 138.078Z"
             fill="black"
