@@ -3,6 +3,7 @@ import { LayoutActions } from '@/components/OnBoarding/components/Layout/LayoutA
 import { LayoutContext } from '@/components/OnBoarding/components/Layout/LayoutContext';
 import { OnBoardingStepper } from '@/components/OnBoarding/components/OnBoardingStepper/OnBoardingStepper';
 import { FLOWTYPE } from '@/components/OnBoarding/components/OnBoardingStepper/utils';
+import { ConnectWalletAnimation } from '@/components/RegistrationAnimations/ConnectWalletAnimation';
 import { WalletAnimation } from '@/components/RegistrationAnimations/WalletAnimation';
 import { useWallet } from '@/hooks/useWallet';
 import { Button, Stack } from '@kadena/kode-ui';
@@ -55,6 +56,7 @@ export const ConnectWalletStep: FC<IProps> = ({
           disableCreateButton={hasWallet}
           animateImport={hoveredConnectWallet}
           onImportClick={handleImport}
+          Child={ConnectWalletAnimation}
         />
       </LayoutContext>
 

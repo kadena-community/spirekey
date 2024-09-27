@@ -40,6 +40,8 @@ const blinkAnimation = keyframes({
   },
 });
 
+export const childWrapperClass = style({});
+
 export const walletIconClass = style({
   selectors: {
     '&[data-import-animated="true"]': {

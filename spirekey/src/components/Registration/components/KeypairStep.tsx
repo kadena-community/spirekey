@@ -1,12 +1,11 @@
-import PasskeyCard from '@/components/Card/PasskeyCard';
 import { Layout } from '@/components/OnBoarding/components/Layout/Layout';
 import { LayoutActions } from '@/components/OnBoarding/components/Layout/LayoutActions';
 import { LayoutContext } from '@/components/OnBoarding/components/Layout/LayoutContext';
 import { OnBoardingStepper } from '@/components/OnBoarding/components/OnBoardingStepper/OnBoardingStepper';
+import { ImportAccountAnimation } from '@/components/RegistrationAnimations/ImportAccountAnimation';
 import { WalletAnimation } from '@/components/RegistrationAnimations/WalletAnimation';
 import { Button, Stack } from '@kadena/kode-ui';
 import React, { FC, useState } from 'react';
-import { passkeyWrapperClass } from './styles.css';
 
 interface IProps {
   setAnimationFinished: React.Dispatch<React.SetStateAction<boolean>>;
@@ -36,16 +35,15 @@ export const KeypairStep: FC<IProps> = ({
     >
       <OnBoardingStepper step={1} steps={steps} />
       <LayoutContext>
-        <Stack className={passkeyWrapperClass}>
-          <WalletAnimation
-            disableCreateButton={isSubmitting || succesfulAuthentication}
-            disableImportButton={isSubmitting || succesfulAuthentication}
-            animateImport={hoveredImport}
-            animateCreate={hoveredContinue}
-            onImportClick={onImport}
-            onCreateClick={onSubmit}
-          />
-        </Stack>
+        <WalletAnimation
+          disableCreateButton={isSubmitting || succesfulAuthentication}
+          disableImportButton={isSubmitting || succesfulAuthentication}
+          animateImport={hoveredImport}
+          animateCreate={hoveredContinue}
+          onImportClick={onImport}
+          onCreateClick={onSubmit}
+          Child={ImportAccountAnimation}
+        />
       </LayoutContext>
       <LayoutActions>
         <Stack
