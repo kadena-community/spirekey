@@ -54,7 +54,7 @@ export const ConnectWalletStep: FC<IProps> = ({
       <OnBoardingStepper step={activeStep} steps={steps} />
       <LayoutContext>
         <WalletAnimation
-          disableCreateButton={hasWallet}
+          disableCreateButton={networkId === 'mainnet01' || hasWallet}
           animateImport={hoveredConnectWallet}
           animateCreate={hoveredCreateWallet}
           onImportClick={handleImport}
