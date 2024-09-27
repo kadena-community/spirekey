@@ -53,7 +53,7 @@ export const walletIconClass = style({
 
 export const cardCreateClass = style({
   opacity: 0,
-  transform: 'translateY(-35px)',
+  transform: 'translateY(15px)',
   transition: 'all 2s ease',
   selectors: {
     '&[data-animated="true"]': {
@@ -65,7 +65,7 @@ export const cardCreateClass = style({
 
 export const cardImportClass = style({
   opacity: 0,
-  transform: 'translateY(-100px)',
+  transform: 'translateY(-50px)',
   transition: 'all 2s ease',
   selectors: {
     '&[data-animated="true"]': {

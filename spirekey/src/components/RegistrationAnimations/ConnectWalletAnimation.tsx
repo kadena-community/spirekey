@@ -4,6 +4,7 @@ import { IChildProps } from './WalletAnimation';
 
 export const ConnectWalletAnimation: FC<IChildProps> = ({
   playImportAnimation,
+  playCreateAnimation,
 }) => {
   return (
     <g id="wallet">
@@ -12,7 +13,7 @@ export const ConnectWalletAnimation: FC<IChildProps> = ({
       <g
         id="wallet-icon"
         className={walletIconClass}
-        data-import-animated={playImportAnimation}
+        data-import-animated={playImportAnimation || playCreateAnimation}
       >
         <path
           d="M164 102C157.373 102 152 107.373 152 114V150H158V114C158 110.686 160.686 108 164 108H236C239.314 108 242 110.686 242 114V150H248V114C248 107.373 242.627 102 236 102H164Z"
