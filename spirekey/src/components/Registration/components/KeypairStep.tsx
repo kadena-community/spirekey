@@ -1,11 +1,11 @@
-import PasskeyCard from '@/components/Card/PasskeyCard';
 import { Layout } from '@/components/OnBoarding/components/Layout/Layout';
 import { LayoutActions } from '@/components/OnBoarding/components/Layout/LayoutActions';
 import { LayoutContext } from '@/components/OnBoarding/components/Layout/LayoutContext';
 import { OnBoardingStepper } from '@/components/OnBoarding/components/OnBoardingStepper/OnBoardingStepper';
+import { ImportAccountAnimation } from '@/components/RegistrationAnimations/ImportAccountAnimation';
+import { WalletAnimation } from '@/components/RegistrationAnimations/WalletAnimation';
 import { Button, Stack } from '@kadena/kode-ui';
-import React, { FC } from 'react';
-import { passkeyWrapperClass } from './styles.css';
+import React, { FC, useState } from 'react';
 
 interface IProps {
   setAnimationFinished: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,6 +25,18 @@ export const KeypairStep: FC<IProps> = ({
   onImport,
   steps,
 }) => {
+  const [hoveredImport, setHoveredImport] = useState(false);
+  const [hoveredContinue, setHoveredContinue] = useState(false);
+
+  const handleSubmit = () => {
+    onSubmit();
+    setAnimationFinished(true);
+  };
+  const handleImport = () => {
+    onImport();
+    setAnimationFinished(true);
+  };
+
   return (
     <Layout
       title={steps[1]}
@@ -34,31 +46,52 @@ export const KeypairStep: FC<IProps> = ({
     >
       <OnBoardingStepper step={1} steps={steps} />
       <LayoutContext>
-        <Stack className={passkeyWrapperClass}>
-          <PasskeyCard
-            isInProgress={!succesfulAuthentication && isSubmitting}
-            isSuccessful={succesfulAuthentication}
-            onSuccessfulAnimationEnd={() => setAnimationFinished(true)}
-            onSubmit={onSubmit}
-          />
-        </Stack>
+        <WalletAnimation
+          disableCreateButton={isSubmitting || succesfulAuthentication}
+          disableImportButton={isSubmitting || succesfulAuthentication}
+          animateImport={hoveredImport}
+          animateCreate={hoveredContinue}
+          onImportClick={handleImport}
+          onCreateClick={handleSubmit}
+          Child={ImportAccountAnimation}
+        />
       </LayoutContext>
       <LayoutActions>
-        <Button
-          variant="outlined"
-          onPress={onImport}
-          isDisabled={isSubmitting || succesfulAuthentication}
+        <Stack
+          as="span"
+          onMouseEnter={() => {
+            setHoveredImport(true);
+          }}
+          onMouseLeave={() => {
+            setHoveredImport(false);
+          }}
         >
-          Import
-        </Button>
+          <Button
+            variant="outlined"
+            onPress={handleImport}
+            isDisabled={isSubmitting || succesfulAuthentication}
+          >
+            Import
+          </Button>
+        </Stack>
 
-        <Button
-          variant="primary"
-          onPress={onSubmit}
-          isDisabled={isSubmitting || succesfulAuthentication}
+        <Stack
+          as="span"
+          onMouseEnter={() => {
+            setHoveredContinue(true);
+          }}
+          onMouseLeave={() => {
+            setHoveredContinue(false);
+          }}
         >
-          Continue
-        </Button>
+          <Button
+            variant="primary"
+            onPress={handleSubmit}
+            isDisabled={isSubmitting || succesfulAuthentication}
+          >
+            Continue
+          </Button>
+        </Stack>
       </LayoutActions>
     </Layout>
   );
