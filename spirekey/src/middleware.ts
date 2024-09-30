@@ -7,7 +7,8 @@ const createClientId = (ua: string): string => hash(ua);
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
   if (!process.env.GA_ACCOUNT || !process.env.GA_ACCOUNT_API) {
-    throw new Error('google account and api secret are missing');
+    console.warn('google account and api secret are missing');
+    return;
   }
 
   const userAgent = request.headers.get('user-agent') ?? '';
