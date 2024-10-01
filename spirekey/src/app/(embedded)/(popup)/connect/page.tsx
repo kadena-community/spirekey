@@ -1,23 +1,13 @@
 'use client';
 
 import SpireKeyLogoAnimated from '@/assets/images/spireKey-logo-animated.svg';
+import Connect from '@/components/Embedded/Connect';
 import { type ChainId } from '@kadena/client';
 import { Stack } from '@kadena/kode-ui';
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-
-const Connect = dynamic(() => import('@/components/Embedded/Connect'), {
-  ssr: false,
-});
-
-const Sign = dynamic(() => import('@/components/Embedded/Sign'), {
-  ssr: false,
-});
+import React, { useEffect, useState } from 'react';
 
 export default function SidebarSign() {
-  const [transactions, setTransactions] = useState<string | null>(null);
-  const [accounts, setAccounts] = useState<string | null>(null);
   const [networkId, setNetworkId] = useState<string | null>(null);
   const [chainId, setChainId] = useState<ChainId | null>(null);
 
@@ -26,8 +16,6 @@ export default function SidebarSign() {
       const params = new URLSearchParams(
         window.location.hash.replace(/^#/, '?'),
       );
-      setTransactions(params.get('transactions'));
-      setAccounts(params.get('accounts'));
       setNetworkId(params.get('networkId'));
       setChainId(params.get('chainId') as ChainId);
     };
@@ -44,8 +32,6 @@ export default function SidebarSign() {
     };
   }, []);
 
-  if (transactions)
-    return <Sign transactions={transactions} accounts={accounts || '[]'} />;
   if (networkId && chainId)
     return <Connect networkId={networkId} chainId={chainId} />;
   return (
