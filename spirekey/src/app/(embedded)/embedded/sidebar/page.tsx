@@ -6,7 +6,7 @@ export default function SidebarSign() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.hash.replace(/^#/, '?'));
     if (params.get('transactions')) {
-      redirect(`/sign#${window.location.hash}`);
+      redirect(`/sign${window.location.hash}`);
     }
     if (params.get('networkId') && params.get('chainId')) {
       redirect(`/connect${window.location.hash}`);
