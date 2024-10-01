@@ -54,7 +54,7 @@ export const ConnectWalletStep: FC<IProps> = ({
       <OnBoardingStepper step={activeStep} steps={steps} />
       <LayoutContext>
         <WalletAnimation
-          disableCreateButton={networkId === 'mainnet01' || hasWallet}
+          disableCreateButton={hasWallet}
           animateImport={hoveredConnectWallet}
           animateCreate={hoveredCreateWallet}
           onImportClick={handleImport}
@@ -80,23 +80,17 @@ export const ConnectWalletStep: FC<IProps> = ({
             Connect
           </Button>
         </Stack>
-
-        {networkId === 'mainnet01' && !hasWallet && (
-          <Button>Create coming soon</Button>
-        )}
-        {networkId !== 'mainnet01' && !hasWallet && (
-          <Stack
-            as="span"
-            onMouseEnter={() => {
-              setHoveredCreateWallet(true);
-            }}
-            onMouseLeave={() => {
-              setHoveredCreateWallet(false);
-            }}
-          >
-            <Button onPress={handleCreate}>Create</Button>
-          </Stack>
-        )}
+        <Stack
+          as="span"
+          onMouseEnter={() => {
+            setHoveredCreateWallet(true);
+          }}
+          onMouseLeave={() => {
+            setHoveredCreateWallet(false);
+          }}
+        >
+          <Button onPress={handleCreate}>Create</Button>
+        </Stack>
       </LayoutActions>
     </Layout>
   );
