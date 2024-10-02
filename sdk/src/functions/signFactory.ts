@@ -57,9 +57,10 @@ export const signFactory =
     const eventListenerPromise = new Promise<SignedTransactions>(
       (resolve, reject) => {
         removeSignListener = onTransactionsSigned((signatures) => {
+          const signedTxMap = signatures.txs || signatures.tx;
           const signedTransactions = transactions
             .flatMap((tx) =>
-              signatures.tx[tx.hash]?.map((sig) => addSignatures(tx, sig)),
+              signedTxMap[tx.hash]?.map((sig) => addSignatures(tx, sig)),
             )
             .filter((tx) => !!tx);
 
