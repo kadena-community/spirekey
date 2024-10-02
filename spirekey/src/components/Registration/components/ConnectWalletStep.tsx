@@ -5,6 +5,7 @@ import { OnBoardingStepper } from '@/components/OnBoarding/components/OnBoarding
 import { FLOWTYPE } from '@/components/OnBoarding/components/OnBoardingStepper/utils';
 import { ConnectWalletAnimation } from '@/components/RegistrationAnimations/ConnectWalletAnimation';
 import { WalletAnimation } from '@/components/RegistrationAnimations/WalletAnimation';
+import { useFlag } from '@/hooks/useFlag';
 import { useWallet } from '@/hooks/useWallet';
 import { Button, Stack } from '@kadena/kode-ui';
 import { FC, useState } from 'react';
@@ -31,6 +32,7 @@ export const ConnectWalletStep: FC<IProps> = ({
   const [hoveredCreateWallet, setHoveredCreateWallet] = useState(false);
   const { getWallet } = useWallet();
   const hasWallet = !!getWallet(networkId);
+  const activateMainnet = useFlag('activate_mainnet');
 
   const handleCreate = () => {
     setActiveStep(0);
@@ -54,7 +56,9 @@ export const ConnectWalletStep: FC<IProps> = ({
       <OnBoardingStepper step={activeStep} steps={steps} />
       <LayoutContext>
         <WalletAnimation
-          disableCreateButton={networkId === 'mainnet01' || hasWallet}
+          disableCreateButton={
+            (networkId === 'mainnet01' && !activateMainnet) || hasWallet
+          }
           animateImport={hoveredConnectWallet}
           animateCreate={hoveredCreateWallet}
           onImportClick={handleImport}
@@ -81,10 +85,10 @@ export const ConnectWalletStep: FC<IProps> = ({
           </Button>
         </Stack>
 
-        {networkId === 'mainnet01' && !hasWallet && (
+        {networkId === 'mainnet01' && !activateMainnet && !hasWallet && (
           <Button>Create coming soon</Button>
         )}
-        {networkId !== 'mainnet01' && !hasWallet && (
+        {(networkId !== 'mainnet01' || activateMainnet) && !hasWallet && (
           <Stack
             as="span"
             onMouseEnter={() => {
