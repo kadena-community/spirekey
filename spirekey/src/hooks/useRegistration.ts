@@ -6,6 +6,7 @@ import { useWallet } from '@/resolvers/create-wallet';
 import { useRecoverAccount } from '@/resolvers/recover-account';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
+import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
 import { useState } from 'react';
@@ -46,7 +47,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     currentAccountName,
   );
 
-  const alias = `${accountPrefix} ${numberOfSpireKeyAccounts + 1}`;
+  const alias = `${accountPrefix} ${numberOfSpireKeyAccounts + 1} (${getNetworkDisplayName(networkId)})`;
   const color = deviceColors.purple;
 
   const handleConnectWallet = async () => {
