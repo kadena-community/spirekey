@@ -44,6 +44,10 @@ export const WalletAnimation: FC<IProps> = ({
     if (disableCreateButton || !onCreateClick) return;
     onCreateClick();
   };
+  const handleImportClick = () => {
+    if (disableImportButton || !onImportClick) return;
+    onImportClick();
+  };
 
   return (
     <svg
@@ -82,7 +86,7 @@ export const WalletAnimation: FC<IProps> = ({
         data-isDisabled={disableImportButton}
         onMouseEnter={() => setHoveredImport(true)}
         onMouseLeave={() => setHoveredImport(false)}
-        onClick={onImportClick && onImportClick}
+        onClick={handleImportClick}
       >
         <rect x="44" y="126" width="48" height="48" rx="6" fill="white" />
         <g id="import-icon">
