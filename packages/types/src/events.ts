@@ -4,7 +4,8 @@ export type SpireKeyEvents = {
   connected: Account;
   signed: {
     accounts: Account[];
-    tx: Record<string, { sig: string; pubKey: string }[]>;
+    txs: Record<string, { sig: string; pubKey: string }[]>;
+    tx?: Record<string, { sig: string; pubKey: string }[]>;
   };
   isReady: Account[];
 

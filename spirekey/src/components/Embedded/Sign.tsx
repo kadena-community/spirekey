@@ -110,7 +110,7 @@ const Sign: FC<IProps> = (props) => {
             ),
           )
           .filter((x) => !!x),
-        tx: {
+        txs: {
           [tx.hash]: [
             {
               ...getSignature(res.response),
@@ -138,7 +138,7 @@ const Sign: FC<IProps> = (props) => {
     //TODO should be in try catch Error handling
     publishEvent('signed', {
       accounts: accs,
-      tx: {
+      txs: {
         [tx.hash]: [
           {
             ...getSignature(res.response),
