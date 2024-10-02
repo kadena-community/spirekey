@@ -59,6 +59,7 @@ export const ConnectWalletStep: FC<IProps> = ({
           disableCreateButton={
             (networkId === 'mainnet01' && !activateMainnet) || hasWallet
           }
+          disableImportButton={networkId === 'mainnet01' && !activateMainnet}
           animateImport={hoveredConnectWallet}
           animateCreate={hoveredCreateWallet}
           onImportClick={handleImport}
@@ -77,12 +78,18 @@ export const ConnectWalletStep: FC<IProps> = ({
             setHoveredConnectWallet(false);
           }}
         >
-          <Button
-            variant={hasWallet ? 'primary' : 'outlined'}
-            onPress={handleImport}
-          >
-            Connect
-          </Button>
+          {networkId === 'mainnet01' && !activateMainnet && hasWallet && (
+            <Button>Create coming soon</Button>
+          )}
+
+          {(networkId !== 'mainnet01' || activateMainnet) && (
+            <Button
+              variant={hasWallet ? 'primary' : 'outlined'}
+              onPress={handleImport}
+            >
+              Connect
+            </Button>
+          )}
         </Stack>
 
         {networkId === 'mainnet01' && !activateMainnet && !hasWallet && (
