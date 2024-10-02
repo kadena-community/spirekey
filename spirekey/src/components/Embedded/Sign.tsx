@@ -98,9 +98,17 @@ const Sign: FC<IProps> = (props) => {
         : undefined,
     });
 
-    if (!signedPlumbingTxs)
+    if (!signedPlumbingTxs) {
       //TODO should be in try catch Error handling
-      publishEvent('signed', {
+      const txMap = {
+        [tx.hash]: [
+          {
+            ...getSignature(res.response),
+            pubKey: getPubkey(accounts, credentialId),
+          },
+        ],
+      };
+      return publishEvent('signed', {
         accounts: signAccounts
           .map((a) =>
             accounts.find(
@@ -110,15 +118,10 @@ const Sign: FC<IProps> = (props) => {
             ),
           )
           .filter((x) => !!x),
-        tx: {
-          [tx.hash]: [
-            {
-              ...getSignature(res.response),
-              pubKey: getPubkey(accounts, credentialId),
-            },
-          ],
-        },
+        tx: txMap,
+        txs: txMap,
       });
+    }
 
     const txs = await Promise.all(
       signedPlumbingTxs!.map((tx) => l1Client.submit(tx)),
@@ -136,16 +139,18 @@ const Sign: FC<IProps> = (props) => {
     });
 
     //TODO should be in try catch Error handling
+    const txMap = {
+      [tx.hash]: [
+        {
+          ...getSignature(res.response),
+          pubKey: getPubkey(accounts, credentialId),
+        },
+      ],
+    };
     publishEvent('signed', {
       accounts: accs,
-      tx: {
-        [tx.hash]: [
-          {
-            ...getSignature(res.response),
-            pubKey: getPubkey(accounts, credentialId),
-          },
-        ],
-      },
+      tx: txMap,
+      txs: txMap,
     });
   };
 
