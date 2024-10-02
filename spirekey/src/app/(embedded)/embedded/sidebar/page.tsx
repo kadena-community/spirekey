@@ -1,61 +1,18 @@
 'use client';
-
-import SpireKeyLogoAnimated from '@/assets/images/spireKey-logo-animated.svg';
-import { type ChainId } from '@kadena/client';
-import { Stack } from '@kadena/kode-ui';
-import dynamic from 'next/dynamic';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
-
-const Connect = dynamic(() => import('@/components/Embedded/Connect'), {
-  ssr: false,
-});
-
-const Sign = dynamic(() => import('@/components/Embedded/Sign'), {
-  ssr: false,
-});
+import { redirect } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function SidebarSign() {
-  const [transactions, setTransactions] = useState<string | null>(null);
-  const [accounts, setAccounts] = useState<string | null>(null);
-  const [networkId, setNetworkId] = useState<string | null>(null);
-  const [chainId, setChainId] = useState<ChainId | null>(null);
-
   useEffect(() => {
-    const getHash = () => {
-      const params = new URLSearchParams(
-        window.location.hash.replace(/^#/, '?'),
-      );
-      setTransactions(params.get('transactions'));
-      setAccounts(params.get('accounts'));
-      setNetworkId(params.get('networkId'));
-      setChainId(params.get('chainId') as ChainId);
-    };
+    const params = new URLSearchParams(window.location.hash.replace(/^#/, '?'));
+    if (params.get('transactions')) {
+      redirect(`/sign${window.location.hash}`);
+    }
+    if (params.get('networkId') && params.get('chainId')) {
+      redirect(`/connect${window.location.hash}`);
+    }
+    redirect(`/connect${window.location.hash}`);
+  });
 
-    const onHashChanged = () => {
-      getHash();
-    };
-
-    getHash();
-    window.addEventListener('hashchange', onHashChanged);
-
-    return () => {
-      window.removeEventListener('hashchange', onHashChanged);
-    };
-  }, []);
-
-  if (transactions)
-    return <Sign transactions={transactions} accounts={accounts || '[]'} />;
-  if (networkId && chainId)
-    return <Connect networkId={networkId} chainId={chainId} />;
-  return (
-    <Stack alignItems="center" justifyContent="center" height="100%">
-      <Image
-        src={SpireKeyLogoAnimated}
-        alt="Connecting account.."
-        height={128}
-        width={128}
-      />
-    </Stack>
-  );
+  return null;
 }

@@ -42,9 +42,7 @@ export const signFactory =
     });
 
     embedManager.showNotification();
-    embedManager.openPopup(
-      `/embedded/sidebar#${transactionsParams.toString()}`,
-    );
+    embedManager.openPopup(`/sign#${transactionsParams.toString()}`);
 
     const timeoutPromise = new Promise<SignedTransactions>((_, reject) =>
       setTimeout(
