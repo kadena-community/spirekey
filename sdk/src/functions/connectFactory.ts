@@ -29,7 +29,7 @@ export const connectFactory =
       chainId,
     });
     embedManager.showNotification();
-    embedManager.openPopup(`/embedded/sidebar#${connectParams.toString()}`);
+    embedManager.openPopup(`/connect#${connectParams.toString()}`);
 
     const timeoutPromise = new Promise<ConnectedAccount>((_, reject) =>
       setTimeout(

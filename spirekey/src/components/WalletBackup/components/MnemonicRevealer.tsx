@@ -25,16 +25,17 @@ export const MnemonicRevealer: FC<IProps> = ({ mnemonic }) => {
   return (
     <Stack gap="md" flexDirection="column">
       {wordGroups.map((wordsStr, groupIndex) => (
-        <Stack gap="lg" alignItems="flex-end">
+        <Stack key={`${wordsStr}-${groupIndex}`} gap="lg" alignItems="flex-end">
           {wordsStr.split(' ').map((word, wordIndex) => (
             <TextField
+              key={`${word}-${wordIndex}`}
+              aria-label={`field ${wordIndex}`}
               startVisual={
                 <Stack className={badgeClass}>
                   {groupIndex * groupSize + wordIndex + 1}
                 </Stack>
               }
               isReadOnly
-              key={word}
               value="****"
             />
           ))}
@@ -42,6 +43,7 @@ export const MnemonicRevealer: FC<IProps> = ({ mnemonic }) => {
           <Button
             variant="transparent"
             onPress={() => navigator.clipboard.writeText(wordsStr)}
+            aria-label="copy fields"
           >
             <MonoCopyAll />
           </Button>
