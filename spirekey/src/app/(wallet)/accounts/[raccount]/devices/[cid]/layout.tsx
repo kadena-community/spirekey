@@ -48,7 +48,7 @@ export default function AccountLayout({ children }: { children: any }) {
   }, [pathName]);
 
   return (
-    <Stack flexDirection="column" gap="xxxl" width="100%">
+    <Stack flexDirection="column" gap="xxxl" width="100%" flex={1}>
       <CardFixedContainer>
         <CardContentBlock
           title="Account"

@@ -6,6 +6,7 @@ export const layoutWrapperClass = style([
   {
     width: '100%',
     marginInline: 'auto',
+    minHeight: '100dvh',
   },
   responsiveStyle({
     md: {
