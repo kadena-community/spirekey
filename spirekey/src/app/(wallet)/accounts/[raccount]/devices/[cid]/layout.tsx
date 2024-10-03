@@ -71,14 +71,15 @@ export default function AccountLayout({ children }: { children: any }) {
         >
           {!loading && (
             <CardFooterGroup>
-              <Button
-                className={backButtonClass}
-                startVisual={<MonoArrowBack />}
-                variant="outlined"
-                onPress={handleBack}
-              >
-                Go back
-              </Button>
+              <Stack className={backButtonClass}>
+                <Button
+                  startVisual={<MonoArrowBack />}
+                  variant="outlined"
+                  onPress={handleBack}
+                >
+                  Go back
+                </Button>
+              </Stack>
               <Button
                 onPress={() =>
                   push(`/accounts/${raccount}/devices/${cid}/transfer`)

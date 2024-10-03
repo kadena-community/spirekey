@@ -279,27 +279,42 @@ export default function SendForm() {
             errorMessage={receiverError}
             {...register('receiver')}
           />
-          <Stack width="100%" gap="md">
-            <Select
-              label="Chain"
-              defaultSelectedKey="0"
-              onSelectionChange={(c) => setValue('chainId', c as ChainId)}
-            >
-              {Array(20)
-                .fill(1)
-                .map((_, i) => (
-                  <SelectItem key={i}>{i.toString()}</SelectItem>
-                ))}
-            </Select>
-            <NumberField
-              defaultValue={defaultValues.amount}
-              step={0.1}
-              label={`Amount (max: ${parseFloat(account.balance).toLocaleString() ?? '0.0'} KDA)`}
-              minValue={0.0}
-              maxValue={parseFloat(account.balance) ?? 0.0}
-              {...amountProps}
-              onValueChange={(a) => setValue('amount', a)}
-            />
+          <Stack
+            flexDirection={{ xs: 'column', md: 'row' }}
+            width="100%"
+            gap="md"
+          >
+            <Stack flex={1}>
+              <Select
+                label="Chain"
+                defaultSelectedKey="0"
+                onSelectionChange={(c) => setValue('chainId', c as ChainId)}
+              >
+                {Array(20)
+                  .fill(1)
+                  .map((_, i) => (
+                    <SelectItem key={i}>{i.toString()}</SelectItem>
+                  ))}
+              </Select>
+            </Stack>
+
+            <Stack flexDirection="column" gap="sm" flex={1}>
+              <NumberField
+                defaultValue={defaultValues.amount}
+                step={0.1}
+                label="Amount"
+                minValue={0.0}
+                maxValue={parseFloat(account.balance) ?? 0.0}
+                {...amountProps}
+                onValueChange={(a) => setValue('amount', a)}
+              />
+              <Text size="smallest">
+                max:{' '}
+                {parseFloat(account.balance).toFixed(2).toLocaleString() ??
+                  '0.0'}{' '}
+                KDA
+              </Text>
+            </Stack>
           </Stack>
         </Stack>
 
