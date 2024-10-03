@@ -12,7 +12,6 @@ export async function middleware(request: NextRequest) {
   }
 
   const userAgent = request.headers.get('user-agent') ?? '';
-  console.log(11111, request.url);
   const ua = parser(userAgent);
   if (userAgent?.includes('Edge Functions')) return;
 
