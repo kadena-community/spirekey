@@ -128,7 +128,7 @@ export const account = async (
       },
       {
         __typename: 'Account',
-        alias: localAccount?.alias,
+        alias: localAccount?.alias?.replace(/ \(.*\)/, ''),
         balance: 0,
         balances: [],
         chainIds: Array(20)
