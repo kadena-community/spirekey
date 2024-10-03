@@ -45,7 +45,7 @@ export default function AccountCollection() {
   );
 
   return (
-    <Stack flexDirection="column" gap="xl" width="100%" flex={1}>
+    <Stack flexDirection="column" gap="xl" width="100%">
       <CardFixedContainer>
         <CardContentBlock
           title="Wallet Accounts"

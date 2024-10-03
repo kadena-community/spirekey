@@ -41,7 +41,9 @@ export default function RootLayout({
             flexDirection="column"
             className={layoutWrapperClass}
           >
-            {children}
+            <Stack flexDirection="column" flex={1}>
+              {children}
+            </Stack>
 
             <Footer />
           </Stack>

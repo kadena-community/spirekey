@@ -14,16 +14,14 @@ export const Layout: FC<PropsWithChildren<IProps>> = ({
   children,
 }) => {
   return (
-    <Stack flexDirection="column" flex={1}>
-      <CardFixedContainer className={cardContainerClass}>
-        <Stack gap="xl" flexDirection="column" className={gridContentClass}>
-          <Heading>{title}</Heading>
-          <Text>
-            <>{description}</>
-          </Text>
-        </Stack>
-        <>{children}</>
-      </CardFixedContainer>
-    </Stack>
+    <CardFixedContainer className={cardContainerClass}>
+      <Stack gap="xl" flexDirection="column" className={gridContentClass}>
+        <Heading>{title}</Heading>
+        <Text>
+          <>{description}</>
+        </Text>
+      </Stack>
+      <>{children}</>
+    </CardFixedContainer>
   );
 };
