@@ -73,7 +73,6 @@ export const config = {
     '/register',
     '/recover',
     '/pact',
-    '/pact',
     '/embedded/notification',
     '/accounts/:raccount/devices/:cid/',
     '/accounts/:raccount/devices/:cid/transfer',
