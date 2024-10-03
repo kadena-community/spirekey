@@ -64,5 +64,19 @@ export async function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|images|.*\\.png$).*)'],
+  matcher: [
+    '/',
+    '/welcome',
+    '/connect',
+    '/sign',
+    '/settings',
+    '/register',
+    '/recover',
+    '/pact',
+    '/embedded/notification',
+    '/accounts/:raccount/devices/:cid/',
+    '/accounts/:raccount/devices/:cid/transfer',
+    '/accounts/:raccount/devices/:cid/transactions',
+    '/accounts/:raccount/devices/:cid/settings',
+  ],
 };
