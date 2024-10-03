@@ -12,6 +12,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const userAgent = request.headers.get('user-agent') ?? '';
+  console.log(11111, request.url);
   const ua = parser(userAgent);
   if (userAgent?.includes('Edge Functions')) return;
 
@@ -64,5 +65,20 @@ export async function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|images|.*\\.png$).*)'],
+  matcher: [
+    '/',
+    '/welcome',
+    '/connect',
+    '/sign',
+    '/settings',
+    '/register',
+    '/recover',
+    '/pact',
+    '/pact',
+    '/embedded/notification',
+    '/accounts/:raccount/devices/:cid/',
+    '/accounts/:raccount/devices/:cid/transfer',
+    '/accounts/:raccount/devices/:cid/transactions',
+    '/accounts/:raccount/devices/:cid/settings',
+  ],
 };
