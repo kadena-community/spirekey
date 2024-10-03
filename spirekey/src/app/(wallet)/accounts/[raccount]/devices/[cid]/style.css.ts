@@ -12,7 +12,7 @@ export const backButtonClass = style([
   },
   responsiveStyle({
     md: {
-      display: 'none',
+      display: 'none!important',
     },
   }),
 ]);
