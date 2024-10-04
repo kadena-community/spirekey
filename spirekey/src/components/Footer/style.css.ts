@@ -1,8 +1,15 @@
 import { style } from '@kadena/kode-ui';
-import { token } from '@kadena/kode-ui/styles';
+import { responsiveStyle, token } from '@kadena/kode-ui/styles';
 import { globalStyle } from '@vanilla-extract/css';
 
-export const footerClass = style({});
+export const footerClass = style({
+  paddingInline: token('spacing.md'),
+  ...responsiveStyle({
+    md: {
+      paddingInline: 0,
+    },
+  }),
+});
 
 globalStyle(`${footerClass} > *`, {
   opacity: '.4',
