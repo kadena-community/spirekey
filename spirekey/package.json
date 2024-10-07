@@ -62,7 +62,6 @@
     "cbor": "^9.0.2",
     "classnames": "^2.5.1",
     "cookies-next": "^4.2.1",
-    "detect-gpu": "^5.0.38",
     "ed25519-keygen": "^0.6.2",
     "elliptic": "^6.5.7",
     "framer-motion": "^11.2.12",
