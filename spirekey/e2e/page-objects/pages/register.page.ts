@@ -4,15 +4,11 @@ export class RegisterPage {
   private page: Page;
   private continueButton: Locator;
   private createWalletButton: Locator;
-  private completeButton: Locator;
-  private alias: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.continueButton = this.page.getByRole('button', { name: 'Continue' });
+    this.continueButton = this.page.getByRole('button', { name: 'Create' });
     this.createWalletButton = this.page.getByRole('button', { name: 'Create' });
-    this.completeButton = this.page.getByRole('button', { name: 'Complete' });
-    this.alias = this.page.getByRole('heading', { level: 3 });
   }
 
   async setNetworkTo(

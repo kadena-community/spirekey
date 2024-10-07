@@ -89,7 +89,7 @@ export const KeypairStep: FC<IProps> = ({
             onPress={handleSubmit}
             isDisabled={isSubmitting || succesfulAuthentication}
           >
-            Continue
+            Create
           </Button>
         </Stack>
       </LayoutActions>
