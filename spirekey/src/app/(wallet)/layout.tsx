@@ -44,7 +44,6 @@ export default function RootLayout({
             <Stack flexDirection="column" flex={1} width="100%">
               {children}
             </Stack>
-
             <Footer />
           </Stack>
         </Providers>

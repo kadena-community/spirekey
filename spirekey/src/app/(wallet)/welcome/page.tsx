@@ -1,31 +1,46 @@
 'use client';
 
 import logo from '@/assets/images/SpireKey-logo.svg';
-import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
-import { Stack } from '@kadena/kode-ui';
+import { Footer } from '@/components/Footer/Footer';
+
+import { Button, Stack, Text } from '@kadena/kode-ui';
+import { CardFixedContainer } from '@kadena/kode-ui/patterns';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Home() {
   return (
-    <>
-      <Stack
-        gap="md"
-        flexDirection="column"
-        justifyContent="space-around"
-        width="100%"
-        style={{ height: '100svh' }}
-      >
-        <Stack flexDirection="column" alignItems="center" gap="sm">
-          <Image
-            src={logo}
-            alt="SpireKey logo"
-            style={{ marginTop: '2rem', maxWidth: '50vw' }}
-          />
+    <Stack
+      flexDirection="column"
+      justifyContent="center"
+      style={{ height: '100' }}
+      flex={1}
+    >
+      <CardFixedContainer>
+        <Stack flexDirection="column" gap="md" marginBlock="xl">
+          <Image src={logo} alt="SpireKey logo" style={{ maxWidth: '50vw' }} />
+
+          <Stack
+            flexDirection="column"
+            justifyContent="center"
+            gap="xl"
+            marginBlockStart="xl"
+          >
+            <Text>
+              Kadena SpireKey leverages web authentication standards to provide
+              a secure backend that enables end users to securely generate and
+              store key pairs directly on their hardware devices.
+            </Text>
+            <Stack alignItems="center" justifyContent="flex-end" gap="md">
+              <Text size="small">No account yet?</Text>
+              <Link href="/register" legacyBehavior passHref>
+                <Button>Register</Button>
+              </Link>
+            </Stack>
+          </Stack>
         </Stack>
-        <Stack flexDirection="row" justifyContent="center" gap="xl">
-          <ButtonLink href={'/register'}>Register</ButtonLink>
-        </Stack>
-      </Stack>
-    </>
+      </CardFixedContainer>
+      <Footer />
+    </Stack>
   );
 }
