@@ -62,16 +62,6 @@ export const cardContentContainer = style([
   },
 ]);
 
-export const cardLogo = style([
-  {
-    position: 'absolute',
-    bottom: '1.25em',
-    right: '1.25em',
-    width: 'auto',
-    height: token('icon.size.sm'),
-  },
-]);
-
 export const accountAlias = style([
   atoms({
     whiteSpace: 'nowrap',
@@ -129,25 +119,8 @@ export const balance = style([
   }),
 ]);
 
-export const transactionsLabel = style({
-  fontSize: token('typography.fontSize.sm'),
-});
-
-export const transactions = style([
-  atoms({
-    fontFamily: 'monospaceFont',
-    fontWeight: 'monospaceFont.bold',
-    fontSize: 'sm',
-    marginInlineStart: 'sm',
-  }),
-]);
-
 export const icon = style({
   padding: '32px',
-});
-
-export const logo = style({
-  fontSize: '64px',
 });
 
 globalStyle(`${icon} > div`, {
