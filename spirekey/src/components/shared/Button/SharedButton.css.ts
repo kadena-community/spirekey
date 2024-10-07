@@ -1,6 +1,5 @@
 import { customTokens } from '@/styles/shared/tokens.css';
 import { atoms, tokens } from '@kadena/kode-ui/styles';
-import { style } from '@vanilla-extract/css';
 import { RecipeVariants, recipe } from '@vanilla-extract/recipes';
 
 export const button = recipe({
@@ -64,18 +63,6 @@ export const button = recipe({
   defaultVariants: {
     variant: 'primary',
   },
-});
-
-export const progressIndicator = style({
-  position: 'absolute',
-  // borderRadius: tokens.kda.foundation.radius.xs,
-  top: 0,
-  bottom: 0,
-  left: 0,
-  right: 0,
-  backgroundColor: tokens.kda.foundation.color.neutral.n100,
-  zIndex: -1,
-  transition: 'left 0.2s ease-in-out',
 });
 
 export type Variants = Omit<

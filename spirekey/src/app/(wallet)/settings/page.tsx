@@ -1,6 +1,5 @@
 'use client';
 
-import { Background } from '@/components/Background/Background';
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { Stack } from '@kadena/kode-ui';
@@ -18,7 +17,6 @@ export default function Settings() {
 
   return (
     <>
-      <Background />
       <Stack
         gap="md"
         flexDirection="column"
