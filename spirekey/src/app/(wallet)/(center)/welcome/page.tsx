@@ -2,6 +2,7 @@
 
 import logo from '@/assets/images/SpireKey-logo.svg';
 import { Footer } from '@/components/Footer/Footer';
+import { ButtonLink } from '@/components/shared/ButtonLink/ButtonLink';
 import { Button, Stack, Text } from '@kadena/kode-ui';
 import { CardFixedContainer } from '@kadena/kode-ui/patterns';
 import Image from 'next/image';
@@ -33,9 +34,7 @@ export default function Home() {
             </Text>
             <Stack alignItems="center" justifyContent="flex-end" gap="md">
               <Text size="small">No account yet?</Text>
-              <Link href="/register" legacyBehavior passHref>
-                <Button>Register</Button>
-              </Link>
+              <ButtonLink href="/register">Register</ButtonLink>
             </Stack>
           </Stack>
         </Stack>
