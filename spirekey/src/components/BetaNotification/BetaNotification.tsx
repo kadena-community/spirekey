@@ -24,16 +24,8 @@ export default function BetaNotification() {
       >
         <NotificationHeading>Notice</NotificationHeading>
         <div>
-          Kadena SpireKey is currently in beta. Join us on{' '}
-          <a
-            href="https://discord.com/invite/kadena"
-            target="_blank"
-            rel="noreferrer"
-            className={styles.discordChannel}
-          >
-            Discord
-          </a>{' '}
-          and share your feedback!
+          The spirekey.kadena.io application is intended for demonstration purposes to interact with SpireKey-enabled dApps. 
+          Existing wallets should implement Kadena SpireKey Connect to enhance their user experience.  
         </div>
       </Notification>
     </Stack>

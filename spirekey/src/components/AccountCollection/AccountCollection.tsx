@@ -48,8 +48,8 @@ export default function AccountCollection() {
     <Stack flexDirection="column" gap="xl" width="100%">
       <CardFixedContainer>
         <CardContentBlock
-          title="Wallet Accounts"
-          description={`All available accounts with your wallet`}
+          title="Kadena SpireKey Accounts"
+          description={`All of your available accounts with Kadena SpireKey`}
           visual={
             <MonoSelectAll width={64} height={64} className={iconColorClass} />
           }
