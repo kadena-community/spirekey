@@ -77,6 +77,7 @@ export class ConnectPage {
   }
 
   async createNewAccount() {
+    await this.page.getByText('Account').waitFor();
     await this.createAccountButton.click();
     const credentials: any = await this.webauthnHelper.getCredentials(
       this.authenticator.authenticatorId,
