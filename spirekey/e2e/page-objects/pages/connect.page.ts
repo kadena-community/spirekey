@@ -24,7 +24,7 @@ export class ConnectPage {
     this.recoverButton = page.getByRole('button', { name: 'Next' });
     this.createWalletButton = page.getByRole('button', { name: 'Create' });
     this.connectWalletButton = page.getByRole('button', { name: 'Connect' });
-    this.createAccountButton = page.getByRole('button', { name: 'Continue' });
+    this.createAccountButton = page.getByRole('button', { name: 'Create' });
     this.completeButton = page.getByRole('button', { name: 'Complete' });
 
     this.webauthnHelper = new WebAuthNHelper();
@@ -77,6 +77,7 @@ export class ConnectPage {
   }
 
   async createNewAccount() {
+    await this.page.getByText('Account').waitFor();
     await this.createAccountButton.click();
     const credentials: any = await this.webauthnHelper.getCredentials(
       this.authenticator.authenticatorId,
