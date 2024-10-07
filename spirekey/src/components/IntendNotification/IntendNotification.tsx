@@ -1,13 +1,12 @@
 'use client';
 
 import { Notification, NotificationHeading, Stack } from '@kadena/kode-ui';
-import * as styles from './BetaNotification.css';
+import * as styles from './IntendNotification.css';
 
-export default function BetaNotification() {
-  if (
-    typeof window === 'undefined' ||
-    localStorage.getItem('spirekey-beta-banner-dismissed') === 'true'
-  ) {
+const KEY = 'spirekey-firsttime-intend-banner-dismissed';
+
+export default function IntendNotification() {
+  if (typeof window === 'undefined' || localStorage.getItem(KEY) === 'true') {
     return null;
   }
 
@@ -19,7 +18,7 @@ export default function BetaNotification() {
         role="alert"
         type="inlineStacked"
         onDismiss={() => {
-          sessionStorage.setItem('spirekey-beta-banner-dismissed', 'true');
+          localStorage.setItem(KEY, 'true');
         }}
       >
         <NotificationHeading>Notice</NotificationHeading>
