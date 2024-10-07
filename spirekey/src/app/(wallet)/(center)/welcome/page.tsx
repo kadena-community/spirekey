@@ -2,11 +2,11 @@
 
 import logo from '@/assets/images/SpireKey-logo.svg';
 import { Footer } from '@/components/Footer/Footer';
-
 import { Button, Stack, Text } from '@kadena/kode-ui';
 import { CardFixedContainer } from '@kadena/kode-ui/patterns';
 import Image from 'next/image';
 import Link from 'next/link';
+import React from 'react';
 
 export default function Home() {
   return (

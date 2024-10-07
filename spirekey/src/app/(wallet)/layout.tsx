@@ -12,7 +12,6 @@ const BetaNotification = dynamic(
   },
 );
 
-import { Footer } from '@/components/Footer/Footer';
 import { Stack } from '@kadena/kode-ui';
 import './global.css';
 import { layoutWrapperClass } from './styles.css';
@@ -41,10 +40,7 @@ export default function RootLayout({
             flexDirection="column"
             className={layoutWrapperClass}
           >
-            <Stack flexDirection="column" flex={1} width="100%">
-              {children}
-            </Stack>
-            <Footer />
+            {children}
           </Stack>
         </Providers>
       </body>
