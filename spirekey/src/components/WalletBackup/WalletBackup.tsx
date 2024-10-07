@@ -47,8 +47,7 @@ export default function WalletBackup() {
 
       <CardContentBlock
         title="Mnemonic"
-        description="Make sure to keep your mnemonic phrase safe! If a bad actor get's hold
-          of your mnemonic phrase, they will have full access to your account."
+        description="Make sure to keep your mnemonic phrase safe! Anyone with access to your mnemonic phrase can access your account. Store it securely offline, and never share it with anyone."
       >
         <Stack justifyContent="flex-end">
           <Button
