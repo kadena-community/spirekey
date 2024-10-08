@@ -1,6 +1,5 @@
 import { Button, Heading, Stack } from '@kadena/kode-ui';
 
-import { useFlag } from '@/hooks/useFlag';
 import { useAccounts } from '@/resolvers/accounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { MonoAddCard, MonoSelectAll } from '@kadena/kode-icons/system';
@@ -18,7 +17,6 @@ type SortedAccounts = {
 export default function AccountCollection() {
   const { accounts } = useAccounts();
   const router = useRouter();
-  const activateMainnet = useFlag('activate_mainnet');
 
   const sortedAccounts = accounts.reduce(
     (sorted: SortedAccounts, account) => {
@@ -57,59 +55,52 @@ export default function AccountCollection() {
       </CardFixedContainer>
       {Object.entries(sortedAccounts)
         .filter(([_, accs]) => accs.length)
-        .map(
-          ([networkId, accounts]) =>
-            (networkId !== 'mainnet01' || activateMainnet) && (
-              <Stack
-                key={networkId}
-                flexDirection="column"
-                className={cardContainerWrapperClass}
+        .map(([networkId, accounts]) => (
+          <Stack
+            key={networkId}
+            flexDirection="column"
+            className={cardContainerWrapperClass}
+          >
+            <CardFixedContainer>
+              <CardContentBlock
+                title=" "
+                supportingContent={
+                  <Stack flexDirection="column" gap="md" marginBlockStart="md">
+                    <Heading as="h4">
+                      {getNetworkDisplayName(networkId)}
+                    </Heading>
+                    <Button
+                      isCompact
+                      variant="outlined"
+                      startVisual={<MonoAddCard />}
+                      onPress={() => {
+                        router.push(`/register?networkId=${networkId}`);
+                      }}
+                    >
+                      Add Account
+                    </Button>
+                  </Stack>
+                }
               >
-                <CardFixedContainer>
-                  <CardContentBlock
-                    title=" "
-                    supportingContent={
-                      <Stack
-                        flexDirection="column"
-                        gap="md"
-                        marginBlockStart="md"
-                      >
-                        <Heading as="h4">
-                          {getNetworkDisplayName(networkId)}
-                        </Heading>
-                        <Button
-                          isCompact
-                          variant="outlined"
-                          startVisual={<MonoAddCard />}
-                          onPress={() => {
-                            router.push(`/register?networkId=${networkId}`);
-                          }}
-                        >
-                          Add Account
-                        </Button>
-                      </Stack>
-                    }
-                  >
-                    <Stack flexDirection="column" gap="sm">
-                      {accounts.map((account) => {
-                        return (
-                          <AccountTile
-                            key={account.accountName + account.networkId}
-                            account={account}
-                            onClick={(account) =>
-                              router.push(
-                                `/live/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
-                              )
-                            }
-                          />
-                        );
-                      })}
-                    </Stack>
-                  </CardContentBlock>
-                </CardFixedContainer>
-              </Stack>
-            ),
-        )}
+                <Stack flexDirection="column" gap="sm">
+                  {accounts.map((account) => {
+                    return (
+                      <AccountTile
+                        key={account.accountName + account.networkId}
+                        account={account}
+                        onClick={(account) =>
+                          router.push(
+                            `/live/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
+                          )
+                        }
+                      />
+                    );
+                  })}
+                </Stack>
+              </CardContentBlock>
+            </CardFixedContainer>
+          </Stack>
+        ))}
     </Stack>
   );
 }
