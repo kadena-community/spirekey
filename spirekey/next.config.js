@@ -30,12 +30,12 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/accounts/:raccount/devices',
+        source: '/live/accounts/:raccount/devices',
         destination: '/',
         permanent: false,
       },
       {
-        source: '/accounts',
+        source: '/live/accounts',
         destination: '/',
         permanent: false,
       },

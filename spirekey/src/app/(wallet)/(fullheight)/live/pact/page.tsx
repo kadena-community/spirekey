@@ -15,7 +15,7 @@ import {
   CardFixedContainer,
   CardFooterGroup,
 } from '@kadena/kode-ui/patterns';
-import { Account } from '@kadena/spirekey-types';
+import { Account } from '../../../../../../../packages/types/src';
 import { ChainId } from '@kadena/types';
 import { useState } from 'react';
 

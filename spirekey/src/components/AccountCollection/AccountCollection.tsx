@@ -98,7 +98,7 @@ export default function AccountCollection() {
                             account={account}
                             onClick={(account) =>
                               router.push(
-                                `/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
+                                `/live/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
                               )
                             }
                           />
