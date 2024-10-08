@@ -2,6 +2,7 @@
 
 import logo from '@/assets/images/SpireKey-logo.svg';
 import { Footer } from '@/components/Footer/Footer';
+import { MonoLaunch } from '@kadena/kode-icons/system';
 import {
   Grid,
   GridItem,
@@ -48,7 +49,13 @@ export default function Home() {
                     SpireKey into your application or read the technical
                     documention described in the KIP's.
                   </Text>
-                  <Heading variant="h6">External Resources</Heading>
+                  <Heading variant="h6">
+                    Resources{' '}
+                    <MonoLaunch
+                      style={{ display: 'inline', verticalAlign: 'middle' }}
+                      title="External Resource Links"
+                    />
+                  </Heading>
                   <ul>
                     <li>
                       <TextLink
@@ -113,7 +120,13 @@ export default function Home() {
                     generate and store key pairs directly on their hardware
                     devices.
                   </Text>
-                  <Heading variant="h6">External Resources</Heading>
+                  <Heading variant="h6">
+                    Resources{' '}
+                    <MonoLaunch
+                      style={{ display: 'inline', verticalAlign: 'middle' }}
+                      title="External Resource Links"
+                    />
+                  </Heading>
                   <ul>
                     <li>
                       <TextLink
