@@ -1,6 +1,5 @@
 'use client';
 
-import { useFlag } from '@/hooks/useFlag';
 import { useAccounts } from '@/resolvers/accounts';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
@@ -13,7 +12,6 @@ const AccountCollection = dynamic(
 
 export default function Accounts() {
   const { accounts, loading } = useAccounts();
-  useFlag('activate_mainnet');
   const router = useRouter();
 
   useEffect(() => {
