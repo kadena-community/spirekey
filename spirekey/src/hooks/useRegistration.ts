@@ -60,7 +60,7 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
           variant: 'warning',
           title: 'Please migrate your account',
           message:
-            'Your account was created before the support of mnemonic phrases. Please create a new account and transfer your funds.',
+            'Your account was created before the support of seed phrases. Please create a new account and transfer your funds.',
           timeout: 30_000,
         });
       setKeypair(recoveredKey);
