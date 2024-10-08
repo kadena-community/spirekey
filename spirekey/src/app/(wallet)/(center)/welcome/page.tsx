@@ -42,12 +42,12 @@ export default function Home() {
                 <Stack gap="md" flexDirection="column" height="100%">
                   <Heading variant="h5">Developers</Heading>
                   <Text as="p">
-                    Kadena SpireKey leverages web authentication standards to
-                    provide a secure backend that enables end users to securely
-                    generate and store key pairs directly on their hardware
-                    devices. Get started with the SpireKey SDK to integrate
-                    SpireKey into your application or read the technical
-                    documention described in the KIP's.
+                    Kadena SpireKey leverages WebAuthn standards to deliver a
+                    secure backend, enabling end users to generate and store
+                    keypairs directly on their hardware devices. Start
+                    integrating SpireKey into your application with the SpireKey
+                    SDK, or explore the technical documentation outlined in the
+                    KIPs.
                   </Text>
                   <Heading variant="h6">
                     Resources{' '}
@@ -115,10 +115,10 @@ export default function Home() {
                 >
                   <Heading variant="h5">Users</Heading>
                   <Text as="p">
-                    Kadena SpireKey leverages web authentication standards to
-                    provide a secure backend that enables end users to securely
-                    generate and store key pairs directly on their hardware
-                    devices.
+                    Kadena SpireKey provides a more secure and convenient way to
+                    access account information, connect to applications, and
+                    sign transactions. All you need is your personal device to
+                    scan, touch, and go!
                   </Text>
                   <Heading variant="h6">
                     Resources{' '}
@@ -129,12 +129,35 @@ export default function Home() {
                   </Heading>
                   <ul>
                     <li>
-                      <TextLink
-                        style={textLinkStyle}
-                        href="https://www.kadena.io/spirekey"
-                      >
-                        SpireKey Info
-                      </TextLink>
+                      <dl>
+                        <dt>
+                          <TextLink
+                            style={textLinkStyle}
+                            href="https://www.kadena.io/spirekey"
+                          >
+                            SpireKey Info
+                          </TextLink>
+                        </dt>
+                        <dd>
+                          Experience SpireKey authentication showcased with
+                          wallet functionality.
+                        </dd>
+                      </dl>
+                    </li>
+                    <li>
+                      <dl>
+                        <dt>
+                          <TextLink
+                            style={textLinkStyle}
+                            href="https://proof.kadena.io"
+                          >
+                            Proof of Attendance
+                          </TextLink>
+                        </dt>
+                        <dd>
+                          Mint your own NFT using SpireKey authentication.
+                        </dd>
+                      </dl>
                     </li>
                     <li>
                       <TextLink
