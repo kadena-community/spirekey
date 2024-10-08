@@ -5,8 +5,8 @@ import Providers from '@/app/providers';
 import favicon from '@/assets/images/favicon.png';
 import faviconSVG from '@/assets/images/favicon.svg';
 
-const BetaNotification = dynamic(
-  () => import('@/components/BetaNotification/BetaNotification'),
+const IntendNotification = dynamic(
+  () => import('@/components/IntendNotification/IntendNotification'),
   {
     ssr: false,
   },
@@ -33,7 +33,7 @@ export default function RootLayout({
         <link rel="icon" href={faviconSVG.src} type="image/svg+xml" />
       </head>
       <body>
-        <BetaNotification />
+        <IntendNotification />
         <Providers>
           <Stack
             alignItems="center"
