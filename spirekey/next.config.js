@@ -35,6 +35,11 @@ const nextConfig = {
         permanent: false,
       },
       {
+        source: '/live',
+        destination: '/',
+        permanent: false,
+      },
+      {
         source: '/live/accounts',
         destination: '/',
         permanent: false,
