@@ -90,7 +90,7 @@ export default function AccountCollection() {
                         account={account}
                         onClick={(account) =>
                           router.push(
-                            `/live/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
+                            `/demowallet/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
                           )
                         }
                       />

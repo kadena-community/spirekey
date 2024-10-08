@@ -82,7 +82,9 @@ export default function AccountLayout({ children }: { children: any }) {
               </Stack>
               <Button
                 onPress={() =>
-                  push(`/live/accounts/${raccount}/devices/${cid}/transfer`)
+                  push(
+                    `/demowallet/accounts/${raccount}/devices/${cid}/transfer`,
+                  )
                 }
               >
                 New Transfer
