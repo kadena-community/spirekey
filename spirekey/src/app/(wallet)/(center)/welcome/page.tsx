@@ -14,6 +14,10 @@ import {
 import { CardFixedContainer } from '@kadena/kode-ui/patterns';
 import Image from 'next/image';
 
+const textLinkStyle = {
+  padding: 0,
+};
+
 export default function Home() {
   return (
     <Stack
@@ -47,22 +51,22 @@ export default function Home() {
                   <Heading variant="h6">Resources</Heading>
                   <ul>
                     <li>
-                      <TextLink href="https://www.npmjs.com/package/@kadena/spirekey-sdk">
+                      <TextLink style={textLinkStyle} href="https://www.npmjs.com/package/@kadena/spirekey-sdk">
                         SpireKey SDK
                       </TextLink>
                     </li>
                     <li>
-                      <TextLink href="https://github.com/kadena-io/KIPs/pull/52/files?short_path=2bff507#diff-2bff5073da0885a117721a440a64c8e1da4add449227f697827ab053efc5c824">
+                      <TextLink style={textLinkStyle} href="https://github.com/kadena-io/KIPs/pull/52/files?short_path=2bff507#diff-2bff5073da0885a117721a440a64c8e1da4add449227f697827ab053efc5c824">
                         KIP-0023
                       </TextLink>
                     </li>
                     <li>
-                      <TextLink href="https://github.com/kadena-io/KIPs/pull/59/files?short_path=fde4d08#diff-fde4d08845090220a9283cea68e55c61b4d408fe9b18226f619f0669819a7297">
+                      <TextLink style={textLinkStyle} href="https://github.com/kadena-io/KIPs/pull/59/files?short_path=fde4d08#diff-fde4d08845090220a9283cea68e55c61b4d408fe9b18226f619f0669819a7297">
                         KIP-0030
                       </TextLink>
                     </li>
                     <li>
-                      <TextLink href="https://discord.gg/kadena" withIcon>
+                      <TextLink style={textLinkStyle} href="https://discord.gg/kadena" withIcon>
                         Discord
                       </TextLink>
                     </li>
@@ -100,12 +104,12 @@ export default function Home() {
                   <Heading variant="h6">Resources</Heading>
                   <ul>
                     <li>
-                      <TextLink href="https://www.kadena.io/spirekey">
+                      <TextLink style={textLinkStyle} href="https://www.kadena.io/spirekey">
                         SpireKey Info
                       </TextLink>
                     </li>
                     <li>
-                      <TextLink href="https://discord.gg/kadena">
+                      <TextLink style={textLinkStyle} href="https://discord.gg/kadena">
                         Discord
                       </TextLink>
                     </li>
