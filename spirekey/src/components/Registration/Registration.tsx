@@ -56,7 +56,7 @@ export default function Registration({
 
     if (!pathname.includes('embedded')) {
       router.push(
-        `/live/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
+        `/demowallet/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
       );
       return;
     }
@@ -75,7 +75,7 @@ export default function Registration({
 
     if (!pathname.includes('embedded')) {
       router.push(
-        `/live/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
+        `/demowallet/accounts/${account.accountName}/devices/${account.devices[0]['credential-id']}`,
       );
       return;
     }
