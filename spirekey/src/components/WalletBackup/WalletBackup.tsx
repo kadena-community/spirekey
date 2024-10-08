@@ -46,8 +46,8 @@ export default function WalletBackup() {
       )}
 
       <CardContentBlock
-        title="Mnemonic"
-        description="Make sure to keep your mnemonic phrase safe! Anyone with access to your mnemonic phrase can access your account. Store it securely offline, and never share it with anyone."
+        title="Seed Phrase"
+        description="Make sure to keep your seed phrase safe! Anyone with access to your seed phrase can access your account. Store it securely offline, and never share it with anyone."
       >
         <Stack justifyContent="flex-end">
           <Button
@@ -55,7 +55,7 @@ export default function WalletBackup() {
             isDisabled={!!mnemonic}
             onPress={handleReveal}
           >
-            Reveal Mnemonic
+            Reveal Seed Phrase
           </Button>
         </Stack>
       </CardContentBlock>

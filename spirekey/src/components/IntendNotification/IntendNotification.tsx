@@ -21,12 +21,11 @@ export default function IntendNotification() {
           localStorage.setItem(KEY, 'true');
         }}
       >
-        <NotificationHeading>Notice</NotificationHeading>
+        <NotificationHeading>Disclaimer</NotificationHeading>
         <div>
           The spirekey.kadena.io application is intended for demonstration
           purposes to interact with SpireKey-enabled dApps. Existing wallets
-          should implement Kadena SpireKey Connect to enhance their user
-          experience.
+          should implement Kadena SpireKey to enhance their user experience.
         </div>
       </Notification>
     </Stack>

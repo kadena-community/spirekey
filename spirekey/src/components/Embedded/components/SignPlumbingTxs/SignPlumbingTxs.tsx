@@ -89,11 +89,11 @@ export const SignPlumbingTxs: FC<SignPlumbingTxsProps> = ({
                       variant: 'error',
                       title: 'Please migrate your account',
                       message:
-                        'Your account was created before the support of mnemonic phrases. Please create a new account and transfer your funds.',
+                        'Your account was created before the support of seed phrases. Please create a new account and transfer your funds.',
                     });
 
                     throw new Error(
-                      'Your account was created before the support of mnemonic phrases',
+                      'Your account was created before the support of seed phrases',
                     );
                   }
                   const signedTx = signWithKeyPair({
