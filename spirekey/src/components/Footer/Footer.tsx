@@ -14,6 +14,13 @@ export const Footer: FC = () => {
       className={footerClass}
     >
       <TextLink
+        href="https://discord.com/invite/kadena"
+        target="_blank"
+        isCompact
+      >
+        Discord
+      </TextLink>
+      <TextLink
         href="https://docs.kadena.io/build/authentication"
         target="_blank"
         isCompact

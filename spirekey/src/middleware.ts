@@ -74,9 +74,9 @@ export const config = {
     '/recover',
     '/pact',
     '/embedded/notification',
-    '/accounts/:raccount/devices/:cid/',
-    '/accounts/:raccount/devices/:cid/transfer',
-    '/accounts/:raccount/devices/:cid/transactions',
-    '/accounts/:raccount/devices/:cid/settings',
+    '/live/accounts/:raccount/devices/:cid/',
+    '/live/accounts/:raccount/devices/:cid/transfer',
+    '/live/accounts/:raccount/devices/:cid/transactions',
+    '/live/accounts/:raccount/devices/:cid/settings',
   ],
 };

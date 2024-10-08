@@ -69,6 +69,7 @@ export class ConnectPage {
     await this.recoverStartButton.click();
   }
   async recover() {
+    await this.page.waitForTimeout(1000);
     await this.recoverButton.click();
   }
 
