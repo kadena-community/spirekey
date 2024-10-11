@@ -101,7 +101,7 @@ export default function Home() {
                       href="https://www.npmjs.com/package/@kadena/spirekey-sdk"
                       variant="outlined"
                     >
-                      Get started
+                      Install SDK Package
                     </Link>
                   </Stack>
                 </Stack>
