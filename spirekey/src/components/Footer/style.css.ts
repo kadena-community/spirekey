@@ -4,9 +4,11 @@ import { globalStyle } from '@vanilla-extract/css';
 
 export const footerClass = style({
   paddingInline: token('spacing.md'),
+  marginBlockStart: token('spacing.sm'),
+  paddingInlineEnd: token('spacing.md'),
   ...responsiveStyle({
     md: {
-      paddingInline: 0,
+      // paddingInline: 0,
     },
   }),
 });
