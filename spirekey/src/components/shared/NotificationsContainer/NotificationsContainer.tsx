@@ -7,6 +7,10 @@ import { mapVariantToIntent } from './utils';
 export const NotificationContainer = () => {
   const { notifications } = useNotifications();
 
+  if (notifications.length === 0) {
+    return null
+  }
+
   return (
     <div className={styles.wrapper}>
       <AnimatePresence>

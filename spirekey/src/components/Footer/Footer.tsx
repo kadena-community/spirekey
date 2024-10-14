@@ -10,7 +10,6 @@ export const Footer: FC = () => {
       gap="md"
       justifyContent="flex-end"
       width="100%"
-      marginBlock="xxl"
       className={footerClass}
     >
       <TextLink

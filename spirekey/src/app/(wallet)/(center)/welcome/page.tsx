@@ -14,6 +14,7 @@ import {
 } from '@kadena/kode-ui';
 import { CardFixedContainer } from '@kadena/kode-ui/patterns';
 import Image from 'next/image';
+import { bodyTextContainer, dd, iconClass, li, title, ul, wrapperClass } from './page.css';
 
 const textLinkStyle = {
   padding: 0,
@@ -23,8 +24,8 @@ export default function Home() {
   return (
     <Stack
       flexDirection="column"
+      className={wrapperClass}
       justifyContent="center"
-      style={{ height: '100' }}
       flex={1}
     >
       <CardFixedContainer>
@@ -40,24 +41,32 @@ export default function Home() {
             <Grid columns={{ xs: 1, md: 2 }} gap="xxxl">
               <GridItem>
                 <Stack gap="md" flexDirection="column" height="100%">
-                  <Heading variant="h5">Developers</Heading>
-                  <Text as="p">
-                    Kadena SpireKey leverages WebAuthn standards to deliver a
-                    secure backend, enabling end users to generate and store
-                    keypairs directly on their hardware devices. Start
-                    integrating SpireKey into your application with the SpireKey
-                    SDK, or explore the technical documentation outlined in the
-                    KIPs.
-                  </Text>
-                  <Heading variant="h6">
-                    Resources{' '}
+                  <Heading className={title} variant="h5">
+                    Developers
+                  </Heading>
+                  <Stack gap='n2' flexDirection='column' className={bodyTextContainer}>
+                    <Text as="p">
+                      Kadena SpireKey leverages WebAuthn standards to deliver a
+                      secure backend, enabling end users to generate and store
+                      keypairs directly on their hardware devices.
+                    </Text>
+                    <Text as="p">
+                      Start integrating SpireKey into your application with the SpireKey
+                      SDK, or explore the technical documentation outlined in the
+                      KIPs.
+                    </Text>
+                  </Stack>
+                  <Heading className={title} variant="h6">
+                    <Text color='emphasize'>Resources</Text>{' '}
                     <MonoLaunch
+                      fontSize={14}
                       style={{ display: 'inline', verticalAlign: 'middle' }}
                       title="External Resource Links"
+                      className={iconClass}
                     />
                   </Heading>
-                  <ul>
-                    <li>
+                  <ul className={ul}>
+                    <li className={li}>
                       <TextLink
                         style={textLinkStyle}
                         href="https://www.npmjs.com/package/@kadena/spirekey-sdk"
@@ -65,7 +74,7 @@ export default function Home() {
                         SpireKey SDK
                       </TextLink>
                     </li>
-                    <li>
+                    <li className={li}>
                       <TextLink
                         style={textLinkStyle}
                         href="https://github.com/kadena-io/KIPs/pull/52/files?short_path=2bff507#diff-2bff5073da0885a117721a440a64c8e1da4add449227f697827ab053efc5c824"
@@ -73,7 +82,7 @@ export default function Home() {
                         KIP-0023
                       </TextLink>
                     </li>
-                    <li>
+                    <li className={li}>
                       <TextLink
                         style={textLinkStyle}
                         href="https://github.com/kadena-io/KIPs/pull/59/files?short_path=fde4d08#diff-fde4d08845090220a9283cea68e55c61b4d408fe9b18226f619f0669819a7297"
@@ -81,7 +90,7 @@ export default function Home() {
                         KIP-0030
                       </TextLink>
                     </li>
-                    <li>
+                    <li className={li}>
                       <TextLink
                         style={textLinkStyle}
                         href="https://discord.gg/kadena"
@@ -113,22 +122,31 @@ export default function Home() {
                   height="100%"
                   marginBlockStart={{ xs: 'md', md: 'n0' }}
                 >
-                  <Heading variant="h5">Users</Heading>
-                  <Text as="p">
-                    Kadena SpireKey provides a more secure and convenient way to
-                    access account information, connect to applications, and
-                    sign transactions. All you need is your personal device to
-                    scan, touch, and go!
-                  </Text>
-                  <Heading variant="h6">
-                    Resources{' '}
+                  <Heading className={title} variant="h5">
+                    Users
+                  </Heading>
+                  <Stack gap='n2' flexDirection='column' className={bodyTextContainer}>
+                    <Text as="p">
+                      Kadena SpireKey provides a more secure and convenient way to
+                      access account information, connect to applications, and
+                      sign transactions.
+                    </Text>
+                    <Text as="p">
+                      All you need is your personal device to
+                      scan, touch, and go!
+                    </Text>
+                  </Stack>
+                  <Heading className={title} variant="h6">
+                    <Text color='emphasize'>Resources</Text>{' '}
                     <MonoLaunch
+                      fontSize={14}
                       style={{ display: 'inline', verticalAlign: 'middle' }}
                       title="External Resource Links"
+                      className={iconClass}
                     />
                   </Heading>
-                  <ul>
-                    <li>
+                  <ul className={ul}>
+                    <li className={li}>
                       <dl>
                         <dt>
                           <TextLink
@@ -138,13 +156,15 @@ export default function Home() {
                             SpireKey Info
                           </TextLink>
                         </dt>
-                        <dd>
-                          Experience SpireKey authentication showcased with
-                          wallet functionality.
+                        <dd className={dd}>
+                          <Text as="span" size='small'>
+                            Experience SpireKey authentication showcased with
+                            wallet functionality.
+                          </Text>
                         </dd>
                       </dl>
                     </li>
-                    <li>
+                    <li className={li}>
                       <dl>
                         <dt>
                           <TextLink
@@ -154,12 +174,14 @@ export default function Home() {
                             Proof of Attendance
                           </TextLink>
                         </dt>
-                        <dd>
-                          Mint your own NFT using SpireKey authentication.
+                        <dd className={dd}>
+                          <Text as="span" size='small'>
+                            Mint your own NFT using SpireKey authentication.
+                          </Text>
                         </dd>
                       </dl>
                     </li>
-                    <li>
+                    <li className={li}>
                       <TextLink
                         style={textLinkStyle}
                         href="https://discord.gg/kadena"
