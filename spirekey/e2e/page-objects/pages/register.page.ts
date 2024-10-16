@@ -4,11 +4,15 @@ export class RegisterPage {
   private page: Page;
   private continueButton: Locator;
   private createWalletButton: Locator;
+  private termsCheckBox: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.continueButton = this.page.getByRole('button', { name: 'Create' });
     this.createWalletButton = this.page.getByRole('button', { name: 'Create' });
+    this.termsCheckBox = page.getByRole('checkbox', {
+      name: 'I have read & agree to the',
+    });
   }
 
   async setNetworkTo(
@@ -20,7 +24,15 @@ export class RegisterPage {
       .click();
   }
 
+  async acceptTerms() {
+    await this.termsCheckBox.waitFor();
+    await this.termsCheckBox.click({ force: true });
+  }
+
   async createWallet(): Promise<void> {
+    await this.createWalletButton.isDisabled();
+    await this.acceptTerms();
+    await !this.createWalletButton.isDisabled();
     await this.createWalletButton.click();
   }
 
