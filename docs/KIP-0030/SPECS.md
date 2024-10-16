@@ -3,103 +3,157 @@
 To enable an application to use Kadena SpireKey, the application must be able to
 do the following:
 
-- Connect to the SpireKey URL to register a new account or access an existing
-  account.
-- Request a signature from a SpireKey account and handle the value returned from
-  the SpireKey URL.
+Install the sdk with:
 
-## Connect to Kadena SpireKey
+```sh
+# yarn add @kadena/spirekey-sdk
+# npm i @kadena/spirekey-sdk
+pnpm add @kadena/spirekey-sdk
+```
 
-From your application, initiate a `GET` request to the Kadena SpireKey /connect
-endpoint:
-[https://spirekey.kadena.io/connect](https://spirekey.kadena.io/connect).
+Connect an account to your dApp:
 
-The `GET` request expects you to provide the following search parameters:
+```ts
+import { connect } from '@kadena/spirekey-sdk';
 
-| Parameter  | Type     | Description                                                                                                                                                                                |
-| :--------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| returnUrl  | string   | Specifies the application URL that SpireKey should return users to after connecting to register or access a SpireKey account.                                                              |
-| networkId  | string   | Specifies the network identifier for the transaction to be submitted on. For example, use the network identifier testnet04 for transactions to be submitted on the Kadena test network.    |
-| chainId    | string   | Specifies the chain identifier for the transaction to be submitted on.                                                                                                                     |
-| reason     | string?  | Specifies the reason you want application users to connect to a SpireKey account.                                                                                                          |
-| optimistic | boolean? | Determines whether SpireKey returns optimistically to your application before an account is confirmed on the blockchain. You can set this parameter to `false` to disable optimistic mode. |
+const someHandler = async () => {
+  try {
+    const account = await connect('testnet04', '5');
+  } catch (error) {
+    console.warn('User canceled signin', error);
+  }
+  // if you want to know if the account is ready for submitting transactions
+  // NOTE: you can in general start constructing your transaction before an account is ready
+  await account.isReady();
+};
+```
 
-### Registration and onboarding
+Sign for an transaction:
 
-After your application redirects users to
-[https://spirekey.kadena.io/connect](https://spirekey.kadena.io/connect), they
-are prompted to create a passkey if they don't already have a SpireKey account.
-In most cases, applications don't need to wait for the account to be created
-before preparing transactions. Therefore, by default, SpireKey uses optimistic
-mode to redirect users back to the application as soon as the transaction to
-create an account has been submitted.
+```ts
+import { connect } from '@kadena/spirekey-sdk';
 
-If you want to require an account to be created before users can interact with
-your application, you can either make use of the `pendingTxIds` parameter
-returned in the `user` object or set the `optimistic` parameter to `false`.
+const someHandler = async () => {
+  const account = yourConnectedAccount;
+  const tx = yourTransaction;
 
-### Return value
+  try {
+    // if you have multiple tx's to sign, you can provide them all at once
+    // provide the accounts in the optional array if you want to wait for
+    // the account to be ready before submitting
+    const { transactions, isReady } = await sign(
+      [tx],
+      // this array is optional and can be omitted
+      [
+        {
+          accountName: account.accountName,
+          networkId: account.networkId,
+          chainIds: account.chainIds,
+          requestedFungibles: [
+            {
+              fungible: 'coin',
+              amount: amount, // The requested amount
+              target: '5', // Optional: The chainId to target
+            },
+          ],
+        },
+      ],
+    );
+  } catch (error) {
+    console.warn('User canceled signing');
+  }
 
-After connecting to an account in SpireKey, users are redirected to the
-`returnUrl` you specify for your application. As part of the redirection,
-SpireKey appenda a `user` object in the `searchParameters`. This object
-describes information you can use to address the user or to prepare a
-transaction.
+  await isReady();
 
-#### User
+  // submit your tx with @kadena/client
+  transactions.map(async (tx) => {
+    const res = await client.submit(tx);
+    client.pollOne(res);
+  });
+};
+```
 
-| Parameter    | Type         | Description                                                                            |
-| :----------- | :----------- | :------------------------------------------------------------------------------------- |
-| alias        | string       | Specifies an alias to use for the account as a display name.                           |
-| accountName  | string       | Specifies the `c:account` a user has connected to the application.                     |
-| pendingTxIds | string[]     | Specifies an array of pending transactions related to account creation or maintenance. |
-| credentials  | Credential[] | Specifies the credential for the account. See [Credential](#credential).               |
+## `connect(networkId: string, chainId: ChainId)`
 
-#### Credential
+To connect an account you need to provide the `networkId` and `chainId`.
+SpireKey will then take care of making the account available on that `networkId`
+and `chainId`. If your dApp relies on the account existing on the provided
+`networkId` and `chainId` combination, you can wait for the account to be ready
+before continuing.
 
-Every SpireKey account can return one or more credentials when connected. The
-number of credentials does not have to match the number of credentials available
-on the blockchain. The credentials returned are the credentials the user wants
-to use to submit transactions in your application. When multiple credentials are
-returned, you should prepare the transaction with all credentials signing for
-the same relevant `capabilities`.
+```ts
+import { connect } from '@kadena/spirekey-sdk';
 
-| Parameter | Type   | Description                                                                                                |
-| :-------- | :----- | :--------------------------------------------------------------------------------------------------------- |
-| type      | string | Specifies the credential type. This parameter can specify `WebAuthn` or `ED25519` as the signature scheme. |
-| publicKey | string | Specifies the public key for the account returned.                                                         |
-| id        | string | Specifies the credential identifier for the account returned.                                              |
+const someHandler = async () => {
+  try {
+    const account = await connect('testnet04', '5');
+  } catch (error) {
+    console.warn('User canceled signin', error);
+  }
+  // if you want to know if the account is ready for submitting transactions
+  // NOTE: you can in general start constructing your transaction before an account is ready
+  await account.isReady();
+};
+```
 
-## Request a signature
+## `sign(transactionList: IUnsignedCommand[], accounts?: Account[])`
 
-When you prepare a transaction for the user to sign, use the public keys from
-the credentials included in the
-[connect response](#connect-to-a-spirekey-account) to construct the transaction.
-When your transaction is ready to be signed, you need to `base64` encode the
-stringified JSON of the transaction.
+You can sign one or more transactions using the `sign` function. Additionally if
+your dApp requires the user(s) to have fungible tokens available for the
+transaction, you can provide an array with the required fungible tokens
+requirements. SpireKey will then prepare the account to have the tokens
+transfered to the chain your dApp operates on and allow your dApp to be notified
+when the transaction is ready.
 
-Transactions can grow in size well beyond what is accepted in
-`searchParameters`. To enable users to sign these transactions, you should send
-the transaction parameters to the SpireKey endpoint using the anchor hashtag (#)
-instead of the searchParameter question mark (?). For example, a signature
-request might look like this:
-`https://spirekey.kadena.io/sign#transaction=encodedTx&returnUrl=www.mydapp.com`
+```ts
+import { connect } from '@kadena/spirekey-sdk';
 
-| Parameter   | Type   | Description                                                         |
-| :---------- | :----- | :------------------------------------------------------------------ |
-| transaction | string | Specifies the `base64` encoded JSON stringified transaction object. |
-| returnUrl   | string | Specifies the URL the user needs to be redirected to after signing. |
+const someHandler = async () => {
+  const account = yourConnectedAccount;
+  const tx = yourTransaction;
 
-Signature requests can include an explanation of what the user is signing for.
-If the explanation is accepted and the user consents by signing the transaction,
-the signed transaction is returned to the application as a parameter in the
-return URL following an anchor hashtag (#). transaction, the user will be
-redirected back to the dApp. The user will be redirected with the signed
-transaction. The signed transaction will be passed as a parameter in the url.
-Instead of the usual `?` sign however, it will be provided after a `#` sign. You
-can then collect or combine additional signatures, as required, to finalize the
-transaction for execution.
+  // if you have multiple tx's to sign, you can provide them all at once
+  // provide the accounts in the optional array if you want to wait for
+  // the account to be ready before submitting
+  const { transactions, isReady } = await sign(
+    [tx],
+    // this array is optional and can be omitted
+    [
+      {
+        accountName: account.accountName,
+        networkId: account.networkId,
+        chainIds: account.chainIds,
+        requestedFungibles: [
+          {
+            fungible: 'coin',
+            amount: amount, // The requested amount
+            target: '5', // Optional: The chainId to target
+          },
+        ],
+      },
+    ],
+  );
+  // Wait for the transactions SpireKey has prepared before submitting
+  await isReady();
 
-| Parameter   | Type   | Description                                                         |
-| :---------- | :----- | :------------------------------------------------------------------ |
-| transaction | string | Specifies the `base64` encoded JSON stringified transaction object. |
+  // submit your tx with @kadena/client
+  transactions.map(async (tx) => {
+    const res = await client.submit(tx);
+    client.pollOne(res);
+  });
+};
+```
+
+## `initSpireKey(config?: InitConfig)`
+
+The `initSpireKey` function is optional and can be used to configure the SDK to
+target a different wallet using a `config` object. When omitted the SDK will
+will use `https://spirekey.kadena.io`.
+
+If you do want to use a different host, you can provide it via the config:
+
+### InitConfig
+
+| key     | type   |
+| :------ | :----- |
+| hostUrl | string |
