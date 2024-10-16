@@ -89,10 +89,11 @@ const Sign: FC<IProps> = (props) => {
     };
   }, []);
   const onSign = async () => {
-    const credentialId = txAccounts.accounts[0].devices[0]['credential-id'];
+    const device = txAccounts.accounts[0].devices[0];
+    const credentialId = device['credential-id'];
     const res = await startAuthentication({
       challenge: tx.hash,
-      rpId: window.location.hostname,
+      rpId: device.domain.replace(/https?:\/\/|:\d+$/g, ''),
       allowCredentials: credentialId
         ? [{ id: credentialId, type: 'public-key' }]
         : undefined,
