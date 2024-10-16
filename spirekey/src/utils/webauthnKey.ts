@@ -10,6 +10,7 @@ import {
 import * as asn1js from 'asn1js';
 import cbor from 'cbor';
 import elliptic from 'elliptic';
+import { getHostname } from './getHostname';
 
 const getPublicKey = async (res: RegistrationResponseJSON) => {
   const { authData } = cbor.decode(
@@ -77,7 +78,7 @@ export const getNewWebauthnKey = async (displayName: string) => {
     challenge: bufferToBase64URLString(Buffer.from('some-random-string')),
     rp: {
       name: 'Kadena Spirekey',
-      id: window.location.hostname,
+      id: getHostname(),
     },
     pubKeyCredParams: [
       {
