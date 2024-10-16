@@ -11,6 +11,7 @@ export class ConnectPage {
   private createWalletButton: Locator;
   private connectWalletButton: Locator;
   private createAccountButton: Locator;
+  private termsCheckBox: Locator;
   private completeButton: Locator;
   private webauthnHelper: WebAuthNHelper;
 
@@ -26,6 +27,9 @@ export class ConnectPage {
     this.connectWalletButton = page.getByRole('button', { name: 'Connect' });
     this.createAccountButton = page.getByRole('button', { name: 'Create' });
     this.completeButton = page.getByRole('button', { name: 'Complete' });
+    this.termsCheckBox = page.getByRole('checkbox', {
+      name: 'I have read & agree to the',
+    });
 
     this.webauthnHelper = new WebAuthNHelper();
   }
@@ -73,7 +77,16 @@ export class ConnectPage {
     await this.recoverButton.click();
   }
 
+  async acceptTerms() {
+    await this.termsCheckBox.waitFor();
+    await this.termsCheckBox.click({ force: true });
+  }
+
   async createNewWallet() {
+    await this.createWalletButton.isDisabled();
+
+    await this.acceptTerms();
+    await !this.createWalletButton.isDisabled();
     await this.createWalletButton.click();
   }
 
