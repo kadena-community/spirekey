@@ -58,6 +58,8 @@ export class ConnectPage {
   }
 
   async connectWallet() {
+    await this.connectWalletButton.isDisabled();
+    await this.acceptTerms();
     await this.connectWalletButton.click();
   }
 
