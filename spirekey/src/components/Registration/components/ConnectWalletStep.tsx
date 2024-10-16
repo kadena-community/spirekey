@@ -6,7 +6,7 @@ import { FLOWTYPE } from '@/components/OnBoarding/components/OnBoardingStepper/u
 import { ConnectWalletAnimation } from '@/components/RegistrationAnimations/ConnectWalletAnimation';
 import { WalletAnimation } from '@/components/RegistrationAnimations/WalletAnimation';
 import { useWallet } from '@/hooks/useWallet';
-import { Button, Stack } from '@kadena/kode-ui';
+import { Button, Checkbox, Stack } from '@kadena/kode-ui';
 import { FC, useState } from 'react';
 
 interface IProps {
@@ -27,6 +27,7 @@ export const ConnectWalletStep: FC<IProps> = ({
   steps,
 }) => {
   const [activeStep, setActiveStep] = useState<number | undefined>(undefined);
+  const [hasReadToS, setHasReadTos] = useState(false);
   const [hoveredConnectWallet, setHoveredConnectWallet] = useState(false);
   const [hoveredCreateWallet, setHoveredCreateWallet] = useState(false);
   const { getWallet } = useWallet();
@@ -54,7 +55,8 @@ export const ConnectWalletStep: FC<IProps> = ({
       <OnBoardingStepper step={activeStep} steps={steps} />
       <LayoutContext>
         <WalletAnimation
-          disableCreateButton={hasWallet}
+          disableCreateButton={hasWallet || !hasReadToS}
+          disableImportButton={!hasReadToS}
           animateImport={hoveredConnectWallet}
           animateCreate={hoveredCreateWallet}
           onImportClick={handleImport}
@@ -64,36 +66,57 @@ export const ConnectWalletStep: FC<IProps> = ({
       </LayoutContext>
 
       <LayoutActions>
-        <Stack
-          as="span"
-          onMouseEnter={() => {
-            setHoveredConnectWallet(true);
-          }}
-          onMouseLeave={() => {
-            setHoveredConnectWallet(false);
-          }}
-        >
-          <Button
-            variant={hasWallet ? 'primary' : 'outlined'}
-            onPress={handleImport}
-          >
-            Connect
-          </Button>
-        </Stack>
-
-        {!hasWallet && (
-          <Stack
-            as="span"
-            onMouseEnter={() => {
-              setHoveredCreateWallet(true);
-            }}
-            onMouseLeave={() => {
-              setHoveredCreateWallet(false);
-            }}
-          >
-            <Button onPress={handleCreate}>Create</Button>
+        <Stack flexDirection="column" width="100%" gap="md" alignItems="center">
+          <Stack alignItems="center" gap="sm">
+            <Checkbox
+              onChange={() => setHasReadTos((v) => !v)}
+              key="HasReadToS"
+              value="true"
+              aria-label="I have read & agree to the Terms of Service"
+            >
+              I have read & agree to the
+            </Checkbox>
+            <a href="https://www.kadena.io/chainweaver-tos" target="_blank">
+              Terms of Service
+            </a>
           </Stack>
-        )}
+
+          <Stack width="100%" justifyContent="space-between">
+            <Stack
+              as="span"
+              onMouseEnter={() => {
+                setHoveredConnectWallet(true);
+              }}
+              onMouseLeave={() => {
+                setHoveredConnectWallet(false);
+              }}
+            >
+              <Button
+                isDisabled={!hasReadToS}
+                variant={hasWallet ? 'primary' : 'outlined'}
+                onPress={handleImport}
+              >
+                Connect
+              </Button>
+            </Stack>
+
+            {!hasWallet && (
+              <Stack
+                as="span"
+                onMouseEnter={() => {
+                  setHoveredCreateWallet(true);
+                }}
+                onMouseLeave={() => {
+                  setHoveredCreateWallet(false);
+                }}
+              >
+                <Button isDisabled={!hasReadToS} onPress={handleCreate}>
+                  Create
+                </Button>
+              </Stack>
+            )}
+          </Stack>
+        </Stack>
       </LayoutActions>
     </Layout>
   );
