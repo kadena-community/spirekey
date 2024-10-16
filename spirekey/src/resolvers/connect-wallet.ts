@@ -1,4 +1,5 @@
 import { useWallet } from '@/hooks/useWallet';
+import { getHostname } from '@/utils/getHostname';
 import { ApolloClient, gql, useLazyQuery } from '@apollo/client';
 import {
   kadenaDecrypt,
@@ -123,7 +124,7 @@ const getPubkeyFromPasskey = async (
 ): Promise<{ publicKey: string; secretKey: string; mnemonic?: string }> => {
   const { setWallet } = useWallet();
   const { response, id } = await startAuthentication({
-    rpId: window.location.hostname,
+    rpId: getHostname(),
     challenge: 'reconnectwallet',
     allowCredentials: getAllowedCredentials(cid),
   });

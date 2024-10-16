@@ -1,3 +1,4 @@
+import { getHostname } from '@/utils/getHostname';
 import { ApolloContextValue, gql, useLazyQuery } from '@apollo/client';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useAccount, useAccounts } from './accounts';
@@ -34,7 +35,7 @@ export const recoverAccount = async (
   if (!client) throw new Error('No client provided');
   const { id } = await startAuthentication({
     challenge: 'recoverchallenge',
-    rpId: location.hostname,
+    rpId: getHostname(),
   });
   const { data } = await client.query({
     query: getAccountsByCidQuery,
