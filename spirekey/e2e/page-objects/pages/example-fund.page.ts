@@ -8,6 +8,6 @@ export class ExampleFundPage {
   }
 
   async requestFunds() {
-    await this.fundButton.click();
+    await this.fundButton.click({ force: true });
   }
 }
