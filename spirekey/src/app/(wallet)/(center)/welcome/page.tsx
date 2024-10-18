@@ -2,23 +2,10 @@
 
 import logo from '@/assets/images/SpireKey-logo.svg';
 import { Footer } from '@/components/Footer/Footer';
-import { MonoLaunch } from '@kadena/kode-icons/system';
-import {
-  Grid,
-  GridItem,
-  Heading,
-  Link,
-  Stack,
-  Text,
-  TextLink,
-} from '@kadena/kode-ui';
+import { Grid, GridItem, Heading, Link, Stack, Text } from '@kadena/kode-ui';
 import { CardFixedContainer } from '@kadena/kode-ui/patterns';
 import Image from 'next/image';
-import { bodyTextContainer, dd, iconClass, li, title, ul, wrapperClass } from './page.css';
-
-const textLinkStyle = {
-  padding: 0,
-};
+import { bodyTextContainer, title, wrapperClass } from './page.css';
 
 export default function Home() {
   return (
@@ -44,20 +31,28 @@ export default function Home() {
                   <Heading className={title} variant="h5">
                     Developers
                   </Heading>
-                  <Stack gap='n2' flexDirection='column' className={bodyTextContainer}>
+                  <Stack
+                    gap="n2"
+                    flexDirection="column"
+                    className={bodyTextContainer}
+                  >
                     <Text as="p">
-                      The Chainweaver Lite demo wallet is intended for demonstration purposes only.<br/>
-                      Developers and users are <b>not</b> advised to store $KDA on this demo wallet.
-                      Instead, existing wallets and dApps should implement Kadena SpireKey SDK to enhance their user experience.
+                      The Chainweaver Lite demo wallet is intended for
+                      demonstration purposes only.
+                      <br />
+                      Developers and users are <b>not</b> advised to store $KDA
+                      on this demo wallet. Instead, existing wallets and dApps
+                      should implement Kadena SpireKey SDK to enhance their user
+                      experience.
                     </Text>
                     <Text as="p">
-                      Kadena SpireKey provides a more secure and convenient way to
-                      access account information, connect to applications, and
-                      sign transactions.
+                      Kadena SpireKey provides a more secure and convenient way
+                      to access account information, connect to applications,
+                      and sign transactions.
                     </Text>
                     <Text as="p">
-                      All you need is your personal device to
-                      scan, touch, and go!
+                      All you need is your personal device to scan, touch, and
+                      go!
                     </Text>
                   </Stack>
                   <Stack
