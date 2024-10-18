@@ -41,7 +41,7 @@ export const KeypairStep: FC<IProps> = ({
     <Layout
       title={steps[1]}
       description={
-        'your account to manage your web3 assets managed by your SpireKey wallet.'
+        'Create a new account or import and add an existing account tied to your wallet.'
       }
     >
       <OnBoardingStepper step={1} steps={steps} />

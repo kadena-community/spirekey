@@ -23,7 +23,7 @@ export default function IntendNotification() {
       >
         <NotificationHeading>Disclaimer</NotificationHeading>
         <div>
-          The spirekey.kadena.io application is intended for demonstration
+          The Chainweaver lite demo wallet is intended for demonstration
           purposes to interact with SpireKey-enabled dApps. Existing wallets
           should implement Kadena SpireKey to enhance their user experience.
         </div>

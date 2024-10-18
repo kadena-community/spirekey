@@ -46,8 +46,9 @@ export default function AccountCollection() {
     <Stack flexDirection="column" gap="xxxl" width="100%">
       <CardFixedContainer>
         <CardContentBlock
-          title="Kadena SpireKey Accounts"
-          description={`All of your available accounts with Kadena SpireKey`}
+          title="Chainweaver lite demo wallet"
+          description={`This page enables you to generate accounts directly on your hardware device without installing any code. 
+          This is a minimalist demo wallet to interact with any of the account(s) created.`}
           visual={
             <MonoSelectAll width={64} height={64} className={iconColorClass} />
           }
