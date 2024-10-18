@@ -35,11 +35,6 @@ const nextConfig = {
         permanent: false,
       },
       {
-        source: '/',
-        destination: '/',
-        permanent: false,
-      },
-      {
         source: '/accounts',
         destination: '/',
         permanent: false,
