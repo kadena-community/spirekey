@@ -51,8 +51,8 @@ export default function AccountLayout({ children }: { children: any }) {
     <Stack flexDirection="column" gap="xxxl" width="100%">
       <CardFixedContainer>
         <CardContentBlock
-          title="Account"
-          description={`Overview of your selected account`}
+          title="Account Details"
+          description={`Interact with your Kadena Spirekey generated account with Chainweaver lite demo wallet functionality.`}
           visual={
             <MonoAccountBalanceWallet
               width={64}

@@ -38,6 +38,7 @@ test('Recover SpireKey Account', async ({
       const connectPage = await exampleConnectPage.connect();
       await connectPage.startRecovery(credentials);
       await connectPage.recover();
+      await page.waitForTimeout(1000);
       await page
         .getByRole('heading', { name: 'Step 2: Fund your account' })
         .waitFor();

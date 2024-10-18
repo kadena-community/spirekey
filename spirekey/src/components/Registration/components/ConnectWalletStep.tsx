@@ -49,7 +49,7 @@ export const ConnectWalletStep: FC<IProps> = ({
     <Layout
       title="Connect Wallet"
       description={
-        'Do you wish to manage your wallet here on SpireKey? This will become your home of operation, your gateway into the a secure web 3 experience!'
+        'Generate a new wallet and account or connect to an existing Spirekey enabled wallet.'
       }
     >
       <OnBoardingStepper step={activeStep} steps={steps} />

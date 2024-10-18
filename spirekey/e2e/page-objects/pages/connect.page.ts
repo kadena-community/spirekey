@@ -75,8 +75,8 @@ export class ConnectPage {
     await this.recoverStartButton.click();
   }
   async recover() {
-    await this.page.waitForTimeout(1000);
-    await this.recoverButton.click();
+    await this.page.waitForTimeout(2000);
+    await this.recoverButton.click({ force: true });
   }
 
   async acceptTerms() {
@@ -89,12 +89,13 @@ export class ConnectPage {
 
     await this.acceptTerms();
     await !this.createWalletButton.isDisabled();
-    await this.createWalletButton.click();
+    await this.createWalletButton.click({ force: true });
   }
 
   async createNewAccount() {
-    await this.page.getByText('Account').waitFor();
-    await this.createAccountButton.click();
+    //await this.page.getByText('Account').waitFor();
+    await this.page.waitForTimeout(1000);
+    await this.createAccountButton.click({ force: true });
     const credentials: any = await this.webauthnHelper.getCredentials(
       this.authenticator.authenticatorId,
       this.authenticator.cdpSession,

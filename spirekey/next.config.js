@@ -30,17 +30,12 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/demowallet/accounts/:raccount/devices',
+        source: '/accounts/:raccount/devices',
         destination: '/',
         permanent: false,
       },
       {
-        source: '/demowallet',
-        destination: '/',
-        permanent: false,
-      },
-      {
-        source: '/demowallet/accounts',
+        source: '/accounts',
         destination: '/',
         permanent: false,
       },
