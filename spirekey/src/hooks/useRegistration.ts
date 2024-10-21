@@ -6,6 +6,7 @@ import { useWallet } from '@/resolvers/create-wallet';
 import { useRecoverAccount } from '@/resolvers/recover-account';
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { countWithPrefixOnDomain } from '@/utils/countAccounts';
+import { getHostname } from '@/utils/getHostname';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { Account } from '@kadena/spirekey-types';
 import { ChainId } from '@kadena/types';
@@ -91,8 +92,9 @@ export const useRegistration = ({ chainId, networkId }: UseRegistration) => {
     setIsSubmitting(true);
     if (!keypair) throw new Error('No wallet available');
     try {
+      // get domain name and place the protocol in front of it
       const account = await createAccount({
-        domain: host,
+        domain: `${window.location.protocol}//${getHostname()}`,
         color,
         alias,
         networkId,

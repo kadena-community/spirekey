@@ -4,6 +4,7 @@ import {
   genesisPrivateKey,
   genesisPubKey,
 } from '@/utils/constants';
+import { getHostname } from '@/utils/getHostname';
 import { getRootkeyPasskeyName } from '@/utils/getNetworkDisplayName';
 import { l1Client } from '@/utils/shared/client';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
@@ -67,7 +68,7 @@ export const createWallet = async (
     chainId: chainId!,
     credentialId,
     pubkey: pubKey,
-    domain: window.location.hostname,
+    domain: `${window.location.protocol}//${getHostname()}`,
   });
   setWallet(networkId, credentialId);
   const decrypted = await kadenaDecrypt(tempPassword, privateKey);

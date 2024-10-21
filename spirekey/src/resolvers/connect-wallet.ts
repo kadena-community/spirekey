@@ -152,12 +152,8 @@ const getPubkeyFromPasskey = async (
   );
   const messageHash = new Uint8Array(await sha256(concatenatedData));
 
-  const foundKeys = await getCredentials(
-    networkId,
-    id,
-    window.location.hostname,
-    query,
-  );
+  const domain = `${window.location.protocol}//${getHostname()}`;
+  const foundKeys = await getCredentials(networkId, id, domain, query);
   const newRecoveredKeys = await Promise.all(
     [
       ec.recoverPubKey(messageHash, sig, 0),
