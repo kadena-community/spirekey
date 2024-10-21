@@ -17,7 +17,7 @@ import './global.css';
 import { layoutWrapperClass } from './styles.css';
 
 export const metadata: Metadata = {
-  title: 'Kadena SpireKey',
+  title: 'Chainweaver V3 Alpha',
   description: 'Elevate your blockchain journey',
 };
 

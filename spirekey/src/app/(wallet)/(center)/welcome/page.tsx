@@ -37,7 +37,7 @@ export default function Home() {
                     className={bodyTextContainer}
                   >
                     <Text as="p">
-                      The Chainweaver Lite demo wallet is intended for
+                      The Chainweaver V3 Alpha demo wallet is intended for
                       demonstration purposes only.
                       <br />
                       Developers and users are <b>not</b> advised to store $KDA
