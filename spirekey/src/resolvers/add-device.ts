@@ -1,5 +1,6 @@
 import { deviceColors } from '@/styles/shared/tokens.css';
 import { getWebAuthnPubkeyFormat } from '@/utils/get-webauthn-pubkey-format';
+import { getHostname } from '@/utils/getHostname';
 import { getNewWebauthnKey } from '@/utils/webauthnKey';
 import { ApolloContextValue, gql, useLazyQuery } from '@apollo/client';
 import { createTransactionBuilder } from '@kadena/client';
@@ -71,7 +72,7 @@ export const addDeviceTxs = async (
           account,
           publicKey: getWebAuthnPubkeyFormat(passKey),
           credentialId,
-          domain: window.location.origin,
+          domain: `${window.location.protocol}//${getHostname()}`,
           deviceType,
           color: deviceColors.darkGreen,
           chainId: chainId as ChainId,
