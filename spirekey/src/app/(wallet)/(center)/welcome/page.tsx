@@ -25,7 +25,7 @@ export default function Home() {
             gap="xl"
             marginBlockStart="xl"
           >
-            <Grid columns={{ xs: 1, md: 2 }} gap="xxxl">
+            <Grid gap="xxxl">
               <GridItem>
                 <Stack gap="md" flexDirection="column" height="100%">
                   <Heading className={title} variant="h5">

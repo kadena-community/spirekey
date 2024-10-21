@@ -14,6 +14,5 @@ export const footerClass = style({
 });
 
 globalStyle(`${footerClass} > *`, {
-  opacity: '.4',
   color: token('color.text.gray.default'),
 });

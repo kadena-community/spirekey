@@ -6,8 +6,9 @@ import { FLOWTYPE } from '@/components/OnBoarding/components/OnBoardingStepper/u
 import { ConnectWalletAnimation } from '@/components/RegistrationAnimations/ConnectWalletAnimation';
 import { WalletAnimation } from '@/components/RegistrationAnimations/WalletAnimation';
 import { useWallet } from '@/hooks/useWallet';
-import { Button, Checkbox, Stack } from '@kadena/kode-ui';
+import { Button, Checkbox, Stack, TextLink } from '@kadena/kode-ui';
 import { FC, useState } from 'react';
+import { textLinkToS } from './style.css';
 
 interface IProps {
   onHandleRegisterWallet: () => void;
@@ -69,7 +70,7 @@ export const ConnectWalletStep: FC<IProps> = ({
         <Stack
           flexDirection="column"
           width="100%"
-          gap="md"
+          gap="xxl"
           alignItems="flex-start"
         >
           <Stack alignItems="center" gap="sm">
@@ -81,9 +82,9 @@ export const ConnectWalletStep: FC<IProps> = ({
             >
               I have read & agree to the
             </Checkbox>
-            <a href="https://www.kadena.io/chainweaver-tos" target="_blank">
+            <TextLink href="https://www.kadena.io/chainweaver-tos" target="_blank" className={textLinkToS}>
               Terms of Service
-            </a>
+            </TextLink>
           </Stack>
 
           <Stack width="100%" justifyContent="space-between">
