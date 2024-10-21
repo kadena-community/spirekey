@@ -26,6 +26,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  console.log(11, favicon);
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
