@@ -5,7 +5,10 @@ export const bodyTextContainer = style({
   ...responsiveStyle({
     md: {
       minHeight: 200,
-    }
+    },
+    lg: {
+      maxWidth: '90%',
+    },
   }),
 });
 
