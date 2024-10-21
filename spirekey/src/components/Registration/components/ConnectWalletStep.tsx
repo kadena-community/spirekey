@@ -66,7 +66,12 @@ export const ConnectWalletStep: FC<IProps> = ({
       </LayoutContext>
 
       <LayoutActions>
-        <Stack flexDirection="column" width="100%" gap="md" alignItems="center">
+        <Stack
+          flexDirection="column"
+          width="100%"
+          gap="md"
+          alignItems="flex-start"
+        >
           <Stack alignItems="center" gap="sm">
             <Checkbox
               onChange={() => setHasReadTos((v) => !v)}
