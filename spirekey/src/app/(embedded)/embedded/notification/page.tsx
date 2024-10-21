@@ -5,7 +5,7 @@ import { Text } from '@kadena/kode-ui';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-import spireKeyLogo from '@/assets/images/spireKey-logo-animated.svg';
+import spireKeyLogo from '@/assets/images/logo-dark.svg';
 import { publishEvent } from '@/utils/publishEvent';
 
 import { useTxQueue } from '@/hooks/useTxQueue';

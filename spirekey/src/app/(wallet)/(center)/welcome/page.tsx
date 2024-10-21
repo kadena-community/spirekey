@@ -1,6 +1,6 @@
 'use client';
 
-import logo from '@/assets/images/SpireKey-logo.svg';
+import logo from '@/assets/images/logo-dark.svg';
 import { Footer } from '@/components/Footer/Footer';
 import { Grid, GridItem, Heading, Link, Stack, Text } from '@kadena/kode-ui';
 import { CardFixedContainer } from '@kadena/kode-ui/patterns';
