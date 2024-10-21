@@ -52,7 +52,7 @@ export default function AccountLayout({ children }: { children: any }) {
       <CardFixedContainer>
         <CardContentBlock
           title="Account Details"
-          description={`Interact with your Kadena Spirekey generated account with Chainweaver v3 Alpha demo wallet functionality.`}
+          description={`Interact with your Kadena Spirekey generated account with Chainweaver V3 Alpha demo wallet functionality.`}
           visual={
             <MonoAccountBalanceWallet
               width={64}
