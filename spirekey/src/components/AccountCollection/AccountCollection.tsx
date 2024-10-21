@@ -46,7 +46,7 @@ export default function AccountCollection() {
     <Stack flexDirection="column" gap="xxxl" width="100%">
       <CardFixedContainer>
         <CardContentBlock
-          title="Chainweaver lite demo wallet"
+          title="Chainweaver V3 Alpha demo wallet"
           description={`This page enables you to generate accounts directly on your hardware device without installing any code. 
           This is a minimalist demo wallet to interact with any of the account(s) created.`}
           visual={
