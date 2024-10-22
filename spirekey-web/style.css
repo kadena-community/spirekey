@@ -146,6 +146,13 @@ h3 {
   margin-block-end: 1rem;
 }
 
+p {
+  &.small {
+    font-size: 0.875rem;
+    line-height: 1.125rem;
+  }
+}
+
 .logo {
   padding-block-end: 0rem;
 }
