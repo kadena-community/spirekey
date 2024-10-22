@@ -36,7 +36,7 @@ const accounts = [
           pred: 'keys-any' as const,
           keys: ['WEBAUTHN-key'],
         },
-        domain: 'https://spirekey.kadena.io',
+        domain: 'https://chainweaver.kadena.io',
         'credential-id': 'credential-id',
         name: 'security-key_#893DE7',
         color: '',
@@ -58,7 +58,7 @@ describe('countAccounts', () => {
         countWithPrefixOnDomain(
           accounts,
           'SpireKey Account',
-          'https://spirekey.kadena.io',
+          'https://chainweaver.kadena.io',
         ),
       ).toBe(1);
     });
@@ -68,7 +68,7 @@ describe('countAccounts', () => {
         countWithPrefixOnDomain(
           accounts,
           'SpireKey Account',
-          'https://spirekey.kadena.io',
+          'https://chainweaver.kadena.io',
           'SpireKey Account',
         ),
       ).toBe(0);
