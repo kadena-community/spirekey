@@ -1,5 +1,9 @@
-import { Button, Heading, Stack } from '@kadena/kode-ui';
+import { Button, Grid, GridItem, Heading, Stack, Text } from '@kadena/kode-ui';
 
+import {
+  bodyTextContainer,
+  title,
+} from '@/app/(wallet)/(center)/welcome/page.css';
 import { useAccounts } from '@/resolvers/accounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { MonoAddCard, MonoSelectAll } from '@kadena/kode-icons/system';
@@ -45,14 +49,34 @@ export default function AccountCollection() {
   return (
     <Stack flexDirection="column" gap="xxxl" width="100%">
       <CardFixedContainer>
-        <CardContentBlock
-          title="Chainweaver V3 Alpha demo wallet"
-          description={`This page enables you to generate accounts directly on your hardware device without installing any code. 
-          This is a minimalist demo wallet to interact with any of the account(s) created.`}
-          visual={
-            <MonoSelectAll width={64} height={64} className={iconColorClass} />
-          }
-        ></CardContentBlock>
+        <Stack flexDirection="column" gap="md" marginBlock="xl">
+          <MonoSelectAll width={64} height={64} className={iconColorClass} />
+
+          <Stack
+            flexDirection="column"
+            justifyContent="center"
+            gap="xl"
+            marginBlockStart="xl"
+          >
+            <Grid gap="xxxl">
+              <GridItem>
+                <Stack gap="md" flexDirection="column" height="100%">
+                  <Heading className={title} variant="h5">
+                    Chainweaver V3 Alpha demo wallet
+                  </Heading>
+                  <Stack gap="n2" flexDirection="column">
+                    <Text as="p">
+                      This page enables you to generate accounts directly on
+                      your hardware device without installing any code. This is
+                      a minimalist demo wallet to interact with any of the
+                      account(s) created.
+                    </Text>
+                  </Stack>
+                </Stack>
+              </GridItem>
+            </Grid>
+          </Stack>
+        </Stack>
       </CardFixedContainer>
       {Object.entries(sortedAccounts)
         .filter(([_, accs]) => accs.length)
