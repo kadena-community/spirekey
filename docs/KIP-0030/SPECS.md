@@ -148,7 +148,7 @@ const someHandler = async () => {
 
 The `initSpireKey` function is optional and can be used to configure the SDK to
 target a different wallet using a `config` object. When omitted the SDK will
-will use `https://spirekey.kadena.io`.
+will use `https://chainweaver.kadena.io`.
 
 If you do want to use a different host, you can provide it via the config:
 
