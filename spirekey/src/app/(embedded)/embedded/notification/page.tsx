@@ -2,10 +2,9 @@
 
 import { MonoClose } from '@kadena/kode-icons/system';
 import { Text } from '@kadena/kode-ui';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-import spireKeyLogo from '@/assets/images/logo-dark.svg';
+import SpireKeyLogoAnimated from '@/assets/images/chainweaver-logo-light-animated.svg';
 import { publishEvent } from '@/utils/publishEvent';
 
 import { useTxQueue } from '@/hooks/useTxQueue';
@@ -81,11 +80,13 @@ export default function SidebarSign() {
             : 'Hide Spirekey Notification'
         }
       >
-        <Image
+        <object
           className={styles.spireKeyLoader}
-          src={spireKeyLogo}
-          alt="SpireKey Logo"
-        />
+          type="image/svg+xml"
+          data={SpireKeyLogoAnimated.src}
+        >
+          svg-animation
+        </object>
       </button>
       <Text bold color="emphasize" className={atoms({ flex: 1 })}>
         {title || ''}

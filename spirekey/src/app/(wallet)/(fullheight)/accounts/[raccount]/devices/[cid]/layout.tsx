@@ -19,10 +19,9 @@ import {
   CardFixedContainer,
   CardFooterGroup,
 } from '@kadena/kode-ui/patterns';
-import { atoms } from '@kadena/kode-ui/styles';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useCallback } from 'react';
-import { backButtonClass } from './style.css';
+import { backButtonClass, backButtonDesktopClass } from './style.css';
 
 export default function AccountLayout({ children }: { children: any }) {
   const params = useParams();
@@ -92,10 +91,11 @@ export default function AccountLayout({ children }: { children: any }) {
         </CardContentBlock>
 
         <Button
-          className={atoms({ position: 'absolute', left: 0 })}
+          className={backButtonDesktopClass}
           startVisual={<MonoArrowBack />}
           style={{ top: -50 }}
-          variant="outlined"
+          variant="transparent"
+          isCompact
           onPress={handleBack}
         >
           Go back

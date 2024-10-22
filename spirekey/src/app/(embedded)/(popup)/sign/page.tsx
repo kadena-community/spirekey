@@ -1,6 +1,6 @@
 'use client';
 
-import SpireKeyLogoAnimated from '@/assets/images/icon-dark.svg';
+import SpireKeyLogoAnimated from '@/assets/images/chainweaver-logo-light-animated.svg';
 import Sign from '@/components/Embedded/Sign';
 import { Stack } from '@kadena/kode-ui';
 import Image from 'next/image';

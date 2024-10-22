@@ -30,7 +30,7 @@ export default function AccountPage() {
           {raccount}
         </AccountOverviewSection>
         <AccountOverviewSection label="Passkey Provider">
-          <DeviceIcons account={account} device={device} appendTitle />
+          <DeviceIcons account={account} device={device} appendTitle isSmall />
         </AccountOverviewSection>
         <AccountOverviewSection label="Overall Balance (KDA)">
           {account.balance}
