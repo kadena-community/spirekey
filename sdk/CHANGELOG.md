@@ -1,5 +1,11 @@
 # @kadena/spirekey-sdk
 
+## 0.0.1-dev-16
+
+### Patch Changes
+
+- change the domain name to chainweaver [#548]
+
 ## 0.0.1-dev-15
 
 ### Patch Changes
