@@ -119,7 +119,7 @@ experience. Therefore we came up with the a new idea to initiate this namespace:
       coin
       { 'guard : (read-keyset 'ns-keyset)
       , 'credential-id : "credential-id"
-      , 'hostname : "https://spirekey.kadena.io"
+      , 'hostname : "https://chainweaver.kadena.io"
       , 'device-type : "device-type"
       , 'color : "#hexcolor"
       }
