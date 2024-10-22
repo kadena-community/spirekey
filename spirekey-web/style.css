@@ -1,0 +1,159 @@
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-optical-sizing: auto;
+  background-color: #020e1b;
+  display: flex;
+  flex-direction: column;
+  max-width: 43rem;
+  width: 100%;
+  height: 100dhw;
+  align-items: center;
+  justify-content: center;
+  color: #ffffffb3;
+  margin-inline: auto;
+  padding-inline: 0.5rem;
+}
+
+.code {
+  font-family: 'Kode Mono', monospace;
+  font-optical-sizing: auto;
+}
+
+.card {
+  margin-block-start: 4rem;
+  display: flex;
+  flex-direction: column;
+  background-color: #131e2bcc;
+  color: #ffffffb3;
+  line-height: 130%;
+  font-weight: 400;
+  padding-inline: 2.25rem;
+  padding-block: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d2d4d640;
+  width: 100%;
+  gap: 3rem;
+}
+
+.stack {
+  display: flex;
+  width: 100%;
+
+  & .section {
+    width: 50%;
+    flex: 1;
+
+    & > a:not(.button) {
+      display: block;
+    }
+
+    .link {
+      margin-block-end: 1rem;
+    }
+  }
+}
+
+.footer {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-block-start: 1rem;
+
+  a {
+    color: #ffffff66 !important;
+    text-decoration: none;
+    font-size: 0.6875rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.action-bar {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+}
+
+a:not(.button) {
+  color: #3cbc92;
+}
+
+.button {
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+  letter-spacing: 0;
+  background-color: #52ffc6;
+  padding-block: 0.5rem;
+  padding-inline: 1.5rem;
+  border-radius: 2px;
+  cursor: pointer;
+  color: #000;
+  text-decoration: none;
+
+  &.outline {
+    background-color: transparent;
+    color: #fff;
+    box-shadow: 0 0 0 1px #d2d4d640 inset;
+  }
+}
+
+h2,
+h3,
+h4,
+h5 {
+  font-weight: 500;
+  margin-block: 0rem;
+  padding: 0;
+  color: #fff;
+}
+
+h3 {
+  margin-block-end: 1rem;
+}
+
+.logo {
+  padding-block-end: 1rem;
+}
+
+.main-text {
+  width: 80%;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-block-end: 0.5rem;
+
+  p {
+    margin: 0;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .stack {
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .section {
+      width: 100%;
+    }
+  }
+
+  .main-text {
+    width: 100%;
+  }
+}

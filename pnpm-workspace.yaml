@@ -1,5 +1,6 @@
 packages:
   - 'spirekey'
+  - 'spirekey-web'
   - 'sdk'
   - 'packages/*'
   - 'examples/*'
