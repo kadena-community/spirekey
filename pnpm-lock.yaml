@@ -341,9 +341,6 @@ importers:
 
   spirekey-web:
     devDependencies:
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.4
       vite:
         specifier: ^5.4.8
         version: 5.4.9(@types/node@22.5.1)(terser@5.31.6)
