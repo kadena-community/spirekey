@@ -125,7 +125,7 @@ navigate users back to your dApp. This information will be passed via url
 parameters.
 
 You will use the same host that you used to connect the account and navigate to
-the sign page: https://spirekey.kadena.io/sign
+the sign page: https://chainweaver.kadena.io/sign
 
 In the following table you can see what parameters are currently accepted by
 SpireKey.
@@ -152,7 +152,7 @@ const encodedTx = btoa(JSON.stringify(tx));
 const encodedReturnUrl = encodeURIComponent(RETURN_URL);
 
 // The url you need to navigate to sign and return the transaction
-const sendTransactionUrl = `https://spirekey.kadena.io/sign#transaction=${encodedTx}&returnUrl=${encodedReturnUrl}`;
+const sendTransactionUrl = `https://chainweaver.kadena.io/sign#transaction=${encodedTx}&returnUrl=${encodedReturnUrl}`;
 ```
 
 Once you construct the route to the wallet with the required parameters, you can

@@ -81,7 +81,7 @@
       coin
       { 'guard          :  (read-keyset 'ns-keyset)
       , 'credential-id  :  "credential-id"
-      , 'domain         :  "https://spirekey.kadena.io"
+      , 'domain         :  "https://chainweaver.kadena.io"
       , 'device-type    :  "device-type"
       , 'color          :  "#hexcolor"
       }

@@ -1,12 +1,12 @@
 # **Create a Kadena Spirekey account**
 
 You can create a Kadena SpireKey account on
-[spirekey.kadena.io](https://spirekey.kadena.io). If you have not created a
-Kadena SpireKey account before, you will be redirected to the
-[Welcome page](https://spirekey.kadena.io). On the Welcome page you can choose
-to either recover an account, which is explained in another guide, or register a
-new account. Click the `Register` button to enter the registration flow and
-create a new Kadena SpireKey account.
+[chainweaver.kadena.io](https://chainweaver.kadena.io). If you have not created
+a Kadena SpireKey account before, you will be redirected to the
+[Welcome page](https://chainweaver.kadena.io). On the Welcome page you can
+choose to either recover an account, which is explained in another guide, or
+register a new account. Click the `Register` button to enter the registration
+flow and create a new Kadena SpireKey account.
 
 ## Registration flow
 
@@ -46,8 +46,8 @@ In the future, it will be possible to configure custom networks as well.
 #### Note for wallet developers
 
 You may have noticed that the `Network` step is missing on
-[spirekey.kadena.io](https://spirekey.kadena.io/register). That is because the
-deployment of this wallet dApp is configured with the environment variable
+[chainweaver.kadena.io](https://chainweaver.kadena.io/register). That is because
+the deployment of this wallet dApp is configured with the environment variable
 `WALLET_NETWORK_ID` set to `testnet04`. This forces users to create an account
 on the respective network. Therefore the `Network` step of the registration flow
 does not need to be presented to the user. The preselected network (`Testnet`)
@@ -99,14 +99,15 @@ the blockchain and definitively create your new account.
 ## Registration completed
 
 After completing the registration flow you are redirected back to the main page
-of [Kadena SpireKey](https://spirekey.kadena.io). Instead of the welcome screen
-that was presented before you created your first account, you will now see a
-card representing your newly created account. While the registration transaction
-is being mined, the name of your account - the `c:account` - will be presented
-in an animated state. Once the registration transaction has been mined, the
-animation will stop and the `c:account` will be displayed. Part of the account
-name will be masked for display purposes. Press the copy button to the right of
-the account name and paste it anywhere to see the full account name. At this
-point you have a fully functional Kadena SpireKey account guarded by a WebAuthn
-credentials. You can use this account to connect your account to dApps that
-integrate with Kadena SpireKey and sign transactions initiated by those dApps.
+of [Kadena SpireKey](https://chainweaver.kadena.io). Instead of the welcome
+screen that was presented before you created your first account, you will now
+see a card representing your newly created account. While the registration
+transaction is being mined, the name of your account - the `c:account` - will be
+presented in an animated state. Once the registration transaction has been
+mined, the animation will stop and the `c:account` will be displayed. Part of
+the account name will be masked for display purposes. Press the copy button to
+the right of the account name and paste it anywhere to see the full account
+name. At this point you have a fully functional Kadena SpireKey account guarded
+by a WebAuthn credentials. You can use this account to connect your account to
+dApps that integrate with Kadena SpireKey and sign transactions initiated by
+those dApps.
