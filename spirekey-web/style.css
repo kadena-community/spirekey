@@ -27,18 +27,19 @@ body {
 }
 
 .card {
+  margin-block-start: 4rem;
   display: flex;
   flex-direction: column;
   background-color: #131e2bcc;
   color: #ffffffb3;
   line-height: 130%;
-  font-weight: 100;
+  font-weight: 400;
   padding-inline: 2.25rem;
   padding-block: 1.5rem;
   border-radius: 0.5rem;
   border: 1px solid #d2d4d640;
   width: 100%;
-  gap: 1rem;
+  gap: 3rem;
 }
 
 .stack {
@@ -116,10 +117,26 @@ h5 {
   font-weight: 500;
   margin-block: 0.4rem;
   padding: 0;
+  color: #fff;
 }
 
 .logo {
   padding-block-end: 1rem;
+}
+
+.main-text {
+  width: 80%;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-block-end: 1rem;
+
+  p {
+    margin: 0;
+  }
 }
 
 @media only screen and (max-width: 768px) {
@@ -130,5 +147,9 @@ h5 {
     .section {
       width: 100%;
     }
+  }
+
+  .main-text {
+    width: 100%;
   }
 }
