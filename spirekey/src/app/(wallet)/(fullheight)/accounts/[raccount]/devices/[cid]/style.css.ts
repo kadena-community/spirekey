@@ -1,5 +1,5 @@
 import { style } from '@kadena/kode-ui';
-import { responsiveStyle } from '@kadena/kode-ui/styles';
+import { atoms, responsiveStyle } from '@kadena/kode-ui/styles';
 
 export const overviewWrapperClass = style({
   flex: '50%',
@@ -15,4 +15,7 @@ export const backButtonClass = style([
       display: 'none!important',
     },
   }),
+]);
+export const backButtonDesktopClass = style([
+  atoms({ position: 'absolute', left: 0, color: 'text.gray.default' }),
 ]);

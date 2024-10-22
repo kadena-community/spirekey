@@ -1,12 +1,8 @@
-import { Button, Grid, GridItem, Heading, Stack, Text } from '@kadena/kode-ui';
-
-import {
-  bodyTextContainer,
-  title,
-} from '@/app/(wallet)/(center)/welcome/page.css';
+import { title } from '@/app/(wallet)/(center)/welcome/page.css';
 import { useAccounts } from '@/resolvers/accounts';
 import { getNetworkDisplayName } from '@/utils/getNetworkDisplayName';
 import { MonoAddCard, MonoSelectAll } from '@kadena/kode-icons/system';
+import { Button, Grid, GridItem, Heading, Stack, Text } from '@kadena/kode-ui';
 import { CardContentBlock, CardFixedContainer } from '@kadena/kode-ui/patterns';
 import { Account } from '@kadena/spirekey-types';
 import { useRouter } from 'next/navigation';

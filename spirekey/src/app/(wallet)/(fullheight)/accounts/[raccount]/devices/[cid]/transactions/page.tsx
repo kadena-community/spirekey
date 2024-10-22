@@ -3,7 +3,9 @@
 import { AccountDetails } from '@/components/AccountDetails/AccountDetails';
 import { AccountTabs } from '@/components/AccountTabs/AccountTabs';
 import { useAccounts } from '@/resolvers/accounts';
+import { Stack } from '@kadena/kode-ui';
 import { useParams } from 'next/navigation';
+import { overviewWrapperClass } from '../style.css';
 
 export default function TransactionsPage() {
   const params = useParams();
@@ -12,7 +14,14 @@ export default function TransactionsPage() {
   const account = accounts?.find((a) => a.accountName === raccount);
   return (
     <AccountTabs selectedTabKey="transactions">
-      {account && <AccountDetails account={account} />}
+      <Stack
+        gap="xl"
+        width="100%"
+        padding="lg"
+        className={overviewWrapperClass}
+      >
+        {account && <AccountDetails account={account} />}
+      </Stack>
     </AccountTabs>
   );
 }

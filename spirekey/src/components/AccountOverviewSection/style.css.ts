@@ -1,5 +1,5 @@
 import { style } from '@kadena/kode-ui';
-import { responsiveStyle } from '@kadena/kode-ui/styles';
+import { responsiveStyle, token } from '@kadena/kode-ui/styles';
 
 export const sectionClass = style([
   {
@@ -11,4 +11,10 @@ export const sectionClass = style([
       width: '47%',
     },
   }),
+]);
+
+export const sectionTextClass = style([
+  {
+    lineHeight: `${token('typography.lineHeight.xl')} !important`,
+  },
 ]);

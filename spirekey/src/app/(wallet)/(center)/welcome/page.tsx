@@ -2,8 +2,15 @@
 
 import logo from '@/assets/images/logo-dark.svg';
 import { Footer } from '@/components/Footer/Footer';
-import { Grid, GridItem, Heading, Link, Stack, Text } from '@kadena/kode-ui';
-import { CardFixedContainer } from '@kadena/kode-ui/patterns';
+import {
+  Card,
+  Grid,
+  GridItem,
+  Heading,
+  Link,
+  Stack,
+  Text,
+} from '@kadena/kode-ui';
 import Image from 'next/image';
 import { bodyTextContainer, title, wrapperClass } from './page.css';
 
@@ -15,7 +22,7 @@ export default function Home() {
       justifyContent="center"
       flex={1}
     >
-      <CardFixedContainer>
+      <Card>
         <Stack flexDirection="column" gap="md" marginBlock="xl">
           <Image src={logo} alt="SpireKey logo" style={{ maxHeight: '80px' }} />
 
@@ -71,7 +78,7 @@ export default function Home() {
             </Grid>
           </Stack>
         </Stack>
-      </CardFixedContainer>
+      </Card>
       <Footer />
     </Stack>
   );

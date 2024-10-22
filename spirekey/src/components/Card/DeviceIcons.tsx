@@ -10,6 +10,7 @@ type DeviceIconsProps = {
   showSingleIcon?: boolean;
   prependTitle?: boolean;
   appendTitle?: boolean;
+  isSmall?: boolean;
 };
 
 const getAaguid = (map: any, key: string) => {
@@ -22,6 +23,7 @@ export default function DeviceIcons({
   showSingleIcon = false,
   prependTitle = false,
   appendTitle = false,
+  isSmall = false,
 }: DeviceIconsProps) {
   if (!account) return;
   const firstDevice = account.devices[0];
@@ -39,14 +41,16 @@ export default function DeviceIcons({
 
   return Array.from(uniqueDeviceTypes).map((type, i) => {
     const aaguid = getAaguid(aaguidMap, type);
-    const icon = getDeviceIcon(type, aaguid);
+    const icon = getDeviceIcon(type, aaguid, isSmall);
 
     return (
       <Stack key={i} className={styles.device} alignItems="center" gap="sm">
         {prependTitle && <Text variant="code">{aaguid?.name}</Text>}
         {icon}
         {appendTitle && !prependTitle && (
-          <Text variant="code">{aaguid?.name}</Text>
+          <Text size="small" color="emphasize">
+            {aaguid?.name}
+          </Text>
         )}
       </Stack>
     );
