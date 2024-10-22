@@ -24,7 +24,7 @@ export const ConnectStep = ({
 }) => {
   const [wallet, setWallet] = useLocalState(
     'wallet',
-    'https://spirekey.kadena.io/',
+    'https://chainweaver.kadena.io/',
   );
   const [networkId, setNetworkId] = useLocalState('networkId', 'testnet04');
   const [chainId, setChainId] = useLocalState('chainId', '14');
@@ -91,7 +91,7 @@ export const ConnectStep = ({
                 onSelectionChange={(w) => setWallet(w as string)}
                 selectedKey={wallet}
               >
-                <SelectItem key="https://spirekey.kadena.io/">
+                <SelectItem key="https://chainweaver.kadena.io/">
                   SpireKey
                 </SelectItem>
                 <SelectItem key="http://localhost:1337/">Local</SelectItem>

@@ -14,17 +14,18 @@ layout: full
 # Recover a Kadena Spirekey account
 
 After you register a device for a Kadena SpireKey account, the account details
-are stored on the Kadena blockchain and in the `Local storage` of the
-browser you used to register the account. You can view this information using
-the Developer Tools for the browser by selecting **Application**, then expanding
+are stored on the Kadena blockchain and in the `Local storage` of the browser
+you used to register the account. You can view this information using the
+Developer Tools for the browser by selecting **Application**, then expanding
 **Storage**. If you clear local storage—for example, by selecting **Clear
 browsing data**—or try to use a different browser to access your Kadena SpireKey
-account, the [Kadena SpireKey wallet](https://spirekey.kadena.io) won't be able
-to identify the account that belongs to you or recognize you as a registered
-user. However, you can recover your account information through the passkey
-stored on any device you created your account with or added to your account. For example, if you used a smart
-phone to register a Kadena SpireKey account, you can use the passkey stored on
-that phone to recover your account information.
+account, the [Kadena SpireKey wallet](https://chainweaver.kadena.io) won't be
+able to identify the account that belongs to you or recognize you as a
+registered user. However, you can recover your account information through the
+passkey stored on any device you created your account with or added to your
+account. For example, if you used a smart phone to register a Kadena SpireKey
+account, you can use the passkey stored on that phone to recover your account
+information.
 
 ## Identify the passkey for an account
 
@@ -46,13 +47,13 @@ in a secure enclave on the phone.
 
 For demonstration purposes, assume that you registered for a Kadena SpireKey
 account from a browser running on your local computer. If that's the case, you
-can open [spirekey.kadena.io](https://spirekey.kadena.io) in the browser and see
-that your account information is displayed by default from the information in
-local storage.
+can open [chainweaver.kadena.io](https://chainweaver.kadena.io) in the browser
+and see that your account information is displayed by default from the
+information in local storage.
 
 To clear local storage:
 
-1. Open [Kadena SpireKey](https://spirekey.kadena.io).
+1. Open [Kadena SpireKey](https://chainweaver.kadena.io).
 2. Open the Developer Tools.
 3. Open the Console and type the following command:
 
@@ -68,7 +69,7 @@ To clear local storage:
 To recover account information:
 
 1. Click **Recover** or open
-   [spirekey.kadena.io/recover](https://spirekey.kadena.io/recover).
+   [chainweaver.kadena.io/recover](https://chainweaver.kadena.io/recover).
 2. Click in the Passkey fingerprint section.
 3. Select the passkey for the account you want to recover.
 

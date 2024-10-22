@@ -23,8 +23,8 @@ Your dApp will connect to a Kadena SpireKey wallet dApp that can be hosted
 anywhere. You could run it locally as described in the official Kadena Spirekey
 [Github repository](https://github.com/kadena-community/webauthn-wallet/), serve
 it from your own domain, or use the Kadena SpireKey wallet hosted by Kadena on
-[spirekey.kadena.io](spirekey.kadena.io). This guide assumes that you will be
-using the latter approach.
+[chainweaver.kadena.io](chainweaver.kadena.io). This guide assumes that you will
+be using the latter approach.
 
 ## Link to the Kadena SpireKey wallet
 
@@ -32,7 +32,7 @@ On any page of your dApp, create a simple link to the `/connect` page of the
 Kadena SpireKey wallet dApp.
 
 ```
-https://spirekey.kadena.io/connect?returnUrl=http://localhost:3000&networkId=testnet04
+https://chainweaver.kadena.io/connect?returnUrl=http://localhost:3000&networkId=testnet04
 ```
 
 You need to pass the URL of your dApp as a URL encoded query parameter
@@ -86,7 +86,7 @@ account information from the user. The value for this parameter must be URL
 encoded. See the example below.
 
 ```
-https://spirekey.kadena.io/connect?returnUrl=http://localhost:3000&networkId=development&reason=Your%20reason.
+https://chainweaver.kadena.io/connect?returnUrl=http://localhost:3000&networkId=development&reason=Your%20reason.
 ```
 
 ### Use the account data
@@ -164,7 +164,7 @@ of pending transactions by decoding the `pendingTxIds` query parameter.
 With the `optimistic=true` parameter, the connect url would look like this:
 
 ```
-https://spirekey.kadena.io/connect?returnUrl=http://localhost:3000&networkId=development&reason=Your%20reason&optimistic=true
+https://chainweaver.kadena.io/connect?returnUrl=http://localhost:3000&networkId=development&reason=Your%20reason&optimistic=true
 ```
 
 With this connect url, the user will be redirected to the following url after
