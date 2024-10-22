@@ -1,5 +1,13 @@
 {
   "name": "@kadena/spirekey-web",
   "version": "0.1.0",
-  "private": true
+  "private": true,
+  "scripts": {
+    "build": "echo 'NOOP'",
+    "build:e2e": "echo 'NOOP'",
+    "dev": "echo 'NOOP'",
+    "lint": "echo 'NOOP'",
+    "test": "echo 'NOOP'",
+    "test:watch": "echo 'NOOP'"
+  }
 }
