@@ -2,7 +2,6 @@
 
 import { MonoClose } from '@kadena/kode-icons/system';
 import { Text } from '@kadena/kode-ui';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 import SpireKeyLogoAnimated from '@/assets/images/chainweaver-logo-light-animated.svg';
