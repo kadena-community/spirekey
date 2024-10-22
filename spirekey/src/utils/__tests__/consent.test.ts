@@ -37,7 +37,7 @@ const addMockDevices = (account: Account, pubKeys: string[]): Account => ({
           pred: 'keys-any',
         },
         color: '#000',
-        domain: 'https://spirekey.kadena.io',
+        domain: 'https://chainweaver.kadena.io',
         deviceType: 'phone',
         'credential-id': 'credid',
       };

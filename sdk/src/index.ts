@@ -7,7 +7,7 @@ type SpireKeySDK = {
   sign: typeof sign;
 };
 const initSpireKey = (
-  options: { hostUrl?: string } = { hostUrl: 'https://spirekey.kadena.io' },
+  options: { hostUrl?: string } = { hostUrl: 'https://chainweaver.kadena.io' },
 ): SpireKeySDK => {
   EmbedManager.getInstance(options.hostUrl);
   return { connect, sign };

@@ -14,7 +14,7 @@ export class EmbedManager {
   static getInstance(baseUrl?: string): EmbedManager {
     if (!EmbedManager.manager)
       EmbedManager.manager = new EmbedManager(
-        baseUrl || 'https://spirekey.kadena.io',
+        baseUrl || 'https://chainweaver.kadena.io',
       );
     if (baseUrl) EmbedManager.manager.updateBaseUrl(baseUrl);
     return EmbedManager.manager;
