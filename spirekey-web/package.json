@@ -2,17 +2,12 @@
   "name": "@kadena/spirekey-web",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "build": "tsc && vite build",
+    "build": "vite build",
     "dev": "vite",
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^5.5.3",
     "vite": "^5.4.8"
-  },
-  "engines": {
-    "node": ">=20.0.0 <21.0.0"
   }
 }
