@@ -5,6 +5,7 @@
 }
 
 body {
+  font-size: 16px;
   font-family: 'Inter', sans-serif;
   font-optical-sizing: auto;
   background-color: #020e1b;
@@ -26,19 +27,54 @@ body {
 }
 
 .card {
+  display: flex;
+  flex-direction: column;
   background-color: #131e2bcc;
-  color: #fffffff2;
+  color: #ffffffb3;
+  line-height: 130%;
+  font-weight: 100;
   padding-inline: 2.25rem;
   padding-block: 1.5rem;
   border-radius: 0.5rem;
   border: 1px solid #d2d4d640;
   width: 100%;
+  gap: 1rem;
+}
+
+.stack {
+  display: flex;
+  width: 100%;
+
+  & .section {
+    width: 50%;
+    flex: 1;
+
+    & > a:not(.button) {
+      display: block;
+    }
+
+    .link {
+      margin-block-end: 1rem;
+    }
+  }
 }
 
 .footer {
   display: flex;
   width: 100%;
   justify-content: flex-end;
+  gap: 1rem;
+  padding-block-start: 1rem;
+
+  a {
+    color: #ffffff66 !important;
+    text-decoration: none;
+    font-size: 0.6875rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .action-bar {
@@ -70,5 +106,29 @@ a:not(.button) {
     background-color: transparent;
     color: #fff;
     box-shadow: 0 0 0 1px #d2d4d640 inset;
+  }
+}
+
+h2,
+h3,
+h4,
+h5 {
+  font-weight: 500;
+  margin-block: 0.4rem;
+  padding: 0;
+}
+
+.logo {
+  padding-block-end: 1rem;
+}
+
+@media only screen and (max-width: 768px) {
+  .stack {
+    flex-direction: column;
+    gap: 1rem;
+
+    .section {
+      width: 100%;
+    }
   }
 }
