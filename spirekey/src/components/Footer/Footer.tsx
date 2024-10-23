@@ -34,7 +34,7 @@ export const Footer: FC = () => {
         Privacy
       </TextLink>
       <TextLink
-        href="https://www.kadena.io/terms-and-conditions"
+        href="https://kadena.io/spirekey-license"
         target="_blank"
         isCompact
       >
