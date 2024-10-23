@@ -1,5 +1,11 @@
 # @kadena/spirekey-sdk
 
+## 1.0.0
+
+### Patch Changes
+
+- official release [#559]
+
 ## 0.0.1-dev-16
 
 ### Patch Changes
