@@ -26,15 +26,30 @@
           using the SDK package, or explore the technical documentation outlined
           in the KIPs.
         </p>
-        <div class="section">
+        <div>
+          <div style="padding-block-end: 16px">
+            <input type="checkbox" id="toc" />
+            <label for="toc">
+              I have read & agree to the
+              <a
+                href="https://kadena.io/spirekey-license"
+                target="_blank"
+                className="{textLinkToS}"
+              >
+                Terms and Conditions
+              </a>
+            </label>
+          </div>
+
+          <p />
           <a
-            class="button"
+            id="btnInstallSDK"
+            class="button disabled"
             href="https://www.npmjs.com/package/@kadena/spirekey-sdk"
             target="_blank"
             >Install SDK Package</a
           >
         </div>
-        <div class="section"></div>
       </section>
 
       <div>
@@ -86,7 +101,7 @@
                   Chainweaver V3 Alpha
                 </a>
               </h4>
-            <p class="small">
+              <p class="small">
                 Experience Kadena SpireKey authentication showcased with demo
                 wallet functionality
               </p>
@@ -100,7 +115,9 @@
                   >NFT Minting</a
                 >
               </h4>
-            <p class="small">Mint your own demo NFT using Kadena SpireKey authentication</p>
+              <p class="small">
+                Mint your own demo NFT using Kadena SpireKey authentication
+              </p>
             </div>
           </div>
         </section>
@@ -125,5 +142,28 @@
         >Terms</a
       >
     </footer>
+
+    <script>
+      const init = () => {
+        const btnInstallSDK = document.querySelector('#btnInstallSDK');
+        const checkbox = document.querySelector('#toc');
+
+        checkbox.addEventListener('click', () => {
+          if (checkbox.checked) {
+            btnInstallSDK.classList.remove('disabled');
+          } else {
+            btnInstallSDK.classList.add('disabled');
+          }
+        });
+
+        btnInstallSDK.addEventListener('click', (e) => {
+          if (!checkbox.checked) {
+            e.preventDefault();
+          }
+        });
+      };
+
+      window.onload = () => init();
+    </script>
   </body>
 </html>

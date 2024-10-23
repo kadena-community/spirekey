@@ -115,9 +115,14 @@ a:not(.button) {
   color: #000;
   text-decoration: none;
 
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   &:not(.outline) {
     &:hover {
-      background-color: #3cbc92
+      background-color: #3cbc92;
     }
   }
 
