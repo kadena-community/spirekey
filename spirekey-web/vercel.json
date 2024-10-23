@@ -2,8 +2,43 @@
   "redirects": [
     {
       "source": "/welcome",
-      "destination": "https://chainweaver.kadena.io",
+      "destination": "https://chainweaver.kadena.io/welcome",
       "permanent": true
+    },
+    {
+      "source": "/recover",
+      "destination": "https://chainweaver.kadena.io/recover",
+      "permanent": true
+    },
+    {
+      "source": "/register",
+      "destination": "https://chainweaver.kadena.io/register",
+      "permanent": true
+    },
+    {
+      "source": "/settings",
+      "destination": "https://chainweaver.kadena.io/settings",
+      "permanent": true
+    },
+    {
+      "source": "/accounts/:raccount",
+      "destination": "https://chainweaver.kadena.io/accounts/:raccount",
+      "permanent": false
+    },
+    {
+      "source": "/accounts/:raccount/devices/:cid",
+      "destination": "https://chainweaver.kadena.io/accounts/:raccount/devices/:cid",
+      "permanent": false
+    },
+    {
+      "source": "/embedded/sidebar",
+      "destination": "https://chainweaver.kadena.io/embedded/sidebar",
+      "permanent": false
+    },
+    {
+      "source": "/embedded/notification",
+      "destination": "https://chainweaver.kadena.io/embedded/notification",
+      "permanent": false
     }
   ]
 }
