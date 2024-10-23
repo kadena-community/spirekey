@@ -78,12 +78,16 @@ export const ConnectWalletStep: FC<IProps> = ({
               onChange={() => setHasReadTos((v) => !v)}
               key="HasReadToS"
               value="true"
-              aria-label="I have read & agree to the Terms of Service"
+              aria-label="I have read & agree to the Terms and Conditions"
             >
               I have read & agree to the
             </Checkbox>
-            <TextLink href="https://www.kadena.io/chainweaver-tos" target="_blank" className={textLinkToS}>
-              Terms of Service
+            <TextLink
+              href="https://kadena.io/spirekey-license"
+              target="_blank"
+              className={textLinkToS}
+            >
+              Terms and Conditions
             </TextLink>
           </Stack>
 
