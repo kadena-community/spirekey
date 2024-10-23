@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/welcome",
+      "destination": "https://chainweaver.kadena.io",
+      "permanent": true
+    }
+  ]
+}
