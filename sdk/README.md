@@ -159,7 +159,7 @@ If you do want to use a different host, you can provide it via the config:
 | :------ | :----- |
 | hostUrl | string |
 
-## Terms of Service
+## Terms and Conditions
 
 You are not required to accept this License, since you have not signed it.
 However, nothing else grants you permission to modify or distribute the Program
