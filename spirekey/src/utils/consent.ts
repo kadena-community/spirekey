@@ -36,7 +36,7 @@ export const getPermissions = (
 ) =>
   signers
     .filter((s) => keys.includes(s.pubKey))
-    .flatMap((s) => s.clist)
+    .flatMap((s) => s.clist ?? [])
     .reduce((caps, cap) => {
       const moduleName = cap?.name.replace(/\.(?:.(?!\.))+$/, '') || '';
       const moduleCaps = caps.get(moduleName) || [];
