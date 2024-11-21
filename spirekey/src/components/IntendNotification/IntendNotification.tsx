@@ -14,7 +14,6 @@ export default function IntendNotification() {
     <Stack className={styles.container}>
       <Notification
         intent="warning"
-        isDismissable
         role="alert"
         type="inlineStacked"
         onDismiss={() => {
