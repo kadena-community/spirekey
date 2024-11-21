@@ -16,7 +16,7 @@ export const container = style([
   },
   responsiveStyle({
     md: {
-      position: 'absolute',
+      // position: 'absolute',
       width: '42rem',
     },
   }),
