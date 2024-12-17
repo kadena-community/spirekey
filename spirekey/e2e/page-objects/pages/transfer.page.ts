@@ -15,7 +15,7 @@ export class TransferPage {
   }
 
   async setReceiver() {
-    await this.receiverInput.fill('senderx');
+    await this.receiverInput.fill('sender00');
   }
   async setAmount(amount: string) {
     await this.amountInput.fill(amount);
