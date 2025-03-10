@@ -194,15 +194,8 @@ export const TransferStep = ({
         chainId: chainId as ChainId,
       });
       tx.setNetworkId(networkId);
-      const tx2 = getTransferTx({
-        amount: parseFloat(amount),
-        receiver,
-        account,
-        chainId: chainId as ChainId,
-      });
-      tx2.setNetworkId(networkId);
       const { transactions, isReady } = await sign(
-        [tx.createTransaction(), tx2.createTransaction()],
+        [tx.createTransaction()],
         [
           {
             accountName: account.accountName,
@@ -211,7 +204,7 @@ export const TransferStep = ({
             requestedFungibles: [
               {
                 fungible: 'coin',
-                amount: parseFloat(amount) * 2 + 0.1, // add 0.1 to account for gas fees
+                amount: parseFloat(amount) + 0.1, // add 0.1 to account for gas fees
               },
             ],
           },
