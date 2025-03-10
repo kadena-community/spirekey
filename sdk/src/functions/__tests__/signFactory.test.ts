@@ -17,7 +17,7 @@ describe('signFactory', () => {
     // should refactor this to publish an array of signatured
     publishEvent('signed', {
       accounts: [],
-      tx: { '123': [{ sig: 'signature', pubKey: 'pubkey' }] },
+      txs: { '123': [{ sig: 'signature', pubKey: 'pubkey' }] },
     });
 
     await expect(promise).resolves.toMatchObject({
@@ -39,7 +39,7 @@ describe('signFactory', () => {
 
     publishEvent('signed', {
       accounts: [],
-      tx: {
+      txs: {
         '123': [{ sig: 'signature1', pubKey: 'pubKey1' }],
         '456': [{ sig: 'signature2', pubKey: 'pubKey2' }],
       },

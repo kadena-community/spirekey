@@ -31,7 +31,7 @@ export const sign = (
 const resetableTimeout = (fn: () => Error[], ms: number) => {
   let reject: (errors: Error[]) => void;
 
-  const timer = setTimeout(() => {
+  let timer = setTimeout(() => {
     reject(fn());
   }, ms);
   const promise = new Promise<SignedTransactions>((_, r) => {
@@ -39,7 +39,12 @@ const resetableTimeout = (fn: () => Error[], ms: number) => {
   });
   return {
     promise,
-    reset: () => clearTimeout(timer),
+    reset: () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        reject(fn());
+      }, ms);
+    },
   };
 };
 
@@ -73,18 +78,24 @@ export const signFactory =
         let signedTransactions = transactions;
         removeSignListener = onTransactionsSigned((signatures) => {
           const signedTxMap = signatures.txs || signatures.tx;
-          signedTransactions = signedTransactions
+          const currentSignedTxs = signedTransactions
             .flatMap((tx) =>
               signedTxMap[tx.hash]?.map((sig) => addSignatures(tx, sig)),
             )
             .filter((tx) => !!tx);
 
-          const isDone = transactions.every(isSignedTransaction);
+          signedTransactions = signedTransactions.map((tx) => {
+            return (
+              currentSignedTxs.find((signedTx) => signedTx.hash === tx.hash) ||
+              tx
+            );
+          });
+          const isDone = signedTransactions.every(isSignedTransaction);
           if (!isDone) {
             const remainingTxParams = new URLSearchParams({
               accounts: JSON.stringify(signatures.accounts),
               transactions: JSON.stringify(
-                transactions.filter((tx) => !isSignedTransaction(tx)),
+                signedTransactions.filter((tx) => !isSignedTransaction(tx)),
               ),
             });
             reset();
