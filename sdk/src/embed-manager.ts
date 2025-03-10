@@ -58,10 +58,11 @@ export class EmbedManager {
     this.notification = this.makeNotification(this.baseUrl);
   }
 
-  public openPopup(path: string) {
+  public openPopup(path: string, reuse = false) {
     const { width, height } = screen;
     const params = `width=500,height=${height},left=${width - 500},top=0,popup=1`;
 
+    if (reuse) return this.setPopup(path);
     // for issue that the popup may be open somewhere in an (invisible to the user) tab, first try to close the popup.
     // inivisble because it could be below another application or minimized on desktop
     // or in a other tab on iOS
@@ -72,6 +73,13 @@ export class EmbedManager {
         'SpireKeyPopup',
         params,
       );
+    });
+  }
+
+  private setPopup(path: string) {
+    setTimeout(() => {
+      if (!this.popup) throw new Error('Popup not found');
+      this.popup.location.href = this.baseUrl + path;
     });
   }
 

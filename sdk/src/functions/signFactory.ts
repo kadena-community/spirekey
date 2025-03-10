@@ -1,5 +1,6 @@
 import {
   addSignatures,
+  isSignedTransaction,
   type ICommand,
   type IUnsignedCommand,
 } from '@kadena/client';
@@ -27,6 +28,26 @@ export const sign = (
     accounts,
   );
 
+const resetableTimeout = (fn: () => Error[], ms: number) => {
+  let reject: (errors: Error[]) => void;
+
+  let timer = setTimeout(() => {
+    reject(fn());
+  }, ms);
+  const promise = new Promise<SignedTransactions>((_, r) => {
+    reject = r;
+  });
+  return {
+    promise,
+    reset: () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        reject(fn());
+      }, ms);
+    },
+  };
+};
+
 export const signFactory =
   ({ embedManager, timeout = 5 * 60 * 1000 }: SignParams) =>
   async (
@@ -44,11 +65,9 @@ export const signFactory =
     embedManager.showNotification();
     embedManager.openPopup(`/sign#${transactionsParams.toString()}`);
 
-    const timeoutPromise = new Promise<SignedTransactions>((_, reject) =>
-      setTimeout(
-        () => reject([new Error('Timeout: Signing took too long')]),
-        timeout,
-      ),
+    const { promise: timeoutPromise, reset } = resetableTimeout(
+      () => [new Error('Timeout: Signing took too long')],
+      timeout,
     );
 
     let removeSignListener: () => void;
@@ -56,14 +75,36 @@ export const signFactory =
 
     const eventListenerPromise = new Promise<SignedTransactions>(
       (resolve, reject) => {
+        let signedTransactions = transactions;
         removeSignListener = onTransactionsSigned((signatures) => {
           const signedTxMap = signatures.txs || signatures.tx;
-          const signedTransactions = transactions
+          const currentSignedTxs = signedTransactions
             .flatMap((tx) =>
               signedTxMap[tx.hash]?.map((sig) => addSignatures(tx, sig)),
             )
             .filter((tx) => !!tx);
 
+          signedTransactions = signedTransactions.map((tx) => {
+            return (
+              currentSignedTxs.find((signedTx) => signedTx.hash === tx.hash) ||
+              tx
+            );
+          });
+          const isDone = signedTransactions.every(isSignedTransaction);
+          if (!isDone) {
+            const remainingTxParams = new URLSearchParams({
+              accounts: JSON.stringify(signatures.accounts),
+              transactions: JSON.stringify(
+                signedTransactions.filter((tx) => !isSignedTransaction(tx)),
+              ),
+            });
+            reset();
+            embedManager.openPopup(
+              `/sign#${remainingTxParams.toString()}`,
+              true,
+            );
+            return;
+          }
           resolve({
             transactions: signedTransactions,
             isReady: async () => {

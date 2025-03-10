@@ -81,7 +81,11 @@ const Sign: FC<IProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    const cancel = () => publishEvent('canceled:sign');
+    const cancel = (e: any) => {
+      if (window.location.origin !== e.target.origin)
+        publishEvent('canceled:sign');
+    };
+
     window.addEventListener('beforeunload', cancel);
 
     return () => {
