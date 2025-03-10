@@ -15,7 +15,7 @@
     "start:e2e": "turbo start:e2e",
     "lint": "turbo lint",
     "test": "turbo test",
-    "test:e2e": "turbo test:e2e --force"
+    "test:e2e": "turbo test:e2e"
   },
   "devDependencies": {
     "@types/node": "^22.5.1",
