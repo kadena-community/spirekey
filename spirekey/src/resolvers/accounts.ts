@@ -42,15 +42,20 @@ export const accounts = async (
   const accs = networkIds.flatMap((networkId) => localAccounts(networkId));
   const resolvedAccs = await Promise.all(
     accs.map(async (acc) => {
-      const { data } = await client.query({
-        query: accountQuery,
-        variables: {
-          accountName: acc.accountName,
-          networkId: acc.networkId,
-        },
-      });
-      if (!data?.account?.accountName) return acc;
-      return { ...acc, ...data.account, txQueue: acc.txQueue };
+      try {
+        const { data } = await client.query({
+          query: accountQuery,
+          variables: {
+            accountName: acc.accountName,
+            networkId: acc.networkId,
+          },
+        });
+        if (!data?.account?.accountName) return acc;
+        return { ...acc, ...data.account, txQueue: acc.txQueue };
+      } catch (e) {
+        console.error(e);
+        return acc;
+      }
     }),
   );
   accountsVar(resolvedAccs);
